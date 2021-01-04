@@ -306,8 +306,9 @@ Study = {
           bootbox.alert("Tell the researcher that saving data is broken:" + data_response);
         }
         break;
-			case "server":
       case "github":
+      case "onlinepreview":
+			case "server":
 				online_data_obj.save_queue_add(
 					function(){
 						online_save(
@@ -635,8 +636,10 @@ function detect_exe(){
 
 function final_trial(){
 	switch(Study.get_vars.platform){
-		case "github":
-    case "server": //this should be changed to preview if you do not want data saved!
+    //this should be changed to preview if you do not want data saved!
+    case "github":
+    case "onlinepreview":
+    case "server":
 			online_data_obj.save_queue_add(
 				function(){
 					online_save(Study.get_vars.location,
@@ -948,6 +951,7 @@ function parse_sheets(){
   proc_stim_loaded = [];
 
   switch(Study.get_vars.platform){
+    case "onlinepreview":
     case "localhost":
     case "preview":
       var folder = "Experiments/"+ Study.get_vars.location;
@@ -1120,6 +1124,7 @@ function post_welcome(participant_code,id_error){
   switch(Study.get_vars.platform){
     case "server":
     case "github":
+    case "onlinepreview":
     case "localhost":
     case "preview":
       id_error = "skip";
@@ -1505,7 +1510,8 @@ function start_study(){
 
 	if(Object.keys(exp_json) == 0){
 		switch(Study.get_vars.platform){
-			case "localhost":
+      case "onlinepreview":
+      case "localhost":
       case "preview":
         electron_wait = setInterval(function(){
           if(typeof(Collector.electron.fs.read_file) !== "undefined"){
@@ -1682,6 +1688,7 @@ $(window).bind('keydown', function(event) {
 //prevent closing without warning
 window.onbeforeunload = function() {
   switch(Study.get_vars.platform){
+    case "onlinepreview":
     case "localhost":
       break;
     default:

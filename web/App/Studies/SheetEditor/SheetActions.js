@@ -495,10 +495,10 @@ $("#run_btn").on("click",function(){
 
 			bootbox.dialog({
 				title:"Select a Condition",
-				message: "Which condition would you like to run? <br><br>" + select_html + "<br><br> Online link copy the following into a browser:<br>(make sure you've pushed the latest changes and waited 5+ minutes) <input class='form-control' value='" + github_url + "' onfocus='this.select();' id='experiment_url_input'>",
+				message: "Which condition would you like to run? <br><br>" + select_html + "<br><br>Copy the following into a browser:<br>(make sure you've pushed the latest changes and waited 5+ minutes) <input class='form-control' value='" + github_url + "' onfocus='this.select();' id='experiment_url_input'>",
 				buttons: {
 					local:{
-						label: "Run (will save data)",
+						label: "Run",
 						className: 'btn-primary',
 						callback: function(){
               window.open("RunStudy.html?platform=localhost&" +
@@ -507,11 +507,20 @@ $("#run_btn").on("click",function(){
                           "_blank");
 						}
 					},
-					preview:{
-						label: "Preview",
-						className: 'btn-primary',
+					local_preview:{
+						label: "Local Preview",
+						className: 'btn-info',
 						callback: function(){
 							window.open("RunStudy.html?platform=preview&" +
+													"location=" + $("#experiment_list").val() + "&" +
+													"name=" + $("#select_condition").val(),"_blank");
+						}
+					},
+          online_preview:{
+						label: "Online Preview",
+						className: 'btn-info',
+						callback: function(){
+							window.open("RunStudy.html?platform=onlinepreview&" +
 													"location=" + $("#experiment_list").val() + "&" +
 													"name=" + $("#select_condition").val(),"_blank");
 						}

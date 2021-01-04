@@ -84,6 +84,13 @@ function online_save(experiment_id,
                      data,
                      0,
                      after_function);
+    } else {
+      /*
+      * If it is the final trial then the user needs to download their data
+      */
+      if(data.trial_no == "_all_data"){
+        precrypted_data(exp_json,"We've tried to send your data, but it has failed multiple times. Please accept the download and send it directly to the researcher. What do you want to save this file as?");
+      }
     }
 	}
 	var script_list = [];
