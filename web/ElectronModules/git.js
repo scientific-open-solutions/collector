@@ -623,6 +623,21 @@ ipc.on('git_valid_org', (event, args) => {
   const octokit = new Octokit({
     auth: auth_token,
   });
+  console.log(auth_token);
+  console.log("octokit");
+  console.log(octokit);
+
+  /*
+
+  octokit.orgs.get({
+    org: args["organization"]
+  }).then(function(result){
+    console.dir("success");
+  }).catch(function(error){
+    console.dir("error: " + error);
+  });
+
+  */
 
   octokit.orgs.get({
     org: args["organization"]

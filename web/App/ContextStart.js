@@ -76,14 +76,21 @@ switch(Collector.detect_context()){
           );
           //lazy way of preventing the following slowing down the starting up of Collector
           setTimeout(function(){
-            var commits_behind = Collector.electron.git.status({
-              organization: github_json.organization,
-              repository: github_json.repository
-            });
-            if(commits_behind !== 0)
-            {
-              bootbox.alert("You are behind by " + commits_behind + " commits (or you'll have just seen an error message). Be careful about pushing or pulling changes until your local repository is synched up with the online repository");
-            };
+            if(
+              typeof(github_json.organization) !== "undefined" &&
+              github_json.organization !== ""                  &&
+              typeof(github_json.repository) !== "undefined"   &&
+              github_json.repository !== ""
+            ){
+              var commits_behind = Collector.electron.git.status({
+                organization: github_json.organization,
+                repository: github_json.repository
+              });
+              if(commits_behind !== 0)
+              {
+                bootbox.alert("You are behind by " + commits_behind + " commits (or you'll have just seen an error message). Be careful about pushing or pulling changes until your local repository is synched up with the online repository");
+              };
+            }
           },1000);
         }
         Collector.start();
