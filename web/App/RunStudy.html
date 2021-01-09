@@ -258,24 +258,33 @@ Study = {
       response_data["condition_" + condition_item] = exp_json.this_condition[condition_item];
     });
 
-    exp_json.this_trial                                                  = response_data;
-    response_data["participant_browser"]                                 = participant_browser;
-    response_data["trial_number"]                                        = exp_json.trial_no;
+    exp_json.this_trial                  = response_data;
+    response_data["participant_browser"] = participant_browser;
+    response_data["trial_number"]        = exp_json.trial_no;
 
-    $("#trial"+exp_json.trial_no).contents().children().find("iframe").length;
+    var not_final_trial = true;
 
-    if($("#trial"+exp_json.trial_no).contents().children().find("iframe").length == exp_json.post_no + 1){
-      //$(".trial_iframe").hide();
-      $("#trial"+exp_json.trial_no).remove(); // destroy iframe for previous trial.
+    if(
+      $("#trial"+exp_json.trial_no)
+        .contents()
+        .children()
+        .find("iframe").length == exp_json.post_no + 1
+    ){
+      $("#trial"+exp_json.trial_no).remove();
       exp_json.responses.push(exp_json.this_trial);
-      if(exp_json.trial_no == exp_json.parsed_proc.length - 1 & typeof(go_to_info) == "undefined"){
+      if(
+        exp_json.trial_no == exp_json.parsed_proc.length - 1 &
+        typeof(go_to_info) == "undefined"
+      ){
+        not_final_trial = false;
         final_trial();
       } else {
         exp_json.this_trial = {};
-        exp_json.trial_no = parseFloat(exp_json.trial_no) +1;
+        exp_json.trial_no = parseFloat(exp_json.trial_no) + 1;
         exp_json.post_no = 0;
         setTimeout(function(){
-          var this_index = parseFloat(exp_json.trial_no) + parseFloat(exp_json.this_condition.buffer) - 1;
+          var this_index = parseFloat(exp_json.trial_no) +
+            parseFloat(exp_json.this_condition.buffer) - 1;
           write_trial_iframe(this_index);
         });
         Study.start_post(go_to_info);
@@ -283,11 +292,19 @@ Study = {
     } else {
       exp_json.post_no++;
       var start_time = (new Date()).getTime();
-      exp_json.this_trial["post_"+exp_json.post_no+"_trial_start_ms"]   = (new Date()).getTime();
-      exp_json.this_trial["post_"+exp_json.post_no+"_trial_start_date"] = new Date(parseInt(start_time, 10)).toString('MM/dd/yy HH:mm:ss');
+      exp_json.this_trial[
+        "post_"+exp_json.post_no+"_trial_start_ms"
+      ] = (new Date()).getTime();
+      exp_json.this_trial[
+        "post_"+exp_json.post_no+"_trial_start_date"
+      ] = new Date(parseInt(start_time, 10)).toString('MM/dd/yy HH:mm:ss');
 
       // and then hide previous post and show next post within trial.
-      $("#trial"+exp_json.trial_no).contents().children().find("iframe").hide();
+      $("#trial"+exp_json.trial_no)
+        .contents()
+        .children()
+        .find("iframe")
+        .hide();
       Study.start_post(go_to_info);
     }
 
@@ -309,35 +326,35 @@ Study = {
       case "github":
       case "onlinepreview":
 			case "server":
-				online_data_obj.save_queue_add(
-					function(){
-						online_save(
-              Study.get_vars.location,
-              $("#participant_code").val(),
-              $("#completion_code").val(),
-              $("#prehashed_code").val(),
-              JSON.stringify(
-                encrypt(
-                  exp_json.public_key,
-                  JSON.stringify(
-                    [exp_json.responses[
-                      exp_json.responses.length - 1
-                    ]]
+        if(not_final_trial){
+          online_data_obj.save_queue_add(
+  					function(){
+  						online_save(
+                Study.get_vars.location,
+                $("#participant_code").val(),
+                $("#completion_code").val(),
+                $("#prehashed_code").val(),
+                JSON.stringify(
+                  encrypt(
+                    exp_json.public_key,
+                    JSON.stringify(
+                      [exp_json.responses[
+                        exp_json.responses.length - 1
+                      ]]
+                    )
                   )
-                )
-              ), //data
-              exp_json.storage_scripts,
-							function(){
+                ), //data
+                exp_json.storage_scripts,
+  							function(){
 
-							},
-              "trial",
-              exp_json.responses.length - 1
-            );
-				});
+  							},
+                "trial",
+                exp_json.responses.length - 1
+              );
+  				});
+        }
         break
       case "preview":
-
-
         //do nothing - you are not meant to be saving;
         break;
     }
@@ -642,54 +659,56 @@ function final_trial(){
     case "server":
 			online_data_obj.save_queue_add(
 				function(){
-					online_save(Study.get_vars.location,
-                      $("#participant_code").val(),
-                      $("#completion_code").val(),
-                      $("#prehashed_code").val(),
-                      JSON.stringify(encrypt(exp_json.public_key,    //the public key
-                      JSON.stringify(exp_json.responses))),          //the data
-					exp_json.storage_scripts,
-					function(returned_data){
-						message_data = returned_data.split(" encrypted data = ");
-						if(message_data.length == 1){
-							//retrieve researcher e-mail address
-							precrypted_data(exp_json,"Problem encrypting: <b>"+ message_data +"</b>, we'll try again every 10 seconds, but in case it fails, please download and e-mail this file. What do you want to save this file as? (you will get this message each time we fail to e-mail your data to the researcher)");
-							setTimeout(function(){
-								final_trial();
-							},10000);
-						} else {
-							$("#participant_country").show();
-							$("#participant_country").load("ParticipantCountry.html");
+					online_save(
+            Study.get_vars.location,
+            $("#participant_code").val(),
+            $("#completion_code").val(),
+            $("#prehashed_code").val(),
+            JSON.stringify(encrypt(exp_json.public_key,    //the public key
+            JSON.stringify(exp_json.responses))),          //the data
+					  exp_json.storage_scripts,
+  					function(returned_data){
+  						message_data = returned_data.split(" encrypted data = ");
+  						if(message_data.length == 1){
+  							//retrieve researcher e-mail address
+  							precrypted_data(exp_json,"Problem encrypting: <b>"+ message_data +"</b>, we'll try again every 10 seconds, but in case it fails, please download and e-mail this file. What do you want to save this file as? (you will get this message each time we fail to e-mail your data to the researcher)");
+  							setTimeout(function(){
+  								final_trial();
+  							},10000);
+  						} else {
+  							$("#participant_country").show();
+  							$("#participant_country").load("ParticipantCountry.html");
 
-							encrypted_data = message_data[1];
+  							encrypted_data = message_data[1];
 
-							$("#experiment_div").html("<h1 class='text-primary'>" + message_data[0] + " <br><br> You can download the encrypted version of your data <span id='encrypt_click' class='text-success'>here</span> <br><br>or an unencrypted version <span id='raw_click' class='text-success'>here</span></h1>");
+  							$("#experiment_div").html("<h1 class='text-primary'>" + message_data[0] + " <br><br> You can download the encrypted version of your data <span id='encrypt_click' class='text-success'>here</span> <br><br>or an unencrypted version <span id='raw_click' class='text-success'>here</span></h1>");
 
-							$("#encrypt_click").on("click",function(){
-								bootbox.prompt({
-									title:"What do you want to save this file as?",
-									value:$("#participant_code").val()+"_encrypted.txt",
-									callback:function(result){
-										var blob = new Blob([encrypted_data], {type: 'text/csv'});
-										if(window.navigator.msSaveOrOpenBlob) {
-											window.navigator.msSaveBlob(blob, result);
-										} else {
-											var elem = window.document.createElement('a');
-											elem.href = window.URL.createObjectURL(blob);
-											elem.download = result;
-											document.body.appendChild(elem);
-											elem.click();
-											document.body.removeChild(elem);
-										}
-									}
-								});
-							});
-							$("#raw_click").on("click",function(){
-								precrypted_data(exp_json,"What do you want to save this file as?");
-							});
-							online_data_obj.finished_and_stored = true;
-						}
-					});
+  							$("#encrypt_click").on("click",function(){
+  								bootbox.prompt({
+  									title:"What do you want to save this file as?",
+  									value:$("#participant_code").val()+"_encrypted.txt",
+  									callback:function(result){
+  										var blob = new Blob([encrypted_data], {type: 'text/csv'});
+  										if(window.navigator.msSaveOrOpenBlob) {
+  											window.navigator.msSaveBlob(blob, result);
+  										} else {
+  											var elem = window.document.createElement('a');
+  											elem.href = window.URL.createObjectURL(blob);
+  											elem.download = result;
+  											document.body.appendChild(elem);
+  											elem.click();
+  											document.body.removeChild(elem);
+  										}
+  									}
+  								});
+  							});
+  							$("#raw_click").on("click",function(){
+  								precrypted_data(exp_json,"What do you want to save this file as?");
+  							});
+  							online_data_obj.finished_and_stored = true;
+  						}
+  					}
+          );
 				}
 			);
 

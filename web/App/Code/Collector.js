@@ -97,6 +97,7 @@ Collector = {
       Collector.is_exe = false;
     }).catch(function(error){
       Collector.is_exe = true;
+      console.log("the error above just means that you are using this as an app rather than online");
     });
   },
 	download_file: function(filename,content,type){

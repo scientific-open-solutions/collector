@@ -508,7 +508,7 @@ $("#run_btn").on("click",function(){
 						}
 					},
 					local_preview:{
-						label: "Local Preview",
+						label: "Preview Local",
 						className: 'btn-info',
 						callback: function(){
 							window.open("RunStudy.html?platform=preview&" +
@@ -517,7 +517,7 @@ $("#run_btn").on("click",function(){
 						}
 					},
           online_preview:{
-						label: "Online Preview",
+						label: "Preview Online",
 						className: 'btn-info',
 						callback: function(){
 							window.open("RunStudy.html?platform=onlinepreview&" +

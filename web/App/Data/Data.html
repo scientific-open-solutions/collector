@@ -85,7 +85,7 @@ $("#js_decrypt_btn").on("click",function(){
 
 $("#local_data_btn").on("click", function(){
   var response = Collector.electron.open_folder("Data");
-  console.dir(response);  
+  console.dir(response);
 });
 
 switch(Collector.detect_context()){
@@ -232,60 +232,118 @@ function loadFileAsText(){
 
 <script>
 
-function populate_data_div(data_div_id,
-                           data_obj,
-                           bootstrap_class){
-  server_data_html = '<div class="accordion" id="accordion' + data_div_id + '">';
-  Object.keys(data_obj).forEach(function(experiment_name,
-                                         collapse_no){
-    if(Object.keys(data_obj[experiment_name]).length > 0){
-      server_data_html += '<div class="card" type="button" data-toggle="collapse" data-target="#' + data_div_id + '_' + collapse_no +'" aria-expanded="true" aria-controls="collapseOne">' +
-        '<div class="card-header text-white bg-' + bootstrap_class +'">' +
-          '<h5 class="mb-0">' +
-            experiment_name +
-          '</h5>' +
-        '</div>' +
-        '<div id="' + data_div_id + '_' + collapse_no +'" class="collapse" aria-labelledby="headingOne" data-parent="#accordion' + data_div_id + '">' +
-          '<div class="card-body">';
+function populate_data_div(
+  data_div_id,
+  data_obj,
+  bootstrap_class
+){
 
-      server_data_html += "<button style='width:100%'>Download All</button>"; //need to make this actually work
-      server_data_html += "<button style='width:100%'>Delete All</button>"; //need to make this actually work
-      server_data_html += "<table>";
+  /*
+
+  * resume here
+
+  var server_data_size = server_data_obj.reduce(function(a, b){
+    return a + parseFloat(b["filesize"]);
+  }, 0)/1000000;
+
+  */
+  /*
+  data_div_id = "storage_data",
+  data_obj = storage_data_obj,
+  bootstrap_class = "success"
+  */
 
 
-
-      Object.keys(data_obj[experiment_name]).forEach(function(this_participant){
-        if(data_obj[experiment_name][this_participant].all_data){
-          file_info = data_obj[experiment_name][this_participant].all_data;
-        } else {
-          file_info = Object.values(data_obj[experiment_name][this_participant].files).join("|");
-        }
-
-        server_data_html +=
-          "<tr>"    +
-            "<td>"  +
-              "<b class='text-" + bootstrap_class + "'>" + this_participant + "</b>" +
-              "<br><em>" +
-              data_obj[experiment_name][this_participant].size +
-              " bytes </em>" +
-            "</td>" +
-            "<td>"  +
-
-              "<button class='btn btn-" + bootstrap_class + " download_" + data_div_id + "_btn'>Download<span style='display:none'>" + experiment_name + "_____" + this_participant + "_____" + file_info + "</span></button>" +
-
-            "</td>" +
-            "<td>"  +
-              "<button class='btn btn-danger delete_" + data_div_id + "_btn'>Delete<span style='display:none'>" + experiment_name + "_____" + this_participant  + "_____" + file_info + "</span></button>" +
-            "</td>" +
-          "</tr>";
-      });
-
-      server_data_html += "</table>";
-
-      server_data_html +=     '</div>' +
-                            '</div>' +
-                          '</div>';
+  // summarise experiments
+  var experiments = data_obj.reduce(function(a,b){
+    if(typeof(a[b.experiment_id]) == "undefined"){
+      a[b.experiment_id] = [b];
+    } else {
+      a[b.experiment_id].push(b);
     }
+    return a;
+  },{});
+  console.dir("experiments");
+  console.dir(experiments);
+
+  server_data_html = '<div class="accordion" id="accordion' + data_div_id + '">';
+
+  Object.keys(experiments).forEach(function(experiment_name, collapse_no){
+    server_data_html += '<div class="card" type="button" data-toggle="collapse" data-target="#' + data_div_id + '_' + collapse_no +'" aria-expanded="true" aria-controls="collapseOne">' +
+      '<div class="card-header text-white bg-' + bootstrap_class +'">' +
+        '<h5 class="mb-0">' +
+          experiment_name +
+        '</h5>' +
+      '</div>' +
+      '<div id="' + data_div_id + '_' + collapse_no +'" class="collapse" aria-labelledby="headingOne" data-parent="#accordion' + data_div_id + '">' +
+        '<div class="card-body">';
+          experiments[experiment_name].forEach(function(this_pp){
+
+            /*
+            populate_data_div(
+              "storage_data",
+              storage_data_obj,
+              "success"
+            );
+
+            populate_data_div(
+              "server_data",
+              server_data_obj,
+              "primary"
+            );
+
+            populate_data_div(
+              "backup_data",
+              backup_data_obj,
+              "info"
+            );
+            */
+
+            var this_status = this_pp[data_div_id.replace("_data","_status")];
+            if(this_status == "f"){
+              var file_info = "complete";
+            } else if(this_status == "e"){
+              var file_info = "error occurred";
+            } else if(this_status == "p"){
+              var file_info = "incomplete";
+            } else {
+              var file_info = "unexplained error occurred, please contact your admin";
+            }
+
+            /*
+            check here if the participant is finished
+            file_info = this_pp.;
+            */
+
+
+            server_data_html +=
+              "<b class='text-" + bootstrap_class + "'>" + this_pp.hashed_user_id + "</b>" +
+              "<br>"+
+              "<em>" +
+                this_pp.filesize +" bytes " +
+              "</em>" +
+              "<b class='text-" + bootstrap_class + "'>" +
+                this_pp.date +
+              "</b>(" + file_info + ")" +
+              "<br>" +
+
+              "<button class='btn btn-" +
+                bootstrap_class +
+                " download_" +
+                data_div_id +
+                "_btn'>Download<span style='display:none'>" + experiment_name +
+                "_____" +
+                this_pp.hashed_user_id +
+                "_____" +
+                file_info +
+                "</span></button>" +
+              "<button class='btn btn-danger delete_" + data_div_id + "_btn'>Delete<span style='display:none'>" + experiment_name + "_____" + this_pp.hashed_user_id  + "_____" + file_info + "</span></button>"
+
+          });
+
+    server_data_html +=     '</div>' +
+                          '</div>' +
+                        '</div>';
   });
 
   $("#" + data_div_id).html(server_data_html);
@@ -318,146 +376,82 @@ function request_data_list(){
     password: $("#data_user_password").val(),
     action:   "list_data"
   },function(result){
+
+    /* data_json is for debugging */
     data_json = result;
+
     try{
       var mega_data_obj = JSON.parse(result);
-      var server_data_obj  = mega_data_obj.server_info.used_space;
+
+      var server_data_obj = mega_data_obj.participants.filter(
+        row => row.server_status !== "d"
+      );
+
+      var storage_data_obj = mega_data_obj.participants.filter(
+        row => row.storage_status !== "d"
+      );
+
+      var backup_data_obj = mega_data_obj.participants.filter(
+        row => row.backup_status !== "d"
+      );
+
+      var server_data_size = server_data_obj.reduce(function(a, b){
+        return a + parseFloat(b["filesize"]);
+      }, 0)/1000000;
+
+      var storage_data_size = storage_data_obj.reduce(function(a, b){
+        return a + parseFloat(b["filesize"]);
+      }, 0)/1000000000;
+
+      var backup_data_size = backup_data_obj.reduce(function(a, b){
+        return a + parseFloat(b["filesize"]);
+      }, 0)/1000000000;
+
+
+      $("#used_server_space").html(server_data_size + " MB");
+      $("#used_storage_space").html(storage_data_size + " GB");
+      $("#used_backup_space").html(backup_data_size + " GB");
+
+      $("#max_server_space").html(mega_data_obj.max_server_space_mb + " MB");
+      $("#max_storage_space").html(
+        mega_data_obj.max_storage_space_gb + " GB"
+      );
+      $("#max_backup_space").html(
+        mega_data_obj.max_storage_space_gb + " GB"
+      );
+
+      /*
+      * Visualise that this has succeeded
+      */
       $("#listing_data_h3").removeClass("text-info");
       $("#listing_data_h3").addClass("text-primary");
       $("#listing_data_h3").html("Process complete - you can now see your data");
       $("#listing_data_spinner").fadeOut();
 
-      var used_server_space_mb = 0;
-      Object.keys(server_data_obj).forEach(function(this_experiment){
-        Object.keys(server_data_obj[this_experiment]).forEach(function(this_pp){
-          used_server_space_mb += server_data_obj[this_experiment][this_pp].size;
-        });
-      });
-      used_server_space_mb = used_server_space_mb/1000000;
+      populate_data_div(
+        "storage_data",
+        storage_data_obj,
+        "success"
+      );
 
-      $("#used_server_space").html(used_server_space_mb + " MB");
-      $("#max_server_space").html((mega_data_obj.server_info.max_space) + " MB");
+      populate_data_div(
+        "server_data",
+        server_data_obj,
+        "primary"
+      );
 
-
-      populate_data_div("server_data",
-                        server_data_obj,
-                        "primary");
-
-      if(typeof(mega_data_obj.storage_info) !== "undefined"){
-
-        var storage_data_obj = mega_data_obj.storage_info.used_space;
-
-        /*
-        need to tidy this up to merge files where appropriate to make participants
-        */
-
-        Object.keys(storage_data_obj).forEach(function(this_experiment){
-          var participant_list = [];
-          Object.keys(storage_data_obj[this_experiment]).forEach(function(raw_participant){
-            var all_data_pp = raw_participant.split("_all_data.").length == 2 ? true : false;
-
-            this_participant = raw_participant.split("_trial_")[0]
-                                              .split("_all_data.")[0];
-            if(typeof(participant_list[this_participant]) == "undefined"){
-              participant_list[this_participant] = {
-                all_data: all_data_pp,
-                files:    [raw_participant],
-                size:     parseFloat(storage_data_obj[this_experiment][raw_participant].size)
-              };
-            } else if(all_data_pp) {
-              participant_list[this_participant].all_data = true;
-              participant_list[this_participant].size += parseFloat(storage_data_obj[this_experiment][raw_participant].size);
-            } else {
-              participant_list[this_participant].size += parseFloat(storage_data_obj[this_experiment][raw_participant].size);
-              participant_list[this_participant].files.push(raw_participant);
-            }
-          });
-          storage_data_obj[this_experiment] = participant_list;
-        });
-
-
-        var used_storage_space_gb = 0;
-        Object.keys(storage_data_obj).forEach(function(this_experiment){
-          Object.keys(storage_data_obj[this_experiment]).forEach(function(this_pp){
-            used_storage_space_gb += parseFloat(storage_data_obj[this_experiment][this_pp].size);
-          });
-        });
-        used_storage_space_gb = used_storage_space_gb/1000000000;
-
-        $("#used_storage_space").html(used_storage_space_gb + " GB");
-        $("#max_storage_space").html((mega_data_obj.storage_info.max_space) + " GB");
-
-        populate_data_div("storage_data",
-                          storage_data_obj,
-                          "success");
-      }
-
-
-      /*
-      * Process info about backup files
-      */
-      if(typeof(mega_data_obj.backup_info) !== "undefined"){
-
-        var backup_data_obj = mega_data_obj.backup_info.used_space;
-
-        /*
-        need to tidy this up to merge files where appropriate to make participants
-        */
-
-        Object.keys(backup_data_obj).forEach(function(this_experiment){
-          var participant_list = [];
-          Object.keys(backup_data_obj[this_experiment]).forEach(function(raw_participant){
-            var all_data_pp = raw_participant.split("_all_data.").length == 2 ? true : false;
-
-            this_participant = raw_participant.split("_trial_")[0]
-                                              .split("_all_data.")[0];
-            if(typeof(participant_list[this_participant]) == "undefined"){
-              participant_list[this_participant] = {
-                all_data: all_data_pp,
-                files:    [raw_participant],
-                size:     parseFloat(backup_data_obj[this_experiment][raw_participant].size)
-              };
-            } else if(all_data_pp) {
-              participant_list[this_participant].all_data = true;
-              participant_list[this_participant].size += parseFloat(backup_data_obj[this_experiment][raw_participant].size);
-            } else {
-              participant_list[this_participant].size += parseFloat(backup_data_obj[this_experiment][raw_participant].size);
-              participant_list[this_participant].files.push(raw_participant);
-            }
-          });
-          backup_data_obj[this_experiment] = participant_list;
-        });
-
-
-        var used_backup_space_gb = 0;
-        Object.keys(backup_data_obj).forEach(function(this_experiment){
-          Object.keys(backup_data_obj[this_experiment]).forEach(function(this_pp){
-            used_backup_space_gb += parseFloat(backup_data_obj[this_experiment][this_pp].size);
-          });
-        });
-        used_backup_space_gb = used_backup_space_gb/1000000000;
-
-        $("#used_backup_space").html(used_backup_space_gb + " GB");
-        $("#max_backup_space").html((mega_data_obj.backup_info.max_space) + " GB");
-
-        populate_data_div("backup_data",
-                          backup_data_obj,
-                          "info");
-      }
+      populate_data_div(
+        "backup_data",
+        backup_data_obj,
+        "info"
+      );
 
 
       $(".delete_server_data_btn").unbind();
       $(".delete_server_data_btn").on("click",function(){
         var this_folder = $(this).find("span")[0].innerHTML;
 
-        /*
-        $(this).attr("disabled",true);
-        $(this).closest("tr").css("text-decoration","line-through");
-        $(this).closest("tr").find(".download_server_data_btn").css("disabled",true);
-        */
-
         $(this).closest("tr").remove();
-
 
         $.post(master_json.data.servers[$("#select_data_server").val()].registration_url,{
           email:       $("#data_user_email").val(),
@@ -466,10 +460,6 @@ function request_data_list(){
           this_folder: this_folder
         },function(result){
           Collector.custom_alert(result);
-
-
-
-          //$("#list_data_btn").click();
         });
       });
       $(".download_server_data_btn").unbind();
@@ -720,23 +710,24 @@ encrypt_obj = {
                 }
 
                 if(usernames.length > 1){
-                  bootbox.confirm("There are multiple participants - would you like separate files for each participant? (press cancel if you would like one big file for all participants)",function(result){
-                    if(result){
-                      function recursive_username_decryption(usernames){
-                        if(usernames.length > 0){
-                          var username = usernames.pop();
-                          this_participant_message = this_decrypted_message.filter(row => row.username == username);
-
-                          console.dir("this_participant_message");
-                          console.dir(this_participant_message);
-
+                  bootbox.dialog({
+                    title:"Are you sure you want to update your password?",
+                    message: "There are multiple files - would you like the files to be merged or decrypted separately?",
+                    buttons:{
+                      merge: {
+                        label: "Merge",
+                        className: 'btn-primary',
+                        callback: function(){
+                          //do all participants in one go
+                          default_filename = "batch";
+                          //download the data file here
                           bootbox.prompt({
                             title: "What would you like to name this file?",
-                            value: username,
+                            value: default_filename,
                             callback: function(result) {
                               if(result){
                                 var filename = result.toLowerCase().replace(".csv","") + ".csv";
-                                Collector.save_data (filename, Papa.unparse(this_participant_message,{
+                                Collector.save_data (filename, Papa.unparse(this_decrypted_message,{
                                   quotes: false, //or array of booleans
                                   quoteChar: '"',
                                   escapeChar: '"',
@@ -746,36 +737,48 @@ encrypt_obj = {
                                   skipEmptyLines: true, //or 'greedy',
                                   columns: null //or array of strings
                                 }));
-                                recursive_username_decryption(usernames);
                               }
                             }
                           });
                         }
-                      }
-                      recursive_username_decryption(usernames);
-                    } else {
-                      //do all participants in one go
-                      default_filename = "batch";
-                      //download the data file here
-                      bootbox.prompt({
-                        title: "What would you like to name this file?",
-                        value: default_filename,
-                        callback: function(result) {
-                          if(result){
-                            var filename = result.toLowerCase().replace(".csv","") + ".csv";
-                            Collector.save_data (filename, Papa.unparse(this_decrypted_message,{
-                              quotes: false, //or array of booleans
-                              quoteChar: '"',
-                              escapeChar: '"',
-                              delimiter: ",",
-                              header: true,
-                              newline: "\r\n",
-                              skipEmptyLines: true, //or 'greedy',
-                              columns: null //or array of strings
-                            }));
+                      },
+                      separate: {
+                        label: "Separate",
+                        className: 'btn-info',
+                        callback: function(){
+                          function recursive_username_decryption(usernames){
+                            if(usernames.length > 0){
+                              var username = usernames.pop();
+                              this_participant_message = this_decrypted_message.filter(row => row.username == username);
+
+                              console.dir("this_participant_message");
+                              console.dir(this_participant_message);
+
+                              bootbox.prompt({
+                                title: "What would you like to name this file?",
+                                value: username,
+                                callback: function(result) {
+                                  if(result){
+                                    var filename = result.toLowerCase().replace(".csv","") + ".csv";
+                                    Collector.save_data (filename, Papa.unparse(this_participant_message,{
+                                      quotes: false, //or array of booleans
+                                      quoteChar: '"',
+                                      escapeChar: '"',
+                                      delimiter: ",",
+                                      header: true,
+                                      newline: "\r\n",
+                                      skipEmptyLines: true, //or 'greedy',
+                                      columns: null //or array of strings
+                                    }));
+                                    recursive_username_decryption(usernames);
+                                  }
+                                }
+                              });
+                            }
                           }
+                          recursive_username_decryption(usernames);
                         }
-                      });
+                      },
                     }
                   });
                 } else {
