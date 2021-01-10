@@ -664,8 +664,14 @@ function final_trial(){
             $("#participant_code").val(),
             $("#completion_code").val(),
             $("#prehashed_code").val(),
-            JSON.stringify(encrypt(exp_json.public_key,    //the public key
-            JSON.stringify(exp_json.responses))),          //the data
+            JSON.stringify(
+              encrypt(
+                //the public key
+                exp_json.public_key,
+                //the data
+                JSON.stringify(exp_json.responses)
+              )
+            ),
 					  exp_json.storage_scripts,
   					function(returned_data){
   						message_data = returned_data.split(" encrypted data = ");
@@ -707,7 +713,9 @@ function final_trial(){
   							});
   							online_data_obj.finished_and_stored = true;
   						}
-  					}
+  					},
+            "all",
+            exp_json.responses.length
           );
 				}
 			);

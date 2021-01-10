@@ -114,10 +114,11 @@ function loadFileAsText(){
       var batch_status = "end";
     }
     var fileToLoad = document.getElementById("fileToLoad").files[batch_no];
-    var default_filename = document.getElementById("fileToLoad").files[batch_no]
-                                                                .name
-                                                                .toLowerCase()
-                                                                .replace(".txt","");
+    var default_filename = document.getElementById("fileToLoad")
+      .files[batch_no]
+      .name
+      .toLowerCase()
+      .replace(".txt","");
     var fileReader = new FileReader();
     fileReader.onload = function(fileLoadedEvent){
         var textFromFileLoaded = fileLoadedEvent.target.result;
@@ -238,22 +239,6 @@ function populate_data_div(
   bootstrap_class
 ){
 
-  /*
-
-  * resume here
-
-  var server_data_size = server_data_obj.reduce(function(a, b){
-    return a + parseFloat(b["filesize"]);
-  }, 0)/1000000;
-
-  */
-  /*
-  data_div_id = "storage_data",
-  data_obj = storage_data_obj,
-  bootstrap_class = "success"
-  */
-
-
   // summarise experiments
   var experiments = data_obj.reduce(function(a,b){
     if(typeof(a[b.experiment_id]) == "undefined"){
@@ -279,26 +264,6 @@ function populate_data_div(
         '<div class="card-body">';
           experiments[experiment_name].forEach(function(this_pp){
 
-            /*
-            populate_data_div(
-              "storage_data",
-              storage_data_obj,
-              "success"
-            );
-
-            populate_data_div(
-              "server_data",
-              server_data_obj,
-              "primary"
-            );
-
-            populate_data_div(
-              "backup_data",
-              backup_data_obj,
-              "info"
-            );
-            */
-
             var this_status = this_pp[data_div_id.replace("_data","_status")];
             if(this_status == "f"){
               var file_info = "complete";
@@ -310,34 +275,31 @@ function populate_data_div(
               var file_info = "unexplained error occurred, please contact your admin";
             }
 
-            /*
-            check here if the participant is finished
-            file_info = this_pp.;
-            */
-
 
             server_data_html +=
-              "<b class='text-" + bootstrap_class + "'>" + this_pp.hashed_user_id + "</b>" +
-              "<br>"+
-              "<em>" +
-                this_pp.filesize +" bytes " +
-              "</em>" +
-              "<b class='text-" + bootstrap_class + "'>" +
-                this_pp.date +
-              "</b>(" + file_info + ")" +
-              "<br>" +
+              "<div class='data_item'>" +
+                "<b class='text-" + bootstrap_class + "'>" + this_pp.hashed_user_id + "</b>" +
+                "<br>"+
+                "<em>" +
+                  this_pp.filesize +" bytes " +
+                "</em>" +
+                "<b class='text-" + bootstrap_class + "'>" +
+                  this_pp.date +
+                "</b>(" + file_info + ")" +
+                "<br>" +
 
-              "<button class='btn btn-" +
-                bootstrap_class +
-                " download_" +
-                data_div_id +
-                "_btn'>Download<span style='display:none'>" + experiment_name +
-                "_____" +
-                this_pp.hashed_user_id +
-                "_____" +
-                file_info +
-                "</span></button>" +
-              "<button class='btn btn-danger delete_" + data_div_id + "_btn'>Delete<span style='display:none'>" + experiment_name + "_____" + this_pp.hashed_user_id  + "_____" + file_info + "</span></button>"
+                "<button class='btn btn-" +
+                  bootstrap_class +
+                  " download_" +
+                  data_div_id +
+                  "_btn'>Download<span style='display:none'>" + experiment_name +
+                  "_____" +
+                  this_pp.hashed_user_id +
+                  "_____" +
+                  file_info +
+                  "</span></button>" +
+                "<button class='btn btn-danger delete_" + data_div_id + "_btn'>Delete<span style='display:none'>" + experiment_name + "_____" + this_pp.hashed_user_id  + "_____" + file_info + "</span></button>" +
+              "</div>";
 
           });
 
@@ -356,19 +318,20 @@ function populate_data_div(
 }
 
 // for debugging
-var data_json;
+var mega_data_obj = {};
 
+var request_modal;
 
 function request_data_list(){
 
-  bootbox.alert(
+  request_bootbox = bootbox.alert(
     "<h3 class='text-info' id='listing_data_h3'>" +
       "Your data is being listed " +
       '<span class="spinner-border text-primary" role="status" id="listing_data_spinner">' +
         '<span class="sr-only">Loading...</span>' +
       '</span>' +
     "</h3>"
-  )
+  );
 
 
   $.post(master_json.data.servers[$("#select_data_server").val()].registration_url,{
@@ -377,33 +340,31 @@ function request_data_list(){
     action:   "list_data"
   },function(result){
 
-    /* data_json is for debugging */
-    data_json = result;
+    //try{
 
-    try{
-      var mega_data_obj = JSON.parse(result);
+      var data_obj = JSON.parse(result);
 
-      var server_data_obj = mega_data_obj.participants.filter(
+      mega_data_obj.server_data_obj = data_obj.participants.filter(
         row => row.server_status !== "d"
       );
 
-      var storage_data_obj = mega_data_obj.participants.filter(
+      mega_data_obj.storage_data_obj = data_obj.participants.filter(
         row => row.storage_status !== "d"
       );
 
-      var backup_data_obj = mega_data_obj.participants.filter(
+      mega_data_obj.backup_data_obj = data_obj.participants.filter(
         row => row.backup_status !== "d"
       );
 
-      var server_data_size = server_data_obj.reduce(function(a, b){
+      var server_data_size = mega_data_obj.server_data_obj.reduce(function(a, b){
         return a + parseFloat(b["filesize"]);
       }, 0)/1000000;
 
-      var storage_data_size = storage_data_obj.reduce(function(a, b){
+      var storage_data_size = mega_data_obj.storage_data_obj.reduce(function(a, b){
         return a + parseFloat(b["filesize"]);
       }, 0)/1000000000;
 
-      var backup_data_size = backup_data_obj.reduce(function(a, b){
+      var backup_data_size = mega_data_obj.backup_data_obj.reduce(function(a, b){
         return a + parseFloat(b["filesize"]);
       }, 0)/1000000000;
 
@@ -412,12 +373,12 @@ function request_data_list(){
       $("#used_storage_space").html(storage_data_size + " GB");
       $("#used_backup_space").html(backup_data_size + " GB");
 
-      $("#max_server_space").html(mega_data_obj.max_server_space_mb + " MB");
+      $("#max_server_space").html(data_obj.max_server_space_mb + " MB");
       $("#max_storage_space").html(
-        mega_data_obj.max_storage_space_gb + " GB"
+        data_obj.max_storage_space_gb + " GB"
       );
       $("#max_backup_space").html(
-        mega_data_obj.max_storage_space_gb + " GB"
+        data_obj.max_storage_space_gb + " GB"
       );
 
       /*
@@ -425,24 +386,28 @@ function request_data_list(){
       */
       $("#listing_data_h3").removeClass("text-info");
       $("#listing_data_h3").addClass("text-primary");
-      $("#listing_data_h3").html("Process complete - you can now see your data");
+      $("#listing_data_h3").html("Process complete");
       $("#listing_data_spinner").fadeOut();
+      setTimeout(function(){
+        request_bootbox.modal("hide");
+      },500);
 
-      populate_data_div(
-        "storage_data",
-        storage_data_obj,
-        "success"
-      );
 
       populate_data_div(
         "server_data",
-        server_data_obj,
+        mega_data_obj.server_data_obj,
         "primary"
       );
 
       populate_data_div(
+        "storage_data",
+        mega_data_obj.storage_data_obj,
+        "success"
+      );
+
+      populate_data_div(
         "backup_data",
-        backup_data_obj,
+        mega_data_obj.backup_data_obj,
         "info"
       );
 
@@ -450,16 +415,18 @@ function request_data_list(){
       $(".delete_server_data_btn").unbind();
       $(".delete_server_data_btn").on("click",function(){
         var this_folder = $(this).find("span")[0].innerHTML;
-
-        $(this).closest("tr").remove();
-
-        $.post(master_json.data.servers[$("#select_data_server").val()].registration_url,{
+        var data_server = $("#select_data_server").val();
+        $(this).closest("div").remove();
+        $.post(master_json.data.servers[data_server].registration_url,{
           email:       $("#data_user_email").val(),
           password:    $("#data_user_password").val(),
           action:      "delete_server_data",
           this_folder: this_folder
         },function(result){
           Collector.custom_alert(result);
+          mega_data_obj.server_data_obj = mega_data_obj.server_data_obj.filter(
+            row => row.hashed_user_id !== this_folder
+          );
         });
       });
       $(".download_server_data_btn").unbind();
@@ -502,7 +469,8 @@ function request_data_list(){
           email:       $("#data_user_email").val(),
           password:    $("#data_user_password").val(),
           action:      "download_storage_data",
-          this_folder: this_folder
+          this_folder: this_folder,
+          storage_backup: "storage"
         },function(result){
           console.dir(result);
           var encrypted_data = JSON.parse(result);
@@ -529,13 +497,14 @@ function request_data_list(){
       });
       $(".delete_storage_data_btn").unbind();
       $(".delete_storage_data_btn").on("click",function(){
-        $(this).closest("tr").remove();
+        $(this).closest("div").remove();
         var this_folder = $(this).find("span")[0].innerHTML;
         $.post(master_json.data.servers[$("#select_data_server").val()].registration_url,{
           email:       $("#data_user_email").val(),
           password:    $("#data_user_password").val(),
           action:      "delete_storage_data",
-          this_folder: this_folder
+          this_folder: this_folder,
+          storage_backup: "storage"
         },function(result){
           Collector.custom_alert(result);
           //$("#list_data_btn").click();
@@ -552,8 +521,9 @@ function request_data_list(){
         $.post(master_json.data.servers[$("#select_data_server").val()].registration_url,{
           email:       $("#data_user_email").val(),
           password:    $("#data_user_password").val(),
-          action:      "download_backup_data",
-          this_folder: this_folder
+          action:      "download_storage_data",
+          this_folder: this_folder,
+          storage_backup: "backup"
         },function(result){
           console.dir(result);
           var encrypted_data = JSON.parse(result);
@@ -564,7 +534,8 @@ function request_data_list(){
             });
           });
 
-          encrypt_obj.current_batch = [];                                         // reset the current batch
+          // reset the current batch
+          encrypt_obj.current_batch = [];
           for(var i = 0; i < listed_data.length; i++){
             if(i == listed_data.length - 1){
               encrypt_obj._decrypt_request(JSON.stringify(listed_data[i]),        //file_content
@@ -580,23 +551,25 @@ function request_data_list(){
       });
       $(".delete_backup_data_btn").unbind();
       $(".delete_backup_data_btn").on("click",function(){
-        $(this).closest("tr").remove();
+        $(this).closest("div").remove();
         var this_folder = $(this).find("span")[0].innerHTML;
         $.post(master_json.data.servers[$("#select_data_server").val()].registration_url,{
           email:       $("#data_user_email").val(),
           password:    $("#data_user_password").val(),
-          action:      "delete_backup_data",
-          this_folder: this_folder
+          action:      "delete_storage_data",
+          this_folder: this_folder,
+          storage_backup: "backup"
         },function(result){
           Collector.custom_alert(result);
           //$("#list_data_btn").click();
         });
       });
 
-
+    /*
     } catch(error){
       bootbox.alert("Failed to retrieve a list of your files - please double check your password and email address");
     }
+    */
   });
 }
 
@@ -723,7 +696,7 @@ encrypt_obj = {
                           //download the data file here
                           bootbox.prompt({
                             title: "What would you like to name this file?",
-                            value: default_filename,
+                            value: default_filename.replace(".csv","") + ".csv",
                             callback: function(result) {
                               if(result){
                                 var filename = result.toLowerCase().replace(".csv","") + ".csv";
@@ -756,7 +729,7 @@ encrypt_obj = {
 
                               bootbox.prompt({
                                 title: "What would you like to name this file?",
-                                value: username,
+                                value: username.replace(".csv","") + ".csv",
                                 callback: function(result) {
                                   if(result){
                                     var filename = result.toLowerCase().replace(".csv","") + ".csv";

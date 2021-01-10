@@ -10,7 +10,11 @@ SELECT  `exp`.`experiment_id` AS `experiment_id`,
         `data`.`trials` as `trials`,
         `data`.`server_status` as `server_status`,
         `data`.`storage_status` as `storage_status`,
-        `data`.`backup_status` as `backup_status`
+        `data`.`backup_status` as `backup_status`,
+        `data`.`data_id` as `data_id`,
+        `ub`.`salt` as `salt`,
+        `ub`.`password` as `password`,
+        `ub`.`pepper` as `pepper`
 	FROM (
     (
       `experiments` `exp`
