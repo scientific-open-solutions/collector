@@ -230,7 +230,6 @@ function loadFileAsText(){
     </div>
   </div>
 </div>
-
 <script>
 
 function populate_data_div(
@@ -629,28 +628,89 @@ encrypt_obj = {
                     Collector.custom_alert(error + " trying with an archived private key");
                     combine_password_key(keys_list,user_password);
                   }
-                  try{
+                  //try{
+
+
                     all_decrypted = [];
-                    encrypt_obj.current_batch.map(function([default_filename,encrypted_content]){
-                      this_decrypted_message = JSON.parse(encrypt_obj.decrypt(decrypted_private_key,JSON.parse(encrypted_content)));
-                      this_decrypted_message = this_decrypted_message.map(function(row){
-                        try{
-													row["username"] = default_filename;
-													all_decrypted.push(row);
-												} catch(error){
-													//nothing
-												}
-                      });
-                    });
-                    if(encrypt_obj.current_batch.length > 1){
-                      process_decrypted(all_decrypted,"batch");
-                    } else {
-                      process_decrypted(all_decrypted,"single");
+
+                    function recursive_decryption(
+                      this_batch,
+                      current_pos,
+                      max_pos
+                    ){
+
+                      if(this_batch.length > 0){
+                        //setTimeout(function(){
+                          try{
+                            var this_row = this_batch.shift();
+                            var progress = (100*current_pos/max_pos) + "%";
+
+                            window.requestAnimationFrame(function(){
+                              $("#decryption_progress").css("width",progress);
+                            });
+
+
+
+                            var default_filename = this_row[0];
+                            var encrypted_content = this_row[1];
+
+                            console.dir(progress);
+                            this_decrypted_message = JSON.parse(
+                              encrypt_obj.decrypt(
+                                decrypted_private_key,
+                                JSON.parse(
+                                  encrypted_content
+                                )
+                              )
+                            );
+
+                            this_decrypted_message = this_decrypted_message.map(function(row){
+                              try{
+      													row["username"] = default_filename;
+      													all_decrypted.push(row);
+      												} catch(error){
+
+      												}
+                            });
+                          } catch(error){
+                            //just skip, might give an error message in the future
+                          } finally{
+                            recursive_decryption(
+                              this_batch,
+                              current_pos + 1,
+                              max_pos
+                            );
+                          }
+                        //},0);
+                      } else {
+                        if(encrypt_obj.current_batch.length > 1){
+                          process_decrypted(all_decrypted,"batch");
+                        } else {
+                          process_decrypted(all_decrypted,"single");
+                        }
+                      }
                     }
+                    bootbox.alert('<div class="progress"><div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" id="decryption_progress"></div></div>')
+                    recursive_decryption(
+                      encrypt_obj.current_batch,
+                      0,
+                      encrypt_obj.current_batch.length
+                    )
+
+                    /*
+                    encrypt_obj.current_batch.map(function([default_filename,encrypted_content],progress_index){
+
+
+
+
+                    });
+                    */
+                  /*
                   } catch(error){
                     Collector.custom_alert(error + " trying with an archived private key");
                     combine_password_key(keys_list,user_password);
                   }
+                  */
                 }
               }
 
@@ -684,7 +744,7 @@ encrypt_obj = {
 
                 if(usernames.length > 1){
                   bootbox.dialog({
-                    title:"Are you sure you want to update your password?",
+                    title:"Would you like to have multiple files or one large file?",
                     message: "There are multiple files - would you like the files to be merged or decrypted separately?",
                     buttons:{
                       merge: {
