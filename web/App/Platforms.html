@@ -42,18 +42,46 @@
       <span id="save_status" class="text-white"></span>
     </td>
 		<td>
-      <button class="btn btn-primary bi-server" id="data_storage_logo"></button>
+      <button class="btn btn-primary bi-heart" id="show_open_source_packages">
+        <span id='open_source_clarification' style='display:none'>Open source packages</span>
+      </button>
+		</td>
+		<td>
+      <button class="btn btn-primary bi-server" id="data_storage_logo">
+        <span id='storage_clarification' style='display:none'>Online Data Storage</span>
+    </button>
 		</td>
     <td>
-      <button class="btn btn-primary bi-github" id="github_logo"></button>
+      <button class="btn btn-primary bi-github" id="github_logo">
+        <span id='github_clarification' style='display:none'>Github</span>
+      </button>
 		</td>
     <td>
       <button class="btn btn-primary bi-power" id="power_btn"></button>
+      </button>
     </td>
 	</tr>
 </table>
 
 <script>
+
+$("#data_storage_logo").hover(function(){
+  $("#storage_clarification").fadeIn(500);
+}, function(){
+  $("#storage_clarification").fadeOut(500);
+});
+
+$("#github_logo").hover(function(){
+  $("#github_clarification").fadeIn(300);
+  }, function(){
+  $("#github_clarification").fadeOut(300);
+});
+
+$("#show_open_source_packages").hover(function(){
+  $("#open_source_clarification").fadeIn(500);
+  }, function(){
+  $("#open_source_clarification").fadeOut(500);
+});
 
 $("#github_logo").on("click", function(){
   if (typeof(github_json) == "undefined") {
@@ -199,6 +227,36 @@ $("#power_btn").on("click",function(){
       }
     }
   })
+});
+
+$("#show_open_source_packages").on("click", function(){
+  $.get("OpenSourcePackages.csv", function(result){
+    var packages = Collector.PapaParsed(result);
+
+    var packages_html = "<table class='table'>" +
+      "<thead>" +
+        "<tr>" +
+          '<th scope="col">Package</th>' +
+          '<th scope="col">Use</th>' +
+          '<th scope="col">Version</th>' +
+        "</tr>";
+      "</thead>";
+
+      packages.forEach(function(row){
+        packages_html += "<tr>" +
+          "<td>" + row.package + "</td>"+
+          "<td>" + row.use     + "</td>"+
+          "<td>" + row.version + "</td>" +
+          "</tr>";
+      });
+      packages_html += "</table>";
+
+
+    bootbox.alert({
+      title: "The open-source (versions of) software that has been used to make Collector:",
+      message: packages_html
+    });
+  });
 });
 
 $("#data_storage_logo").on("click", function(){

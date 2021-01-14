@@ -163,7 +163,10 @@ window.onload=function(){
             );
           },
           save_master: function(){
-            if(typeof(github_json) !== "undefined"){
+            if(
+              typeof(github_json) !==
+              "undefined"
+            ){
               var git_master_json = JSON.stringify(github_json);
               return ipc.sendSync(
                 'git_save_master',

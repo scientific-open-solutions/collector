@@ -112,14 +112,21 @@
         <div id="page_selected"></div>
       </ul>
     </div>
-    <a href="https://collectalk.com/categories/bugs-and-errors" target="_blank" style="margin:2px">
-      <button class="btn btn-primary">Report Bug</button>
+
+    <a href="https://collectalk.com/categories/bugs-and-errors" target="_blank" style="margin:2px" title="Report bug">
+      <button class="btn btn-primary bi-exclamation-triangle" id="report_bug_link">
+        <span id='report_bug_clarification' style='display:none'>Report Bug</span>
+      </button>
     </a>
     <a href="https://collectalk.com/" target="_blank" style="margin:2px">
-      <button class="btn btn-primary">Forum</button>
+      <button class="btn btn-primary bi-chat-dots" id="forum_link">
+        <span id='forum_clarification' style='display:none'>Forum</span>
+      </button>
     </a>
     <a href="https://docs.google.com/document/d/1SKYIJF1dAjMDS6EHUIwfZm2KQVOzx17S6LbU_oSGxdE/edit?usp=sharing" target="_blank" style="margin:2px">
-      <button class="btn btn-primary">Documentation</button>
+      <button class="btn btn-primary bi-info-circle" id="documentation_link">
+        <span id='documentation_clarification' style='display:none'>Documentation</span>
+      </button>
     </a>
     <button class="btn btn-outline-primary bg-white" id="help_btn" style="margin:2px; font-weight:bold">Help</button>
     <div id="github_div"></div>
@@ -129,6 +136,23 @@
     <tr>
       <td id="content_area"></td>
       <script>
+
+
+        $("#report_bug_link").hover(function(){
+          $("#report_bug_clarification").fadeIn(500);
+          }, function(){
+          $("#report_bug_clarification").fadeOut(500);
+        });
+        $("#forum_link").hover(function(){
+          $("#forum_clarification").fadeIn(500);
+          }, function(){
+          $("#forum_clarification").fadeOut(500);
+        });
+        $("#documentation_link").hover(function(){
+          $("#documentation_clarification").fadeIn(500);
+          }, function(){
+          $("#documentation_clarification").fadeOut(500);
+        });
         var navbar_names  = ["Studies","Surveys","Pathway","Mods","Data"];
         var pages         = ["Studies/Studies.html",
                              "Surveys/Surveys.html",

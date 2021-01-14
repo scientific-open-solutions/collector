@@ -1,0 +1,12 @@
+package,use,version
+ace,Editing code (e.g. trialtypes),1.2.9
+bootstrap (and bootstrap fonts),Style of Collector and icons,4.0.0
+bootbox,Pop up alerts,5.4
+crypto-js,Client side encryption,3.1.9-1
+Dropbox API,Storage of experiment resources for online users,3.0.1
+Handsontables,Spreadsheets,0.15.0-beta2
+Jquery,Helping with javascript code,3.3.1
+PapaParse,Managing csv files,4.3.6
+popper,Helps bootstrap work smoother,2017
+tweetnacl,Encryption,0.15.0
+AmCharts,World maps,mixed
