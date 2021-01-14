@@ -963,7 +963,7 @@ encrypt_obj = {
 
     master_json.keys.public_key = receiverPublicKey;
 
-    if(typeof(encrypt_dialog) == "undefined"){
+    //if(typeof(encrypt_dialog) == "undefined"){
       encrypt_dialog = bootbox.prompt("In order to encrypt and decrypt your participants' data, we need a password. Make sure you will remember this password, if you forget it then any data that is encrypted will be lost forever.",function(result){
         if(result){
           bootbox.prompt("Let's type in the password one more time, just to be sure",function(result_2){
@@ -990,7 +990,7 @@ encrypt_obj = {
           });
         }
       });
-    }
+    //}
   },
 }
 
