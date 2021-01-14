@@ -179,6 +179,14 @@ window.onload=function(){
               }
             )
           },
+          set_name: function(name){
+            return ipc.sendSync(
+              'git_set_name',
+              {
+                name: name
+              }
+            )
+          },
           status: function(repo_info){
             return ipc.sendSync('git_status', {
               organization: repo_info.organization,

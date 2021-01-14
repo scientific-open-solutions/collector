@@ -58,16 +58,30 @@
 $("#github_logo").on("click", function(){
   if (typeof(github_json) == "undefined") {
     var git_exists = Collector.electron.git.exists();
-    if(git_exists !== "true"){
-      bootbox.prompt(
-        "What github email do you want to use?",
-        function(email){
-          if(Collector.electron.git.set_email(email) == "success"){
-            //reload the page
-            location.reload();
+    if(git_exists !== "true-true"){
+      git_exists = git_exists.split("-");
+      if(git_exists[0] !== "true"){
+        bootbox.prompt(
+          "What github email do you want to use?",
+          function(email){
+            var email_response = Collector.electron.git.set_email(email);
+            if(email_response !== "success"){
+              bootbox.alert("error: " + email_response);
+            }
           }
-        }
-      )
+        );
+      }
+      if(git_exists[1] !== "true"){
+        bootbox.prompt(
+          "What github username do you want to use?",
+          function(name){
+            var name_response = Collector.electron.git.set_name(name);
+            if(name_response !== "success"){
+              bootbox.alert("error: " + name_response);
+            }
+          }
+        );
+      }
     } else {
       github_json = JSON.parse(
         Collector.electron.git.load_master()

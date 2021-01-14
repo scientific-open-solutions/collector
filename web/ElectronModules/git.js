@@ -238,7 +238,8 @@ ipc.on('git_exists', (event,args) => {
       /*
       * Check all configs for the relevant values
       */
-      var user_email_valid = "false"
+      var user_email_valid = "false";
+      var user_name_valid  = "false";
 
       console.log(result);
       Object.keys(result.values).forEach(function(item){
@@ -249,8 +250,14 @@ ipc.on('git_exists', (event,args) => {
         ){
           user_email_valid = "true";
         }
+        if(
+          typeof(result.values[item]["user.name"]) !== "undefined" &&
+          result.values[item]["user.name"] !== ""
+        ){
+          user_name_valid = "true";
+        }
       });
-      event.returnValue = user_email_valid;
+      event.returnValue = user_email_valid + "-" + user_name_valid;
     }).catch(function(error){
       event.returnValue = error;
     });
@@ -507,6 +514,13 @@ ipc.on('git_set_email', (event, args) => {
   console.log(args["email"]);
   var git = simpleGit();
       git.addConfig("user.email", args["email"]);
+  event.returnValue = "success";
+});
+
+ipc.on('git_set_name', (event, args) => {
+  console.log(args["name"]);
+  var git = simpleGit();
+      git.addConfig("user.name", args["name"]);
   event.returnValue = "success";
 });
 
