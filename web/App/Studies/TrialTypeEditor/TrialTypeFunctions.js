@@ -184,7 +184,7 @@ trialtypes_obj = {
 	}
 }
 function list_trialtypes(to_do_after){
-	try{
+	//try{
 		if(typeof(Collector.electron) !== "undefined"){
       var trialtypes = Collector.electron.fs.list_trialtypes();
           trialtypes = JSON.parse(trialtypes);
@@ -279,11 +279,13 @@ function list_trialtypes(to_do_after){
 
     Collector.tests.pass("trialtypes",
                          "list");
+  /*
   } catch(error){
     Collector.tests.fail("trialtypes",
                          "list",
                          error);
   };
+  */
 }
 function valid_trialtype(this_name){
   if(this_name){
