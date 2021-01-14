@@ -815,6 +815,7 @@ $("#save_btn").on("click", function(){
   						)
               update_master_json();
 
+              
               var git_json_response = Collector.electron.git.save_master();
               var write_response = Collector.electron.fs.write_file(
                 "",

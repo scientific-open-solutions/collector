@@ -163,13 +163,15 @@ window.onload=function(){
             );
           },
           save_master: function(){
-            var git_master_json = JSON.stringify(github_json);
-            return ipc.sendSync(
-              'git_save_master',
-              {
-                "git_master_json": git_master_json
-              }
-            )
+            if(typeof(github_json) !== "undefined"){
+              var git_master_json = JSON.stringify(github_json);
+              return ipc.sendSync(
+                'git_save_master',
+                {
+                  "git_master_json": git_master_json
+                }
+              );
+            }
           },
           set_email: function(email){
             return ipc.sendSync(
