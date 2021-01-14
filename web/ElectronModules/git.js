@@ -240,8 +240,13 @@ ipc.on('git_exists', (event,args) => {
       */
       var user_email_valid = "false"
 
+      console.log(result);
       Object.keys(result.values).forEach(function(item){
-        if(typeof(result.values[item]["user.email"]) !== "undefined" && result.values[item]["user.email"] !== ""){
+        console.log(result[item]);
+        if(
+          typeof(result.values[item]["user.email"]) !== "undefined" &&
+          result.values[item]["user.email"] !== ""
+        ){
           user_email_valid = "true";
         }
       });

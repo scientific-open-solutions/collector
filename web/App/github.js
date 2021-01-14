@@ -266,8 +266,6 @@ $("#fadeout_github").on("click", function(){
   $("#github_dialog").fadeOut();
 });
 
-
-
 $("#pull_repo_btn").on("click",function(){
   var organization = $("#select_organization").val();
   var repository   = $("#select_repository").val();
