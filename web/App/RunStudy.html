@@ -419,9 +419,10 @@ Study = {
     * Need to detect whether localhost and on mac
     */
 
+
     if(
       typeof(Collector.electron) !== "undefined" &&
-      window.navigator.platform.toLowerCase().indexOf("mac") !==-1
+      window.navigator.platform.toLowerCase().indexOf("mac") !== -1
     ){
       var home_dir = Collector
         .electron
@@ -432,8 +433,14 @@ Study = {
           home_dir + "/User/"
         );
     } else if(Study.is_exe){
-      this_trialtype = this_trialtype.replaceAll("User/","../../User/");
-
+      var home_dir = Collector
+        .electron
+        .fs
+        .home_dir();
+      this_trialtype = this_trialtype.replaceAll(
+        "../User/",
+        home_dir + "/User/"
+      );
     }
 		return this_trialtype;
 	},

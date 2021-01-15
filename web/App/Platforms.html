@@ -42,11 +42,6 @@
       <span id="save_status" class="text-white"></span>
     </td>
 		<td>
-      <button class="btn btn-primary bi-heart" id="show_open_source_packages">
-        <span id='open_source_clarification' style='display:none'>Open source packages</span>
-      </button>
-		</td>
-		<td>
       <button class="btn btn-primary bi-server" id="data_storage_logo">
         <span id='storage_clarification' style='display:none'>Online Data Storage</span>
     </button>
@@ -75,12 +70,6 @@ $("#github_logo").hover(function(){
   $("#github_clarification").fadeIn(300);
   }, function(){
   $("#github_clarification").fadeOut(300);
-});
-
-$("#show_open_source_packages").hover(function(){
-  $("#open_source_clarification").fadeIn(500);
-  }, function(){
-  $("#open_source_clarification").fadeOut(500);
 });
 
 $("#github_logo").on("click", function(){

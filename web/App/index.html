@@ -128,6 +128,10 @@
         <span id='documentation_clarification' style='display:none'>Documentation</span>
       </button>
     </a>
+
+    <button class="btn btn-primary bi-heart" id="show_open_source_packages">
+      <span id='open_source_clarification' style='display:none'>Open source packages</span>
+    </button>
     <button class="btn btn-outline-primary bg-white" id="help_btn" style="margin:2px; font-weight:bold">Help</button>
     <div id="github_div"></div>
     <div id="platforms_div"></div>
@@ -136,7 +140,11 @@
     <tr>
       <td id="content_area"></td>
       <script>
-
+        $("#show_open_source_packages").hover(function(){
+          $("#open_source_clarification").fadeIn(500);
+          }, function(){
+          $("#open_source_clarification").fadeOut(500);
+        });
 
         $("#report_bug_link").hover(function(){
           $("#report_bug_clarification").fadeIn(500);
