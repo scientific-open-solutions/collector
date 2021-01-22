@@ -476,14 +476,19 @@ $("#run_btn").on("click",function(){
         */
 			}
       if(typeof(github_json) == "undefined"){
-        organization = "You need to click the github button to see this";
-        repository = "";
-      } else if(github_json.organization !== ""){
-        var organization = github_json.organization;
+        try{
+          github_json = JSON.parse(Collector.electron.git.load_master());
+          var organization = github_json.organization;
+          var repository   = github_json.repository;
+        } catch(error){
+          organization = "Your github json seems broken";
+          repository = "";
+        }
       } else {
-        var organization = github_json.username;
+        var organization = github_json.organization;
         var repository   = github_json.repository;
       }
+
       var github_url =  "https://"                          +
                         organization                        +
                         ".github.io"                        + "/" +
