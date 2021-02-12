@@ -965,12 +965,11 @@ function insert_start(){
         exp_json.trialtypes.calibration_zoom = calibration_zoom_html;
         $.get("Quality/AgeCheck.html", function(age_check_html){
           exp_json.trialtypes.age_check = age_check_html;
+          Study.activate_pipe();
         });
-        Study.activate_pipe();
       });
     });
 	}
-
 }
 
 
