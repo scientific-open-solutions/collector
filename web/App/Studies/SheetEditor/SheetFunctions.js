@@ -335,8 +335,6 @@ function update_handsontables(){
 														sheet_name,
 													  exp_mgmt_location,
 														sheet_content){
-    console.dir("sheet_content");
-    console.dir(sheet_content);
     if(sheet_content.split(",").length > 1){
       createExpEditorHoT(sheet_content,
 												 sheet_type,

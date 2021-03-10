@@ -19,6 +19,9 @@
 		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
 -->
 <style>
+.citation_info{
+  padding:10px;
+}
 .logo{
 	height:30px;
 	width:30px;
@@ -215,6 +218,48 @@ $("#power_btn").on("click",function(){
         }
       }
     }
+  })
+});
+$("#show_citations").on("click", function(){
+  $.get("Citations.csv", function(result){
+    console.dir(result);
+    console.dir(Collector.PapaParsed(result));
+    var top_html = '<h3 class="text-primary">Citations</h3>' +
+      '<p>';
+    var table_html = '';
+
+    Collector.PapaParsed(result).forEach(function(row){
+      top_html += '<a class="btn btn-primary" data-toggle="collapse" href="#cite_' + row.paper + '" role="button" aria-expanded="false" aria-controls="cite_' + row.paper + '" style="margin:2px;">' +
+        row.description +
+        '</a>';
+
+      table_html += '<div class="collapse" id="cite_' + row.paper + '">' +
+        '<div class="card card-body">' +
+      "<table>" +
+      "<tr>" +
+        "<th>MLA</td>" +
+        "<td><div contenteditable='true' onclick='document.execCommand(\"selectAll\", false, null);' class='citation_info'>" + row.mla + "</div></td>" +
+      "</tr><tr>" +
+        "<th>APA</td>" +
+        "<td><div contenteditable='true' onclick='document.execCommand(\"selectAll\", false, null);' class='citation_info'>" + row.apa + "</div></td>" +
+      "</tr><tr>" +
+        "<th>Chicago</td>" +
+        "<td><div contenteditable='true' onclick='document.execCommand(\"selectAll\", false, null);' class='citation_info'>" + row.chicago + "</div></td>" +
+      "</tr><tr>" +
+        "<th>Harvard</td>" +
+        "<td><div contenteditable='true' onclick='document.execCommand(\"selectAll\", false, null);' class='citation_info'>" + row.harvard + "</div></td>" +
+      "</tr><tr>" +
+        "<th>Vancouver</td>" +
+        "<td><div contenteditable='true' onclick='document.execCommand(\"selectAll\", false, null);' class='citation_info'>" + row.vancouver + "</div></td>" +
+      "</tr></table></div></div>";
+    });
+
+    top_html += "</h3>";
+    table_html += "</table>";
+
+
+
+    bootbox.alert(top_html + table_html);
   })
 });
 

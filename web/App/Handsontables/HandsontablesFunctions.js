@@ -221,9 +221,7 @@ function createHoT(container, data,sheet_name) {
       var coords        = this.getSelected();
       var column        = this.getDataAtCell(0,coords[1]);
       var thisCellValue = this.getDataAtCell(coords[0],coords[1]);
-      console.dir(column);
-      console.dir(thisCellValue);
-      console.dir(sheet_name);
+
       thisCellValue = thisCellValue == null ? thisCellValue = "" : thisCellValue;
       column        = column        == null ? column        = "" : column;
       window['Current HoT Coordinates'] = coords;

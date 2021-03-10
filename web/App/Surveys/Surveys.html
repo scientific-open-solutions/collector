@@ -43,10 +43,12 @@ if(Collector.detect_context() == "gitpod"){
 <script>
 
 function load_default_surveys(){
-  var default_survey_files = ["autism_quotient.csv",
-                              "demographics.csv",
-                              "empathy_quotient_40.csv",
-															"info_sheet.csv"];
+  var default_survey_files = [
+    "autism_quotient.csv",
+    "demographics.csv",
+    "empathy_quotient_40.csv",
+    "info_sheet.csv"
+  ];
 
   function load_survey(list){
     if(list.length > 0){
@@ -653,7 +655,10 @@ $("#save_survey_btn").on("click",function(){
       /*
       * Turn values in the "type" column to lower case
       */
-      if(typeof(survey_data[i][type_index]) !== "undefined"){
+      if(
+        typeof(survey_data[i][type_index]) !== "undefined" &&
+        survey_data[i][type_index] !== null
+      ){
         survey_data[i][type_index] = survey_data[i][type_index].toLowerCase();
       }
     }

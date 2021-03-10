@@ -67,7 +67,7 @@ encrypt_obj = {
 
                             this_decrypted_message = this_decrypted_message.map(function(row){
                               try{
-      													row["username"] = default_filename;
+      													row["filename"] = default_filename;
       													all_decrypted.push(row);
       												} catch(error){
 
@@ -115,9 +115,12 @@ encrypt_obj = {
                 }
               }
 
-              function process_decrypted(this_decrypted_message,batch_single){
+              function process_decrypted(
+                this_decrypted_message,
+                batch_single
+              ){
                 var response_headers = [];
-                var usernames        = [];
+                var filenames        = [];
                 for(var i = 0; i < this_decrypted_message.length ; i++) {
                   decrypted_data = this_decrypted_message[i];
                   Object.keys(decrypted_data).forEach(function(header){
@@ -135,15 +138,14 @@ encrypt_obj = {
                   });
                 }
 
-
                 for(var i = 0; i < this_decrypted_message.length; i++){
                   delete(this_decrypted_message[i][""]);   // Delete blank column if present
-                  if(usernames.indexOf(this_decrypted_message[i].username) == -1){
-                    usernames.push(this_decrypted_message[i].username);
+                  if(filenames.indexOf(this_decrypted_message[i].filename) == -1){
+                    filenames.push(this_decrypted_message[i].filename);
                   }
                 }
 
-                if(usernames.length > 1){
+                if(filenames.length > 1){
                   bootbox.dialog({
                     title:"Would you like to have multiple files or one large file?",
                     message: "There are multiple files - would you like the files to be merged or decrypted separately?",
@@ -180,10 +182,14 @@ encrypt_obj = {
                         label: "Separate",
                         className: 'btn-info',
                         callback: function(){
-                          function recursive_username_decryption(usernames){
-                            if(usernames.length > 0){
-                              var username = usernames.pop();
-                              this_participant_message = this_decrypted_message.filter(row => row.username == username);
+                          function recursive_username_decryption(
+                            filenames
+                          ){
+                            if(filenames.length > 0){
+                              var username = filenames.pop();
+                              this_participant_message = this_decrypted_message.filter(
+                                row => row.filename == username
+                              );
 
                               console.dir("this_participant_message");
                               console.dir(this_participant_message);
@@ -204,39 +210,48 @@ encrypt_obj = {
                                       skipEmptyLines: true, //or 'greedy',
                                       columns: null //or array of strings
                                     }));
-                                    recursive_username_decryption(usernames);
+                                    recursive_username_decryption(filenames);
                                   }
                                 }
                               });
                             }
                           }
-                          recursive_username_decryption(usernames);
+                          recursive_username_decryption(filenames);
                         }
                       },
                     }
                   });
                 } else {
-                  default_filename = usernames[0];
-                  //download the data file here
-                  bootbox.prompt({
-                    title: "What would you like to name this file?",
-                    value: default_filename,
-                    callback: function(result) {
-                      if(result){
-                        var filename = result.toLowerCase().replace(".csv","") + ".csv";
-                        Collector.save_data (filename, Papa.unparse(this_decrypted_message,{
-                          quotes: false, //or array of booleans
-                          quoteChar: '"',
-                          escapeChar: '"',
-                          delimiter: ",",
-                          header: true,
-                          newline: "\r\n",
-                          skipEmptyLines: true, //or 'greedy',
-                          columns: null //or array of strings
-                        }));
+                  default_filename = filenames[0];
+
+                  if(this_decrypted_message.length == 0){
+                    bootbox.alert("None of the data was succesfully decrypted - perhaps you used an invalid password?")
+                  } else {
+                    bootbox.prompt({
+                      title: "What would you like to name this file?",
+                      value: default_filename,
+                      callback: function(result) {
+                        if(result){
+                          var filename = result.toLowerCase().replace(".csv","") + ".csv";
+                          Collector.save_data (
+                            filename,
+                            Papa.unparse(
+                              this_decrypted_message,{
+                                quotes: false, //or array of booleans
+                                quoteChar: '"',
+                                escapeChar: '"',
+                                delimiter: ",",
+                                header: true,
+                                newline: "\r\n",
+                                skipEmptyLines: true, //or 'greedy',
+                                columns: null //or array of strings
+                              }
+                            )
+                          );
+                        }
                       }
-                    }
-                  });
+                    });
+                  }
                 }
               }
               if(typeof(master_json.keys.archived) == "undefined"){

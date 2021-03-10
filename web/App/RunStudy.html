@@ -252,6 +252,7 @@ Study = {
     response_data["post_"+exp_json.post_no+"_rt_ms"]                     = trial_end_ms - response_data["post_"+exp_json.post_no+"_trial_start_ms"];
     response_data["post_"+exp_json.post_no+"_trial_end_date"]            = new Date(parseInt(trial_end_ms, 10)).toString('MM/dd/yy HH:mm:ss');
     response_data["platform"] = window.navigator.platform;
+    response_data["username"] = $("#participant_code").val();
 
 
     Object.keys(exp_json.this_condition).forEach(function(condition_item){
@@ -449,7 +450,7 @@ Study = {
     if(typeof(proc_no) == "undefined"){
       proc_no = 0;
     }
-    Study.finish_trial([new_trial_no - 2, proc_no]);
+    Study.finish_trial([new_trial_no - 1, proc_no]);
 
   },
 
@@ -872,103 +873,92 @@ function insert_end_checks(){
 
   this_proc = this_proc.push(this_proc_end);
 
-
-  $.get("Quality/Problems.html",function(end_check_html){
-    exp_json.trialtypes.end_checks_experiment = end_check_html;
-    Study.activate_pipe();
-  });
+  Study.activate_pipe();
 }
 function insert_start(){
 
-  var this_proc  = exp_json.parsed_proc;
-
-
-
-  if(Study.get_vars.platform == "preview"){
-    var this_proc_calibration = {
-      item:0,
-      max_time:"",
-			text:"",
-      "trial type":"preview_start"
-    }
-    var shuffle_levels = Object.keys(exp_json.parsed_proc[0]).filter(item => item.indexOf("shuffle") !== -1);
-    shuffle_levels.forEach(function(shuffle_level){
-      this_proc_calibration[shuffle_level] = "off";
-    });
-    this_proc.unshift(this_proc_calibration);
-    $.get("Quality/PreviewStart.html",function(preview_start_html){
-      exp_json.trialtypes.preview_start = preview_start_html;
-      Study.activate_pipe();
-    });
-  } else {
-
-    /*
-    * Calibration slide
-    */
-    var this_proc_calibration = {
-      item:0,
-      max_time:"",
-			text:"",
-      "trial type":"calibration_zoom"
-    }
-    var shuffle_levels = Object.keys(exp_json.parsed_proc[0]).filter(item => item.indexOf("shuffle") !== -1);
-    shuffle_levels.forEach(function(shuffle_level){
-      this_proc_calibration[shuffle_level] = "off";
-    });
-    this_proc.unshift(this_proc_calibration);
-
-    /*
-    * Warning about asking for inappropriate details
-    */
-    var this_proc_detail_warning = {
+  function add_to_start(current_procedure, trial_type){
+    var this_trialtype_info = {
       item:0,
       max_time:"",
       text:"",
-      "trial type":"start_experiment"
+      "trial type": trial_type
     }
-
     var shuffle_levels = Object.keys(exp_json.parsed_proc[0]).filter(item => item.indexOf("shuffle") !== -1);
     shuffle_levels.forEach(function(shuffle_level){
-      this_proc_detail_warning[shuffle_level] = "off";
+      this_trialtype_info[shuffle_level] = "off";
     });
-    this_proc.unshift(this_proc_detail_warning);
+    current_procedure.unshift(this_trialtype_info);
+    return current_procedure;
+  }
 
-    if(typeof(exp_json.this_condition.age_check) !== "undefined" &&
-       exp_json.this_condition.age_check.toLowerCase() == "no"){
+  function load_quality_checks(quality_list){
+    var this_check = quality_list.pop();
+    $.get(this_check.url,function(this_check_html){
+      exp_json.trialtypes[this_check.name] = this_check_html;
+      if(quality_list.length > 0){
+        load_quality_checks(quality_list);
+      } else {
+        Study.activate_pipe();
+      }
+    });
+  }
 
+
+  var this_proc  = exp_json.parsed_proc;
+
+  if(Study.get_vars.platform == "preview"){
+
+    this_proc = add_to_start(this_proc, "quality_preview_start");
+
+    load_quality_checks([{
+      url: "Quality/PreviewStart.html",
+      name: "quality_preview_start"
+    }]);
+
+  } else {
+
+    /*
+    * These quality checks are in reverse order
+    */
+    this_proc = add_to_start(this_proc, "quality_calibration_zoom");
+    this_proc = add_to_start(this_proc, "quality_details_warning");
+
+    if(
+      typeof(exp_json.this_condition.age_check) !== "undefined" &&
+      exp_json.this_condition.age_check.toLowerCase() == "no"
+    ){
       //skip this
     } else {
-      /*
-      * Age check
-      */
-      var this_proc_age_warning = {
-        item:0,
-        max_time:"",
-        text:"",
-        "trial type":"age_check"
-      }
-
-      var shuffle_levels = Object.keys(exp_json.parsed_proc[0]).filter(item => item.indexOf("shuffle") !== -1);
-      shuffle_levels.forEach(function(shuffle_level){
-        this_proc_age_warning[shuffle_level] = "off";
-      });
-      this_proc.unshift(this_proc_age_warning);
+      this_proc = add_to_start(this_proc, "quality_age_check");
     }
+    
+    this_proc = add_to_start(this_proc, "quality_participant_commitment");
 
 
-    // update trialtypes to have a "start" trial
-    ////////////////////////////////////////////
+    /*
+    * Load the code for the quality checks that will
+    * occur at the start and end of the experiment
+    */
 
-    $.get("Quality/DetailsWarning.html",function(start_experiment_html){
-      exp_json.trialtypes.start_experiment = start_experiment_html;
-      $.get("Quality/Calibration.html",function(calibration_zoom_html){
-        exp_json.trialtypes.calibration_zoom = calibration_zoom_html;
-        $.get("Quality/AgeCheck.html", function(age_check_html){
-          exp_json.trialtypes.age_check = age_check_html;
-          Study.activate_pipe();
-        });
-      });
-    });
+    var quality_checks = [{
+      url: "Quality/AgeCheck.html",
+      name: "quality_age_check"
+    },{
+      url: "Quality/Calibration.html",
+      name: "quality_calibration_zoom"
+    },{
+      url: "Quality/DetailsWarning.html",
+      name: "quality_details_warning"
+    },{
+      url: "Quality/ParticipantCommitment.html",
+      name: "quality_participant_commitment"
+    },{
+      url: "Quality/Problems.html",
+      name: "end_checks_experiment"
+    }];
+
+    load_quality_checks(quality_checks);
 	}
 }
 

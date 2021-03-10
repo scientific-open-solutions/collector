@@ -267,39 +267,41 @@ $("#fadeout_github").on("click", function(){
 });
 
 $("#pull_repo_btn").on("click",function(){
-  var organization = $("#select_organization").val();
-  var repository   = $("#select_repository").val();
+  bootbox.confirm("This will overwrite any changes you have made. Are you sure you want to proceed?", function(confirmed){
+    if(confirmed){
+      var organization = $("#select_organization").val();
+      var repository   = $("#select_repository").val();
+      progress_bootbox({
+        start_text: "Feel free to get a coffee while we pull your github repository",
+        steps: [
+          "Synching with online repository"
+        ],
+        labels: [
+          "pull_repo_input"
+        ],
+        actions: [
+          function(){
+            var pull_response = Collector.electron.git.pull({
+              "organization" : organization,
+              "repository"   : repository
+            });
+            if(pull_response !== "success"){
+              bootbox.alert(pull_response);
+              return false;
+            } else {
 
-
-  progress_bootbox({
-    start_text: "Feel free to get a coffee while we pull your github repository",
-    steps: [
-      "Synching with online repository"
-    ],
-    labels: [
-      "pull_repo_input"
-    ],
-    actions: [
-      function(){
-        var pull_response = Collector.electron.git.pull({
-          "organization" : organization,
-          "repository"   : repository
-        });
-        if(pull_response !== "success"){
-          bootbox.alert(pull_response);
-          return false;
-        } else {
-
-          //refresh the page
-          bootbox.confirm("Do you want to restart Collector so that you can see the changes you've just pulled? (Strongly recommended)", function(response){
-            if(response){
-              location.reload();
+              //refresh the page
+              bootbox.confirm("Do you want to restart Collector so that you can see the changes you've just pulled? (Strongly recommended)", function(response){
+                if(response){
+                  location.reload();
+                }
+              });
+              return true;
             }
-          });
-          return true;
-        }
-      }
-    ]
+          }
+        ]
+      });
+    }
   });
 });
 
