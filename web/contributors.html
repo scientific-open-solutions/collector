@@ -25,10 +25,12 @@
 
 $.get("hall_of_fame.csv",function(result){
 
-  var current_contributors = ["Dr. Adam Blake","Dr. Anthony Haffey"];
-			
+  var current_contributors = [
+    "Dr. Adam Blake",
+    "Dr. Anthony Haffey"
+  ];
 
-  console.dir("hall of fame coming:");
+
   var table_data = Papa.parse(result, {
     header:true,
     skipEmptyLines:true
