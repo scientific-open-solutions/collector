@@ -222,14 +222,12 @@ $("#power_btn").on("click",function(){
 });
 $("#show_citations").on("click", function(){
   $.get("Citations.csv", function(result){
-    console.dir(result);
-    console.dir(Collector.PapaParsed(result));
     var top_html = '<h3 class="text-primary">Citations</h3>' +
       '<p>';
     var table_html = '';
 
     Collector.PapaParsed(result).forEach(function(row){
-      top_html += '<a class="btn btn-primary" data-toggle="collapse" href="#cite_' + row.paper + '" role="button" aria-expanded="false" aria-controls="cite_' + row.paper + '" style="margin:2px;">' +
+      table_html += '<a class="btn btn-primary" data-toggle="collapse" href="#cite_' + row.paper + '" role="button" aria-expanded="false" aria-controls="cite_' + row.paper + '" style="margin:2px; width:100%">' +
         row.description +
         '</a>';
 

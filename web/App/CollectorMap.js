@@ -59,7 +59,7 @@ var isolation_map = {
   "CollectorMap.js" : "file",
   "jsFunctions.js"  : "file",
   "Libraries.html"  : "file",
-  "RunStudy.html"   : "file"
+  "Run.html"   : "file"
 }
 
 function this_map(this_item){

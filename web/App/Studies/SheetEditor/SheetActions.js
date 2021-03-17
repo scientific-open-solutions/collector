@@ -437,7 +437,7 @@ $("#run_btn").on("click",function(){
 
 							var this_url = window.location.href.split("/" + Collector.version)[0] +
 																												"/App/";
-							window.open(this_url  	+ "RunStudy.html?platform=github&" +
+							window.open(this_url  	+ "Run.html?platform=github&" +
 													"location=" + $("#experiment_list").val() + "&" +
 													"name="     + master_json.exp_mgmt.exp_condition + "&" +
 													"dropbox="  + exp_json.location,"_blank");
@@ -495,7 +495,7 @@ $("#run_btn").on("click",function(){
                         repository                          + "/" +
                         "web"                               + "/" +
                         "App"                               + "/" +
-                        "RunStudy.html?platform=github&"    +
+                        "Run.html?platform=github&"    +
 												"location="                         +
                           $("#experiment_list").val() + "&" +
 												"name="                             +
@@ -510,7 +510,7 @@ $("#run_btn").on("click",function(){
 						label: "Run",
 						className: 'btn-primary',
 						callback: function(){
-              window.open("RunStudy.html?platform=localhost&" +
+              window.open("Run.html?platform=localhost&" +
 													"location=" + $("#experiment_list").val() + "&" +
 													"name=" + $("#select_condition").val(),
                           "_blank");
@@ -520,7 +520,7 @@ $("#run_btn").on("click",function(){
 						label: "Preview Local",
 						className: 'btn-info',
 						callback: function(){
-							window.open("RunStudy.html?platform=preview&" +
+							window.open("Run.html?platform=preview&" +
 													"location=" + $("#experiment_list").val() + "&" +
 													"name=" + $("#select_condition").val(),"_blank");
 						}
@@ -529,7 +529,7 @@ $("#run_btn").on("click",function(){
 						label: "Preview Online",
 						className: 'btn-info',
 						callback: function(){
-							window.open("RunStudy.html?platform=onlinepreview&" +
+							window.open("Run.html?platform=onlinepreview&" +
 													"location=" + $("#experiment_list").val() + "&" +
 													"name=" + $("#select_condition").val(),"_blank");
 						}
@@ -551,7 +551,7 @@ $("#run_btn").on("click",function(){
             github_json.repository              + "/" +
             "web"                               + "/" +
             "App"                               + "/" +
-            "RunStudy.html?platform=github&"    +
+            "Run.html?platform=github&"    +
 						"location="                         +
               $("#experiment_list").val() + "&" +
 						"name="                             +
@@ -847,7 +847,7 @@ $("#save_btn").on("click", function(){
                   .then(function(returned_link){
                     this_exp.location = returned_link.url;
                     dbx_obj.new_upload({path: "/Experiments/"+experiment+".json", contents: JSON.stringify(this_exp), mode:'overwrite'},function(location_saved){
-                        $("#run_link").attr("href","../"+ master_json.exp_mgmt.version + "/RunStudy.html?location="+this_exp.location);
+                        $("#run_link").attr("href","../"+ master_json.exp_mgmt.version + "/Run.html?location="+this_exp.location);
                         update_master_json();
                       },function(error){
                         Collector.custom_alert("check console for error saving location");
