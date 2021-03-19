@@ -36,7 +36,7 @@
 	<tr>
     <td>
 			<a href="" id="authlink" class="button" style="display:none">Authenticate Dropbox</a>
-			<span id="dropbox_account_email" class="account_info text-white">No dropbox account linked yet</span>
+			<span id="dropbox_account_email" class="account_info text-white">No dropbox account</span>
 		</td>
 		<td>
 			<img class='logo' style="border-radius: 50%; background-color:white; padding:2px" src="../logos/dbx.ico.png" id="dropbox_logo">
@@ -45,35 +45,28 @@
       <span id="save_status" class="text-white"></span>
     </td>
 		<td>
-      <button class="btn btn-primary bi-server" id="data_storage_logo">
-        <span id='storage_clarification' style='display:none'>Online Data Storage</span>
+      <button class="top_icon btn btn-primary bi-server" id="data_storage_logo">
+        <span class='content_name'>Online Data Storage</span>
     </button>
 		</td>
     <td>
-      <button class="btn btn-primary bi-github" id="github_logo">
-        <span id='github_clarification' style='display:none'>Github</span>
+      <button class="top_icon btn btn-primary bi-github" id="github_logo">
+        <span class='content_name'>Github</span>
       </button>
 		</td>
     <td>
       <button class="btn btn-primary bi-power" id="power_btn"></button>
-      </button>
     </td>
 	</tr>
 </table>
 
 <script>
-
-$("#data_storage_logo").hover(function(){
-  $("#storage_clarification").fadeIn(500);
+$(".top_icon").hover(function(){
+  $(this).find(".content_name").animate({"font-size":"15px"});
 }, function(){
-  $("#storage_clarification").fadeOut(500);
+  $(this).find(".content_name").animate({"font-size":"0px"});
 });
 
-$("#github_logo").hover(function(){
-  $("#github_clarification").fadeIn(300);
-  }, function(){
-  $("#github_clarification").fadeOut(300);
-});
 
 $("#github_logo").on("click", function(){
   if (typeof(github_json) == "undefined") {

@@ -52,6 +52,7 @@
   font-size:0px;
 }
 
+
 #everything{
   display: none;
 }
@@ -117,28 +118,28 @@
       </ul>
     </div>
 
-    <a href="https://collectalk.com/categories/bugs-and-errors" target="_blank" style="margin:2px" title="Report bug">
-      <button class="btn btn-primary bi-exclamation-triangle" id="report_bug_link">
-        <span id='report_bug_clarification' style='display:none'>Report Bug</span>
+    <a href="https://github.com/scientific-open-solutions/collector/issues" style="margin:2px" title="Report bug">
+      <button class="top_icon btn btn-primary bi-exclamation-triangle" id="report_bug_link" style="font-size:20px;">
+        <span class='content_name'>Report Bug/Issue</span>
       </button>
     </a>
-    <a href="https://collectalk.com/" target="_blank" style="margin:2px">
-      <button class="btn btn-primary bi-chat-dots" id="forum_link">
-        <span id='forum_clarification' style='display:none'>Forum</span>
+    <a href="https://github.com/scientific-open-solutions/collector/discussions" target="_blank" style="margin:2px">
+      <button class="top_icon btn btn-primary bi-chat-dots" id="forum_link" style="font-size:20px;">
+        <span class='content_name'>Forum</span>
       </button>
     </a>
     <a href="https://docs.google.com/document/d/1SKYIJF1dAjMDS6EHUIwfZm2KQVOzx17S6LbU_oSGxdE/edit?usp=sharing" target="_blank" style="margin:2px">
-      <button class="btn btn-primary bi-info-circle" id="documentation_link">
-        <span id='documentation_clarification' style='display:none'>Documentation</span>
+      <button class="top_icon btn btn-primary bi-info-circle" id="documentation_link" style="font-size:20px;">
+        <span class='content_name'>Documentation</span>
       </button>
     </a>
 
-    <button class="btn btn-primary bi-heart" id="show_open_source_packages">
-      <span id='open_source_clarification' style='display:none'>Open source packages</span>
+    <button class="top_icon btn btn-primary bi-heart" id="show_open_source_packages" style="font-size:20px;">
+      <span class='content_name'>Contributors</span>
     </button>
 
-    <button class="btn btn-primary bi-chat-square-quote" id="show_citations">
-      <span id='citations_clarification' style='display:none'>Citations</span>
+    <button class="top_icon btn btn-primary bi-chat-square-quote" id="show_citations" style="font-size:20px;">
+      <span class='content_name'>Citations</span>
     </button>
 
 
@@ -150,27 +151,7 @@
     <tr>
       <td id="content_area"></td>
       <script>
-        $("#show_open_source_packages").hover(function(){
-          $("#open_source_clarification").fadeIn(500);
-          }, function(){
-          $("#open_source_clarification").fadeOut(500);
-        });
 
-        $("#report_bug_link").hover(function(){
-          $("#report_bug_clarification").fadeIn(500);
-          }, function(){
-          $("#report_bug_clarification").fadeOut(500);
-        });
-        $("#forum_link").hover(function(){
-          $("#forum_clarification").fadeIn(500);
-          }, function(){
-          $("#forum_clarification").fadeOut(500);
-        });
-        $("#documentation_link").hover(function(){
-          $("#documentation_clarification").fadeIn(500);
-          }, function(){
-          $("#documentation_clarification").fadeOut(500);
-        });
         var navbar_names  = ["Studies","Surveys","Pathway","Mods","Data"];
         var pages = [
           "Studies/Studies.html",
@@ -204,7 +185,7 @@
   navbar_names.forEach(function(name,index){
     var this_icon = icons[index];
     navbar_html +=
-     '<button class="select_page btn btn-primary bi-'+ this_icon + '" id="top_tab_' + name + '" ' +
+     '<button style="font-size:20px;" class="top_icon select_page btn btn-primary bi-'+ this_icon + '" id="top_tab_' + name + '" ' +
         'data-toggle="collapse" ' +
         'href="#collapse_' + name+'" ' +
         'role="button" ' +
@@ -219,11 +200,7 @@
   });
   $("#page_selected").html(navbar_html);
 
-  $(".select_page").hover(function(){
-    $(this).find(".content_name").animate({"font-size":"20px"});
-  }, function(){
-    $(this).find(".content_name").animate({"font-size":"0px"});
-  });
+
   //.btn { font-size: 0; }
 
   $(".select_page").on("click",function(){

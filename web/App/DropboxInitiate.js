@@ -190,7 +190,7 @@ dbx_obj = {
 	}
 }
 function dropbox_check(){
-  return $("#dropbox_account_email").html() !== "No dropbox account linked yet";
+  return $("#dropbox_account_email").html() !== "No dropbox account";
 }
 function initiate_master_json(){
 	dbx.sharingCreateSharedLink({path:"/master.json"})
