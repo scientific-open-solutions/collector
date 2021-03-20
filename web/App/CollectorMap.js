@@ -33,9 +33,7 @@ var isolation_map = {
         "survey.html":            "file",
   			"text.html":              "file",
         "webgazer.html":          "file"
-      },
-      "default_experiment.json" : "file",
-        //stuff here
+      }
     },
   },
   Help:{

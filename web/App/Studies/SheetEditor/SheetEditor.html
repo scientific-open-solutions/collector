@@ -37,6 +37,12 @@
 .exp_table_cells {
 	padding: 10px;
 }
+
+#procedure_inputs > *,
+#stimuli_inputs > * {
+  margin-right:5px;
+  margin-bottom:5px;
+}
 </style>
 
 <br><br><br>
@@ -53,14 +59,16 @@
 	</tr>
 	<tr>
 		<td id="Procedure" class="hide_show_elements exp_table_cells" align="left"  valign="top">
-			<h3>Procedure</h3>
-			<select id="proc_select"></select>
-			<button type="button" id="new_proc_button" class="btn btn-primary">New Sheet</button>
-			<button type="button" id="rename_proc_button" class="btn btn-primary">Rename Sheet</button>
-      <button type="button" id="delete_proc_button" class="btn btn-primary">Delete</button>
-			<span id="procsArea">
-				<div id="procSheetTable"></div>
-			</span>
+      <h3>Procedure</h3>
+			<div class="form-inline" id="procedure_inputs">
+        <select id="proc_select" class="form-control" style="width:auto;"></select>
+  			<button type="button" id="new_proc_button" class="btn btn-primary">New</button>
+  			<button type="button" id="rename_proc_button" class="btn btn-primary">Rename</button>
+        <button type="button" id="delete_proc_button" class="btn btn-primary">Delete</button>
+      </div>
+      <span id="procsArea">
+        <div id="procSheetTable"></div>
+      </span>
 		</td>
 		<td id="resp_area">
 			<select style="visibility: hidden"><option>Select</option></select>
@@ -70,14 +78,14 @@
 	<tr>
 		<td id="Stimuli" class="hide_show_elements exp_table_cells" align="left" valign="top">
 			<h3>Stimuli</h3>
-			<select id="stim_select"></select>
-			<button type="button" id="new_stim_button" class="btn btn-primary">New Sheet</button>
-
-      <button type="button" id="rename_stim_button" class="btn btn-primary">Rename Sheet</button>
-      <button type="button" id="delete_stim_button" class="btn btn-primary">Delete</button>
-      <button type="button" id="stim_list_button" class="btn btn-primary">List Stimuli</button>
-      <button type="button" id="stim_folder_button" class="btn btn-primary">Stimuli Folder</button>
-
+      <div class="form-inline" id="stimuli_inputs">
+  			<select id="stim_select" class="form-control" style="width:auto;"></select>
+  			<button type="button" id="new_stim_button" class="btn btn-primary">New</button>
+        <button type="button" id="rename_stim_button" class="btn btn-primary">Rename</button>
+        <button type="button" id="delete_stim_button" class="btn btn-primary">Delete</button>
+        <button type="button" id="stim_list_button" class="btn btn-primary">List Stimuli</button>
+        <button type="button" id="stim_folder_button" class="btn btn-primary">Stimuli Folder</button>
+      </div>
 			<span id="stimsArea">
 				<div id="stimsheetTable"></div>
 			</span>

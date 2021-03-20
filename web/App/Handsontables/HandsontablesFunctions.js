@@ -192,9 +192,13 @@ function createHoT(container, data,sheet_name) {
 				this_exp.conditions = this.getData();
 			} else {
 				if(typeof(this_exp.all_stims[sheet_name]) !== "undefined"){
-					this_exp.all_stims[sheet_name] = this.getData();
+					this_exp.all_stims[sheet_name] = Papa.unparse(
+            this.getData()
+          );
 				}	else if(typeof(this_exp.all_procs[sheet_name]) !== "undefined"){
-					this_exp.all_procs[sheet_name] = this.getData();
+					this_exp.all_procs[sheet_name] = Papa.unparse(
+            this.getData()
+          );
 				}	else {
 					alert("error - " + sheet_name + " not found in " + experiment);
 				}

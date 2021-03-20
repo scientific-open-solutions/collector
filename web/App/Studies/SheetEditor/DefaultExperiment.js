@@ -62,3 +62,11 @@ default_experiment = {
     ]
   }
 }
+
+default_experiment.all_procs["procedure_1.csv"] = Papa.unparse(
+  default_experiment.all_procs["procedure_1.csv"]
+)
+
+default_experiment.all_stims["stimuli_1.csv"] = Papa.unparse(
+  default_experiment.all_stims["stimuli_1.csv"]
+)

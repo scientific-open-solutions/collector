@@ -224,7 +224,7 @@ $("#new_experiment_button").on("click",function(){
 
 $("#new_proc_button").on("click",function(){
   var proc_template = default_experiment.all_procs["procedure_1.csv"];
-	bootbox.prompt("What would you like the name of the new procedure sheet to be?",function(new_proc_name){
+	bootbox.prompt("What would you like the name of the new <b>procedure</b> sheet to be?",function(new_proc_name){
 		var experiment = $("#experiment_list").val();
 		var this_exp   = master_json.exp_mgmt.experiments[experiment];
 		var current_procs = Object.keys(this_exp.all_procs);
@@ -232,13 +232,16 @@ $("#new_proc_button").on("click",function(){
 			bootbox.alert("You already have a procedure sheet with that name");
 		} else {
 			new_proc_name = new_proc_name.replace(".csv","") + ".csv";
-
-			master_json.exp_mgmt.experiments[experiment].all_procs[new_proc_name] = proc_template;
+			this_exp.all_procs[new_proc_name] = proc_template;
 			$("#proc_select").append($('<option>', {
 				text : new_proc_name
 			}));
 			$("#proc_select").val(new_proc_name);
-			createExpEditorHoT(this_exp.all_procs[new_proc_name],"procedure",new_proc_name);	//sheet_name
+			createExpEditorHoT(
+        this_exp.all_procs[new_proc_name],
+        "procedure",
+        new_proc_name
+      );
 		}
 	});
 });
@@ -252,14 +255,24 @@ $("#new_stim_button").on("click",function(){
 		if(current_stims.indexOf(new_sheet_name) !== -1){
 			bootbox.alert("You already have a <b>Stimuli</b> sheet with that name");
 		} else {
-			new_sheet_name = new_sheet_name.replace(".csv","") + ".csv";
 
-			master_json.exp_mgmt.experiments[experiment].all_stims[new_sheet_name] = stim_template;
+      new_sheet_name = new_sheet_name.replace(".csv","") + ".csv";
+			this_exp.all_stims[new_sheet_name] = stim_template;
 			$("#stim_select").append($('<option>', {
 				text : new_sheet_name
 			}));
 			$("#stim_select").val(new_sheet_name);
-			createExpEditorHoT(this_exp.all_stims[new_sheet_name],"stimuli",new_sheet_name);	//sheet_name
+
+      createExpEditorHoT(
+        this_exp.all_stims[new_sheet_name],
+        "stimuli",
+        new_sheet_name
+      );
+
+      /*
+      alert("hardy");
+
+			*/
 		}
 	});
 });
@@ -267,7 +280,11 @@ $("#new_stim_button").on("click",function(){
 $("#proc_select").on("change",function(){
 	var experiment = $("#experiment_list").val();
 	var this_exp   = master_json.exp_mgmt.experiments[experiment];
-	createExpEditorHoT(this_exp.all_procs[this.value], "procedure", this.value);
+	createExpEditorHoT(
+    this_exp.all_procs[this.value],
+    "procedure",
+    this.value
+  );
 });
 
 $("#rename_exp_btn").on("click",function(){
@@ -363,7 +380,11 @@ $("#rename_proc_button").on("click",function(){
   			}));
   			$("#proc_select").val(new_proc_name);
   			$('#proc_select option[value="' + current_proc + '"]').remove();
-  			createExpEditorHoT(this_exp.all_procs[new_proc_name],"procedure",new_proc_name);
+  			createExpEditorHoT(
+          this_exp.all_procs[new_proc_name],
+          "procedure",
+          new_proc_name
+        );
   		}
     }
 	});
@@ -398,7 +419,11 @@ $("#rename_stim_button").on("click",function(){
 
   			$('#stim_select option[value="' + current_stim + '"]').remove();
 
-  			createExpEditorHoT(this_exp.all_stims[new_sheet_name],"stimuli",new_sheet_name);
+  			createExpEditorHoT(
+          this_exp.all_stims[new_sheet_name],
+          "stimuli",
+          new_sheet_name
+        );
   		}
     }
 	});
@@ -489,17 +514,16 @@ $("#run_btn").on("click",function(){
         var repository   = github_json.repository;
       }
 
-      var github_url =  "https://"                          +
-                        organization                        +
-                        ".github.io"                        + "/" +
-                        repository                          + "/" +
-                        "web"                               + "/" +
-                        "App"                               + "/" +
-                        "Run.html?platform=github&"    +
-												"location="                         +
-                          $("#experiment_list").val() + "&" +
-												"name="                             +
-                          conditions[0].name;
+      var github_url =  "https://" +
+        organization +
+        ".github.io" + "/" +
+        repository   + "/" +
+        "web"        + "/" +
+        "App"        + "/" +
+        "Run.html?platform=github&" +
+        "location=" +
+        $("#experiment_list").val() + "&" +
+        "name=" + conditions[0].name;
 
 
 			bootbox.dialog({
@@ -901,7 +925,11 @@ $("#save_btn").on("click", function(){
 $("#stim_select").on("change",function(){
 	var experiment = $("#experiment_list").val();
 	var this_exp   = master_json.exp_mgmt.experiments[experiment];
-	createExpEditorHoT(this_exp.all_stims[this.value], "stimuli", this.value);
+	createExpEditorHoT(
+    this_exp.all_stims[this.value],
+    "stimuli",
+    this.value
+  );
 });
 
 $("#upload_default_exp_btn").on("click",function(){
