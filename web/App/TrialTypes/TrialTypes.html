@@ -47,45 +47,43 @@
 <div id="TrialTypes" class="hide_show_elements">
 
 <div class="row">
-	<div class="col-md-1">
-		<button class="btn btn-primary" id="community_trialtypes_btn">Community</button>
-	</div>
-	<div class="col-md-3">
-		<select id="trial_type_select" class="form-control" previousValue ="">
-			<option hidden disabled selected>Select a Trial Type</option>
-		</select>
-	</div>
-	<div class="col-md-8">
-    <table>
-      <tr>
-        <td>
-          <span id="default_user_trialtype_span"></span>
-      		<button id="new_trial_type_button" 		class="btn btn-primary">New</button>
-      		<button id="rename_trial_type_button" class="btn btn-primary" style="display:none">Rename</button>
-      		<button id="delete_trial_type_button" class="btn btn-primary" style="display:none">Delete</button>
-      		<button id="save_trial_type_button" class="btn btn-primary">Save</button>
-      		<button class="btn btn-outline-primary" id="view_code_btn">Code</button>
-      		<button class="btn btn-outline-primary" id="view_graphic_btn">Graphic</button>
-        </td>
-        <td>
-          <ul  class="nav nav-pills mb-3 bg-secondary" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active text-white" id="trialtypes_editor-tab" data-toggle="pill" href="#trialtypes_editor" role="tab" aria-controls="trialtypes_editor" aria-selected="true">Editor</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" id="trialtype-preview-tab" data-toggle="pill" href="#trialtype-preview" role="tab" aria-controls="trialtype-preview" aria-selected="false">Preview</a>
-            </li>
-          </ul>
-        </td>
-      </tr>
-    </table>
-
-	</div>
-
+  <ul  class="nav nav-pills mb-3 bg-secondary" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active text-white" id="trialtypes_editor-tab" data-toggle="pill" href="#trialtypes_editor" role="tab" aria-controls="trialtypes_editor" aria-selected="true">Editor</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link text-white" id="trialtype-preview-tab" data-toggle="pill" href="#trialtype-preview" role="tab" aria-controls="trialtype-preview" aria-selected="false">Preview</a>
+    </li>
+  </ul>
 </div>
 <div class="row">
   <div class="tab-content" id="pills-tabContent" style="top:100px; width:800px; height:800px; position: absolute;">
     <div class="tab-pane fade show active" id="trialtypes_editor" role="tabpanel" aria-labelledby="pills-spreadsheet-tab">
+      <br>
+      <div class="row">
+        <!--
+        <div class="col-md-1">
+      		<button class="btn btn-primary" id="community_trialtypes_btn">Community</button>
+      	</div>
+        -->
+      	<div class="col-md-3">
+      		<select id="trial_type_select" class="form-control" previousValue ="">
+      			<option hidden disabled selected>Select a Trial Type</option>
+      		</select>
+      	</div>
+      	<div class="col-md-9">
+            <span id="default_user_trialtype_span"></span>
+        		<button id="new_trial_type_button" 		class="btn btn-primary">New</button>
+        		<button id="rename_trial_type_button" class="btn btn-primary" style="display:none">Rename</button>
+        		<button id="delete_trial_type_button" class="btn btn-primary" style="display:none">Delete</button>
+        		<button id="save_trial_type_button" class="btn btn-primary">Save</button>
+        		<button class="btn btn-outline-primary" id="view_code_btn">Code</button>
+        		<button class="btn btn-outline-primary" id="view_graphic_btn">Graphic</button>
+      	</div>
+
+      </div>
+
+
       <h6><em>ACE (https://ace.c9.io/)</em> is used for editing code</h6>
       <div id="graphic_editor" 	style="display:none"></div>
       <div id="ace_div">
@@ -114,6 +112,29 @@ $("#trialtype-preview-tab").on("click",function(){
   * try to run the code in the ace editor into the iframe
   */
   var iframe_content = editor.getValue();
+
+  /*
+  * find and replace items for developmental piloting
+  */
+  iframe_variables = eval(
+    iframe_content.split("---development---")[1]
+  );
+  if(typeof(iframe_variables) !== "undefined"){
+    iframe_variables.forEach(function(row){
+      var this_key = Object.keys(row);
+      if(this_key.length > 1){
+        bootbox.alert("Error: You have multiple keys:" + this_key);
+      } else if(this_key.length == 0){
+        bootbox.alert("Error: You don't have any keys!");
+      } else {
+        iframe_content = iframe_content.replaceAll(
+          "{{" + this_key[0] + "}}",
+          row[this_key[0]]
+        );
+      }
+    });
+  }
+
   doc = document
     .getElementById('trialtype_preview')
     .contentWindow

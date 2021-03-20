@@ -7,7 +7,7 @@
     <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#navs-map" role="tab" aria-controls="pills-contact" aria-selected="false">Researcher map</a>
 	</li>
   <li class="nav-item"  id="participant_map_tab">
-		<a class="nav-link" id="pills-pp-tab" data-toggle="pill" href="#navs-pp_map" role="tab" aria-controls="pills-pp" aria-selected="false">Participant map</a>
+		<a class="nav-link" id="pills-pp-tab" data-toggle="pill" href="#navs-pp_map" role="tab" aria-controls="pills-pp" aria-selected="true">Participant map</a>
 	</li>
 </ul>
 <div class="tab-content" id="pills-tabContent">
@@ -264,5 +264,8 @@ $("#researchers_map_tab").on("click",function(){
     });
   }
 });
+setTimeout(function(){
+  $("#pills-pp-tab").click();
+}, 500);
 
 </script>
