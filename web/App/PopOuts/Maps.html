@@ -1,16 +1,14 @@
+<script src="libraries/ammap.js"></script>
+<script src="libraries/worldLow.js"></script>
+
+
 <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
-	<li class="nav-item">
-		<a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#navs-contributors" role="tab" aria-controls="pills-profile" aria-selected="false">Contribute!</a>
-	</li>
 	<li class="nav-item"  id="researchers_map_tab">
     <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#navs-map" role="tab" aria-controls="pills-contact" aria-selected="false">Researcher map</a>
 	</li>
   <li class="nav-item"  id="participant_map_tab">
 		<a class="nav-link" id="pills-pp-tab" data-toggle="pill" href="#navs-pp_map" role="tab" aria-controls="pills-pp" aria-selected="false">Participant map</a>
 	</li>
-  <li class="nav-item"  id="security_tab">
-		<a class="nav-link" id="pills-security-tab" data-toggle="pill" href="#navs-security" role="tab" aria-controls="pills-security" aria-selected="false">Security</a>
-	</li>  
 </ul>
 <div class="tab-content" id="pills-tabContent">
 	<div class="tab-pane fade" id="navs-map" role="tabpanel" aria-labelledby="pills-contact-tab">
@@ -21,15 +19,22 @@
 	   <div id="ppmapdiv" style="width: 100%; height:400px;"></div>
      <div id="pplistdiv"></div>
   </div>
-  <div class="tab-pane fade" id="navs-security" role="tabpanel" aria-labelledby="pills-security-tab">
-    <div id="security_div"></div>
-    <script>
-      $("#security_div").load("security.html");
-    </script>
-  </div>
 </div>
 
+<style>
+#mapdiv {
+  background: #eee;
+}
+</style>
 <script>
+
+var icon = "M21.25,8.375V28h6.5V8.375H21.25zM12.25,28h6.5V4.125h-6.5V28zM3.25,28h6.5V12.625h-6.5V28z";
+
+maps_initiated = {
+  researcher:false,
+  participant:false
+}
+
 var ParseGSX = (function() {
 
   var _defaultCallback = function(data) {

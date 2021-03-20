@@ -34,12 +34,9 @@
   </div>
 </div>
 
-
-
 <script>
 $.get("PopOuts/OpenSourcePackages.csv", function(result){
   var packages = Collector.PapaParsed(result);
-
   var contributors_html = "<table class='table'>" +
     "<thead>" +
       "<tr>" +
@@ -57,27 +54,22 @@ $.get("PopOuts/OpenSourcePackages.csv", function(result){
         "</tr>";
     });
     contributors_html += "</table>";
-
-
   $("#packages_div").html(contributors_html);
 });
 
 $.get("PopOuts/hall_of_fame.csv",function(result){
-
   var current_contributors = [
     "Dr. Anthony Haffey",
     "Dr. Kristian Tempelmans Plat"
   ];
 
-
   var table_data = Papa.parse(result, {
     header:true,
     skipEmptyLines:true
   });
-  console.dir(table_data.data);
+
   var table_html = "<table style='width:100%'><tbody>";
   table_data.data.forEach(function(row){
-
     if(current_contributors.indexOf(row.Name) !== -1){
       tr_class = "class='bg-primary text-white'";
     } else {

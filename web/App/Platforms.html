@@ -251,15 +251,29 @@ $("#show_citations").on("click", function(){
 });
 
 $("#show_contributors").on("click", function(){
-
-  $.get("PopOuts/contributors.html", function(result){
-    bootbox.alert(result)
+  $.get("PopOuts/contributors.html", function(this_html){
+    bootbox.alert({
+      message: this_html,
+      size: "large"
+    });
   });
 });
 
 $("#show_maps").on("click", function(){
   $.get("PopOuts/Maps.html", function(this_html){
-    bootbox.alert(this_html);
+    bootbox.alert({
+      message: this_html,
+      size: "large"
+    });
+  });
+});
+
+$("#show_security_info").on("click", function(){
+  $.get("PopOuts/security.html", function(this_html){
+    bootbox.alert({
+      message: this_html,
+      size: "large"
+    });
   });
 });
 
