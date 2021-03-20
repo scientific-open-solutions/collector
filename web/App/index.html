@@ -118,126 +118,125 @@
       </ul>
     </div>
 
-    <a href="https://github.com/scientific-open-solutions/collector/issues" style="margin:2px" title="Report bug">
-      <button class="top_icon btn btn-primary bi-exclamation-triangle" id="report_bug_link" style="font-size:20px;">
-        <span class='content_name'>Report Bug/Issue</span>
-      </button>
-    </a>
-    <a href="https://github.com/scientific-open-solutions/collector/discussions" target="_blank" style="margin:2px">
-      <button class="top_icon btn btn-primary bi-chat-dots" id="forum_link" style="font-size:20px;">
-        <span class='content_name'>Forum</span>
-      </button>
-    </a>
-    <a href="https://docs.google.com/document/d/1SKYIJF1dAjMDS6EHUIwfZm2KQVOzx17S6LbU_oSGxdE/edit?usp=sharing" target="_blank" style="margin:2px">
-      <button class="top_icon btn btn-primary bi-info-circle" id="documentation_link" style="font-size:20px;">
-        <span class='content_name'>Documentation</span>
-      </button>
-    </a>
+    <button onClick="window.open('https://github.com/scientific-open-solutions/collector/issues', '_blank')" class="top_icon btn btn-primary bi-exclamation-triangle" id="report_bug_link" style="font-size:20px;">
+      <span class='content_name'>Report Bug/Issue</span>
+    </button>
 
-    <button class="top_icon btn btn-primary bi-heart" id="show_open_source_packages" style="font-size:20px;">
+    <button onClick="window.open('https://github.com/scientific-open-solutions/collector/discussions', '_blank')" class="top_icon btn btn-primary bi-chat-dots" id="forum_link" style="font-size:20px;">
+      <span class='content_name'>Forum</span>
+    </button>
+
+    <button onClick="window.open('https://docs.google.com/document/d/1SKYIJF1dAjMDS6EHUIwfZm2KQVOzx17S6LbU_oSGxdE/edit?usp=sharing', '_blank')" class="top_icon btn btn-primary bi-info-circle" id="documentation_link" style="font-size:20px;">
+      <span class='content_name'>Documentation</span>
+    </button>
+
+    <button class="top_icon btn btn-primary bi-lock" id="show_security_info" style="font-size:20px;">
+      <span class='content_name'>Security - encryption and attack vectors??</span>
+    </button>
+
+    <button class="top_icon btn btn-primary bi-heart" id="show_contributors" style="font-size:20px;">
       <span class='content_name'>Contributors</span>
+    </button>
+
+    <button class="top_icon btn btn-primary bi-geo-alt" id="show_maps" style="font-size:20px;">
+      <span class='content_name'>Maps</span>
     </button>
 
     <button class="top_icon btn btn-primary bi-chat-square-quote" id="show_citations" style="font-size:20px;">
       <span class='content_name'>Citations</span>
     </button>
 
+    <button class="top_icon btn btn-outline-primary bg-white bi-life-preserver" id="help_btn" style="margin:2px; font-weight:bold">
+      <span class='content_name'>Help</span>
+    </button>
 
-    <button class="btn btn-outline-primary bg-white" id="help_btn" style="margin:2px; font-weight:bold">Help</button>
     <div id="github_div"></div>
     <div id="platforms_div"></div>
   </nav>
   <table id="content_table" style="width:100%">
     <tr>
       <td id="content_area"></td>
-      <script>
-
-        var navbar_names  = ["Studies","Surveys","Pathway","Mods","Data"];
-        var pages = [
-          "Studies/Studies.html",
-          "Surveys/Surveys.html",
-          "Pathway/Pathway.html",
-          "Mods/Mods.html",
-          "Data/Data.html"
-        ];
-        var icons = [
-          "laptop",
-          "card-checklist",
-          "arrow-up-right",
-          "tools",
-          "table"
-        ]
-        navbar_names.forEach(function(this_name,index){
-          $("#content_area").append(
-            "<div class='collapse multi-collapse' " +
-            "style='width:100%' " +
-            "id='collapse_" + this_name + "'>"
-          );
-          $("#collapse_" + this_name).load(pages[index]);
-        });
-      </script>
       <td id="help_area" class="help_class"></td>
     </tr>
   </table>
   <div id="register_div"></div>
-  <script>
-  navbar_html = "";
-  navbar_names.forEach(function(name,index){
-    var this_icon = icons[index];
-    navbar_html +=
-     '<button style="font-size:20px;" class="top_icon select_page btn btn-primary bi-'+ this_icon + '" id="top_tab_' + name + '" ' +
-        'data-toggle="collapse" ' +
-        'href="#collapse_' + name+'" ' +
-        'role="button" ' +
-        'aria-expanded="false" '+
-        'aria-controls="#collapse_' + name + '">'+
-          '<input type="radio" ' +
-            'style="display:none" ' +
-                   'name="options" ' +
-            'autocomplete="off" > ' +
-          '<span class="content_name">' + name + '</span>' +
-      ' </button>';
-  });
-  $("#page_selected").html(navbar_html);
-
-
-  //.btn { font-size: 0; }
-
-  $(".select_page").on("click",function(){
-  	$('.collapse').hide();														 			 // hide everything
-  	$("#collapse_" + this.id.replace("top_tab_","")).show(); // show the current page
-    $('.select_page').css("font-weight","normal");					 // make all tabs normal font-weight
-    $(this).css("font-weight","bold");											 // but then make the current tab bold
-    $('.select_page').removeClass("bg-white");
-    $('.select_page').removeClass("text-primary");
-    $(this).addClass("bg-white");
-    $(this).addClass("text-primary");
-  });
-
-  $("#help_area").load("Help/Help.html");
-  $("#logo_div").load("../logos/logo.html");
-  $("#github_div").load("github.html");
-  $("#platforms_div").load("Platforms.html");
-  $("#register_div").load("Register.html");
-
-  setTimeout(function(){
-    $("#loading_spinner").fadeOut(function(){
-      $("#everything").fadeIn();
-    });
-  },500);
-
-
-
-
-  </script>
-  <script src="ContextStart.js"></script>
-  <script src="Code/MobileCheck.js"></script>
-
-  <!--
-  	CollectorLive.js starts an automatic check every 30 seconds to make sure that either:
-  	- the internet is still connected (if using the dropbox version)
-  	- the localhost is still active   (if using the installed version)
-  -->
-  <script src="Code/CollectorLive.js"></script>
-
 </div>
+<script>
+var navbar_names  = [
+  "Studies",
+  "Trialtypes",
+  "Surveys",
+  "Pathway",
+  "Mods",
+  "Data"
+];
+var pages = [
+  "Studies/Studies.html",
+  "Trialtypes/Trialtypes.html",
+  "Surveys/Surveys.html",
+  "Pathway/Pathway.html",
+  "Mods/Mods.html",
+  "Data/Data.html"
+];
+var icons = [
+  "laptop",
+  "code-slash",
+  "card-checklist",
+  "arrow-up-right",
+  "tools",
+  "table"
+]
+navbar_names.forEach(function(this_name,index){
+  $("#content_area").append(
+    "<div class='collapse multi-collapse' " +
+    "style='margin:20px; width:100%' " +
+    "id='collapse_" + this_name + "'>"
+  );
+  $("#collapse_" + this_name).load(pages[index]);
+});
+
+navbar_html = "";
+navbar_names.forEach(function(name,index){
+  var this_icon = icons[index];
+  navbar_html +=
+   '<button style="font-size:20px;" class="top_icon select_page btn btn-primary bi-'+ this_icon + '" id="top_tab_' + name + '" ' +
+      'data-toggle="collapse" ' +
+      'href="#collapse_' + name+'" ' +
+      'role="button" ' +
+      'aria-expanded="false" '+
+      'aria-controls="#collapse_' + name + '">'+
+        '<input type="radio" ' +
+          'style="display:none" ' +
+                 'name="options" ' +
+          'autocomplete="off" > ' +
+        '<span class="content_name">' + name + '</span>' +
+    ' </button>';
+});
+
+$("#page_selected").html(navbar_html);
+
+$(".select_page").on("click",function(){
+  $('.collapse').hide();
+  $("#collapse_" + this.id.replace("top_tab_","")).show();
+  $('.select_page').css("font-weight","normal");
+  $(this).css("font-weight","bold");
+  $('.select_page').removeClass("bg-white");
+  $('.select_page').removeClass("text-primary");
+  $(this).addClass("bg-white");
+  $(this).addClass("text-primary");
+});
+
+$("#help_area").load("Help/Help.html");
+$("#logo_div").load("../logos/logo.html");
+$("#github_div").load("github.html");
+$("#platforms_div").load("Platforms.html");
+$("#register_div").load("Register.html");
+
+setTimeout(function(){
+  $("#loading_spinner").fadeOut(function(){
+    $("#everything").fadeIn();
+  });
+},500);
+</script>
+<script src="ContextStart.js"></script>
+<script src="Code/MobileCheck.js"></script>

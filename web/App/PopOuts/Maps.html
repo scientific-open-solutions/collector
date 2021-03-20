@@ -1,0 +1,263 @@
+<ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
+	<li class="nav-item">
+		<a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#navs-contributors" role="tab" aria-controls="pills-profile" aria-selected="false">Contribute!</a>
+	</li>
+	<li class="nav-item"  id="researchers_map_tab">
+    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#navs-map" role="tab" aria-controls="pills-contact" aria-selected="false">Researcher map</a>
+	</li>
+  <li class="nav-item"  id="participant_map_tab">
+		<a class="nav-link" id="pills-pp-tab" data-toggle="pill" href="#navs-pp_map" role="tab" aria-controls="pills-pp" aria-selected="false">Participant map</a>
+	</li>
+  <li class="nav-item"  id="security_tab">
+		<a class="nav-link" id="pills-security-tab" data-toggle="pill" href="#navs-security" role="tab" aria-controls="pills-security" aria-selected="false">Security</a>
+	</li>  
+</ul>
+<div class="tab-content" id="pills-tabContent">
+	<div class="tab-pane fade" id="navs-map" role="tabpanel" aria-labelledby="pills-contact-tab">
+		<div id="mapdiv" style="width: 100%; height:400px;"></div>
+    <div id="listdiv"></div>
+  </div>
+  <div class="tab-pane fade" id="navs-pp_map" role="tabpanel" aria-labelledby="pills-contact-tab">
+	   <div id="ppmapdiv" style="width: 100%; height:400px;"></div>
+     <div id="pplistdiv"></div>
+  </div>
+  <div class="tab-pane fade" id="navs-security" role="tabpanel" aria-labelledby="pills-security-tab">
+    <div id="security_div"></div>
+    <script>
+      $("#security_div").load("security.html");
+    </script>
+  </div>
+</div>
+
+<script>
+var ParseGSX = (function() {
+
+  var _defaultCallback = function(data) {
+    console.log(data);
+  };
+
+  var _parseRawData = function(res) {
+    var finalData = [];
+    res.feed.entry.forEach(function(entry){
+      var parsedObject = {};
+      for (var key in entry) {
+        if (key.substring(0,4) === "gsx$") {
+          parsedObject[key.slice(4)] = entry[key]["$t"];
+        }
+      }
+      finalData.push(parsedObject);
+    });
+    var processGSXData = _defaultCallback;
+    processGSXData(finalData);
+  };
+
+  var parseGSX = function(spreadsheetID, callback) {
+    var url = "https://spreadsheets.google.com/feeds/list/" + spreadsheetID + "/od6/public/values?alt=json";
+    var ajax = $.ajax(url);
+    if (callback) { _defaultCallback = callback; }
+    $.when(ajax).then(_parseRawData);
+  };
+
+  return { parseGSX: parseGSX };
+
+})();
+//navs-pp_map
+$("#participant_map_tab").on("click",function(){
+  if(maps_initiated.participant == false){
+    maps_initiated.participant = true;
+
+    ParseGSX.parseGSX(
+      "17Tbxt8AVwX4XgvuGYcBk_NqXv0zBdNUj62ZyonW8_hg",
+      function(data){
+
+
+      areas_array  = [];
+      images_array = [];
+
+      var table_content = "<table class='table'>" +
+                            "<thead>" +
+                              "<tr>" +
+                                "<th scope='col'>Country</th>" +
+                                "<th scope='col'>Participants</th>" +
+                              "</tr>" +
+                            "</thead>" +
+                            "<tbody>";
+
+
+      var row_order = Object.keys(data);
+
+      row_order.sort(function(a,b) {
+        return data[a].frequency - data[b].frequency;
+      });
+
+      data_sorted = [];
+      for(var i = 0; i < data.length; i++){
+        data_sorted[i] = data[row_order[i]];
+      }
+      data_sorted = data_sorted.reverse();
+      console.dir(data_sorted);
+
+
+      var max_frequency = 0;
+      data_sorted.forEach(function(row){
+        if(row.frequency > max_frequency){
+          max_frequency = row.frequency;
+        }
+      });
+
+      data_sorted.forEach(function(row){
+
+        table_content +=  "<tr>"+
+                            "<td>" + row.country + "</td>" +
+                            "<td>" + row.frequency + "</td>" +
+                          "</tr>"
+
+        var this_opacity = row.frequency/max_frequency < .1 ? .1 : row.frequency/max_frequency;
+
+        if(row.institute !== ""){
+          areas_array.push({
+            id:row.code,
+            color:"rgb(0, 0, 255, " + this_opacity + ")",
+            fillAlphas:row.frequency
+          });
+
+        }
+      });
+
+      table_content += "</tbody>"  + "</table>";
+
+      $("#pplistdiv").html(table_content);
+      AmCharts.makeChart( "ppmapdiv", {
+        /**
+         * this tells amCharts it's a map
+         */
+        "type": "map",
+
+
+
+        /**
+         * create data provider object
+         * map property is usually the same as the name of the map file.
+         * getAreasFromMap indicates that amMap should read all the areas available
+         * in the map data and treat them as they are included in your data provider.
+         * in case you don't set it to true, all the areas except listed in data
+         * provider will be treated as unlisted.
+         */
+        "dataProvider": {
+          "map": "worldLow",
+          "areas": areas_array,
+      "images": images_array
+        },
+      "projection": "winkel3",
+
+        /**
+         * create areas settings
+         * autoZoom set to true means that the map will zoom-in when clicked on the area
+         * selectedColor indicates color of the clicked area.
+         */
+        "areasSettings": {
+          "autoZoom": true,
+          "selectedColor": "#CC0000"
+        },
+
+        /**
+         * let's say we want a small map to be displayed, so let's create it
+         */
+        "smallMap": {}
+      });
+    });
+  }
+});
+
+$("#researchers_map_tab").on("click",function(){
+  if(maps_initiated.researcher == false){
+    maps_initiated.researcher = true;
+
+    ParseGSX.parseGSX("1bD82OXXfna-KTtLk46glo2oUGoGy2JORTJLp47uKOh0",function(data){
+
+      areas_array  = [];
+      images_array = [];
+
+      var table_content = "<table class='table'>" +
+                            "<thead>" +
+                              "<tr>" +
+                                "<th scope='col'>Institute</th>" +
+                                "<th scope='col'>Country</th>" +
+                              "</tr>" +
+                            "</thead>" +
+                            "<tbody>";
+
+
+      data.forEach(function(row){
+
+        table_content +=  "<tr>"+
+                            "<td>" + row.institute + "</td>" +
+                            "<td>" + row.country + "</td>" +
+                          "</tr>"
+
+        if(row.institute !== ""){
+          areas_array.push({
+            id:row.code,
+            color:"#6495ED"
+          });
+          images_array.push({
+
+            "latitude": row.latitude,
+            "longitude": row.longitude,
+            "svgPath": icon,
+            "color": "#CCCC00",
+            "scale": 0.5,
+            "label": row.institute,
+            "labelShiftY": 2
+
+          });
+        }
+      });
+
+      table_content += "</tbody>"  + "</table>";
+
+      $("#listdiv").html(table_content);
+
+      AmCharts.makeChart( "mapdiv", {
+        /**
+         * this tells amCharts it's a map
+         */
+        "type": "map",
+
+
+
+        /**
+         * create data provider object
+         * map property is usually the same as the name of the map file.
+         * getAreasFromMap indicates that amMap should read all the areas available
+         * in the map data and treat them as they are included in your data provider.
+         * in case you don't set it to true, all the areas except listed in data
+         * provider will be treated as unlisted.
+         */
+        "dataProvider": {
+          "map": "worldLow",
+          "areas": areas_array,
+      "images": images_array
+        },
+      "projection": "winkel3",
+
+        /**
+         * create areas settings
+         * autoZoom set to true means that the map will zoom-in when clicked on the area
+         * selectedColor indicates color of the clicked area.
+         */
+        "areasSettings": {
+          "autoZoom": true,
+          "selectedColor": "#CC0000"
+        },
+
+        /**
+         * let's say we want a small map to be displayed, so let's create it
+         */
+        "smallMap": {}
+      });
+    });
+  }
+});
+
+</script>

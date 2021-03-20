@@ -214,10 +214,9 @@ $("#power_btn").on("click",function(){
   })
 });
 $("#show_citations").on("click", function(){
-  $.get("Citations.csv", function(result){
-    var top_html = '<h3 class="text-primary">Citations</h3>' +
+  $.get("PopOuts/Citations.csv", function(result){
+    var table_html = '<h3 class="text-primary">Citations</h3>' +
       '<p>';
-    var table_html = '';
 
     Collector.PapaParsed(result).forEach(function(row){
       table_html += '<a class="btn btn-primary" data-toggle="collapse" href="#cite_' + row.paper + '" role="button" aria-expanded="false" aria-controls="cite_' + row.paper + '" style="margin:2px; width:100%">' +
@@ -245,42 +244,22 @@ $("#show_citations").on("click", function(){
       "</tr></table></div></div>";
     });
 
-    top_html += "</h3>";
     table_html += "</table>";
 
-
-
-    bootbox.alert(top_html + table_html);
+    bootbox.alert(table_html);
   })
 });
 
-$("#show_open_source_packages").on("click", function(){
-  $.get("OpenSourcePackages.csv", function(result){
-    var packages = Collector.PapaParsed(result);
+$("#show_contributors").on("click", function(){
 
-    var packages_html = "<table class='table'>" +
-      "<thead>" +
-        "<tr>" +
-          '<th scope="col">Package</th>' +
-          '<th scope="col">Use</th>' +
-          '<th scope="col">Version</th>' +
-        "</tr>";
-      "</thead>";
+  $.get("PopOuts/contributors.html", function(result){
+    bootbox.alert(result)
+  });
+});
 
-      packages.forEach(function(row){
-        packages_html += "<tr>" +
-          "<td>" + row.package + "</td>"+
-          "<td>" + row.use     + "</td>"+
-          "<td>" + row.version + "</td>" +
-          "</tr>";
-      });
-      packages_html += "</table>";
-
-
-    bootbox.alert({
-      title: "The open-source (versions of) software that has been used to make Collector:",
-      message: packages_html
-    });
+$("#show_maps").on("click", function(){
+  $.get("PopOuts/Maps.html", function(this_html){
+    bootbox.alert(this_html);
   });
 });
 
