@@ -18,7 +18,11 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-  Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
+  Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey
+
+  Harry Sullivan contributed code that was used for jumbled sentence questions.
+
+  (team@someopen.solutions)
 -->
 <style>
 body{
@@ -130,10 +134,11 @@ td{
 <div id="everything">
 	<div id="survey_outline"></div>
 </div>
+<span id="scales_span"></span>
 <script>
-/////////////////////////
-// Retrieving settings //
-/////////////////////////
+/*
+* Retrieving settings
+*/
 
 if(typeof(settings) !== "undefined"){
   settings = [settings];
@@ -141,44 +146,47 @@ if(typeof(settings) !== "undefined"){
   settings = {};
 }
 
-//////////////////////////////////
-// vertical vs. horizontal tabs //
-//////////////////////////////////
+/*
+* vertical vs. horizontal tabs
+*/
 
-if(typeof(settings.tab_hor_vert) == "undefined" || settings.tab_hor_vert.toLowerCase() == "horizontal"){
+if(
+  typeof(settings.tab_hor_vert) == "undefined" || settings.tab_hor_vert.toLowerCase() == "horizontal"
+){
   settings.tab_hor_vert = "horizontal";
-  $("#survey_outline").html(  '<div id="please_wait_div">Loading... Please wait</div>'+
-                              '<div id="this_survey_id" class="needs-validation" novalidate></div>'+
-                              '<div id="survey_tabs" style="text-align:right" class="border-top border-primary"></div><input type="submit" value="Proceed" class="btn btn-primary" id="proceed_button">');
-
+  $("#survey_outline").html(
+    '<div id="please_wait_div">Loading... Please wait</div>' +
+    '<div id="this_survey_id" class="needs-validation" novalidate></div>'+
+    '<div id="survey_tabs" style="text-align:right" class="border-top border-primary"></div><input type="submit" value="Proceed" class="btn btn-primary" id="proceed_button">'
+  );
 } else if (settings.tab_hor_vert.toLowerCase() == "vertical"){
-  $("#survey_outline").html( '<table>'+
-                                '<tr>'+
-                                  '<td valign="top" class="border-right border-primary">'+
-                                    '<div id="survey_tabs"></div></td>' +
-                                  '<td>'+
-                                    '<div id="please_wait_div">Please wait while survey is downloading</div>'+
-                                    '<div id="this_survey_id" class="needs-validation" novalidate></div>' +
-                                    '<input type="button" value="Proceed" class="btn btn-primary" id="proceed_button">'+
-                                  '</td>'+
-                                '</tr>'+
-                              '</table>');
+  $("#survey_outline").html(
+    '<table>' +
+      '<tr>' +
+        '<td valign="top" class="border-right border-primary">'+
+          '<div id="survey_tabs"></div>' +
+        '</td>' +
+        '<td>'+
+          '<div id="please_wait_div">Please wait while survey is downloading</div>'+
+          '<div id="this_survey_id" class="needs-validation" novalidate></div>' +
+          '<input type="button" value="Proceed" class="btn btn-primary" id="proceed_button">'+
+        '</td>'+
+      '</tr>'+
+    '</table>'
+  );
 } else if(settings.tab_hor_vert.toLowerCase() == "none"){
-  $("#survey_outline").html(  '<div id="survey_tabs" style="display:none"></div>' +
-                              '<div id="please_wait_div">Please wait while survey is downloading</div>'+
-                              '<div id="this_survey_id" class="needs-validation" novalidate></div>');
+  $("#survey_outline").html(
+    '<div id="survey_tabs" style="display:none"></div>' +
+    '<div id="please_wait_div">Please wait while survey is downloading</div>'+
+    '<div id="this_survey_id" class="needs-validation" novalidate></div>'
+  );
 } else {
   bootbox.alert("If you are the researcher, please check the 'settings for this survey. The input for 'tab_hor_vert' appears to be invalid. Please change it to 'horizontal' or 'vertical' or 'none' or remove 'tab_hot_vert' altogether from the settings, which will make the tabs invisible");
 }
-</script>
 
-<span id="scales_span"></span>
-
-<script>
-
-//////////////////////
-// Defining objects //
-//////////////////////
+/*
+* Defining objects
+*/
 
 page_break_management = {
   breaks_remaining : 0,
@@ -208,10 +216,9 @@ scoring_object={
 
 survey_obj = {};
 
-
-/////////////////////
-// Element actions //
-/////////////////////
+/*
+* Element actions
+*/
 
 /*
 $(function() {
@@ -232,10 +239,11 @@ $("#proceed_button").on("click",function(){
   var proceed = true;
   var tabs    = document.getElementsByClassName('show_tab active');
   if(tabs.length > 0){
-    var current_tab       = document.getElementsByClassName('show_tab active')[0]
-                                    .id
-                                    .replace("_button", "")
-                                    .replace("tab_",    "");
+    var current_tab       = document.getElementsByClassName(
+      'show_tab active')[0]
+        .id
+        .replace("_button", "")
+        .replace("tab_",    "");
     var response_elements = $('#table_'+current_tab).find('.response_element');
 
   } else {
@@ -311,14 +319,14 @@ String.prototype.replaceAll = function(str1, str2, ignore){
 }
 
 
-///////////////
-// Functions //
-///////////////
+/*
+Functions
+*/
 
 function clean_item(this_item){
   if(this_item.indexOf("'") !== -1 |
      this_item.indexOf('"') !== -1){
-    bootbox.alert("Please avoid apostraphe's or quote marks in the responses the participant can give. These cause problems with smooth running of surveys. This occurs when you wrote:<br><br>" + this_item);
+    bootbox.alert("Please avoid apostraphes or quote marks in the responses the participant can give. These cause problems with smooth running of surveys. This occurs when you wrote:<br><br>" + this_item);
   }
 
   /*
@@ -329,14 +337,69 @@ function clean_item(this_item){
   return(this_item);
 }
 
+function write(type, row){
+  [feedback_array, feedback_color] = retrieve_feedback(row);
+  feedback_string = generate_feedback_string(
+    feedback_array,
+    0,
+    feedback_color,
+    row
+  );
+
+  if(type == "dropdown"){
+    var options = row["answers"].split("|");
+    this_html = '<select class="custom-select text-primary ' +
+      row["item_name"] + '_item row_' + row["row_no"] +
+      ' collector_button"' +
+      ' onchange="response_check(this)" ' +
+      ' name="survey_' +
+        row["item_name"].toLowerCase() + '">' +
+      '<option selected disabled hidden>-- no option selected --</option>';
+    for(var i=0; i<options.length;i++){
+      this_html += "<option>" + options[i] + "</option>";
+    }
+    this_html += '</select>' + feedback_string;
+
+  } else if(type == "instruct"){
+    var this_html = "<td colspan='2'>" +
+                          row["text"] +
+                        "</td>";
+
+  } else if(type == "jumbled"){
+    var this_html = "<td colspan='2'>" +
+      "<div class='form-inline' style='width:100%'>";
+
+    /*
+    * how will values work?? - the order of correct answers??
+    */
+
+    var question = row["text"].split("|");
+    var select_html  = "<select class='form-control' style='width:auto; margin:5px'> <option>" +
+      row["answers"].split("|").join("</option><option>") + "</option></select>";
+
+    this_html += question.join(select_html) +
+
+    "</div></td>";
+
+
+  } else if(type == "likert"){
+    //tbc
+  } else if(type == "radio" | "radio_vertical"){
+
+  }
+  return (this_html);
+}
+
 function load_survey(survey){
   // are we in preview?
   /////////////////////
   if(typeof(parent.master_json) !== "undefined" && parent.master_json.surveys.preview){     // Yes
-    survey_content = survey;                                                    // i.e. the content has been passed through directly
+    survey_content = survey;
+    // i.e. the content has been passed through directly
     survey_obj.mods = parent.master_json.mods;                                //no need to be efficient in preview
 
-  } else {                                                                      // No
+  } else {
+    // No
     survey = survey.toLowerCase().replace(".csv","") + ".csv";
 
     if(typeof(parent.parent.exp_json.surveys) !== "undefined" &&
@@ -355,7 +418,12 @@ function load_survey(survey){
   process_returned_questionnaire(survey_content);
 }
 
-function generate_feedback_string(feedback_array,this_index,feedback_color,row_no,this_row){
+function generate_feedback_string(
+  feedback_array,
+  this_index,
+  feedback_color,
+  this_row
+){
   if(feedback_array){                 //i.e. if it's not null
     if(feedback_array.length > 1){
       return "<div class='feedback_span_multiple "+this_row["item_name"].toLowerCase()+"_feedback' style='color:"+feedback_color[this_index]+"'>"+feedback_array[this_index]+"</div>";
@@ -449,15 +517,18 @@ function process_survey_question(this_row,row_no){
     this_row.values = this_row.answers;
   }
 
-  if(typeof(this_row["text"]) !== "undefined" &&
-		 typeof(this_row["type"]) !== "undefined" &&
-		 this_row['text'].toLowerCase() == "page_break" |
-		 this_row['type'].toLowerCase() == "page_break"){
-        page_break_management.breaks_remaining++;
-        question_td = "</tr></table><table id='table" + page_break_management.breaks_remaining + "' style='display:none' class='table_break'></tr>";
+  if(
+    typeof(this_row["text"]) !== "undefined" &&
+		typeof(this_row["type"]) !== "undefined" &&
+		this_row['text'].toLowerCase() == "page_break" |
+    this_row['type'].toLowerCase() == "page_break"
+  ){
+    page_break_management.breaks_remaining++;
+    question_td = "</tr></table><table id='table" + page_break_management.breaks_remaining + "' style='display:none' class='table_break'></tr>";
   } else {
-
-    if(typeof(this_row["values"]) !== "undefined" & typeof(this_row["values"]) !== "function"){ //to address microsoft edge issue.
+    if(
+      typeof(this_row["values"]) !== "undefined" & typeof(this_row["values"]) !== "function"
+    ){ //to address microsoft edge issue.
       value_array = this_row["values"].split("|");
     } else {
       value_array='';
@@ -480,11 +551,13 @@ function process_survey_question(this_row,row_no){
 
     [feedback_array,feedback_color] = retrieve_feedback(this_row);
 
-    response_html = '<input type="hidden" class="response_element row_'+row_no+'" id="survey_'+this_row["item_name"].toLowerCase()+'_response" name="survey_'+this_row["item_name"].toLowerCase()+'_response"  value="">';
+    question_td = '<input type="hidden" class="response_element row_'+row_no+'" id="survey_'+this_row["item_name"].toLowerCase()+'_response" name="survey_'+this_row["item_name"].toLowerCase()+'_response"  value="">';
 
 
-    // Survey settings
-    ////////////////////
+    /*
+    * Survey settings
+    */
+
 
     [row_ques_perc,row_resp_perc] = quest_resp_perc(this_row["question_width"]);
 
@@ -495,7 +568,6 @@ function process_survey_question(this_row,row_no){
     if(typeof(settings.lock_after_feedback) == "undefined"){
         settings.lock_after_feedback = false;
     }
-    var question_td='';
 
     if(typeof(this_row["type"]) == "undefined"){
         return false;
@@ -515,7 +587,6 @@ function process_survey_question(this_row,row_no){
       });
       question_td += mod_html;
     } else {
-
       switch(this_row["type"].toLowerCase()){
         case "page_start":
           var tabs_html = $("#survey_tabs").html();
@@ -565,9 +636,13 @@ function process_survey_question(this_row,row_no){
         case "checkbox":
         case "checkbox_vertical":
           var options = this_row["answers"].split("|");
-          question_td +=  response_html;
           for(var i=0; i<options.length;i++){
-            feedback_string = generate_feedback_string(feedback_array,i,feedback_color,row_no,this_row);
+            feedback_string = generate_feedback_string(
+              feedback_array,
+              i,
+              feedback_color,
+              this_row
+            );
             question_td +=  '<div class="custom-control custom-checkbox">'+
                 '<input type="checkbox" class="custom-control-input '+this_class+' custom-control custom-checkbox '+this_row["item_name"]+'_item row_'+row_no+'" id="'+this_row["item_name"]+ i +'"  onchange="response_check(this)" name="survey_'+this_row["item_name"].toLowerCase()+'">'+
                 '<label class="custom-control-label" for="'+this_row["item_name"]+i+'">'+options[i]+'</label>'+
@@ -577,77 +652,101 @@ function process_survey_question(this_row,row_no){
           break;
 
           case "checkbox_horizontal":
-            feedback_string = generate_feedback_string(feedback_array,0,feedback_color,row_no,this_row);
+            feedback_string = generate_feedback_string(
+              feedback_array,
+              0,
+              feedback_color,
+              this_row
+            );
             var options = this_row["answers"].split("|");
-            question_td += response_html;
             question_td += '<table><tr>';
             for(var i=0; i<options.length;i++){
               question_td +=  '<td>'+
-                                '<div class="custom-control custom-checkbox">'+
-                                  '<input type="checkbox" class="custom-control-input '+this_class+' custom-control custom-checkbox '+this_row["item_name"]+'_item row_'+row_no+'" id="'+this_row["item_name"]+ i +'"  onchange="response_check(this)" name="survey_'+this_row["item_name"].toLowerCase()+'">'+
-                                    '<label class="custom-control-label" for="'+this_row["item_name"]+i+'">'+options[i]+'</label>'+
-                                '</div>'+
-                              '</td>';
+                '<div class="custom-control custom-checkbox">'+
+                '<input type="checkbox" class="custom-control-input ' +
+                this_class +
+                ' custom-control custom-checkbox ' +
+                this_row["item_name"] +
+                '_item row_' +
+                row_no +
+                '" id="' +
+                this_row["item_name"] + i +
+                '" onchange="response_check(this)" name="survey_' +
+                this_row["item_name"].toLowerCase()+'">' +
+                '<label class="custom-control-label" for="' +
+                this_row["item_name"] + i +'">' +
+                options[i] + '</label>'+
+                '</div>'+
+              '</td>';
             }
             question_td += '</tr></table>'+feedback_string;
           break;
 
           case "checkbox_single":
-            feedback_string = generate_feedback_string(feedback_array,0,feedback_color,row_no,this_row);
+            feedback_string = generate_feedback_string(
+              feedback_array,
+              0,
+              feedback_color,
+              this_row
+            );
             var this_option = this_row["answers"];
-            question_td +=  response_html +
-                            '<div class="btn-group-toggle" data-toggle="buttons">'+
-                                '<label class="btn btn-outline-primary">'+
-                                    '<input type="checkbox" class="'+this_row["item_name"]+'_item row_'+row_no+'"  checked autocomplete="off" id="'+this_row["item_name"]+'" onchange="response_check(this)" name="survey_'+this_row["item_name"].toLowerCase()+'">'+ this_option +
+            question_td +=  '<div class="btn-group-toggle" data-toggle="buttons">'+
+                '<label class="btn btn-outline-primary">'+
+                  '<input type="checkbox" class="' + this_row["item_name"] +
+                  '_item row_' +
+                  row_no +
+                  '"  checked autocomplete="off" id="'
+                  +
+                  this_row["item_name"]+'" onchange="response_check(this)" name="survey_'+this_row["item_name"].toLowerCase()+'">'+ this_option +
                                 '</label>'+
                             '</div>' + feedback_string;
           break;
 
           case "date":
-              feedback_string = generate_feedback_string(feedback_array,0,feedback_color,row_no,this_row);
-              question_td+=   response_html+
-                              "<input onchange='response_check(this)' class='custom-control datepicker date "+this_row["item_name"]+"_item row_"+row_no+"' type='text' name='survey_"+this_row['item_name'].toLowerCase()+"'>"+
+              feedback_string = generate_feedback_string(
+                feedback_array,
+                0,
+                feedback_color,
+                this_row
+              );
+              question_td+= "<input onchange='response_check(this)' class='custom-control datepicker date "+this_row["item_name"]+"_item row_"+row_no+"' type='text' name='survey_"+this_row['item_name'].toLowerCase()+"'>"+
                               feedback_string;
           break;
 
           case "dropdown":
 					case "select":
-              feedback_string = generate_feedback_string(feedback_array,
-																												 0,
-																												 feedback_color,
-																												 row_no,
-																												 this_row);
-              var options = this_row["answers"].split("|");
-              question_td += response_html +
-								'<select ' +
-									'class="custom-select ' +
-													'text-primary ' +
-													this_row["item_name"] +
-													'_item row_' + row_no +
-													'collector_button "' +
-										'onchange="response_check(this)" ' +
-										'name="survey_' + this_row["item_name"].toLowerCase() + '">' +
-										'<option selected disabled hidden>-- no option selected --</option>';
-              for(var i=0; i<options.length;i++){
-								question_td += "<option>" + options[i] + "</option>";
-              }
-              question_td += '</select>' + feedback_string;
+            var updated_row = JSON.parse(
+              JSON.stringify(this_row)
+            );
+            updated_row['row_no'] = row_no;
+            question_td += write("dropdown",updated_row);
           break;
 
           case "email":
-              feedback_string = generate_feedback_string(feedback_array,0,feedback_color,row_no,this_row);
-              question_td += response_html+"<input class='form-control type='email' "+this_row["item_name"]+"_item row_"+row_no+"' onchange='response_check(this)' type='text' name='survey_"+this_row['item_name'].toLowerCase()+"'>";
+              feedback_string = generate_feedback_string(
+                feedback_array,
+                0,
+                feedback_color,
+                this_row
+              );
+              question_td += "<input class='form-control type='email' "+this_row["item_name"]+"_item row_"+row_no+"' onchange='response_check(this)' type='text' name='survey_"+this_row['item_name'].toLowerCase()+"'>";
               question_td += feedback_string;
           break;
 
           case "google_slide":
+          case "jumbled":
           case "instruct":
-              //question_td += </td>"; // "<span class='text-primary'>" + this_row["text"] + "</span>";
-          break;
+            // skip as these are defined elsewhere to take the whole row
+            break;
 
           // tidy up this code for nice looking buttons
           case "likert":
-              feedback_string = generate_feedback_string(feedback_array,0,feedback_color,row_no,this_row);
+              feedback_string = generate_feedback_string(
+                feedback_array,
+                0,
+                feedback_color,
+                this_row
+              );
               var options  = this_row["answers"].split("|");
 
 							if(typeof(this_row["values"]) == "undefined"){
@@ -686,8 +785,7 @@ function process_survey_question(this_row,row_no){
 							}
 							question_td += side_text[0];
 
-							question_td +=  response_html +
-                              '<div class="btn-group btn-group-toggle" data-toggle="buttons">'; //to help detect blank likert's
+							question_td +=  '<div class="btn-group btn-group-toggle" data-toggle="buttons">'; //to help detect blank likert's
 
 
 							for(var i=0; i<options.length;i++){
@@ -714,13 +812,23 @@ function process_survey_question(this_row,row_no){
           break;
 
           case "number":
-              feedback_string = generate_feedback_string(feedback_array,0,feedback_color,row_no,this_row);
-              question_td += response_html +"<input type='number'  onchange='response_check(this)' class='form-control "+this_row["item_name"]+"_item row_"+row_no+"' name='survey_"+this_row['item_name'].toLowerCase()+"'>" + feedback_string;
+              feedback_string = generate_feedback_string(
+                feedback_array,
+                0,
+                feedback_color,
+                this_row
+              );
+              question_td += "<input type='number'  onchange='response_check(this)' class='form-control "+this_row["item_name"]+"_item row_"+row_no+"' name='survey_"+this_row['item_name'].toLowerCase()+"'>" + feedback_string;
           break;
 
           case "para":
-              feedback_string = generate_feedback_string(feedback_array,0,feedback_color,row_no,this_row);
-              question_td += response_html+"<textarea name='survey_"+this_row['item_name'].toLowerCase()+"' class='"+this_row["item_name"]+"_item row_"+row_no+"' onchange='response_check(this)' style='width:100%;height:200px'></textarea>";
+              feedback_string = generate_feedback_string(
+                feedback_array,
+                0,
+                feedback_color,
+                this_row
+              );
+              question_td += "<textarea name='survey_"+this_row['item_name'].toLowerCase()+"' class='"+this_row["item_name"]+"_item row_"+row_no+"' onchange='response_check(this)' style='width:100%;height:200px'></textarea>";
               question_td += feedback_string;
           break;
 
@@ -728,9 +836,13 @@ function process_survey_question(this_row,row_no){
           case "radio_vertical":
             var options = this_row["answers"].split("|");
             var values   = this_row["values"].split("|");
-            question_td +=  response_html;
             for(var i=0; i<options.length;i++){
-              feedback_string = generate_feedback_string(feedback_array,i,feedback_color,row_no,this_row);
+              feedback_string = generate_feedback_string(
+                feedback_array,
+                i,
+                feedback_color,
+                this_row
+              );
 
               question_td +=  '<div class="custom-control custom-radio">'+
                                 '<input type="radio" class="custom-control-input '+this_class+'  onclick="likert_update(this,\''+options[i]+'\',\''+values[i]+'\')" custom-control custom-radio '+this_row["item_name"]+'_item row_'+row_no+'" id="'+this_row["item_name"]+ i +'"  onchange="response_check(this)" value="' + options[i] + '" name="survey_'+this_row["item_name"].toLowerCase()+'">'+
@@ -744,9 +856,13 @@ function process_survey_question(this_row,row_no){
           break;
 
           case "radio_horizontal":
-              feedback_string = generate_feedback_string(feedback_array,0,feedback_color,row_no,this_row);
+              feedback_string = generate_feedback_string(
+                feedback_array,
+                0,
+                feedback_color,
+                this_row
+              );
               var options = this_row["answers"].split("|");
-              question_td +=  response_html;
               for(var i=0; i<options.length;i++){
                   question_td +=  '<div class="custom-control custom-radio custom-control-inline">'+
                                       '<input type="radio" class="custom-control-input '+this_class+' custom-control custom-radio '+this_row["item_name"]+'_item row_'+row_no+'" id="'+this_row["item_name"]+ i +'"  onchange="response_check(this)" name="survey_'+this_row["item_name"].toLowerCase()+'">'+
@@ -762,26 +878,29 @@ function process_survey_question(this_row,row_no){
           break;
 
           case "text":
-              feedback_string = generate_feedback_string(feedback_array,0,feedback_color,row_no,this_row);
-              question_td += response_html+"<input class='form-control "+this_row["item_name"]+"_item row_"+row_no+"' onchange='response_check(this)' type='text' name='survey_"+this_row['item_name'].toLowerCase()+"'>";
+              feedback_string = generate_feedback_string(
+                feedback_array,
+                0,
+                feedback_color,
+                this_row
+              );
+              question_td += "<input class='form-control "+this_row["item_name"]+"_item row_"+row_no+"' onchange='response_check(this)' type='text' name='survey_"+this_row['item_name'].toLowerCase()+"'>";
               question_td += feedback_string;
           break;
-
       }
     }
     if(feedback_array){
         question_td += "<button class='btn btn-outline-info feedback_btn "+this_row["item_name"]+"_item row_"+row_no+"' data-toggle='tooltip' id='reveal_"+this_row["item_name"].toLowerCase()+"_feedback'  onclick='reveal_answers(this)'>Show</button>";
     }
   }
-//  question_td += '</td>';
 
   if(typeof(this_row["type"])== "undefined"){
       return '';
   } else {
     if(this_row["type"].toLowerCase() == "instruct"){
-      var this_row_html = "<td colspan='2'>" +
-														this_row["text"] +
-													"</td>";
+      this_row_html  = write("instruct",this_row);
+    } else if(this_row["type"].toLowerCase() == "jumbled"){
+      this_row_html  = write("jumbled",this_row);
 		} else if(this_row["type"].toLowerCase() == "likert"){
 
 			if(typeof(this_row["side_by_side"]) !== "undefined" &&
@@ -812,7 +931,7 @@ function process_survey_question(this_row,row_no){
     } else {
       if(this_row['text'].toLowerCase() == "page_start" | this_row['type'].toLowerCase() == "page_start"){
         this_row_html = question_td;
-      }else {
+      } else {
         var this_row_html="<td class='text-primary' id='survey_"+this_row["item_name"].toLowerCase().replace(" ","_")+"_question' style='width:"+row_ques_perc+"; text-align:right'>"+this_row["text"]+"</td><td>"+question_td+"</label></td>";
       }
     }
