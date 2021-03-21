@@ -395,7 +395,7 @@ function write(type, row){
   } else if(type == "dropdown"){
     var options = row["answers"].split("|");
     var this_dropdown = $("<select>");
-        this_dropdown.addClass("custom-select")
+        this_dropdown.addClass("form-control")
                      .addClass("response")
                      .addClass("txt-primary")
                      .addClass(row["item_name"] + "_item")
@@ -404,7 +404,9 @@ function write(type, row){
                      .attr(
                        "name",
                        "survey_" + row["item_name"].toLowerCase()
-                     );
+                     )
+                     .css("margin", "0px")
+                     .css("width", "auto");
         this_dropdown
 
     this_dropdown.append("<option selected disabled hidden>-- no option selected --</option>");
@@ -425,19 +427,23 @@ function write(type, row){
     * how will values work?? - the order of correct answers??
     */
 
-    //need item_name
 
     var question = row["text"].split("|");
-    var select_html  = write("dropdown",row);
-    /*
-    "<select class='form-control' style='width:auto; margin:5px'> <option>" +
-      row["answers"].split("|").join("</option><option>") + "</option></select>";
-      */
-
-    this_html += question.join(select_html) +
-
+    this_html += question.map(function(text,index){
+      if(index == question.length - 1){
+        return text;
+      } else {
+        var row_x = row;
+        row_x["item_name_old"] = row_x["item_name"];
+        row_x["item_name"] = row_x["item_name"] + "_" + index;
+        var row_html = text + write(
+          "dropdown", row_x
+        ).replace("margin: 0px","margin: 5px");
+        row_x["item_name"] = row_x["item_name_old"];
+        return row_html;
+      }
+    });
     "</div></td>";
-
 
   } else if(type == "likert"){
     var options  = row["answers"].split("|");
