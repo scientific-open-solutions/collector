@@ -166,14 +166,43 @@ editor.on("focus",function(){
 });
 
 editor.completers.push({
-	getCompletions: function(editor, session, pos, prefix, callback) {
+  getCompletions: function(
+    editor, session, pos, prefix, callback
+  ) {
 		callback(null, [
-			{value: "Trial.add_response()", score: 1000, meta: "add row to responses"},
-			{value: "Trial.submit()",     	score: 1000, meta: "end trial - C"},
-			{value: "Trial.elapsed()",    	score: 1000, meta: "since trial start - C"},
-			{value: "Trial.set_timer()",  	score: 1000, meta: "at trial start - C"},
-      {value: "Trial.set()",        	score: 1000, meta: "for another trial -C"},
-      {value: "Trial.get()",        	score: 1000, meta: "from an earlier trial -C"}
+			{
+        value: "Trial.add_response()",
+        score: 1000,
+        meta: "add row to responses"
+      },{
+        value: "Trial.submit()",
+        score: 1000,
+        meta: "end trial - C"
+      },{
+        value: "Trial.elapsed()",
+        score: 1000,
+        meta: "since trial start - C"
+      },{
+        value: "Trial.set_timer()",
+        score: 1000,
+        meta: "at trial start - C"
+      },{
+        value: "Trial.set()",
+        score: 1000,
+        meta: "for another trial -C"
+      },{
+        value: "Trial.get()",
+        score: 1000,
+        meta: "from an earlier trial -C"
+      },{
+        value: "Trial.get_proc()",
+        score: 1000,
+        meta: "load a proc sheet -C"
+      },{
+        value: "Trial.get_stim()",
+        score: 1000,
+        meta: "load a stim sheet -C"
+      }
 		]);
 	}
 });
