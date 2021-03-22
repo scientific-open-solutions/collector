@@ -336,8 +336,8 @@ function clean_item(this_item){
 
   return(this_item);
 }
-
 function write(type, row){
+
   var this_html = "";
   [feedback_array, feedback_color] = retrieve_feedback(row);
 
@@ -346,21 +346,27 @@ function write(type, row){
     this_html += '<table><tr>';
     for(var i=0; i<options.length;i++){
       this_html +=  '<td>'+
-        '<div class="custom-control custom-checkbox">'+
-        '<input type="checkbox" class="custom-control-input ' +
-        row["this_class"] +
-        ' custom-control custom-checkbox ' +
-        row["item_name"] +
-        '_item row_' +
-        row["row_no"] +
-        '" id="' +
-        row["item_name"] + i +
-        '" onchange="response_check(this)" name="survey_' +
-        row["item_name"].toLowerCase()+'">' +
-        '<label class="custom-control-label" for="' +
-        row["item_name"] + i +'">' +
-        options[i] + '</label>'+
-        '</div>'+
+        '<div class="custom-control custom-checkbox">';
+      var this_input = $("<input>");
+          this_input[0].type = "checkbox";
+          this_input[0].id = row["item_name"] + i;
+          this_input[0].name = 'survey_' +
+            row["item_name"].toLowerCase();
+          this_input.addClass("custom-control-input")
+            .addClass("response")
+            .addClass(row["this_class"])
+            .addClass(row["custom-control"])
+            .addClass(row["custom-checkbox"])
+            .addClass(row["item_name"] +'_item')
+            .addClass('row_' + row["row_no"]);
+
+      var this_label = $("<label>");
+          this_label[0].innerText = options[i];
+          this_label.addClass("custom-control-label");
+
+      this_html += this_input[0].outerHTML;
+      this_html += this_label[0].outerHTML;
+      this_html += '</div>'+
       '</td>';
     }
     this_html += '</tr></table>';
@@ -396,18 +402,17 @@ function write(type, row){
     var options = row["answers"].split("|");
     var this_dropdown = $("<select>");
         this_dropdown.addClass("form-control")
-                     .addClass("response")
-                     .addClass("txt-primary")
-                     .addClass(row["item_name"] + "_item")
-                     .addClass("row_" + row["row_no"])
-                     .addClass("collector_button")
-                     .attr(
-                       "name",
-                       "survey_" + row["item_name"].toLowerCase()
-                     )
-                     .css("margin", "0px")
-                     .css("width", "auto");
-        this_dropdown
+          .addClass("response")
+          .addClass("txt-primary")
+          .addClass(row["item_name"] + "_item")
+          .addClass("row_" + row["row_no"])
+          .addClass("collector_button")
+          .attr(
+            "name",
+            "survey_" + row["item_name"].toLowerCase()
+          )
+          .css("margin", "0px")
+          .css("width", "auto");
 
     this_dropdown.append("<option selected disabled hidden>-- no option selected --</option>");
     options.forEach(function(this_option){
@@ -937,7 +942,6 @@ function process_question(row, row_no){
         question_td += "<button class='btn btn-outline-info feedback_btn "+row["item_name"]+"_item row_"+row_no+"' data-toggle='tooltip' id='reveal_"+row["item_name"].toLowerCase()+"_feedback' onclick='reveal_answers(this)'>Show</button>";
     }
   }
-
   if(typeof(row["type"])== "undefined"){
       return '';
   } else {
