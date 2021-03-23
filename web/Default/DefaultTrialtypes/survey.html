@@ -5,10 +5,7 @@
   A program for running experiments on the web
   Copyright 2012-2018 Mikey Garcia & Nate Kornell
 
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License version 3 as published by
-  the Free Software Foundation.
+  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License version 3 as published by the Free Software Foundation.
 
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -44,10 +41,6 @@ td{
   display:none;
   float:right;
 }
-#this_survey_id{
-  padding:            20px;
-  display:            none;
-}
 #survey_outline{
 	position: 					fixed;
   top: 								50%;
@@ -68,7 +61,10 @@ td{
 #survey_tabs{
   padding:            20px;
 }
-
+#this_survey_id{
+  padding:            20px;
+  display:            none;
+}
 
 /*
 *	elements by class
@@ -326,12 +322,6 @@ function clean_item(this_item){
      this_item.indexOf('"') !== -1){
     bootbox.alert("Please avoid apostraphes or quote marks in the responses the participant can give. These cause problems with smooth running of surveys. This occurs when you wrote:<br><br>" + this_item);
   }
-
-  /*
-  this_item = this_item.replaceAll("'","")
-                       .replaceAll('"','');
-  */
-
   return(this_item);
 }
 
@@ -363,6 +353,7 @@ function write(type, row){
   var this_html = "";
   [feedback_array, feedback_color] = get_feedback(row);
   row = shuffle_answers(row);
+  row["item_name"] = row["item_name"].toLowerCase();
 
   if(type == "checkbox_horizontal"){
     var options = row["answers"].split("|");
@@ -376,8 +367,7 @@ function write(type, row){
       var this_input = $("<input>");
           this_input[0].type = "checkbox";
           this_input[0].id = row["item_name"] + i;
-          this_input[0].name = 'survey_' +
-            row["item_name"].toLowerCase();
+          this_input[0].name = 'survey_' + row["item_name"];
           this_input.addClass("custom-control-input")
             .addClass("response")
             .addClass(row["this_class"])
@@ -396,30 +386,41 @@ function write(type, row){
     this_html += this_table[0].outerHTML;
 
   } else if(type == "checkbox_single"){
-    this_html += '<div class="btn-group-toggle" data-toggle="buttons">' +
-      '<label class="btn btn-outline-primary">' +
-        '<input type="checkbox" class="' + row["item_name"] +
-        '_item row_' +
-        row["row_no"] +
-        '"  checked autocomplete="off" id="' +
-        row["item_name"]+'" onchange="response_check(this)" name="survey_'+row["item_name"].toLowerCase()+'">'+ row["answers"]; +
-      '</label>'+
-    '</div>';
+
+    var this_div = $("<div>");
+        this_div.attr("data-toggle", "buttons");
+        this_div.addClass("btn-group-toggle");
+    var this_label = $("<label>");
+        this_label.addClass("btn");
+        this_label.addClass("btn-outline-primary");
+        this_label.html(row["answers"]);
+    var this_checkbox = $("<input>");
+        this_checkbox[0].id = row["item_name"];
+        this_checkbox[0].name = "survey_" +
+          row["item_name"].toLowerCase();
+        this_checkbox[0].type = "checkbox";
+        this_checkbox.attr("checked",true);
+        this_checkbox
+          .addClass("response")
+          .addClass(
+            row["item_name"] +
+            '_item row_' +
+            row["row_no"]
+          );
+    this_div.append(this_label);
+    this_label.append(this_checkbox)
+    this_html += this_div[0].outerHTML;
 
   } else if(type == "checkbox_vertical"){
     var options = row["answers"].split("|");
     for(var i = 0; i < options.length; i++){
       feedback_string = generate_feedback_string(
-        feedback_array,
-        i,
-        feedback_color,
-        row
+        feedback_array, i, feedback_color, row
       );
       var this_div = $("<div>");
           this_div
             .addClass("custom-control")
             .addClass("custom-checkbox");
-
       var this_checkbox = $("<input>");
           this_checkbox[0].id= row["item_name"]+ i;
           this_checkbox[0].type = "checkbox";
@@ -432,12 +433,10 @@ function write(type, row){
             .addClass("custom-checkbox")
             .addClass("response")
             .addClass(row["item_name"] + "_item_row");
-
       var this_label = $("<label>");
           this_label[0].htmlFor = row["item_name"] + i;
           this_label[0].innerHTML = options[i];
           this_label.addClass("custom-control-label");
-
       this_div.append(this_checkbox)
               .append(this_label);
 
@@ -453,10 +452,7 @@ function write(type, row){
           .addClass(row["item_name"] + "_item")
           .addClass("row_" + row["row_no"])
           .addClass("collector_button")
-          .attr(
-            "name",
-            "survey_" + row["item_name"].toLowerCase()
-          )
+          .attr("name", "survey_" + row["item_name"])
           .css("margin", "0px")
           .css("width", "auto");
 
@@ -474,11 +470,6 @@ function write(type, row){
     this_html += "<td colspan='2'>" +
       "<div class='form-inline bg-secondary text-white' style='width:100%; padding:20px; border-radius:5px;'>";
 
-    /*
-    * how will values work?? - the order of correct answers??
-    */
-
-
     var question = row["text"].split("|");
     this_html += question.map(function(text,index){
       if(index == question.length - 1){
@@ -487,9 +478,8 @@ function write(type, row){
         var row_x = row;
         row_x["item_name_old"] = row_x["item_name"];
         row_x["item_name"] = row_x["item_name"] + "_" + index;
-        var row_html = text + write(
-          "dropdown", row_x
-        ).replace("margin: 0px","margin: 5px");
+        var row_html = text + write("dropdown", row_x)
+          .replace("margin: 0px","margin: 5px");
         row_x["item_name"] = row_x["item_name_old"];
         return row_html;
       }
@@ -558,56 +548,84 @@ function write(type, row){
       side_text[1] +
       "<input type='hidden' class='" +
       row["this_class"] + "' id='survey_"+
-      row["item_name"].toLowerCase() +
+      row["item_name"]+
       "_score' name='survey_" +
-      row["item_name"].toLowerCase()
-      +"_score'></td>"+
+      row["item_name"] + "_score'></td>"+
       "</td>"+
       "</tr>"+
     "</table>";
 
   } else if(type == "number"){
-    this_html += "<input type='number'  onchange='response_check(this)' class='form-control " +
-      row["item_name"] +
-      "_item row_" + row["row_no"] +
-      "' name='survey_" +
-      row['item_name'].toLowerCase() + "'>";
+    var this_input = $("<input>");
+        this_input[0].type = "number";
+        this_input[0].name = 'survey_' + row['item_name'];
+        this_input
+          .addClass("response")
+          .addClass("form-control")
+          .addClass(row["item_name"] + "_item row_" + row["row_no"]);
+    this_html += this_input[0].outerHTML;
 
   } else if(type == "para"){
-    this_html += "<textarea name='survey_" +
-    row['item_name'].toLowerCase() +
-    "' class='" + row["item_name"] + "_item row_" + row["row_no"] + "' onchange='response_check(this)' style='width:100%;height:200px'></textarea>";
+    var this_textarea = $("<textarea>");
+        this_textarea[0].name = "survey_" + row['item_name'];
+        this_textarea
+          .addClass(row["item_name"] + "_item row_" + row["row_no"])
+          .addClass("response");
+        this_textarea.css("width", "100%")
+                     .css("height", "200px");
+    this_html += this_textarea[0].outerHTML;
 
   } else if(type == "radio_vertical"){
     var options = row["answers"].split("|");
     var values  = row["values"].split("|");
     for(var i=0; i<options.length; i++){
       feedback_string = generate_feedback_string(
-        feedback_array,
-        i,
-        feedback_color,
-        row
+        feedback_array, i, feedback_color,row
       );
-
-      this_html +=  '<div class="custom-control custom-radio">'+
-        '<input type="radio" class="custom-control-input '+
-        row["this_class"] + '  onclick="likert_update(this,\''
-        + options[i] + '\',\'' + values[i] +
-        '\')" custom-control custom-radio '+
-        row["item_name"] + '_item row_' + row["row_no"] + '" id="' + row["item_name"] + i + '"  onchange="response_check(this)" value="' +
-        options[i] + '" name="survey_'+
-        row["item_name"].toLowerCase()+'">' +
-        '<label class="custom-control-label" for="'+row["item_name"]+i+'">' +
-        options[i] +
-        '</label>'+
-        feedback_string +
-      '</div>';
+      var this_div = $("<div>");
+          this_div
+            .addClass("custom-control")
+            .addClass("custom-radio");
+      var this_input = $("<input>");
+          this_input[0].type  = "radio";
+          this_input[0].id    = row["item_name"] + i;
+          this_input[0].value = options[i];
+          this_input[0].name  = 'survey_' + row["item_name"];
+          this_input
+            .addClass("custom-control-input")
+            .addClass(row["this_class"])
+            .addClass("response")
+            .addClass("custom-control")
+            .addClass("custom-radio")
+            .addClass(row["item_name"] + "_item_row_" + row["row_no"]);
+      var this_label = $("<label>");
+          this_label[0].htmlFor = row["item_name"]+i;
+          this_label.addClass("custom-control-label");
+          this_label.html(options[i]);
+      this_div
+        .append(this_input)
+        .append(this_label)
+        .append(feedback_string);
+      this_html += this_div[0].outerHTML;
     }
-    this_html +=  "<input type='hidden' class='" + row["this_class"] +"' id='survey_"+row["item_name"].toLowerCase()+"_score' name='survey_"+row["item_name"].toLowerCase()+"_score'>";
+    var this_input = $("<input>");
+        this_input.addClass(row["this_class"]);
+        //this_input[0].type = "hidden";
+        this_input[0].id = 'survey_' + row["item_name"] +
+          "_score";
+        this_input[0].name = 'survey_' + row["item_name"] +
+          '_score';
+    this_html += this_input[0].outerHTML;
 
   } else if(type == "text"){
-    this_html += "<input class='form-control " + row["item_name"] + "_item row_" + row["row_no"] + "' onchange='response_check(this)' type='text' name='survey_" + row['item_name'].toLowerCase() + "'>"
-
+    var this_input = $("<input>");
+        this_input[0].type="text";
+        this_input[0].name="survey_" + row['item_name'];
+        this_input
+          .addClass("form-control")
+          .addClass(row["item_name"] + "_item row_" + row["row_no"])
+          .addClass("response")
+    this_html += this_input[0].outerHTML;
   }
 
   switch(type){
@@ -1008,16 +1026,15 @@ function process_question(row, row_no){
 			} else {
 
 				var row_html = "<tr>" +
-														"<td colspan='2'>" +
-															row["text"] +
-														"</td>" +
-													"</tr>" +
-													"<tr>" +
-														"<td colspan='2' align='center'>" +
-															question_td +
-														"</td>"
-													"</tr>";
-
+						"<td colspan='2'>" +
+							row["text"] +
+						"</td>" +
+					"</tr>" +
+					"<tr>" +
+						"<td colspan='2' align='center'>" +
+							question_td +
+						"</td>" +
+					"</tr>";
 			}
 
 
@@ -1060,8 +1077,6 @@ function quest_resp_perc(quest_resp_rat){
 }
 
 function response_check(submitted_element){
-  console.dir("submitted_element");
-  console.dir(submitted_element);
   switch(submitted_element.type){
     case "checkbox":
       var checked_responses = $("[name='"+submitted_element.name+"']:checked");
@@ -1077,19 +1092,24 @@ function response_check(submitted_element){
       break;
 
       case "button":
-        $("#"+submitted_element.name+"_response").val(submitted_element.innerHTML);
+        $("#" + submitted_element.name + "_response").val(
+          submitted_element.innerHTML
+        );
       break;
 
       case "number":
       case "select-one":
       case "text":
       case "textarea":
-        $("#"+submitted_element.name+"_response").val(submitted_element.value);
+        $("#" + submitted_element.name + "_response").val(
+          submitted_element.value
+        );
       break;
 
-
       case "radio":
-        $("#"+submitted_element.name+"_response").val(submitted_element.value);
+        $("#" + submitted_element.name + "_score").val(
+          submitted_element.value
+        );
       break;
     }
     update_score();
@@ -1273,6 +1293,14 @@ function write_survey(this_survey, this_id){
 	survey_html += "</table>";
 
 	$("#" + this_id).html(survey_html);
+
+  /*
+  $(".likert_response").on("click",function(){
+    console.dir("this");
+    console.dir(this);
+    likert_update(this, this.value, this.value);
+  })
+  */
 
   $(".response").on("change", function(){
     response_check(this);

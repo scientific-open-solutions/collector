@@ -167,14 +167,12 @@ function create_survey_HoT(this_survey){
 					callback: function(key, selection, clickEvent) { // Callback for specific option
 						this_sheet = this;
 						$('#cell_editor_div').fadeIn();
-						this_selection = selection;
 
-						cell_editor.setValue(this_sheet.getDataAtCell(selection.start.row,
-																													selection.start.col),-1);
-
-
-
-						//var cell_editor_width = parseFloat($("#cell_editor_div").css("width").replace("px",""));
+						cell_editor.setValue(
+              this_sheet.getDataAtCell(
+                selection.start.row,
+                selection.start.col
+              ),-1);
 
 						if($("#help_content").is(":visible")){
 							var helper_width = parseFloat($("#help_content").css("width").replace("px",""));
@@ -257,25 +255,28 @@ function create_survey_HoT(this_survey){
 				Collector.custom_alert("These changes will not be saved, as you are editing a <b>default</b> survey. Please click <b>New Survey</b> to create a new survey");
 			}
 
-      var middleColEmpty=0;
-			var middleRowEmpty=0;
-			var postEmptyCol=0; //identify if there is a used col after empty one
-			var postEmptyRow=0; // same for rows
+      var middleColEmpty = 0;
+			var middleRowEmpty = 0;
+			var postEmptyCol   = 0;
+			var postEmptyRow   = 0;
 
-			for (var k=0; k<this.countCols()-1; k++){
-					//checking for invalid item number (1)
+			for (var k = 0; k < this.countCols()-1; k++){
+        if(this.getDataAtCell(0,k).toLowerCase() == "shuffle"){
+          this.setDataAtCell(0,k,"shuffle_question");
+        }
 
-					//Removing Empty middle columns
-					if (this.isEmptyCol(k)){
-							if (middleColEmpty==0){
-									middleColEmpty=1;
-							}
-					}
-					if (!this.isEmptyCol(k) & middleColEmpty==1){
-							postEmptyCol =1;
-							this.alter("remove_col",k-1); //delete column that is empty
-							middleColEmpty=0;
-					}
+        //Removing Empty middle columns
+				if (this.isEmptyCol(k)){
+						if (middleColEmpty==0){
+								middleColEmpty=1;
+						}
+				}
+				if (!this.isEmptyCol(k) & middleColEmpty==1){
+						postEmptyCol =1;
+            //delete column that is empty
+						this.alter("remove_col",k-1);
+						middleColEmpty=0;
+				}
 			}
 
 			//Same thing for rows
@@ -287,28 +288,20 @@ function create_survey_HoT(this_survey){
 				}
 				if (!this.isEmptyRow(k) & middleRowEmpty==1){
 					postEmptyRow =1;
-					this.alter("remove_row",k-1); //delete column that is empty
+					this.alter("remove_row",k-1);
 					middleRowEmpty=0;
 				}
 			}
 			if(postEmptyCol != 1 ){
 				while(this.countEmptyCols()>1){
-					this.alter("remove_col",this.countCols); //delete the last col
+					this.alter("remove_col",this.countCols);
 				}
 			}
 			if(postEmptyRow != 1){
 				while(this.countEmptyRows()>1){
-					this.alter("remove_row",this.countRows);//delete the last row
+					this.alter("remove_row",this.countRows);
 				}
 			}
-      /*
-      console.dir("this.getData()");
-      console.dir(this.getData());
-			var this_survey = this.getData().filter(function(row){ return row.join("") !== '' });
-			console.dir("this_survey");
-			console.dir(this_survey);
-			//master_json.
-      */
 		}
 	});
   preview_survey(this_survey);
