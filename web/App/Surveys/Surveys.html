@@ -18,10 +18,18 @@
 
 		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
 -->
+<style>
+#spreadsheet_preview_tabs{
+	display:none;
+}
+#survey_interface{
+	padding: 5px;
+}
+</style>
 <script>
-////////////////////////////////////////
-// To allow development within gitpod //
-////////////////////////////////////////
+/*
+* To allow development within gitpod
+*/
 if(Collector.detect_context() == "gitpod"){
 
   var gitpod_surveys = true;
@@ -39,8 +47,6 @@ if(Collector.detect_context() == "gitpod"){
   }
   get_map();
 }
-</script>
-<script>
 
 function load_default_surveys(){
   var default_survey_files = [
@@ -91,14 +97,7 @@ function load_default_surveys(){
 }
 </script>
 
-<style>
-#spreadsheet_preview_tabs{
-	display:none;
-}
-#survey_interface{
-	padding: 5px;
-}
-</style>
+
 
 <nav class="navbar navbar-primary bg-white fixed-top fixed-top-2">
   <table style = "max-width:80%">

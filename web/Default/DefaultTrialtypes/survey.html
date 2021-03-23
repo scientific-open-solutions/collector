@@ -20,8 +20,6 @@
 
   Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey
 
-  Harry Sullivan contributed code that was used for jumbled sentence questions.
-
   (team@someopen.solutions)
 -->
 <style>
@@ -336,17 +334,45 @@ function clean_item(this_item){
 
   return(this_item);
 }
-function write(type, row){
 
+function shuffle_answers(row){
+  if(
+    typeof(row["shuffle_answers"] !== "undefined") &&
+    row["shuffle_answers"].toLowerCase() == "yes"
+  ){
+    var answers = row["answers"].split("|");
+    order = shuffle([...Array(answers.length).keys()]);
+
+    var ordered_answers = order.map(function(position){
+      return answers[position];
+    });
+    row["answers"] = ordered_answers.join("|");
+
+    if(row["values"].indexOf("|") !== -1){
+      var values = row["values"].split("|");
+      var ordered_values = order.map(function(position){
+        return values[position];
+      });
+      row["values"] = ordered_values.join("|");
+    }
+  }
+  return row;
+}
+
+function write(type, row){
   var this_html = "";
-  [feedback_array, feedback_color] = retrieve_feedback(row);
+  [feedback_array, feedback_color] = get_feedback(row);
+  row = shuffle_answers(row);
 
   if(type == "checkbox_horizontal"){
     var options = row["answers"].split("|");
-    this_html += '<table><tr>';
+    var this_table = $("<table>");
+        this_row = this_table[0].insertRow()
     for(var i=0; i<options.length;i++){
-      this_html +=  '<td>'+
-        '<div class="custom-control custom-checkbox">';
+      var this_cell = this_row.insertCell();
+      var this_div = $("<div>");
+          this_div.addClass("custom-control");
+          this_div.addClass("custom-checkbox");
       var this_input = $("<input>");
           this_input[0].type = "checkbox";
           this_input[0].id = row["item_name"] + i;
@@ -359,17 +385,15 @@ function write(type, row){
             .addClass(row["custom-checkbox"])
             .addClass(row["item_name"] +'_item')
             .addClass('row_' + row["row_no"]);
-
       var this_label = $("<label>");
+          this_label[0].htmlFor = row["item_name"] + i;
           this_label[0].innerText = options[i];
           this_label.addClass("custom-control-label");
-
-      this_html += this_input[0].outerHTML;
-      this_html += this_label[0].outerHTML;
-      this_html += '</div>'+
-      '</td>';
+      this_div.append(this_input)
+              .append(this_label);
+      this_cell.innerHTML = this_div[0].outerHTML;
     }
-    this_html += '</tr></table>';
+    this_html += this_table[0].outerHTML;
 
   } else if(type == "checkbox_single"){
     this_html += '<div class="btn-group-toggle" data-toggle="buttons">' +
@@ -391,11 +415,33 @@ function write(type, row){
         feedback_color,
         row
       );
-      this_html +=  '<div class="custom-control custom-checkbox">'+
-        '<input type="checkbox" class="custom-control-input '+ row["this_class"] + ' custom-control custom-checkbox '+row["item_name"]+'_item row_'+row+'" id="'+row["item_name"]+ i +'"  onchange="response_check(this)" name="survey_'+row["item_name"].toLowerCase()+'">'+
-        '<label class="custom-control-label" for="'+row["item_name"]+i+'">'+options[i]+'</label>'+
-        feedback_string +
-      '</div>';
+      var this_div = $("<div>");
+          this_div
+            .addClass("custom-control")
+            .addClass("custom-checkbox");
+
+      var this_checkbox = $("<input>");
+          this_checkbox[0].id= row["item_name"]+ i;
+          this_checkbox[0].type = "checkbox";
+          this_checkbox[0].name = 'survey_'+
+            row["item_name"].toLowerCase();
+          this_checkbox
+            .addClass("custom-control-input")
+            .addClass(row["this_class"])
+            .addClass("custom-control")
+            .addClass("custom-checkbox")
+            .addClass("response")
+            .addClass(row["item_name"] + "_item_row");
+
+      var this_label = $("<label>");
+          this_label[0].htmlFor = row["item_name"] + i;
+          this_label[0].innerHTML = options[i];
+          this_label.addClass("custom-control-label");
+
+      this_div.append(this_checkbox)
+              .append(this_label);
+
+      this_html += this_div[0].outerHTML;
     }
 
   } else if(type == "dropdown"){
@@ -447,7 +493,7 @@ function write(type, row){
         row_x["item_name"] = row_x["item_name_old"];
         return row_html;
       }
-    });
+    }).join("");
     "</div></td>";
 
   } else if(type == "likert"){
@@ -583,9 +629,12 @@ function write(type, row){
 }
 
 function load_survey(survey){
-  // are we in preview?
-  /////////////////////
-  if(typeof(parent.master_json) !== "undefined" && parent.master_json.surveys.preview){
+  /*
+  * are we in preview?
+  */
+  if(typeof(parent.collector_survey_preview) !== "undefined"){
+    survey_content = survey;
+  } else if(typeof(parent.master_json) !== "undefined" && parent.master_json.surveys.preview){
     survey_content = survey;
     survey_obj.mods = parent.master_json.mods;
   } else {
@@ -772,7 +821,7 @@ function process_question(row, row_no){
     row_x["row_no"] = row_no;
     row_x["this_class"] = this_class;
 
-    [feedback_array,feedback_color] = retrieve_feedback(row);
+    [feedback_array,feedback_color] = get_feedback(row);
 
     question_td = '<input type="hidden" class="response_element row_' + row_no + '" id="survey_' +
       row["item_name"].toLowerCase() +
@@ -1046,7 +1095,7 @@ function response_check(submitted_element){
     update_score();
 }
 
-function retrieve_feedback(row){
+function get_feedback(row){
   if(typeof(row["feedback"]) !== "undefined" && row["feedback"] !== ""){
     feedback_array = row["feedback"].split("|");
     if(typeof(row["feedback_color"]) == "undefined"){
