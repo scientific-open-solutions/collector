@@ -1192,7 +1192,7 @@ function write(type, row){
     }
     var this_input = $("<input>");
         this_input.addClass(row["this_class"]);
-        //this_input[0].type = "hidden";
+        this_input[0].type = "hidden";
         this_input[0].id = 'survey_' + row["item_name"] +
           "_score";
         this_input[0].name = 'survey_' + row["item_name"] +
