@@ -657,10 +657,10 @@ function process_question(row, row_no){
         proceed_object.break_no.push(page_break_management.breaks_remaining);
       }
     }
-    if(typeof(row["shuffle"]) == "undefined" || row["shuffle"].toLowerCase() == "off"){
+    if(typeof(row["shuffle_question"]) == "undefined" || row["shuffle_question"].toLowerCase() == "off"){
       this_shuffle='none';
     } else {
-      this_shuffle=row["shuffle"];
+      this_shuffle=row["shuffle_question"];
     }
     return [row_html,this_shuffle];
   }
@@ -1060,6 +1060,7 @@ function write(type, row){
                 .addClass("text-white")
                 .css("width", "100%")
                 .css("padding", "20px")
+                .css("margin", "20px")
                 .css("border-radius", "5px");
 
     var question = row["text"].split("|");
@@ -1080,7 +1081,7 @@ function write(type, row){
     this_td.append(this_div);
     this_div.append(questions_html);
 
-    this_html = this_div[0].outerHTML;
+    this_html = this_td[0].outerHTML;
 
   } else if(type == "likert"){
     // set styles
@@ -1256,7 +1257,7 @@ function write_survey(this_survey, this_id){
   survey_html = "<table class='table_break' id='table0'>";
   this_survey_object={
     content:[],
-    shuffle:[],
+    shuffle_question:[],
     content_new_order:[],
     shuffled_content:[],
     shuffled_arrays:{},
@@ -1267,16 +1268,16 @@ function write_survey(this_survey, this_id){
     row = this_survey[i];
     row_html = process_question(row,i);
 		this_survey_object.content.push(row_html[0]);
-    this_survey_object.shuffle.push(row_html[1]);
+    this_survey_object.shuffle_question.push(row_html[1]);
 	}
 
-	unique_shuffles = this_survey_object.shuffle.filter((v,i,a)=>a.indexOf(v)==i); //by Camilo Martin on https://stackoverflow.com/questions/1960473/unique-values-in-an-array
+	unique_shuffles = this_survey_object.shuffle_question.filter((v,i,a)=>a.indexOf(v)==i); //by Camilo Martin on https://stackoverflow.com/questions/1960473/unique-values-in-an-array
 
 	for(var i=0;i<unique_shuffles.length;i++){
     if(typeof(unique_shuffles[i]) !== "undefined" &&
       unique_shuffles[i] !== "none" &&
       unique_shuffles[i] !== ""){
-        shuffled_content = this_survey_object.shuffle.map(function(element,index){
+        shuffled_content = this_survey_object.shuffle_question.map(function(element,index){
     	   if(typeof(element)!== "undefined" && element.toLowerCase() !== "none" && element.toLowerCase() == unique_shuffles[i]){
   	       return this_survey_object.content[index];
     	   }
@@ -1287,7 +1288,7 @@ function write_survey(this_survey, this_id){
 	}
 
 	for(var i=0;i<this_survey_object.content.length;i++){
-    var this_index = Object.keys(this_survey_object.shuffled_arrays).indexOf(this_survey_object.shuffle[i]);
+    var this_index = Object.keys(this_survey_object.shuffled_arrays).indexOf(this_survey_object.shuffle_question[i]);
     if(this_index !== -1){
       //take first item off relevant list and delete item
       var this_item = this_survey_object.shuffled_arrays[Object.keys(this_survey_object.shuffled_arrays)[this_index]].shift();
