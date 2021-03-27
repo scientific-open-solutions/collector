@@ -1,0 +1,26 @@
+<style>
+#collector_trial_timer{
+  position: absolute;
+  right: 0px;
+  padding: 5px;
+  border-radius: 10px;
+  border-width: 5px;
+  border-color: black;
+  border-style: solid;
+  margin: 5px;
+}
+</style>
+<h1 id="collector_trial_timer" class="bg-white"></h1>
+
+<script>
+Trial.set_timer(function(){
+  setInterval(function(){
+    var milliseconds = parent.parent.Study.trial_timer.getTimeLeft();
+    var seconds = Math.floor(milliseconds/1000);
+    var minutes = Math.floor(seconds/60);
+    seconds = seconds % 60;
+    seconds = seconds.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+    $('#collector_trial_timer').html(minutes + ':' + seconds);
+  },0)
+},0);
+</script>
