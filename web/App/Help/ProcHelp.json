@@ -40,6 +40,10 @@
     "subtitle":"Mainly for instruct trialtypes",
     "text":"You can refer to this in any trialtype with <b>{{text}}</b>, but typically this is what you would want presented in an <b>instruct</b> trialtype."
   },
+  "timer_style":{
+    "subtitle":"How do you want the timer to look?",
+    "text":"You might want to hide the timer with 'display:none;' or change the style of the timer using other css rules"
+  },
 	"weight":{
 		"subtitle":"How many repetitions?",
     "text":"<b>Weight</b> (or <b>freq</b> or <b>frequency</b> or <b>repeat</b>) sets how many occurrences of a trial you will have. By default, you will only have one occurrence of a unique trial (see Item for how to refer to multiple rows in the stimuli sheet). If you set the weight to 2, then you would have twice as many occurrences of the trial(s) as normal. If you set the weight to 0, then you will skip that row in the procedure sheet. This can be useful for piloting parts of your task."

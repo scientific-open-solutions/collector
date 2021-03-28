@@ -1656,6 +1656,12 @@ function write_trial_iframe(index){
 
     if(this_proc["max time"] !== "user" & this_proc["max time"] !== ""){
       var timer_code = Study.html_code["Timer"];
+      if(typeof(this_proc["timer_style"]) !== "undefined" && this_proc["timer_style"] !== ""){
+        timer_code = timer_code.replace(
+          "#collector_trial_timer{",
+          "#collector_trial_timer{" + this_proc["timer_style"] + ";"
+        )
+      }
     } else {
       var timer_code = "";
     }
