@@ -1654,7 +1654,9 @@ function write_trial_iframe(index){
     */
     var img_check_code =  '<scr' + 'ipt src="Code/StimuliChecks.js"></scr' + 'ipt>';
 
-    if(this_proc["max time"] !== "user" & this_proc["max time"] !== ""){
+    if(typeof(this_proc["max time"]) !== "undefined" &&
+       this_proc["max time"] !== "user" &&
+       this_proc["max time"] !== ""){
       var timer_code = Study.html_code["Timer"];
       if(typeof(this_proc["timer_style"]) !== "undefined" && this_proc["timer_style"] !== ""){
         timer_code = timer_code.replace(

@@ -275,8 +275,10 @@ function createHoT(container, data,sheet_name) {
 					$('#cell_editor_div').fadeIn();
 					this_selection = selection;
 
-					cell_editor_obj.content_before = this_sheet.getDataAtCell(selection.start.row,
-																																		selection.start.col);
+					cell_editor_obj.content_before = this_sheet.getDataAtCell(
+            selection.start.row,
+            selection.start.col
+          );
 
 					cell_editor.setValue(this_sheet.getDataAtCell(selection.start.row,
 																												selection.start.col),-1);

@@ -317,9 +317,9 @@ $("#proceed_button").on("click",function(){
     $("#tab_"+current_tab+"_button").addClass("btn-outline-dark");
     $("#tab_"+current_tab+"_button").click();
   } else if(proceed == false){
-    bootbox.alert("You have failed to complete at least one compulsory input.");
+    bootbox.alert("You're missing some responses. Please fill in all the answers for the questions in red above.");
   } else if(current_tab > survey_obj.tabs){
-    bootbox.alert("Error - please contact the Collector team about this problem, error 'Survey_001'.");
+    bootbox.alert("Error - please contact Scientific Open Solutions about this problem, error 'Survey_001'.");
   }
 });
 

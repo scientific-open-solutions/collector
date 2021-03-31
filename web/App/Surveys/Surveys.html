@@ -167,6 +167,7 @@ function create_survey_HoT(this_survey){
 					callback: function(key, selection, clickEvent) { // Callback for specific option
 						this_sheet = this;
 						$('#cell_editor_div').fadeIn();
+            this_selection = selection;
 
 						cell_editor.setValue(
               this_sheet.getDataAtCell(

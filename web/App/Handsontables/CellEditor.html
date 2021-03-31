@@ -158,7 +158,7 @@ cell_editor.getSession().on('change', function(){
 	}
 });
 
-cell_editor.completers.push({                                                                     // same suggestions as for trialtype editor, as I think this still applies
+cell_editor.completers.push({                                         // same suggestions as for trialtype editor, as I think this still applies
 	getCompletions: function(cell_editor, session, pos, prefix, callback) {
 		callback(null, [
 			{value: "Trial.add_response()", score: 1000, meta: "add row to responses"},
