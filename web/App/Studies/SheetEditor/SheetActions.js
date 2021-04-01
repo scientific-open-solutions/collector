@@ -209,6 +209,22 @@ $("#download_experiment_button").on("click",function(){
 	});
 });
 
+$("#experiment_list").on("change",function(){
+  if(typeof(first_load) == "undefined" ||
+     first_load	== false){
+     $("#save_btn").click();
+  } else {
+    remove_from_list("Select a dropbox experiment");
+    first_load = false;
+  }
+  exp_json = master_json.exp_mgmt.experiments[this.value];
+  clean_conditions();
+  $("#dropbox_inputs").show();
+  update_handsontables();
+  update_server_table();
+  $("#save_btn").click();
+});
+
 $("#new_experiment_button").on("click",function(){
 	bootbox.prompt("What would you like to name the new experiment?",function(result){
 		if(result !== null){

@@ -128,17 +128,17 @@ function list_studies(){
       * reset the selects
       */
       $("#add_study_pathway_select option").remove();
-
+      $("#experiment_list option").remove();
+      $("#trialtype_experiment option").remove();
 
       /*
       * add "Select a study" option that is hidden, disabled and selected
       */
-      $("#add_study_pathway_select").append("<option hidden disabled selected>Select a study</option>");
+      var default_option = "<option hidden disabled selected>Select a study</option>";
 
-
-      var select_html = "<select id='experiment_list'  class='custom-select'><option hidden disabled selected>Select a study</option>";
-
-      select_html += "</select>";
+      $("#add_study_pathway_select").append(default_option);
+      $("#experiment_list").append(default_option);
+      $("#trialtype_experiment").append(default_option);
 
       /*
       * add options to each of the three selects
@@ -148,36 +148,10 @@ function list_studies(){
         return a.toLowerCase().localeCompare(b.toLowerCase());
       });
       name_list.forEach(function(item_name){
-        $("#add_study_pathway_select").append("<option>" +
-          + item_name +
-        "</option>");
-
-        select_html += "<option>" + item_name + "</option>";
-      });
-
-      //trialtype_experiment
-
-
-
-      //$("#add_study_pathway_select").val()
-
-
-      $("#experiments").html(select_html);
-      $("#experiment_list").on("change",function(){
-        if(typeof(first_load) == "undefined" ||
-				   first_load	== false){
-           $("#save_btn").click();
-        } else {
-          remove_from_list("Select a dropbox experiment");
-          first_load = false;
-        }
-
-        exp_json = master_json.exp_mgmt.experiments[this.value];
-        clean_conditions();
-        $("#dropbox_inputs").show();
-        update_handsontables();
-        update_server_table();
-        $("#save_btn").click();
+        var this_option = "<option>" + item_name + "</option>";
+        $("#add_study_pathway_select").append(this_option);
+        $("#experiment_list").append(this_option);
+        $("#trialtype_experiment").append(this_option);
 
       });
     }
