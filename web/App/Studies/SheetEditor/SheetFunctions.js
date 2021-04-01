@@ -123,20 +123,44 @@ function list_studies(){
   try{
     name_list = Object.keys(master_json.exp_mgmt.experiments);
     function update_exp_list(){
-      var series_select_html = "<select id='add_study_pathway_select'  class='custom-select'><option hidden disabled selected>Select a study</option>";
+
+      /*
+      * reset the selects
+      */
+      $("#add_study_pathway_select option").remove();
+
+
+      /*
+      * add "Select a study" option that is hidden, disabled and selected
+      */
+      $("#add_study_pathway_select").append("<option hidden disabled selected>Select a study</option>");
+
+
       var select_html = "<select id='experiment_list'  class='custom-select'><option hidden disabled selected>Select a study</option>";
+
+      select_html += "</select>";
+
+      /*
+      * add options to each of the three selects
+      * for main study list, series and trialtype preview
+      */
       name_list.sort(function(a,b){
         return a.toLowerCase().localeCompare(b.toLowerCase());
       });
       name_list.forEach(function(item_name){
-        series_select_html += "<option>" + item_name + "</option>";
+        $("#add_study_pathway_select").append("<option>" +
+          + item_name +
+        "</option>");
+
         select_html += "<option>" + item_name + "</option>";
       });
-      series_select_html += "</select>";
-      select_html += "</select>";
+
+      //trialtype_experiment
+
+
 
       //$("#add_study_pathway_select").val()
-      $("#add_study_pathway_select_div").html(series_select_html);
+
 
       $("#experiments").html(select_html);
       $("#experiment_list").on("change",function(){

@@ -28,23 +28,35 @@ Collector = {
 		}
 		return this_csv;
 	},
-	custom_alert: function(msg,duration) {
+	custom_alert: function(msg, duration) {
 		function create_alerts_container() {
 			if (typeof(alerts_ready) !== "undefined" && alerts_ready) return;
 
-			var top_padding = parseFloat($("#sim_navbar").css("height").replace("px","")) +
-												parseFloat($("#top_navbar").css("height").replace("px",""));
+			var top_padding = parseFloat(
+        $("#sim_navbar").css("height").replace("px","")) +
+				parseFloat($("#top_navbar").css("height").replace("px","")
+      );
+
+      if(msg.toLowerCase().indexOf("alert") !== -1){
+        var this_background_color = "#ffc8c8";
+        var border_color = "#800"; //"#DAA";
+        var this_color = "#800";
+      } else {
+        var this_background_color = "#96ffa8";
+        var border_color = "#24402a";
+        var this_color = "#24402a";
+      }
 
 			var el = $("<div>");
 			el.css({
 					position: "fixed",
-					top: top_padding + "px",
+					top: (top_padding+20) + "px",
 					left: "10px",
 					right: "10px",
-					backgroundColor: "#ffc8c8",
+					backgroundColor: this_background_color,
 					borderRadius: "6px",
-					border: "1px solid #DAA",
-					color: "#800",
+					border: "1px solid " + border_color,
+					color: this_color
 			});
 
 			el.attr("id", "alerts");
