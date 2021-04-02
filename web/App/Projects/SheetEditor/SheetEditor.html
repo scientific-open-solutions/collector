@@ -92,8 +92,8 @@
 		</td>
 	</tr>
 </table>
-<script src="Studies/SheetEditor/SheetFunctions.js"></script>
-<script src="Studies/SheetEditor/SheetActions.js"></script>
+<script src="Projects/SheetEditor/SheetFunctions.js"></script>
+<script src="Projects/SheetEditor/SheetActions.js"></script>
 
 <script>
 
@@ -103,7 +103,7 @@ $("#stim_folder_button").on("click",function(){
 
 $("#stim_list_button").on("click",function(){
   var web_url = document.URL.split("/");
-      web_url[web_url.length - 1] = "Studies/SheetEditor/StimList.html";
+      web_url[web_url.length - 1] = "Projects/SheetEditor/StimList.html";
       web_url = web_url.join("/");
 	window.open(web_url,"stimList",'height=800,width=800');
 });

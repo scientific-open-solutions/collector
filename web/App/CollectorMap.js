@@ -43,7 +43,7 @@ var isolation_map = {
     "ProcHelp.json" : "file",
     "SurvHelp.json" : "file",
   },
-  Studies:{
+  Projects:{
     SheetEditor:{
       "SheetEditor.html" : "file"
     }
