@@ -40,11 +40,11 @@
 <link rel="stylesheet" href="libraries/bootstrapCollector.css">
 <script src="libraries/bootstrap.4.0.min.js"></script>
 
-<script src="Code/Collector.js"></script>
-<script src="Code/OnlineTriggers.js"></script>
-<script src="Code/CollectorEncrypt.js"></script>
-<script src="Code/BrowserCheck.js"></script>
-<script src="Code/MobileCheck.js"></script>
+<script src="libraries/collector/Collector.js"></script>
+<script src="libraries/collector/OnlineTriggers.js"></script>
+<script src="libraries/collector/CollectorEncrypt.js"></script>
+<script src="libraries/collector/BrowserCheck.js"></script>
+<script src="libraries/collector/MobileCheck.js"></script>
 
 <div id="welcome_html"></div>
 
@@ -89,7 +89,7 @@ $("#welcome_html").load("Welcome.html");
 
 		<div id="stim_listing" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%"></div>
 	</div>
-	<div id="beginning_checks" style="display:none">
+  <div id="beginning_checks" style="display:none">
     External keyboards generally do not work. Please do not try to use an external keyboard.<br><br>
 		Sometimes it may take a page a while to load. Please wait, and <b>DO NOT REFRESH THE PAGE</b>.<br><br>
 		Please click "Understood" to show that you have understood these instructions. <br><br>
@@ -848,7 +848,7 @@ function get_gets() {
 function get_htmls(){
   var htmls = [{
     "name": "Timer",
-    "path": "Code/Timer.html"
+    "path": "libraries/collector/Timer.html"
   }];
   function loop_htmls(html_list){
     var this_html = html_list.pop();
@@ -1652,7 +1652,7 @@ function write_trial_iframe(index){
     /*
     * New attempt to check if images have loaded succesfully
     */
-    var img_check_code =  '<scr' + 'ipt src="Code/StimuliChecks.js"></scr' + 'ipt>';
+    var img_check_code =  '<scr' + 'ipt src="libraries/collector/StimuliChecks.js"></scr' + 'ipt>';
 
     if(typeof(this_proc["max time"]) !== "undefined" &&
        this_proc["max time"] !== "user" &&

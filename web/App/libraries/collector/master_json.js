@@ -21,10 +21,10 @@ default_master_json = {
   "mods":    {},
   "surveys" : {},
   "trialtypes":  {
-    "default_trialtypes"	: {},
+    "default"	: {},
     "trialtype" 			    : "",
     "filetype"  			    : "",
     "version"   			    : 0,
-    "user_trialtypes"		  : {}
+    "user"		  : {}
   }
 }

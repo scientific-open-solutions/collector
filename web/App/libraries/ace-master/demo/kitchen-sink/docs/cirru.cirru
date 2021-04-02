@@ -1,4 +1,4 @@
--- https://github.com/Cirru/cirru-gopher/blob/master/code/scope.cr,
+-- https://github.com/Cirru/cirru-gopher/blob/master/libraries/collector/scope.cr,
 
 set a (int 2)
 

@@ -27,7 +27,7 @@
   background-color:LightSkyBlue ;
 }
 
-#default_user_trialtype_span{
+#default_user_code_span{
 	padding : 5px;
 	border-radius : 5px;
 }
@@ -44,14 +44,14 @@
 <br><br>
 <div id="trial_progress_span"></div>
 
-<div id="TrialTypes" class="hide_show_elements">
+<div id="Code" class="hide_show_elements">
 
 <div class="container">
   <div class="row">
     <div class="col-">
       <ul  class="nav nav-pills mb-3 bg-secondary" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active text-white" id="trialtypes_editor-tab" data-toggle="pill" href="#trialtypes_editor" role="tab" aria-controls="trialtypes_editor" aria-selected="true">Editor</a>
+          <a class="nav-link active text-white" id="code_editor-tab" data-toggle="pill" href="#code_editor" role="tab" aria-controls="code_editor" aria-selected="true">Editor</a>
         </li>
         <li class="nav-item">
           <a class="nav-link text-white" id="trialtype-preview-tab" data-toggle="pill" href="#trialtype-preview" role="tab" aria-controls="trialtype-preview" aria-selected="false">Preview</a>
@@ -60,16 +60,16 @@
     </div>
     <div class="col">
       <ul class="mb-9 col form-inline">
-        <select id="trialtype_project_select" class="form-control" style="margin:2px">
+        <select id="code_project_select" class="form-control" style="margin:2px">
           <option disabled selected>Experiment (optional)</option>
           <option>None</option>
         </select>
-        <select id="trialtype_procedure" class="form-control"  style="margin:2px; display:none">
+        <select id="code_procedure_select" class="form-control"  style="margin:2px; display:none">
           <option disabled selected>Procedure sheet (optional)</option>
           <option>None</option>
         </select>
         <input class="form-control" type="number" placeholder="row"  style="margin:2px; width:100px; display:none;">
-        <select id="trialtype_stimuli" class="form-control"  style="margin:2px; display:none;">
+        <select id="code_stimuli_select" class="form-control"  style="margin:2px; display:none;">
           <option disabled selected>Stimuli sheet (optional)</option>
           <option>None</option>
         </select>
@@ -79,25 +79,25 @@
 </div>
 <div class="row">
   <div class="tab-content" id="pills-tabContent" style="top:100px; width:800px; height:800px; position: absolute;">
-    <div class="tab-pane fade show active" id="trialtypes_editor" role="tabpanel" aria-labelledby="pills-spreadsheet-tab">
+    <div class="tab-pane fade show active" id="code_editor" role="tabpanel" aria-labelledby="pills-spreadsheet-tab">
       <br>
       <div class="row">
         <!--
         <div class="col-md-1">
-      		<button class="btn btn-primary" id="community_trialtypes_btn">Community</button>
+      		<button class="btn btn-primary" id="community_code_btn">Community</button>
       	</div>
         -->
       	<div class="col-md-3">
-      		<select id="trial_type_select" class="form-control" previousValue ="">
+      		<select id="code_select" class="form-control" previousValue ="">
       			<option hidden disabled selected>Select a Trial Type</option>
       		</select>
       	</div>
       	<div class="col-md-9">
-            <span id="default_user_trialtype_span"></span>
-        		<button id="new_trial_type_button" 		class="btn btn-primary">New</button>
-        		<button id="rename_trial_type_button" class="btn btn-primary" style="display:none">Rename</button>
-        		<button id="delete_trial_type_button" class="btn btn-primary" style="display:none">Delete</button>
-        		<button id="save_trial_type_button" class="btn btn-primary">Save</button>
+            <span id="default_user_code_span"></span>
+        		<button id="new_code_button" 		class="btn btn-primary">New</button>
+        		<button id="rename_code_button" class="btn btn-primary" style="display:none">Rename</button>
+        		<button id="delete_code_button" class="btn btn-primary" style="display:none">Delete</button>
+        		<button id="save_code_button" class="btn btn-primary">Save</button>
         		<button class="btn btn-outline-primary" id="view_code_btn">Code</button>
         		<button class="btn btn-outline-primary" id="view_graphic_btn">Graphic</button>
       	</div>
@@ -124,7 +124,7 @@
 <script>
 $("#graphic_editor").load(collector_map["Graphic.html"]);
 
-$("#community_trialtypes_btn").on("click",function(){
+$("#community_code_btn").on("click",function(){
 	var win = window.open('https://github.com/scientific-open-solutions/collector/discussions/categories/trial-types', '_blank');
 });
 
@@ -229,6 +229,6 @@ editor.completers.push({
 	}
 });
 </script>
-<script type="text/javascript" src="TrialTypes/TrialTypeFunctions.js"></script>
-<script type="text/javascript" src="TrialTypes/TrialTypeActions.js"></script>
+<script type="text/javascript" src="Code/CodeFunctions.js"></script>
+<script type="text/javascript" src="Code/CodeActions.js"></script>
 </div>

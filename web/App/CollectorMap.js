@@ -15,7 +15,7 @@ window.Handsontable || document.write('<link rel="stylesheet" href="Handsontable
 '<\/script><script type="text/javascript" charset="utf-8" src="Handsontables/HandsontablesFunctions.js"><\/script>');
 
 
-window.Collector || document.write('<script src="Code/Collector.js"><\/script>');
+window.Collector || document.write('<script src="libraries/collector/Collector.js"><\/script>');
 
 
 var isolation_map = {
@@ -51,8 +51,8 @@ var isolation_map = {
   Surveys : {
     'Surveys.html'    : 'file',
   },
-  TrialTypes:{
-    "TrialTypes.html" : "file",
+  Code:{
+    "Code.html" : "file",
     "Graphic.html"    : "file",
   },
   "CollectorMap.js" : "file",
@@ -121,8 +121,8 @@ if(typeof(master_json) == "undefined"){
       default_surveys:{},
     },
     trialtypes : {
-      user_trialtypes : {},
-      default_trialtypes: {}
+      user : {},
+      default: {}
     }
   }
 }

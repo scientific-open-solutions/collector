@@ -10,7 +10,7 @@ window.onload=function(){
             exp_name,
             file_action
           ){
-            delete_response = ipc.sendSync('fs_delete_experiment',{
+            delete_response = ipc.sendSync('fs_delete_project',{
               "exp_name" : exp_name
             });
             file_action(delete_response);
@@ -32,17 +32,17 @@ window.onload=function(){
               "survey_name" : survey_name
             });
           },
-          delete_trialtype: function(
+          delete_code: function(
             exp_name,
             file_action
           ){
-            delete_response = ipc.sendSync('fs_delete_trialtype',{
+            delete_response = ipc.sendSync('fs_delete_code',{
               "trialtype_name" : exp_name
             });
             file_action(delete_response);
           },
-          list_trialtypes: function(){
-            return ipc.sendSync('fs_list_trialtypes');
+          list_code: function(){
+            return ipc.sendSync('fs_list_code');
           },
           home_dir: function(){
             return ipc.sendSync('fs_home_dir')

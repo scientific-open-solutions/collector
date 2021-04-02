@@ -40,10 +40,10 @@ function check_trialtypes_in_proc(procedure,post_trialtype){
 		master_json.project_mgmt.projects[project].trialtypes = {};
 	}
 	trialtypes.forEach(function(trialtype){
-		if(typeof(master_json.trialtypes.user_trialtypes[trialtype]) !== "undefined"){
-			master_json.project_mgmt.projects[project].trialtypes[trialtype] = master_json.trialtypes.user_trialtypes[trialtype];
-		} else if(typeof(master_json.trialtypes.default_trialtypes[trialtype]) !== "undefined"){
-			master_json.project_mgmt.projects[project].trialtypes[trialtype] = master_json.trialtypes.default_trialtypes[trialtype];
+		if(typeof(master_json.code.user[trialtype]) !== "undefined"){
+			master_json.project_mgmt.projects[project].trialtypes[trialtype] = master_json.code.user[trialtype];
+		} else if(typeof(master_json.code.default[trialtype]) !== "undefined"){
+			master_json.project_mgmt.projects[project].trialtypes[trialtype] = master_json.code.default[trialtype];
 		} else {
 			Collector.custom_alert("Invalid trialtype <b>"+trialtype+"</b> in at least one of your procedure sheets. The file will save, but the experiment won't run until you use a valid trialtype.",4000);
 		}
@@ -120,7 +120,7 @@ function get_HoT_data(current_sheet) { // needs to be adjusted for
     return data;
 }
 function list_projects(){
-  //try{
+  try{
     name_list = Object.keys(master_json.project_mgmt.projects);
     function update_exp_list(){
 
@@ -129,7 +129,7 @@ function list_projects(){
       */
       $("#add_project_pathway_select option").remove();
       $("#project_list option").remove();
-      $("#trialtype_project_select option").remove();
+      $("#code_project_select option").remove();
 
       /*
       * add "Select a project" option
@@ -138,7 +138,7 @@ function list_projects(){
 
       $("#add_project_pathway_select").append(default_option);
       $("#project_list").append(default_option);
-      $("#trialtype_project_select").append(default_option);
+      $("#code_project_select").append(default_option);
 
       /*
       * add options to each of the selects
@@ -150,7 +150,7 @@ function list_projects(){
         var this_option = "<option>" + item_name + "</option>";
         $("#add_project_pathway_select").append(this_option);
         $("#project_list").append(this_option);
-        $("#trialtype_project_select").append(this_option);
+        $("#code_project_select").append(this_option);
 
       });
     }
@@ -180,15 +180,13 @@ function list_projects(){
           break;
       }
     }
-    Collector.tests.pass("studies",
+    Collector.tests.pass("projects",
                          "list");
-  /*
   } catch(error){
-    Collector.tests.fail("studies",
+    Collector.tests.fail("project",
                          "list",
                          error);
   }
-  */
 }
 function new_experiment(experiment){
   if($("#project_list").text().indexOf(experiment) !== -1){
@@ -256,7 +254,7 @@ function renderItems() {
   list_projects();
 	list_mods();
   list_surveys();
-	list_trialtypes();
+	list_code();
 	list_graphics();
   list_servers();
 	initiate_actions();
@@ -472,7 +470,7 @@ function upload_exp_contents(these_contents,this_filename){
 		trialtypes.forEach(function(trialtype){
 
       function unique_trialtype(suggested_name,trialtype_content){
-        all_trialtypes = Object.keys(master_json.trialtypes.user_trialtypes).concat(Object.keys(master_json.trialtypes.default_trialtypes));
+        all_trialtypes = Object.keys(master_json.code.user).concat(Object.keys(master_json.code.default));
         if(all_trialtypes.indexOf(suggested_name) !== -1){
           bootbox.prompt("<b>" + suggested_name + "</b> is taken. Please suggest another name, or press cancel if you don't want to save this trialtype?",function(new_name){
             if(new_name){
@@ -480,8 +478,8 @@ function upload_exp_contents(these_contents,this_filename){
             }
           });
         } else {
-          master_json.trialtypes.user_trialtypes[suggested_name] = trialtype_content;
-          list_trialtypes();
+          master_json.code.user[suggested_name] = trialtype_content;
+          list_code();
         }
       }
 

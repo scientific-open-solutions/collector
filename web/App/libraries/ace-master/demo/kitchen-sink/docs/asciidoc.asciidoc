@@ -5045,7 +5045,7 @@ option.
 Example Filter
 ~~~~~~~~~~~~~~
 AsciiDoc comes with a toy filter for highlighting source code keywords
-and comments.  See also the `./filters/code/code-filter-readme.txt`
+and comments.  See also the `./filters/libraries/collector/code-filter-readme.txt`
 file.
 
 NOTE: The purpose of this toy filter is to demonstrate how to write a
@@ -5230,7 +5230,7 @@ Example `~/.vimrc` File
 set background=dark
 
 " Show tabs and trailing characters.
-set listchars=tab:»·,trail:·
+set listchars=tab:ï¿½ï¿½,trail:ï¿½
 set list
 
 " Don't highlight searched text.

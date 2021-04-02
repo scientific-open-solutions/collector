@@ -1,14 +1,14 @@
 {
   "name": "Collector",
-  "version": "3.0.4",
-  "description": "An Open-Source package for online research",
+  "version": "3.1.0",
+  "description": "An open-source package for writing interactive  websites and software",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
-  "repository": "https://github.com/some-open-solutions/collector",
+  "repository": "https://github.com/scientific-open-solutions/collector",
   "keywords": [
     "Online Research",
     "quick",

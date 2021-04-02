@@ -706,8 +706,8 @@ $("#save_btn").on("click", function(){
     });
     return this_proj;
   }
-  function process_trialtypes(this_proj){
-    var trialtypes = [];
+  function process_code(this_proj){
+    var code_files = [];
     Object.keys(this_proj.all_procs).forEach(function(proc_name){
       var this_proc = Collector.PapaParsed(this_proj.all_procs[proc_name]);
       var cleaned_parsed_proc = [];
@@ -716,33 +716,34 @@ $("#save_btn").on("click", function(){
           cleaned_parsed_proc.push(row);
         }
       });
-      this_proc = cleaned_parsed_proc.map(function(row,row_index){
+      this_proc = cleaned_parsed_proc.map(function(row, row_index){
+        console.log(row);
         var cleaned_row = Collector.clean_obj_keys(row);
-        if(trialtypes.indexOf(cleaned_row["trial type"]) == -1){
-          trialtypes.push(cleaned_row["trial type"].toLowerCase());
+        if(code_files.indexOf(cleaned_row["code"]) == -1){
+          code_files.push(cleaned_row["code"].toLowerCase());
         }
-        cleaned_row["trial type"] = cleaned_row["trial type"].toLowerCase();
-        if(cleaned_row["trial type"].indexOf(" ") !== -1){
+        cleaned_row["code"] = cleaned_row["code"].toLowerCase();
+        if(cleaned_row["code"].indexOf(" ") !== -1){
           bootbox.alert("You have a space in row <b>" + (row_index + 2) + "</b> of your procedure <b>" + proc_name + "</b>. Please fix this before trying to run your experiment.");
         }
         if(cleaned_row.item == 0){
-          if(typeof(master_json.trialtypes.user_trialtypes[cleaned_row["trial type"]]) !== "undefined"){
-            var this_trialtype = master_json.trialtypes.user_trialtypes[cleaned_row["trial type"]];
-          } else if(typeof(master_json.trialtypes.default_trialtypes[cleaned_row["trial type"]]) !== "undefined"){
-            var this_trialtype = master_json.trialtypes.default_trialtypes[cleaned_row["trial type"]];
+          if(typeof(master_json.code.user[cleaned_row["code"]]) !== "undefined"){
+            var this_trialtype = master_json.code.user[cleaned_row["code"]];
+          } else if(typeof(master_json.code.default[cleaned_row["code"]]) !== "undefined"){
+            var this_trialtype = master_json.code.default[cleaned_row["code"]];
           } else {
-            bootbox.alert("The trialtype <b>" + cleaned_row["trial type"] + "</b> doesn't appear to exist");
+            bootbox.alert("The trialtype <b>" + cleaned_row["code"] + "</b> doesn't appear to exist");
           }
           these_variables = Collector.list_variables(this_trialtype);
 
           these_variables.forEach(function(this_variable){
             if(Object.keys(cleaned_row).indexOf(this_variable) == -1 &&
                this_variable !== "survey" &&
-               cleaned_row["trial type"] !== "survey"){          //i.e. this variable is not part of this procedure
+               cleaned_row["code"] !== "survey"){          //i.e. this variable is not part of this procedure
               Collector.custom_alert("You have your item set to <b>0</b> in row <b>" +
                             (row_index + 2) +
                             "</b>. However, it seems like the trialtype <b>" +
-                            cleaned_row["trial type"] +
+                            cleaned_row["code"] +
                             "</b> will be looking for a variable <b>" + this_variable + "</b> in your" +
                             " stimuli sheet.");
             }
@@ -754,26 +755,29 @@ $("#save_btn").on("click", function(){
       });
       this_proj.all_procs[proc_name] = Papa.unparse(this_proc);
     });
-    trialtypes = trialtypes.filter(Boolean); //remove blanks
-    if(typeof(this_proj.trialtypes) == "undefined"){
+    code_files = code_files.filter(Boolean); //remove blanks
+    if(typeof(this_proj.code) == "undefined"){
       this_proj.trialtypes = {};
     }
 
     /*
-    * First loop is to make sure the experiment has all the trialtypes
+    * First loop is to make sure the experiment has all the code_files
     */
-    trialtypes.forEach(function(trialtype){
-      if(typeof(master_json.trialtypes.user_trialtypes[trialtype]) == "undefined"){
-        this_proj.trialtypes[trialtype] = master_json.trialtypes.default_trialtypes[trialtype];
+    code_files.forEach(function(code_file){
+      if(typeof(this_proj.code) == "undefined"){
+        this_proj.code = {};
+      }
+      if(typeof(master_json.code.user[code_file]) == "undefined"){
+        this_proj.code[code_file] = master_json.code.default[code_file];
       } else {
-        this_proj.trialtypes[trialtype] = master_json.trialtypes.user_trialtypes[trialtype];
+        this_proj.code[code_file] = master_json.code.user[code_file];
       }
     });
     return this_proj;
   }
 
   //try{
-    $("#save_trial_type_button").click();
+    $("#save_code_button").click();
     $("#save_survey_btn").click();
     $("#save_snip_btn").click();
     $("#save_pathway_btn").click();
@@ -788,7 +792,7 @@ $("#save_btn").on("click", function(){
     * Only try to save an experiment if there is a valid experiment loaded
     */
     if(typeof(project) !== "undefined" & project !== null){
-      var this_proj 	 = master_json.project_mgmt.projects[project];
+      var this_proj = master_json.project_mgmt.projects[project];
 
       /*
       * Cleaning the exp_json of deprecated properties
@@ -839,7 +843,7 @@ $("#save_btn").on("click", function(){
 
         this_proj = process_conditions(this_proj);
         this_proj = process_procs(this_proj);
-        this_proj = process_trialtypes(this_proj);
+        this_proj = process_code(this_proj);
 
         switch(Collector.detect_context()){
           case "localhost":
@@ -880,7 +884,9 @@ $("#save_btn").on("click", function(){
           default:
             dbx_obj.new_upload({path: "/Projects/"+project+".json", contents: JSON.stringify(this_proj), mode:'overwrite'},
               function(returned_data){
-                dbx.sharingCreateSharedLink({path:returned_data.path_lower})
+                dbx.sharingCreateSharedLink({
+                  path:returned_data.path_lower
+                })
                   .then(function(returned_link){
                     this_proj.location = returned_link.url;
                     dbx_obj.new_upload({path: "/Projects/"+project+".json", contents: JSON.stringify(this_proj), mode:'overwrite'},function(location_saved){
@@ -923,12 +929,12 @@ $("#save_btn").on("click", function(){
       };
     }
 
-    Collector.tests.pass("studies",
+    Collector.tests.pass("projects",
                          "save_at_start");
 
   /*
   }  catch (error){
-    Collector.tests.fail("studies",
+    Collector.tests.fail("projects",
                          "save_at_start",
                          error);
   }
@@ -945,15 +951,15 @@ $("#stim_select").on("change",function(){
   );
 });
 
-$("#trialtype_project_select").on("change", function(){
+$("#code_project_select").on("change", function(){
   console.log(this.value);
   var this_proj = master_json.project_mgmt.projects[this.value];
   var procs = Object.keys(this_proj.all_procs);
   var stims = Object.keys(this_proj.all_stims);
 
 
-  $("#trialtype_procedure").show();
-  $("#trialtype_stimuli").show();
+  $("#code_procedure_select").show();
+  $("#code_stimuli_select").show();
 });
 
 $("#upload_default_exp_btn").on("click",function(){

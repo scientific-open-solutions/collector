@@ -19,12 +19,14 @@
 	Kitten/Cat release (2019-21) author: Dr. Anthony Haffey (a.haffey@reading.ac.uk)
 */
 Collector.tests = {
-  categories:["data",
-              "helper",
-              "mods",
-              "studies",
-              "surveys",
-              "trialtypes"],
+  categories:[
+    "code",
+    "data",
+    "helper",
+    "mods",
+    "projects",
+    "surveys"
+  ],
   pipeline:[
     "start",
     "after_start"
@@ -34,6 +36,13 @@ Collector.tests = {
   /*
   * categories of test
   */
+  code:{
+    list: {
+      outcome: "awaiting",
+      text:    "Are trialtypes listed?",
+      type:    "start"
+    }
+  },
   data:{
 
   },
@@ -51,7 +60,7 @@ Collector.tests = {
       type:    "start"
     }
   },
-  studies:{
+  projects:{
     list:{
       outcome: "awaiting",
       text:    "Are the studies listed?",
@@ -70,13 +79,6 @@ Collector.tests = {
     list: {
       outcome: "awaiting",
       text:    "Are surveys listed?",
-      type:    "start"
-    }
-  },
-  trialtypes:{
-    list: {
-      outcome: "awaiting",
-      text:    "Are trialtypes listed?",
       type:    "start"
     }
   },

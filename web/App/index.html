@@ -35,7 +35,7 @@
 	Publicly available javascript packages
 -->
 
-<script src="Code/master_json.js"></script>
+<script src="libraries/collector/master_json.js"></script>
 <script src="libraries/jquery-3.3.1.min.js"></script>
 <script src="libraries/popper.min.js"></script>
 <script src="libraries/bootstrap.4.0.min.js"></script>
@@ -120,11 +120,11 @@
   	Collector specific files
   -->
   <script src= "Handsontables/HandsontablesFunctions.js"></script>
-  <script src= "Code/Collector.js"></script>
+  <script src= "libraries/collector/Collector.js"></script>
   <script src= "Tests/RunTests.js"></script>
-  <script src= "Code/BrowserCheck.js"></script>
+  <script src= "libraries/collector/BrowserCheck.js"></script>
   <script src= "CollectorMap.js"></script>
-  <script src= "Code/SessionCheck.js"></script>
+  <script src= "libraries/collector/SessionCheck.js"></script>
   <script> collector_map = this_map(''); </script>
   <link rel="stylesheet" type="text/css" href="Style.css">
 
@@ -182,18 +182,16 @@
 <script>
 var navbar_names  = [
   "Projects",
-  "Trialtypes",
+  "Code",
   "Surveys",
   "Pathway",
-  "Mods",
   "Data"
 ];
 var pages = [
   "Projects/Projects.html",
-  "TrialTypes/TrialTypes.html",
+  "Code/Code.html",
   "Surveys/Surveys.html",
-  "Pathway/Pathway.html",
-  "Mods/Mods.html",
+  "Pathways/Pathways.html",
   "Data/Data.html"
 ];
 var icons = [
@@ -201,7 +199,6 @@ var icons = [
   "code-slash",
   "card-checklist",
   "arrow-up-right",
-  "tools",
   "table"
 ];
 navbar_names.forEach(function(this_name,index){
@@ -257,4 +254,4 @@ setTimeout(function(){
 },500);
 </script>
 <script src="ContextStart.js"></script>
-<script src="Code/MobileCheck.js"></script>
+<script src="libraries/collector/MobileCheck.js"></script>

@@ -9,7 +9,7 @@ instr/**/1,/**/N_a_M_e_,/**/+Name/**///
   outc:a(aSignal)
 endin
 
-opcode/**/aUDO,/**/i[],/**/aik//
+oplibraries/collector/**/aUDO,/**/i[],/**/aik//
   aUDO
 endop
 

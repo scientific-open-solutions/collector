@@ -21,7 +21,7 @@ if(!fs.existsSync(root_dir + "/User")){
 * fs functions in alphabetical order
 */
 
-ipc.on('fs_delete_experiment', (event,args) => {
+ipc.on('fs_delete_project', (event,args) => {
 
   /*
   * Security checks - should probably have more
@@ -84,7 +84,7 @@ ipc.on('fs_delete_survey', (event,args) => {
   }
 });
 
-ipc.on('fs_delete_trialtype', (event,args) => {
+ipc.on('fs_delete_code', (event,args) => {
 
   /*
   * Security checks - should probably have more
@@ -110,7 +110,7 @@ ipc.on('fs_home_dir', (event,args) => {
   event.returnValue = root_dir;
 });
 
-ipc.on('fs_list_trialtypes', (event,args) => {
+ipc.on('fs_list_code', (event,args) => {
   /*
   * list all files in "Trialtypes" folder
   */
@@ -174,8 +174,8 @@ ipc.on('fs_read_file', (event,args) => {
     if(!fs.existsSync(root_dir + "User/Surveys")){
       fs.mkdirSync(root_dir + "User/Surveys");
     }
-    if(!fs.existsSync(root_dir + "User/Trialtypes")){
-      fs.mkdirSync(root_dir + "User/Trialtypes");
+    if(!fs.existsSync(root_dir + "User/Code")){
+      fs.mkdirSync(root_dir + "User/Code");
     }
 
     try{

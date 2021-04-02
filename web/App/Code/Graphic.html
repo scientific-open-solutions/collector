@@ -175,8 +175,8 @@ $(".canvas_btn").on("click",function(){
 });
 
 $(".keyboard_setting").on("input change",function(){ //only for valid keys at the moment though.
-	var trialtype 		 = master_json.trialtypes.trialtype;
-	var this_trialtype = master_json.trialtypes.graphic.trialtypes[trialtype];
+	var trialtype 		 = master_json.code.file;
+	var this_trialtype = master_json.code.graphic.files[trialtype];
 	var keyboard_prop = this.id.replace("keyboard_","");
 	this_trialtype.keyboard[keyboard_prop] = this.value;
 	graphic_editor_obj.compile_graphics();
@@ -190,8 +190,8 @@ $(".keyboard_setting").on("input change",function(){ //only for valid keys at th
 $("#add_mod_btn").on("click",function(){
 	bootbox.prompt("What would you like to call this mod?",function(mod){
 	  // add mod to the trialtype in graphic part
-		var trialtype = master_json.trialtypes.trialtype;
-		var this_trialtype = master_json.trialtypes.graphic.trialtypes[trialtype];
+		var trialtype = master_json.code.file;
+		var this_trialtype = master_json.code.graphic.files[trialtype];
     if(typeof(this_trialtype.mods) == "undefined"){
 			this_trialtype.mods = {};
 		}
@@ -261,16 +261,16 @@ $("#graphic_canvas").contents().on("click",function(){
 		graphic_editor_obj.create_element(element_type);
 		$("#canvas_click_btn").click();
 	} else {
-		if(typeof(master_json.trialtypes.graphic.hovered_element) !== "undefined" && master_json.trialtypes.graphic.hovered_element !== ""){
-			var element_id = master_json.trialtypes.graphic.hovered_element;
-			var trialtype  = master_json.trialtypes.trialtype;
+		if(typeof(master_json.code.graphic.hovered_element) !== "undefined" && master_json.code.graphic.hovered_element !== ""){
+			var element_id = master_json.code.graphic.hovered_element;
+			var trialtype  = master_json.code.file;
 
 			$('#graphic_canvas').contents().find(".graphic_element").removeClass("selected_element");
 			$('#graphic_canvas').contents().find("#"+element_id).addClass("selected_element");
 			$('#graphic_canvas').contents().find("#"+element_id).removeClass("hovered_element");
 
 
-			master_json.trialtypes.graphic.element_id = element_id;
+			master_json.code.graphic.element_id = element_id;
 			graphic_editor_obj.update_settings(element_id);
 			//click on the timeline button with the relevant value
 
@@ -293,8 +293,8 @@ $("#graphic_canvas").contents().mousemove(function(event){
 	graphic_editor_obj._mouseY = event.clientY;
 });
 $("#keyboard_end_press").on("change input",function(){
-	var trialtype 			 = master_json.trialtypes.trialtype;
-	var this_trialtype   = master_json.trialtypes.graphic.trialtypes[trialtype];
+	var trialtype 			 = master_json.code.file;
+	var this_trialtype   = master_json.code.graphic.files[trialtype];
 	var keyboard_element = $("#keyboard_variable").val();
 	this_trialtype.keyboard.end_press = $(this)[0].checked;
 	graphic_editor_obj.compile_graphics();
@@ -305,8 +305,8 @@ $("#keyboard_valid_keys").on("click",function(){
 $("#keyboard_variable").on("click",function(){
 	bootbox.prompt("What would you like to rename this keyboard response to?",function(new_name){
 		if(new_name){ //i.e. not cancel
-			var trialtype 		 = master_json.trialtypes.trialtype;
-			var this_trialtype = master_json.trialtypes.graphic.trialtypes[trialtype];
+			var trialtype 		 = master_json.code.file;
+			var this_trialtype = master_json.code.graphic.files[trialtype];
 			var old_name   		 = $("#keyboard_variable").val();
 			if(typeof(this_trialtype.keyboard[new_name]) == "undefined"){
 				this_trialtype.keyboard[new_name] = this_trialtype.keyboard[old_name];
@@ -318,26 +318,26 @@ $("#keyboard_variable").on("click",function(){
 	});
 });
 $("#mouse_visible").on("change",function(){
-	var trialtype = master_json.trialtypes.trialtype;
-	master_json.trialtypes.graphic.trialtypes[trialtype]["mouse_visible"] = $(this)[0].checked;
+	var trialtype = master_json.code.file;
+	master_json.code.graphic.files[trialtype]["mouse_visible"] = $(this)[0].checked;
 	graphic_editor_obj.compile_graphics();
 });
 $("#trial_background_color").on("input change",function(){
 	$("#graphic_canvas").contents().find("body").css("background-color",$(this).val());
-	var trialtype = master_json.trialtypes.trialtype;
-	master_json.trialtypes.graphic.trialtypes[trialtype]["background-color"] = $(this).val();
+	var trialtype = master_json.code.file;
+	master_json.code.graphic.files[trialtype]["background-color"] = $(this).val();
 	graphic_editor_obj.compile_graphics();
 });
 $("#trial_height").on("input change",function(){
 	$("#graphic_canvas").css("height",$(this).val());
-	var trialtype = master_json.trialtypes.trialtype;
-	master_json.trialtypes.graphic.trialtypes[trialtype].height = $(this).val();
+	var trialtype = master_json.code.file;
+	master_json.code.graphic.files[trialtype].height = $(this).val();
 	graphic_editor_obj.compile_graphics();
 });
 $("#trial_width").on("input change",function(){
 	$("#graphic_canvas").css("width",$(this).val());
-	var trialtype = master_json.trialtypes.trialtype;
-	master_json.trialtypes.graphic.trialtypes[trialtype].width = $(this).val();
+	var trialtype = master_json.code.file;
+	master_json.code.graphic.files[trialtype].width = $(this).val();
 	graphic_editor_obj.compile_graphics();
 });
 
@@ -346,8 +346,8 @@ $("#trial_width").on("input change",function(){
 
 function load_trialtype_mods(){
 	// deal with list of mods here - can be an array in graphics and then this array when compiled adds the mods at the bottom of the script
-	var trialtype 		 = master_json.trialtypes.trialtype;
-	var this_trialtype = master_json.trialtypes.graphic.trialtypes[trialtype];
+	var trialtype 		 = master_json.code.file;
+	var this_trialtype = master_json.code.graphic.files[trialtype];
 	if(typeof(this_trialtype.mods) == "undefined"){
 		this_trialtype.mods = {};
 	}
@@ -409,8 +409,8 @@ function select_mod_on(){
     var mod = this.value;
     bootbox.confirm("Are you sure you want to delete the mod <b>" + this.value + "</b> for this trialtype?",function(response){
       if(response){
-        var trialtype      = master_json.trialtypes.trialtype;
-        var this_trialtype = master_json.trialtypes.graphic.trialtypes[trialtype];
+        var trialtype      = master_json.code.file;
+        var this_trialtype = master_json.code.graphic.files[trialtype];
         delete(this_trialtype.mods[mod]);
         load_trialtype_mods();
         update_master_json();
@@ -438,8 +438,8 @@ function select_mod_on(){
     mod_variables = mod_variables.map(mod_variable => mod_variable.replace("mod.",""));
     mod_settings_html = '';
 
-    var trialtype 		 = master_json.trialtypes.trialtype;
-    var this_trialtype = master_json.trialtypes.graphic.trialtypes[trialtype];
+    var trialtype 		 = master_json.code.file;
+    var this_trialtype = master_json.code.graphic.files[trialtype];
 
     var mod = this.id.replace("mod_select_","");
 
@@ -476,14 +476,14 @@ function select_mod_on(){
 
 
 function list_graphics(){
-  if(typeof(master_json.trialtypes.graphic) == "undefined"){
-		master_json.trialtypes.graphic = {
+  if(typeof(master_json.code.graphic) == "undefined"){
+		master_json.code.graphic = {
 			trialtype : '',
 			trialtypes : {},
 			hovered_element :''
 		}
 	}
-	master_json.trialtypes.graphic.relevant_styles = [
+	master_json.code.graphic.relevant_styles = [
 		"background-color",
 		"border-color",
 		"border-radius",
@@ -508,9 +508,9 @@ graphic_editor_obj = {
 			bootbox.confirm("Are you sure you want to delete this element?",function(result){
 				if(result){
 					var element_id = $("#element_name").val();
-					var trialtype  = master_json.trialtypes.trialtype;
+					var trialtype  = master_json.code.file;
 					$("#graphic_canvas").contents().find("#"+element_id).remove();
-					delete(master_json.trialtypes.graphic.trialtypes[trialtype].elements[element_id]);
+					delete(master_json.code.graphic.files[trialtype].elements[element_id]);
 					$("#graphic_settings").html("");
 					$("#graphic_general_settings").show();
 				}
@@ -522,22 +522,22 @@ graphic_editor_obj = {
 		});
 
 		$("#graphic_canvas").contents().find(".graphic_element").hover(function(){
-			master_json.trialtypes.graphic.hovered_element = this.id;
-			if(this.id !== master_json.trialtypes.graphic.element_id){
+			master_json.code.graphic.hovered_element = this.id;
+			if(this.id !== master_json.code.graphic.element_id){
 				$(this).addClass("hovered_element");
 			}
 		},function(){
 			$(this).removeClass("hovered_element");
-			master_json.trialtypes.graphic.hovered_element = "";
+			master_json.code.graphic.hovered_element = "";
 		});
 
     // update relevant styles
     /////////////////////////
 
-		var relevant_styles = master_json.trialtypes.graphic.relevant_styles;
+		var relevant_styles = master_json.code.graphic.relevant_styles;
 		relevant_styles.forEach(function(relevant_style){
 			$("#setting_"+relevant_style).on("input change",function(){ //input
-				var element_id = master_json.trialtypes.graphic.element_id;
+				var element_id = master_json.code.graphic.element_id;
 				$("#graphic_canvas").contents().find("#"+element_id).css(relevant_style,$(this).val());
 				graphic_editor_obj.update_trialtype_element(element_id,relevant_style,$(this).val());
 				if(relevant_style == "height"){
@@ -550,7 +550,7 @@ graphic_editor_obj = {
     ////////////////////////
 
 		$("#setting_controls").on("change",function(){
-			var element_id = master_json.trialtypes.graphic.element_id;
+			var element_id = master_json.code.graphic.element_id;
 			graphic_editor_obj.update_trialtype_element(element_id,"controls",$(this)[0].checked);
 		});
 
@@ -559,26 +559,26 @@ graphic_editor_obj = {
     });
 
 		$("#setting_end_click").on("click",function(){
-			var element_id = master_json.trialtypes.graphic.element_id;
+			var element_id = master_json.code.graphic.element_id;
 			graphic_editor_obj.update_trialtype_element(element_id,"end_click",$(this)[0].checked);
 		});
 		$("#setting_html").on("input change",function(){
-			var element_id = master_json.trialtypes.graphic.element_id;
+			var element_id = master_json.code.graphic.element_id;
 			$("#graphic_canvas").contents().find("#" + element_id).html($(this).val());
 		});
 		$("#setting_placeholder").on("input change",function(){
-			var element_id = master_json.trialtypes.graphic.element_id;
+			var element_id = master_json.code.graphic.element_id;
 			$("#graphic_canvas").contents().find("#" + element_id).attr("placeholder",$(this).val());
 		});
 		$("#setting_value").on("input change",function(){
-			var element_id = master_json.trialtypes.graphic.element_id;
+			var element_id = master_json.code.graphic.element_id;
 			$("#graphic_canvas").contents().find("#" + element_id).val($(this).val());
 		});
 
     var setting_update_values = ["delay", "end", "hide", "html", "name", "src", "show", "value"];
     setting_update_values.forEach(function(update_value){
       $("#setting_" + update_value).on("input change",function(){
-        var element_id = master_json.trialtypes.graphic.element_id;
+        var element_id = master_json.code.graphic.element_id;
         graphic_editor_obj.update_trialtype_element(element_id,update_value,$(this).val());
       });
     });
@@ -603,8 +603,8 @@ graphic_editor_obj = {
 		});
 	},
 	compile_graphics:function(){
-		var trialtype = master_json.trialtypes.trialtype;
-		var this_trialtype = master_json.trialtypes.graphic.trialtypes[trialtype];
+		var trialtype = master_json.code.file;
+		var this_trialtype = master_json.code.graphic.files[trialtype];
 		var elements 	= this_trialtype.elements;
 
 		// css
@@ -631,7 +631,7 @@ graphic_editor_obj = {
 		}
 				this_code += "}\n";
 
-		var relevant_styles = master_json.trialtypes.graphic.relevant_styles;
+		var relevant_styles = master_json.code.graphic.relevant_styles;
 		Object.keys(elements).forEach(function(element){
 			this_code += "#" + element + "{\n";
 			this_code += "  position:absolute;\n";
@@ -803,14 +803,14 @@ graphic_editor_obj = {
 		// add code to Ace editor and update the user_trialtype
 		///////////////////////////////////////////////////////
 		editor.setValue(this_code);
-		master_json.trialtypes.user_trialtypes[trialtype] = this_code;
+		master_json.code.user[trialtype] = this_code;
 	},
 	create_element:function(element_type){
 		var x_coord 	 = this._mouseX;
 		var y_coord 	 = this._mouseY;
 
-		var trialtype  = master_json.trialtypes.trialtype;
-		var element_no = Object.keys(master_json.trialtypes.graphic.trialtypes[trialtype].elements).length;
+		var trialtype  = master_json.code.file;
+		var element_no = Object.keys(master_json.code.graphic.files[trialtype].elements).length;
 
 		var element_id 		= "canvas_element_" + element_no;
 		var element_props = {
@@ -871,7 +871,7 @@ graphic_editor_obj = {
 					type:	 "checkbox",
 					value: false
 				};
-				master_json.trialtypes.graphic.trialtypes[trialtype].elements[element_id] = element_props;
+				master_json.code.graphic.files[trialtype].elements[element_id] = element_props;
 				this.update_timeline();
 				this.draw_audio(element_props,element_id);
 				break;
@@ -903,7 +903,7 @@ graphic_editor_obj = {
 					value: false
 				};
 
-				master_json.trialtypes.graphic.trialtypes[trialtype].elements[element_id] = element_props;
+				master_json.code.graphic.files[trialtype].elements[element_id] = element_props;
 				this.update_timeline();
 				this.draw_image(element_props,element_id);
 				break;
@@ -980,7 +980,7 @@ graphic_editor_obj = {
 										type: "checkbox",
 										value: false
 									};
-									master_json.trialtypes.graphic.trialtypes[trialtype].elements[element_id] = element_props;
+									master_json.code.graphic.files[trialtype].elements[element_id] = element_props;
 									graphic_editor_obj.update_timeline();
 									graphic_editor_obj.draw_input(element_props,element_id);
 
@@ -1013,7 +1013,7 @@ graphic_editor_obj = {
                     type:  "text",
                     value: "12px"
                   };
-									master_json.trialtypes.graphic.trialtypes[trialtype].elements[element_id] = element_props;
+									master_json.code.graphic.files[trialtype].elements[element_id] = element_props;
 									graphic_editor_obj.update_timeline();
 									graphic_editor_obj.draw_input(element_props,element_id);
 									break;
@@ -1076,7 +1076,7 @@ graphic_editor_obj = {
 					type:	 "text",
 					value: ""
 				};
-				master_json.trialtypes.graphic.trialtypes[trialtype].elements[element_id] = element_props;
+				master_json.code.graphic.files[trialtype].elements[element_id] = element_props;
 				this.update_timeline();
 				this.draw_text(element_props,element_id);
 				break;
@@ -1114,7 +1114,7 @@ graphic_editor_obj = {
 					type:	 "checkbox",
 					value: false
 				};
-				master_json.trialtypes.graphic.trialtypes[trialtype].elements[element_id] = element_props;
+				master_json.code.graphic.files[trialtype].elements[element_id] = element_props;
 				this.update_timeline();
 				this.draw_video(element_props,element_id);
 				break;
@@ -1132,8 +1132,8 @@ graphic_editor_obj = {
 			});
 			$('#graphic_canvas').contents().find(".graphic_element").removeClass("selected_element");
 			$('#graphic_canvas').contents().find("#"+element_id).addClass("selected_element");
-			var trialtype = master_json.trialtypes.trialtype;
-			master_json.trialtypes.graphic.element_id = element_id;
+			var trialtype = master_json.code.file;
+			master_json.code.graphic.element_id = element_id;
 			graphic_editor_obj.update_settings(element_id);
 		});
 	},
@@ -1149,8 +1149,8 @@ graphic_editor_obj = {
 			});
 			$('#graphic_canvas').contents().find(".graphic_element").removeClass("selected_element");
 			$('#graphic_canvas').contents().find("#"+element_id).addClass("selected_element");
-			var trialtype = master_json.trialtypes.trialtype;
-			master_json.trialtypes.graphic.element_id = element_id;
+			var trialtype = master_json.code.file;
+			master_json.code.graphic.element_id = element_id;
 			graphic_editor_obj.update_settings(element_id);
 		});
 	},
@@ -1178,8 +1178,8 @@ graphic_editor_obj = {
 			});
 			$('#graphic_canvas').contents().find(".graphic_element").removeClass("selected_element");
 			$('#graphic_canvas').contents().find("#"+element_id).addClass("selected_element");
-			var trialtype = master_json.trialtypes.trialtype;
-			master_json.trialtypes.graphic.element_id = element_id;
+			var trialtype = master_json.code.file;
+			master_json.code.graphic.element_id = element_id;
 			graphic_editor_obj.update_settings(element_id);
 		});
 	},
@@ -1195,8 +1195,8 @@ graphic_editor_obj = {
 			});
 			$('#graphic_canvas').contents().find(".graphic_element").removeClass("selected_element");
 			$('#graphic_canvas').contents().find("#"+element_id).addClass("selected_element");
-			var trialtype = master_json.trialtypes.trialtype;
-			master_json.trialtypes.graphic.element_id = element_id;
+			var trialtype = master_json.code.file;
+			master_json.code.graphic.element_id = element_id;
 			graphic_editor_obj.update_settings(element_id);
 		});
 	},
@@ -1212,8 +1212,8 @@ graphic_editor_obj = {
 			});
 			$('#graphic_canvas').contents().find(".graphic_element").removeClass("selected_element");
 			$('#graphic_canvas').contents().find("#"+element_id).addClass("selected_element");
-			var trialtype = master_json.trialtypes.trialtype;
-			master_json.trialtypes.graphic.element_id = element_id;
+			var trialtype = master_json.code.file;
+			master_json.code.graphic.element_id = element_id;
 			graphic_editor_obj.update_settings(element_id);
 		});
 	},
@@ -1243,8 +1243,8 @@ graphic_editor_obj = {
 			graphic_editor_obj.update_main_settings();
 
 
-			var trialtype 			= master_json.trialtypes.trialtype;
-			var this_trialtype  = master_json.trialtypes.graphic.trialtypes[trialtype];
+			var trialtype 			= master_json.code.file;
+			var this_trialtype  = master_json.code.graphic.files[trialtype];
 			console.dir(this_trialtype);
     });
   },
@@ -1422,13 +1422,13 @@ graphic_editor_obj = {
 			if(new_name == "trial_contents" | new_name == "keyboard_response"){
 				bootbox.alert("<b> " + new_name + " </b> is a protected element name - please come up with another one");
 			} else if(new_name !== null){
-				var trialtype = master_json.trialtypes.trialtype;
-				var elements = master_json.trialtypes.graphic.trialtypes[trialtype].elements;
+				var trialtype = master_json.code.file;
+				var elements = master_json.code.graphic.files[trialtype].elements;
 				if(typeof(elements[new_name]) == "undefined"){
-					var old_element_name = master_json.trialtypes.graphic.element_id;
+					var old_element_name = master_json.code.graphic.element_id;
 					elements[new_name] = JSON.parse(JSON.stringify(elements[old_element_name]));
 					delete(elements[old_element_name]);
-					master_json.trialtypes.graphic.element_id = new_name;
+					master_json.code.graphic.element_id = new_name;
 					$("#element_name").val(new_name);
 					$("#graphic_canvas").contents().find("#"+old_element_name).attr("id",new_name);
 					switch(elements[new_name].type){
@@ -1449,8 +1449,8 @@ graphic_editor_obj = {
 		});
 	},
 	update_main_settings:function(){
-		var trialtype 			= master_json.trialtypes.trialtype;
-		var this_trialtype  = master_json.trialtypes.graphic.trialtypes[trialtype];
+		var trialtype 			= master_json.code.file;
+		var this_trialtype  = master_json.code.graphic.files[trialtype];
 		$("#trial_width").val(parseFloat(this_trialtype.width));
 		$("#trial_height").val(this_trialtype.height);
 		$("#trial_background_color").val(this_trialtype["background-color"]);
@@ -1459,8 +1459,8 @@ graphic_editor_obj = {
 		$("#mouse_visible")[0].checked 			= this_trialtype.mouse_visible;
 	},
 	update_settings:function(element_id){
-		var trialtype 		= master_json.trialtypes.trialtype;
-		var this_settings = this.order_settings(master_json.trialtypes.graphic.trialtypes[trialtype].elements[element_id]);
+		var trialtype 		= master_json.code.file;
+		var this_settings = this.order_settings(master_json.code.graphic.files[trialtype].elements[element_id]);
 		$("#graphic_general_settings").hide();
 		$("#graphic_settings").html('');
 
@@ -1585,8 +1585,8 @@ graphic_editor_obj = {
 		graphic_editor_obj.compile_graphics();
 	},
 	update_timeline:function(){
-		var trialtype 		 				 = master_json.trialtypes.trialtype;
-		var this_trialtype 				 = master_json.trialtypes.graphic.trialtypes[trialtype];
+		var trialtype 		 				 = master_json.code.file;
+		var this_trialtype 				 = master_json.code.graphic.files[trialtype];
 		var these_elements 				 = this_trialtype.elements;
 		var element_timeline_html  = "<table style='width:100%'>";
 
@@ -1689,8 +1689,8 @@ graphic_editor_obj = {
 		});
 	},
 	update_trialtype_element:function(element_id,prop,value){
-		var trialtype = master_json.trialtypes.trialtype;
-		master_json.trialtypes.graphic.trialtypes[trialtype].elements[element_id][prop].value = value;
+		var trialtype = master_json.code.file;
+		master_json.code.graphic.files[trialtype].elements[element_id][prop].value = value;
 		graphic_editor_obj.update_timeline();
 		graphic_editor_obj.compile_graphics();
 	},
