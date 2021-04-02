@@ -241,20 +241,13 @@ function initiate_actions(){
     }
   });
   $("#code_select").on("change",function(){
-
-    var old_trialtype = ($(this).attr('previousValue'));
-
-    if(old_trialtype !== "" &                                                               // not the first selected
-      Object.keys(master_json.code.default).indexOf(old_trialtype) == -1){ // not a default trialtype
-      code_obj.save(master_json.code.user[old_trialtype],  // trialtype content
-                                    old_trialtype,                                          // trialtype name
-                                    "old");                                                 // not creating a new one
+    var old_code = ($(this).attr('previousValue'));
+    if(old_code !== "" &
+      Object.keys(master_json.code.default).indexOf(old_code) == -1){ code_obj.save(master_json.code.user[old_code],old_code,"old");
     }
-
     $(this).attr('previousValue', this.value);
-    //$("#save_btn").click();
-    //detect if it's a graphic trialtype
     var trialtype = this.value;
+
     if(typeof(master_json.code.graphic.files[trialtype]) !== "undefined"){
       master_json.code.file = trialtype;
       editor.textInput.getElement().onkeydown = graphic_editor_obj.graphic_warning;

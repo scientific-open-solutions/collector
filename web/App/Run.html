@@ -168,7 +168,7 @@ Project = {
     "create_exp_json_variables",
     "parse_sheets",
     "parse_current_proc",
-    "clean_trialtypes",
+    "clean_code",
     "insert_start",
     "insert_end_checks",
     "shuffle_start_exp",
@@ -183,7 +183,7 @@ Project = {
     "create_exp_json_variables",
     "parse_sheets",
     "parse_current_proc",
-    "clean_trialtypes",
+    "clean_code",
     "insert_start",
     "insert_end_checks",
     "shuffle_start_exp"
@@ -365,7 +365,7 @@ Project = {
 
 		post_no = post_no == 0 ? "" : "post "+post_no+" ";
 		this_proc 	   = exp_json.parsed_proc[trial_no];
-		this_trialtype = exp_json.trialtypes[this_proc[post_no+"trial type"]];
+		this_trialtype = exp_json.code[this_proc[post_no+"code"]];
 
 		//look through all variables and replace with the value
 
@@ -603,10 +603,10 @@ function clean_this_condition(this_cond){
 	return this_cond;
 }
 
-function clean_trialtypes(){
+function clean_code(){
   exp_json.parsed_proc.forEach(function(row,row_index){
-    //identify trial type columns
-    var tt_cols = Object.keys(row).filter(this_key => this_key.indexOf("trial type") !== -1);
+    //identify code columns
+    var tt_cols = Object.keys(row).filter(this_key => this_key.indexOf("code") !== -1);
     tt_cols.forEach(function(tt_col){
       exp_json.parsed_proc[row_index][tt_col] = exp_json.parsed_proc[row_index][tt_col].toLowerCase();
     });
@@ -870,7 +870,7 @@ function insert_end_checks(){
     item: 0,
     max_time: "",
     text: "",
-    "trial type": "end_checks_experiment"
+    "code": "end_checks_experiment"
   }
   var shuffle_levels = Object.keys(exp_json.parsed_proc[0]).filter(item => item.indexOf("shuffle") !== -1);
   shuffle_levels.forEach(function(shuffle_level){
@@ -882,12 +882,12 @@ function insert_end_checks(){
 }
 function insert_start(){
 
-  function add_to_start(current_procedure, trial_type){
+  function add_to_start(current_procedure, code){
     var this_trialtype_info = {
       item:0,
       max_time:"",
       text:"",
-      "trial type": trial_type
+      "code": code
     }
     var shuffle_levels = Object.keys(exp_json.parsed_proc[0]).filter(item => item.indexOf("shuffle") !== -1);
     shuffle_levels.forEach(function(shuffle_level){
@@ -900,7 +900,7 @@ function insert_start(){
   function load_quality_checks(quality_list){
     var this_check = quality_list.pop();
     $.get(this_check.url,function(this_check_html){
-      exp_json.trialtypes[this_check.name] = this_check_html;
+      exp_json.code[this_check.name] = this_check_html;
       if(quality_list.length > 0){
         load_quality_checks(quality_list);
       } else {
@@ -1602,10 +1602,10 @@ function write_trial_iframe(index){
 
 	this_proc = exp_json.parsed_proc[index];
 
-	var post_trialtypes =  Object.keys(this_proc).filter(function(key) {
-		return /trial type/.test(key);
+	var post_code =  Object.keys(this_proc).filter(function(key) {
+		return /code/.test(key);
 	});
-	trial_events = post_trialtypes.filter(function(post_trialtype){
+	trial_events = post_code.filter(function(post_trialtype){
     return this_proc[post_trialtype] !== "";
   });
 	trial_iframe_code = '';

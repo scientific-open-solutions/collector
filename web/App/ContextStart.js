@@ -72,6 +72,9 @@ function update_master(){
     delete(master_json.code.default_trialtypes);
     delete(master_json.code.user_trialtypes);
   }
+  if(typeof(master_json.code.graphic.files) == "undefined"){
+    master_json.code.graphic.files = master_json.code.graphic.trialtypes;
+  }
 }
 
 switch(Collector.detect_context()){
