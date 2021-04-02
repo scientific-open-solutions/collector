@@ -24,7 +24,6 @@ $("#default_experiments_select").on("change",function(){
 });
 
 $("#delete_exp_btn").on("click",function(){
-
 	var exp_name = $("#experiment_list").val();
 	if(exp_name == null){
 		bootbox.alert("You need to select a study to delete it");
@@ -946,6 +945,17 @@ $("#stim_select").on("change",function(){
     "stimuli",
     this.value
   );
+});
+
+$("#trialtype_experiment_select").on("change", function(){
+  console.log(this.value);
+  var this_exp = master_json.exp_mgmt.experiments[this.value];
+  var procs = Object.keys(this_exp.all_procs);
+  var stims = Object.keys(this_exp.all_stims);
+
+
+  $("#trialtype_procedure").show();
+  $("#trialtype_stimuli").show();
 });
 
 $("#upload_default_exp_btn").on("click",function(){

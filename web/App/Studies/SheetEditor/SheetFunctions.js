@@ -129,20 +129,19 @@ function list_studies(){
       */
       $("#add_study_pathway_select option").remove();
       $("#experiment_list option").remove();
-      $("#trialtype_experiment option").remove();
+      $("#trialtype_experiment_select option").remove();
 
       /*
-      * add "Select a study" option that is hidden, disabled and selected
+      * add "Select a study" option
       */
       var default_option = "<option hidden disabled selected>Select a study</option>";
 
       $("#add_study_pathway_select").append(default_option);
       $("#experiment_list").append(default_option);
-      $("#trialtype_experiment").append(default_option);
+      $("#trialtype_experiment_select").append(default_option);
 
       /*
-      * add options to each of the three selects
-      * for main study list, series and trialtype preview
+      * add options to each of the selects
       */
       name_list.sort(function(a,b){
         return a.toLowerCase().localeCompare(b.toLowerCase());
@@ -151,7 +150,7 @@ function list_studies(){
         var this_option = "<option>" + item_name + "</option>";
         $("#add_study_pathway_select").append(this_option);
         $("#experiment_list").append(this_option);
-        $("#trialtype_experiment").append(this_option);
+        $("#trialtype_experiment_select").append(this_option);
 
       });
     }
