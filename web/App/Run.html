@@ -143,16 +143,16 @@ online_data_obj = {
   }
 }
 
-Study = {
+Project = {
 
   activate_pipe   : function(){
-    var this_function = Study.pipeline.shift();
-    if(Study.resume == false | Study.start_functions.indexOf(this_function) == -1){
+    var this_function = Project.pipeline.shift();
+    if(Project.resume == false | Project.start_functions.indexOf(this_function) == -1){
       if(typeof(this_function) !== "undefined"){
         window[this_function]();
       }
     } else {
-      Study.activate_pipe();
+      Project.activate_pipe();
     }
   },
   get_vars  : {},
@@ -286,7 +286,7 @@ Study = {
             parseFloat(exp_json.this_condition.buffer) - 1;
           write_trial_iframe(this_index);
         });
-        Study.start_post(go_to_info);
+        Project.start_post(go_to_info);
       }
     } else {
       exp_json.post_no++;
@@ -303,13 +303,13 @@ Study = {
         .children()
         .find("iframe")
         .hide();
-      Study.start_post(go_to_info);
+      Project.start_post(go_to_info);
     }
 
-    switch(Study.get_vars.platform){
+    switch(Project.get_vars.platform){
       case "localhost":
         var data_response = Collector.electron.fs.write_data(
-          Study.get_vars.location,
+          Project.get_vars.location,
             $("#participant_code").val() + "_" +
             $("#completion_code").val()  + ".csv",
             Papa.unparse(Collector.complete_csv(exp_json.responses),{
@@ -328,7 +328,7 @@ Study = {
           online_data_obj.save_queue_add(
   					function(){
   						online_save(
-                Study.get_vars.location,
+                Project.get_vars.location,
                 $("#participant_code").val(),
                 $("#completion_code").val(),
                 $("#prehashed_code").val(),
@@ -430,7 +430,7 @@ Study = {
           "../User/",
           home_dir + "/User/"
         );
-    } else if(Study.is_exe){
+    } else if(Project.is_exe){
       var home_dir = Collector
         .electron
         .fs
@@ -447,7 +447,7 @@ Study = {
     if(typeof(proc_no) == "undefined"){
       proc_no = 0;
     }
-    Study.finish_trial([new_trial_no - 1, proc_no]);
+    Project.finish_trial([new_trial_no - 1, proc_no]);
 
   },
 
@@ -542,9 +542,9 @@ Study = {
 			if(max_time !== "" & max_time.toLowerCase() !== "user"){
 				var this_trial_no = exp_json.trial_no;
 				var this_post_no  = exp_json.post_no;
-        Study.trial_timer = new Collector.timer(function(){
+        Project.trial_timer = new Collector.timer(function(){
           if(this_trial_no == exp_json.trial_no && this_post_no == exp_json.post_no){
-						Study.finish_trial();
+						Project.finish_trial();
 					}
 				},parseFloat(max_time) * 1000);
 			}
@@ -581,7 +581,7 @@ function buffer_trials(){
 	if(trial_no >= exp_json.parsed_proc.length){
 		$("#experiment_div").html("<h1>You have already completed this experiment</h1>");
 	}
-  Study.activate_pipe();
+  Project.activate_pipe();
 }
 
 function cancelFullscreen(){
@@ -611,7 +611,7 @@ function clean_trialtypes(){
       exp_json.parsed_proc[row_index][tt_col] = exp_json.parsed_proc[row_index][tt_col].toLowerCase();
     });
   });
-  Study.activate_pipe();
+  Project.activate_pipe();
 }
 
 function clean_var(this_variable,default_value){
@@ -638,28 +638,28 @@ function create_exp_json_variables(){
 			exp_json.responses = [];
 		}
 	}
-	Study.activate_pipe();
+	Project.activate_pipe();
 }
 
 function detect_exe(){
   $.get("../User/master.json",function(result){
-    Study.is_exe = false;
-    Study.activate_pipe();
+    Project.is_exe = false;
+    Project.activate_pipe();
   }).catch(function(error){
-    Study.is_exe = true;
-    Study.activate_pipe();
+    Project.is_exe = true;
+    Project.activate_pipe();
   });
 }
 
 function final_trial(){
-	switch(Study.get_vars.platform){
+	switch(Project.get_vars.platform){
     case "github":
     case "onlinepreview":
     case "server":
 			online_data_obj.save_queue_add(
 				function(){
 					online_save(
-            Study.get_vars.location,
+            Project.get_vars.location,
             $("#participant_code").val(),
             $("#completion_code").val(),
             $("#prehashed_code").val(),
@@ -815,7 +815,7 @@ function full_screen(){
       }
     }
   }
-  Study.activate_pipe();
+  Project.activate_pipe();
 }
 
 //solution to retrieve get values from url by weltraumpirat at https://stackoverflow.com/questions/5448545/how-to-retrieve-get-parameters-from-javascript/5448635#5448635
@@ -830,19 +830,19 @@ function get_gets() {
     return params;
   }
   var prmstr = window.location.search.substr(1);
-  Study.get_vars = prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};
+  Project.get_vars = prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};
 
   // maybe the following is left over from the simulator?
-  if(typeof(Study.get_vars["name"]) !== "undefined"){
-    exp_condition = Study.get_vars["name"];
+  if(typeof(Project.get_vars["name"]) !== "undefined"){
+    exp_condition = Project.get_vars["name"];
   } else {
     exp_condition = "";
   }
-  if(Study.get_vars.platform == "preview"){
+  if(Project.get_vars.platform == "preview"){
 
     online_data_obj.finished_and_stored = true;
   }
-  Study.activate_pipe();
+  Project.activate_pipe();
 }
 
 function get_htmls(){
@@ -853,11 +853,11 @@ function get_htmls(){
   function loop_htmls(html_list){
     var this_html = html_list.pop();
     $.get(this_html.path, function(this_code){
-      Study.html_code[this_html.name] = this_code;
+      Project.html_code[this_html.name] = this_code;
       if(html_list.length > 0){
         loop_htmls(html_list)
       } else {
-        Study.activate_pipe();
+        Project.activate_pipe();
       }
     });
   }
@@ -878,7 +878,7 @@ function insert_end_checks(){
   });
 
   this_proc = this_proc.push(this_proc_end);
-  Study.activate_pipe();
+  Project.activate_pipe();
 }
 function insert_start(){
 
@@ -904,14 +904,14 @@ function insert_start(){
       if(quality_list.length > 0){
         load_quality_checks(quality_list);
       } else {
-        Study.activate_pipe();
+        Project.activate_pipe();
       }
     });
   }
 
 
   var this_proc  = exp_json.parsed_proc;
-  if(Study.get_vars.platform == "preview"){
+  if(Project.get_vars.platform == "preview"){
     this_proc = add_to_start(this_proc, "quality_preview_start");
     load_quality_checks([{
       url: "Quality/PreviewStart.html",
@@ -966,18 +966,18 @@ function insert_start(){
 
 function parse_sheets(){
   var proc_sheet_name = exp_json.this_condition.procedure
-                                .toLowerCase()
-                                .replace(".csv","") + ".csv";
+      .toLowerCase()
+      .replace(".csv","") + ".csv";
   var stim_sheet_name = exp_json.this_condition.stimuli
-                                .toLowerCase()
-                                .replace(".csv","") + ".csv"
+      .toLowerCase()
+      .replace(".csv","") + ".csv"
   proc_stim_loaded = [];
 
-  switch(Study.get_vars.platform){
+  switch(Project.get_vars.platform){
     case "localhost":
     case "onlinepreview":
     case "preview":
-      var folder = "Projects/"+ Study.get_vars.location;
+      var folder = "Projects/"+ Project.get_vars.location;
       var proc_sheet_content = Collector.electron.fs.read_file(
         folder,
         proc_sheet_name
@@ -991,32 +991,33 @@ function parse_sheets(){
       exp_json.parsed_stim = [null,null].concat(
         Collector.PapaParsed(stim_sheet_content)
       );
-      Study.activate_pipe();
+      Project.activate_pipe();
       break;
     case "github":
-      if(typeof(Study.get_vars.dropbox) !== "undefined" && Study.get_vars.dropbox){
+      if(typeof(Project.get_vars.dropbox) !== "undefined" && Project.get_vars.dropbox){
         exp_json.parsed_proc = Collector.PapaParsed(exp_json.all_procs[proc_sheet_name]);
         exp_json.parsed_stim = [null,null].concat(Collector.PapaParsed(exp_json.all_stims[stim_sheet_name]));
-        Study.activate_pipe();
+        Project.activate_pipe();
       } else {
         var proc_url = "../User/Projects/" +
-                       Study.get_vars.location +
-                       "/" + proc_sheet_name;
+          Project.get_vars.location +
+          "/" +
+          proc_sheet_name;
         $.get(proc_url, function(proc_sheet_content){
           exp_json.parsed_proc = Collector.PapaParsed(proc_sheet_content);
           proc_stim_loaded[1] = "procedure";
           if(proc_stim_loaded.join("-") == "stimuli-procedure"){
-            Study.activate_pipe();
+            Project.activate_pipe();
           }
         });
         var stim_url = "../User/Projects/"  +
-                       Study.get_vars.location +
-                       "/" +  stim_sheet_name;
+          Project.get_vars.location +
+          "/" +  stim_sheet_name;
         $.get(stim_url,function(stim_sheet_content){
           exp_json.parsed_stim = [null,null].concat(Collector.PapaParsed(stim_sheet_content));
           proc_stim_loaded[0] = "stimuli";
           if(proc_stim_loaded.join("-") == "stimuli-procedure"){
-            Study.activate_pipe();
+            Project.activate_pipe();
           }
         });
       }
@@ -1025,12 +1026,12 @@ function parse_sheets(){
       proc_stim_loaded[1] = "procedure";
       exp_json.parsed_proc = Collector.PapaParsed(exp_json.all_procs[proc_sheet_name]);
       if(proc_stim_loaded.join("-") == "stimuli-procedure"){
-        Study.activate_pipe();
+        Project.activate_pipe();
       }
       exp_json.parsed_stim = [null,null].concat(Collector.PapaParsed(exp_json.all_stims[stim_sheet_name]));
       proc_stim_loaded[0] = "stimuli";
       if(proc_stim_loaded.join("-") == "stimuli-procedure"){
-        Study.activate_pipe();
+        Project.activate_pipe();
       }
       break;
   }
@@ -1058,10 +1059,7 @@ function parse_current_proc(){
   	for(var i = 0; i < this_proc.length; i++){
   		var this_row = this_proc[i];
 
-  		this_row.repeat = typeof(this_row.weight)			!== "undefined" ? this_row.weight :
-  											typeof(this_row.frequency)	!== "undefined" ? this_row.frequency 	:
-  											typeof(this_row.freq)				!== "undefined" ? this_row.freq 			:
-  											typeof(this_row.repeat)			!== "undefined" ? this_row.repeat 		: "";
+  		this_row.repeat = typeof(this_row.weight)	   !== "undefined" ? this_row.weight : typeof(this_row.frequency) !== "undefined" ? this_row.frequency : typeof(this_row.freq)   !== "undefined" ? this_row.freq : typeof(this_row.repeat)			 !== "undefined" ? this_row.repeat : "";
 
   		if(typeof(this_row.repeat) !== "undefined" && this_row.repeat !== ""){
   			for(var k = 0; k < this_row.repeat; k ++){
@@ -1117,7 +1115,7 @@ function parse_current_proc(){
   });
 	proc_fill_items();
 	proc_apply_repeats();
-  Study.activate_pipe();
+  Project.activate_pipe();
 }
 
 function participant_backup(){
@@ -1132,7 +1130,7 @@ function post_welcome(participant_code,id_error){
   var prehashed_code = Math.random().toString(36).substr(2, 10);
   window.localStorage.setItem("prehashed_code",prehashed_code);
   $("#prehashed_code").val(prehashed_code);
-  switch(Study.get_vars.platform){
+  switch(Project.get_vars.platform){
     case "server":
     case "github":
     case "onlinepreview":
@@ -1218,10 +1216,11 @@ function precrypted_data(decrypted_data,message){
 
 function process_welcome(){
   if(document.getElementById("loading_exp_json") !== null) {
-    // skip participant id? (and thus start_message)
-		////////////////////////////////////////////////
+    /*
+    * skip participant id? (and thus start_message)
+    */
 
-    if(Study.get_vars.platform == "preview"){
+    if(Project.get_vars.platform == "preview"){
       var pp_id_setting = "random";
     } else {
       var pp_id_setting = exp_json.this_condition.participant_id;
@@ -1275,7 +1274,7 @@ function requestFullScreen(element) {
 function select_condition(){
   var conditions = Collector.PapaParsed(exp_json.conditions);
   exp_json.this_condition = conditions.filter(function(row){
-    return row.name == Study.get_vars.name;
+    return row.name == Project.get_vars.name;
   })[0];
 
   /*
@@ -1288,7 +1287,7 @@ function select_condition(){
   ){
     alert("This experiment will not run on a mobile device. Please complete it on a laptop or desktop (using google chrome if possible).");
   } else{
-    Study.activate_pipe();
+    Project.activate_pipe();
   }
 }
 
@@ -1446,14 +1445,14 @@ function shuffle_start_exp(){
 	}
 
 	exp_json.wait_to_proc	= false;
-  Study.activate_pipe();
+  Project.activate_pipe();
 }
 
 function start_restart(){
   if(isSafari){
     bootbox.alert("This experiment will not run in safari. Please close and use another browser");
   } else if(window.localStorage.getItem("exp_json") !== null &
-     Study.get_vars.platform !== "preview"){
+     Project.get_vars.platform !== "preview"){
 
     bootbox.dialog({
   		title:"Resume or Restart?",
@@ -1486,7 +1485,7 @@ function start_restart(){
   				label: "Restart",
   				className: 'btn-danger',
   				callback: function(){
-            Study.activate_pipe();
+            Project.activate_pipe();
   				}
   			},
   			cancel: {
@@ -1499,7 +1498,7 @@ function start_restart(){
   		}
   	});
   } else {
-    Study.activate_pipe();
+    Project.activate_pipe();
   }
 }
 
@@ -1513,7 +1512,7 @@ function start_study(){
 	//detect if resuming
 
 	if(Object.keys(exp_json) == 0){
-		switch(Study.get_vars.platform){
+		switch(Project.get_vars.platform){
       case "onlinepreview":
       case "localhost":
       case "preview":
@@ -1526,21 +1525,21 @@ function start_study(){
                 .fs
                 .read_file(
                   "Projects",
-                  Study
+                  Project
                   .get_vars
                   .location + ".json"
                 )
             );
-            Study.activate_pipe();
+            Project.activate_pipe();
           }
         },100);
 				break;
 
 			case "github":
-				if(typeof(Study.get_vars.dropbox) !== "undefined" && Study.get_vars.dropbox){
-					$.get(Study.get_vars.dropbox.replace("www.","dl."),function(result){
+				if(typeof(Project.get_vars.dropbox) !== "undefined" && Project.get_vars.dropbox){
+					$.get(Project.get_vars.dropbox.replace("www.","dl."),function(result){
 						exp_json = JSON.parse(result);
-						Study.activate_pipe();
+						Project.activate_pipe();
 					});
 				} else {
           /*
@@ -1550,9 +1549,9 @@ function start_study(){
             if(typeof(random_code) == "undefined"){
               random_code = "";
             }
-            $.get("../User/Projects/" + Study.get_vars.location + ".json?randomcode=" + random_code,function(result){
+            $.get("../User/Projects/" + Project.get_vars.location + ".json?randomcode=" + random_code,function(result){
               exp_json = result;
-              Study.activate_pipe();
+              Project.activate_pipe();
             })
             .catch(function(error){
               bootbox.confirm("It looks like the experiment you're trying to load isn't there (yet) - click OK if you'd like to try to load the experiment again (clicking OK can be quicker than constantly refreshing the page)?", function(result){
@@ -1567,21 +1566,21 @@ function start_study(){
 				}
 				break;
 			default:
-				if(typeof(Study.get_vars.location) !== "undefined" && Study.get_vars.location !== ""){
-					if(Study.get_vars.location.indexOf("www.dropbox") !== -1){
-						get_location = Study.get_vars.location.replace("www.","dl.");
+				if(typeof(Project.get_vars.location) !== "undefined" && Project.get_vars.location !== ""){
+					if(Project.get_vars.location.indexOf("www.dropbox") !== -1){
+						get_location = Project.get_vars.location.replace("www.","dl.");
 					} else {
-						get_location = Study.get_vars.location;
+						get_location = Project.get_vars.location;
 					}
 					$.get(get_location,function(this_project){
 						exp_json = JSON.parse(this_project);
-						Study.activate_pipe();
+						Project.activate_pipe();
 					});
 				}
 				break;
 		}
 	} else {
-		Study.activate_pipe();
+		Project.activate_pipe();
 	}
 }
 
@@ -1638,7 +1637,7 @@ function write_trial_iframe(index){
 	doc.close();
 
 	for(var i = 0; i < trial_events.length; i++){
-		var trial_content = Study.generate_trial(index,i);
+		var trial_content = Project.generate_trial(index,i);
         trial_content += "<button style='opacity:0; filter: alpha(opacity=0)' id='zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'></button>";
 
 		doc = document
@@ -1657,7 +1656,7 @@ function write_trial_iframe(index){
     if(typeof(this_proc["max time"]) !== "undefined" &&
        this_proc["max time"] !== "user" &&
        this_proc["max time"] !== ""){
-      var timer_code = Study.html_code["Timer"];
+      var timer_code = Project.html_code["Timer"];
       if(typeof(this_proc["timer_style"]) !== "undefined" && this_proc["timer_style"] !== ""){
         timer_code = timer_code.replace(
           "#collector_trial_timer{",
@@ -1703,10 +1702,10 @@ function write_trial_iframe(index){
 					}
 					if(exp_json.wait_to_proc){
 						bootbox.alert("It looks like you have closed the window midway through an experiment. Please press OK when you are ready to resume the experiment!", function(){
-							Study.start_post();
+							Project.start_post();
 						});
 					} else {
-						Study.start_post();
+						Project.start_post();
 					}
 				}
 			},10);
@@ -1730,7 +1729,7 @@ $(window).bind('keydown', function(event) {
 
 //prevent closing without warning
 window.onbeforeunload = function() {
-  switch(Study.get_vars.platform){
+  switch(Project.get_vars.platform){
     case "onlinepreview":
     case "localhost":
       break;
@@ -1756,5 +1755,5 @@ String.prototype.replaceAll = function(str1, str2, ignore){
   return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 }
 
-Study.activate_pipe();
+Project.activate_pipe();
 </script>

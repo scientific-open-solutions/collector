@@ -41,7 +41,7 @@ if(typeof(Trial) !== "undefined"){
     return parent.parent.exp_json.all_stims[this_name];
   }
   Trial.go_to = function(new_trial_no){
-    parent.parent.Study.go_to(new_trial_no);
+    parent.parent.Project.go_to(new_trial_no);
   }
   Trial.set = function(this_name,this_content){
     if(typeof(parent.parent.exp_json.study_vars) == "undefined"){
@@ -81,8 +81,6 @@ if(typeof(Trial) !== "undefined"){
      }
   }
 
-
-
   Trial.setTimeout = function(this_function, duration){
 
   }
@@ -96,7 +94,7 @@ if(typeof(Trial) !== "undefined"){
   }
   Trial.submit = function(){
     parent.parent.exp_json.inputs = jQuery( "[name]" );
-    parent.parent.Study.finish_trial();
+    parent.parent.Project.finish_trial();
   }
 }
 
