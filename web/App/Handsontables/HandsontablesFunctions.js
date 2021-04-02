@@ -1,5 +1,5 @@
 /*  Collector (Garcia, Kornell, Kerr, Blake & Haffey)
-    A program for running experiments on the web
+    A program for running projects on the web
     Copyright 2012-2016 Mikey Garcia & Nate Kornell
 
 
@@ -185,22 +185,22 @@ function createHoT(container, data,sheet_name) {
 				}
 			}
 
-      var experiment = $("#experiment_list").val();
-			var this_exp   = master_json.exp_mgmt.experiments[experiment];
+      var project = $("#project_list").val();
+			var this_proj   = master_json.project_mgmt.projects[project];
 
 			if(sheet_name.toLowerCase() == "conditions.csv"){
-				this_exp.conditions = this.getData();
+				this_proj.conditions = this.getData();
 			} else {
-				if(typeof(this_exp.all_stims[sheet_name]) !== "undefined"){
-					this_exp.all_stims[sheet_name] = Papa.unparse(
+				if(typeof(this_proj.all_stims[sheet_name]) !== "undefined"){
+					this_proj.all_stims[sheet_name] = Papa.unparse(
             this.getData()
           );
-				}	else if(typeof(this_exp.all_procs[sheet_name]) !== "undefined"){
-					this_exp.all_procs[sheet_name] = Papa.unparse(
+				}	else if(typeof(this_proj.all_procs[sheet_name]) !== "undefined"){
+					this_proj.all_procs[sheet_name] = Papa.unparse(
             this.getData()
           );
 				}	else {
-					alert("error - " + sheet_name + " not found in " + experiment);
+					alert("error - " + sheet_name + " not found in " + project);
 				}
 			}
 		},

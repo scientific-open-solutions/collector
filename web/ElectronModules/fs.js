@@ -33,11 +33,11 @@ ipc.on('fs_delete_experiment', (event,args) => {
     try{
       // delete the file
       fs.unlinkSync(
-        root_dir + "User/Experiments/" + args["exp_name"] + ".json"
+        root_dir + "User/Projects/" + args["exp_name"] + ".json"
       );
       // delete the folder
       fs.rmdirSync(
-        root_dir + "User/Experiments/" + args["exp_name"],
+        root_dir + "User/Projects/" + args["exp_name"],
          {
            recursive: true
          }
@@ -162,8 +162,8 @@ ipc.on('fs_read_file', (event,args) => {
     if(!fs.existsSync(root_dir + "Data")){
       fs.mkdirSync(root_dir + "Data");
     }
-    if(!fs.existsSync(root_dir + "User/Experiments")){
-      fs.mkdirSync(root_dir + "User/Experiments");
+    if(!fs.existsSync(root_dir + "User/Projects")){
+      fs.mkdirSync(root_dir + "User/Projects");
     }
     if(!fs.existsSync(root_dir + "User/Pathway")){
       fs.mkdirSync(root_dir + "User/Pathway");
@@ -203,8 +203,8 @@ ipc.on('fs_write_data', (event,args) => {
   if(!fs.existsSync(root_dir + "Data")){
     fs.mkdirSync(root_dir + "Data");
   }
-  if(!fs.existsSync(root_dir + "User/Experiments")){
-    fs.mkdirSync(root_dir + "User/Experiments");
+  if(!fs.existsSync(root_dir + "User/Projects")){
+    fs.mkdirSync(root_dir + "User/Projects");
   }
   if(!fs.existsSync(root_dir + "User/Pathway")){
     fs.mkdirSync(root_dir + "User/Pathway");
@@ -224,7 +224,7 @@ ipc.on('fs_write_data', (event,args) => {
   * Security checks - should probably have more
   */
 
-  if(args["experiment_folder"].indexOf("../") !== -1){
+  if(args["project_folder"].indexOf("../") !== -1){
     var content = "This request could be insecure, and was blocked";
   } else if(args["this_file"].indexOf("../") !== -1){
     var content = "This request could be insecure, and was blocked";
@@ -232,19 +232,19 @@ ipc.on('fs_write_data', (event,args) => {
     try{
 
       /*
-      * create experiment folder if it doesn't exist yet
+      * create project folder if it doesn't exist yet
       */
 
       if(!fs.existsSync(
-          root_dir + "Data/" + args["experiment_folder"]
+          root_dir + "Data/" + args["project_folder"]
         )
       ){
         fs.mkdirSync(
-          root_dir + "Data/" + args["experiment_folder"]
+          root_dir + "Data/" + args["project_folder"]
         )
       }
       var content = fs.writeFileSync(
-        root_dir + "Data/" + args["experiment_folder"] + "/" +
+        root_dir + "Data/" + args["project_folder"] + "/" +
         args["this_file"]   ,
         args["file_content"],
         'utf8'
@@ -259,13 +259,13 @@ ipc.on('fs_write_data', (event,args) => {
 
 });
 
-ipc.on('fs_write_experiment', (event,args) => {
+ipc.on('fs_write_project', (event,args) => {
 
   /*
   * Security checks - probably need more
   */
 
-  if(args["this_experiment"].indexOf("..") !== -1){
+  if(args["this_project"].indexOf("..") !== -1){
     var content = "This request could be insecure, and was blocked";
   } else {
     try{
@@ -273,8 +273,8 @@ ipc.on('fs_write_experiment', (event,args) => {
       * save JSON
       */
       fs.writeFileSync(
-        root_dir + "User/Experiments/" +
-         args["this_experiment"] + ".json",
+        root_dir + "User/Projects/" +
+         args["this_project"] + ".json",
          args["file_content"],
          'utf8'
        );
@@ -283,11 +283,11 @@ ipc.on('fs_write_experiment', (event,args) => {
       * Create folder if it doesn't exist
       */
       if(!fs.existsSync(
-          root_dir + "User/Experiments/" + args["this_experiment"]
+          root_dir + "User/Projects/" + args["this_project"]
         )
       ){
         fs.mkdirSync(
-          root_dir + "User/Experiments/" + args["this_experiment"]
+          root_dir + "User/Projects/" + args["this_project"]
         )
       }
 
@@ -301,8 +301,8 @@ ipc.on('fs_write_experiment', (event,args) => {
       var conditions_csv = parsed_contents.conditions;
 
       fs.writeFileSync(
-        root_dir + "User/Experiments/" +
-          args["this_experiment"] + "/" +
+        root_dir + "User/Projects/" +
+          args["this_project"] + "/" +
           "conditions.csv",
           conditions_csv,
          "utf-8"
@@ -312,8 +312,8 @@ ipc.on('fs_write_experiment', (event,args) => {
 
        Object.keys(parsed_contents.all_procs).forEach(function(this_proc){
          fs.writeFileSync(
-           root_dir + "User/Experiments/" +
-            args["this_experiment"] + "/" +
+           root_dir + "User/Projects/" +
+            args["this_project"] + "/" +
             this_proc,
             parsed_contents.all_procs[this_proc]
           );
@@ -321,8 +321,8 @@ ipc.on('fs_write_experiment', (event,args) => {
 
        Object.keys(parsed_contents.all_stims).forEach(function(this_stim){
          fs.writeFileSync(
-           root_dir + "User/Experiments/" +
-            args["this_experiment"] + "/" +
+           root_dir + "User/Projects/" +
+            args["this_project"] + "/" +
             this_stim,
             parsed_contents.all_stims[this_stim]
           );

@@ -21,11 +21,11 @@
 	},
 	"stimuli":{
     "subtitle":"Which Stimuli sheet?",
-    "text":"Stimuli sheets can used as a list of words or media files (images, audio, pictures) that your experiment will use. If you want different lists of stimuli, you need to create a new stimuli sheet. <br><br> If you are developing your experiments online (e.g. on open-collector.org or ocollector.org) ignore the following. If you are developing the experiment on your computer, you should your stimuli sheet in the <b>web/User/Experiments/YOUR EXPERIMENT</b> folder."
+    "text":"Stimuli sheets can used as a list of words or media files (images, audio, pictures) that your experiment will use. If you want different lists of stimuli, you need to create a new stimuli sheet. <br><br> If you are developing your experiments online (e.g. on open-collector.org or ocollector.org) ignore the following. If you are developing the experiment on your computer, you should your stimuli sheet in the <b>web/User/Projects/YOUR EXPERIMENT</b> folder."
   },
 	"procedure":{
     "subtitle":"Which Procedure sheet?",
-    "text":"By default, your experiment will use <b>procedure_1.csv</b>, which is a list of the order of trials and settings for each trial. If you want different participants to have different procedures, you will need to create a new procedure sheet, and have separate rows in the condition sheet for each procedure. <br><br> If you are developing your experiments online (e.g. on open-collector.org or ocollector.org) ignore the following. If you are developing the experiment on your computer, you should your procedure sheet in the <b>web/User/Experiments/YOUR EXPERIMENT</b> folder."
+    "text":"By default, your experiment will use <b>procedure_1.csv</b>, which is a list of the order of trials and settings for each trial. If you want different participants to have different procedures, you will need to create a new procedure sheet, and have separate rows in the condition sheet for each procedure. <br><br> If you are developing your experiments online (e.g. on open-collector.org or ocollector.org) ignore the following. If you are developing the experiment on your computer, you should your procedure sheet in the <b>web/User/Projects/YOUR EXPERIMENT</b> folder."
   },
 	"download_at_end":{
     "subtitle":"Can participant download at the end?",

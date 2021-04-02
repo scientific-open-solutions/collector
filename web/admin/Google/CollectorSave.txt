@@ -31,13 +31,13 @@ function saveData(e) {
     
     var data_folder        = getOrCreateSubFolder('Data',         
                                                   'Collector');
-    var experiment_folder  = getOrCreateSubFolder(experiment_id,  
+    var project_folder  = getOrCreateSubFolder(experiment_id,  
                                                   'Data');
     //var participant_folder = getOrCreateSubFolder(participant_id, 
     //                                              experiment_id);
     
     updateFile(data_folder,experiment_id + "-" + participant_id + "-" + completion_code + ".txt", encrypted_data);  //keeping this until the next line has worked reliably for a while
-    updateFile(experiment_folder, participant_id + "-" + completion_code + "-" + hashed_code + ".txt",encrypted_data);
+    updateFile(project_folder, participant_id + "-" + completion_code + "-" + hashed_code + ".txt",encrypted_data);
     //updateFile(participant_folder, completion_code + "-" + hashed_code + ".txt",encrypted_data);
     return valid_return("success");
   } catch(error){

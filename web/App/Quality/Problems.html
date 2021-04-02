@@ -9,8 +9,8 @@
 <input type='hidden' name='experiment_smoothness_val' id='experiment_smoothness_val'/>If you didn't answer 'No problems' above, please describe what went wrong:
 <textarea name='experiment_problems_description'></textarea><br>
 <script>
-$('.experiment_smoothness').on('click',function(){
-  $(".experiment_smoothness").prop("checked",false);
+$('.project_smoothness').on('click',function(){
+  $(".project_smoothness").prop("checked",false);
   $(this).prop("checked",true);
   $('#experiment_smoothness_val').val($(this).val());
 });

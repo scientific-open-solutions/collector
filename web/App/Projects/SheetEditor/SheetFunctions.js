@@ -18,9 +18,9 @@
 		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
 */
 function check_trialtypes_in_proc(procedure,post_trialtype){
-	var experiment 		= $("#experiment_list").val();
-	var this_exp   		= master_json.exp_mgmt.experiments[experiment];
-	var this_proc  		= this_exp.all_procs[procedure];
+	var experiment 		= $("#project_list").val();
+	var this_proj   		= master_json.project_mgmt.projects[project];
+	var this_proc  		= this_proj.all_procs[procedure];
 	var trialtypes 		= [];
 	var trial_type_col  = this_proc[0].map(function(element){
 		if(element !== null){
@@ -36,21 +36,21 @@ function check_trialtypes_in_proc(procedure,post_trialtype){
 	}
 	trialtypes = trialtypes.filter(n => n);
 	console.dir(trialtypes);
-	if(typeof(master_json.exp_mgmt.experiments[experiment].trialtypes) == "undefined"){
-		master_json.exp_mgmt.experiments[experiment].trialtypes = {};
+	if(typeof(master_json.project_mgmt.projects[project].trialtypes) == "undefined"){
+		master_json.project_mgmt.projects[project].trialtypes = {};
 	}
 	trialtypes.forEach(function(trialtype){
 		if(typeof(master_json.trialtypes.user_trialtypes[trialtype]) !== "undefined"){
-			master_json.exp_mgmt.experiments[experiment].trialtypes[trialtype] = master_json.trialtypes.user_trialtypes[trialtype];
+			master_json.project_mgmt.projects[project].trialtypes[trialtype] = master_json.trialtypes.user_trialtypes[trialtype];
 		} else if(typeof(master_json.trialtypes.default_trialtypes[trialtype]) !== "undefined"){
-			master_json.exp_mgmt.experiments[experiment].trialtypes[trialtype] = master_json.trialtypes.default_trialtypes[trialtype];
+			master_json.project_mgmt.projects[project].trialtypes[trialtype] = master_json.trialtypes.default_trialtypes[trialtype];
 		} else {
 			Collector.custom_alert("Invalid trialtype <b>"+trialtype+"</b> in at least one of your procedure sheets. The file will save, but the experiment won't run until you use a valid trialtype.",4000);
 		}
 	});
 }
 function clean_conditions(){
-  exp_json = master_json.exp_mgmt.experiments[$("#experiment_list").val()];
+  exp_json = master_json.project_mgmt.projects[$("#project_list").val()];
 
   var parsed_conditions = Collector.PapaParsed(exp_json.conditions);
   parsed_conditions = parsed_conditions.filter(row => row.procedure !== "");
@@ -119,26 +119,26 @@ function get_HoT_data(current_sheet) { // needs to be adjusted for
 
     return data;
 }
-function list_studies(){
-  try{
-    name_list = Object.keys(master_json.exp_mgmt.experiments);
+function list_projects(){
+  //try{
+    name_list = Object.keys(master_json.project_mgmt.projects);
     function update_exp_list(){
 
       /*
       * reset the selects
       */
-      $("#add_study_pathway_select option").remove();
-      $("#experiment_list option").remove();
-      $("#trialtype_experiment_select option").remove();
+      $("#add_project_pathway_select option").remove();
+      $("#project_list option").remove();
+      $("#trialtype_project_select option").remove();
 
       /*
-      * add "Select a study" option
+      * add "Select a project" option
       */
-      var default_option = "<option hidden disabled selected>Select a study</option>";
+      var default_option = "<option hidden disabled selected>Select a project</option>";
 
-      $("#add_study_pathway_select").append(default_option);
-      $("#experiment_list").append(default_option);
-      $("#trialtype_experiment_select").append(default_option);
+      $("#add_project_pathway_select").append(default_option);
+      $("#project_list").append(default_option);
+      $("#trialtype_project_select").append(default_option);
 
       /*
       * add options to each of the selects
@@ -148,9 +148,9 @@ function list_studies(){
       });
       name_list.forEach(function(item_name){
         var this_option = "<option>" + item_name + "</option>";
-        $("#add_study_pathway_select").append(this_option);
-        $("#experiment_list").append(this_option);
-        $("#trialtype_experiment_select").append(this_option);
+        $("#add_project_pathway_select").append(this_option);
+        $("#project_list").append(this_option);
+        $("#trialtype_project_select").append(this_option);
 
       });
     }
@@ -182,29 +182,31 @@ function list_studies(){
     }
     Collector.tests.pass("studies",
                          "list");
+  /*
   } catch(error){
     Collector.tests.fail("studies",
                          "list",
                          error);
   }
+  */
 }
 function new_experiment(experiment){
-  if($("#experiment_list").text().indexOf(experiment) !== -1){
+  if($("#project_list").text().indexOf(experiment) !== -1){
 		bootbox.alert("Name already exists. Please try again.");
 	} else {
 
     //create it first in dropbox, THEN update table with location
-		master_json.exp_mgmt.experiments[experiment] = JSON.parse(
+		master_json.project_mgmt.projects[project] = JSON.parse(
       JSON.stringify(default_experiment)
     );
 
-		var this_path = "/Experiments/" + experiment + ".json";
+		var this_path = "/Projects/" + experiment + ".json";
 
-    function update_experiment_list(experiment){
-			$('#experiment_list').append($('<option>', {
+    function update_project_list(experiment){
+			$('#project_list').append($('<option>', {
         text : experiment
       }));
-      $("#experiment_list").val(experiment);
+      $("#project_list").val(experiment);
       update_handsontables();
       update_master_json();
 			$("#save_btn").click();
@@ -217,7 +219,7 @@ function new_experiment(experiment){
               case "server":
 							case "gitpod":
 							case "github":
-								update_experiment_list(experiment);
+								update_project_list(experiment);
 								break;
             }
           })
@@ -231,13 +233,13 @@ function new_experiment(experiment){
 
     } else {
 
-			update_experiment_list(experiment);
+			update_project_list(experiment);
     }
 	}
 
 }
 function remove_from_list(experiment){
-	var x = document.getElementById("experiment_list");
+	var x = document.getElementById("project_list");
 	x.remove(experiment);
 	if(experiment !== "Select a dropbox experiment"){
 		update_handsontables();
@@ -251,7 +253,7 @@ function renderItems() {
 
   first_load = true;
 
-  list_studies();
+  list_projects();
 	list_mods();
   list_surveys();
 	list_trialtypes();
@@ -261,31 +263,31 @@ function renderItems() {
   autoload_mods();
 }
 function stim_proc_defaults(proc_values,stim_values){
-	var this_exp   = master_json.exp_mgmt.experiments[$("#experiment_list").val()];
+	var this_proj   = master_json.project_mgmt.projects[$("#project_list").val()];
 
 	// selecting Stimuli_1 and Procedure_1 as default
 	if(proc_values.indexOf("Procedure_1") !== -1){
 		$('#proc_select').val("Procedure_1");
-		this_exp.procedure = "Procedure_1";
+		this_proj.procedure = "Procedure_1";
 	} else {
-		this_exp.procedure = this_exp[proc_values[0]];
+		this_proj.procedure = this_proj[proc_values[0]];
 	}
 	if(stim_values.indexOf("Stimuli_1") !== -1){
 		$('#stim_select').val("Stimuli_1");
-		this_exp.stimuli = "Stimuli_1";
+		this_proj.stimuli = "Stimuli_1";
 	} else {
-		this_exp.stimuli = this_exp[stim_values[0]];
+		this_proj.stimuli = this_proj[stim_values[0]];
 	}
 }
 function stim_proc_selection(stim_proc,sheet_selected){
-	var this_exp   = master_json.exp_mgmt.experiments[$("#experiment_list").val()];
-	createExpEditorHoT(this_exp.all_stims[sheet_selected],stim_proc,sheet_selected);	//sheet_name
+	var this_proj   = master_json.project_mgmt.projects[$("#project_list").val()];
+	createExpEditorHoT(this_proj.all_stims[sheet_selected],stim_proc,sheet_selected);	//sheet_name
 }
 function synch_experiment(entry_name){
 	dbx.sharingCreateSharedLink({path:"/experiments/" + entry_name + ".json"})
 		.then(function(result){
 			$.get(result.url.replace("www.","dl."), function(exp_json){
-				master_json.exp_mgmt.experiments[entry_name] = JSON.parse(exp_json);
+				master_json.project_mgmt.projects[entry_name] = JSON.parse(exp_json);
 			});
 		})
 		.catch(function(error){
@@ -293,7 +295,7 @@ function synch_experiment(entry_name){
 		});
 }
 function update_dropdown_lists(){
-	var this_exp   = master_json.exp_mgmt.experiments[$("#experiment_list").val()];
+	var this_proj   = master_json.project_mgmt.projects[$("#project_list").val()];
 	var stim_values = [];
 	var proc_values = [];
 
@@ -303,14 +305,14 @@ function update_dropdown_lists(){
 
   //wipe the procedure list
 
-	Object.keys(this_exp.all_procs).forEach(function(this_proc){
+	Object.keys(this_proj.all_procs).forEach(function(this_proc){
 		proc_values.push(this_proc);
 		$('#proc_select').append($('<option>', {
 			value: 	this_proc,
 			text: 	this_proc
 		}));
 	});
-	Object.keys(this_exp.all_stims).forEach(function(this_stim){
+	Object.keys(this_proj.all_stims).forEach(function(this_stim){
 		stim_values.push(this_stim);
 		$('#stim_select').append($('<option>', {
 			value: 	this_stim,
@@ -320,26 +322,26 @@ function update_dropdown_lists(){
 	stim_proc_defaults(proc_values,stim_values);
 }
 function update_handsontables(){
-	var this_exp   = master_json.exp_mgmt.experiments[$("#experiment_list").val()];
+	var this_proj   = master_json.project_mgmt.projects[$("#project_list").val()];
 
 	update_dropdown_lists();
-  stim_file = Object.keys(this_exp.all_stims)[0];
-  proc_file = Object.keys(this_exp.all_procs)[0];
+  stim_file = Object.keys(this_proj.all_stims)[0];
+  proc_file = Object.keys(this_proj.all_procs)[0];
 
 
 	function load_spreadsheet(experiment,
 														sheet_type,
 														sheet_name,
-													  exp_mgmt_location,
+													  project_mgmt_location,
 														sheet_content){
     if(sheet_content.split(",").length > 1){
       createExpEditorHoT(sheet_content,
 												 sheet_type,
 												 sheet_name);
 		} else {
-      var sheet_json = master_json.exp_mgmt
-																	.experiments[experiment]
-																	[exp_mgmt_location];
+      var sheet_json = master_json.project_mgmt
+																	.projects[project]
+																	[project_mgmt_location];
 			createExpEditorHoT(sheet_json,
 												 sheet_type,
 												 sheet_name);
@@ -349,21 +351,21 @@ function update_handsontables(){
   switch(Collector.detect_context()){
       case "localhost":
 				var conditions_sheet = Collector.electron.fs.read_file(
-          "Experiments/"  + $("#experiment_list").val(),
+          "Projects/"  + $("#project_list").val(),
 				  "conditions.csv"
         );
 
 			 if(conditions_sheet == ""){
 				 conditions_sheet = Papa.unparse(
            master_json
-             .exp_mgmt
-             .experiments
-             [$("#experiment_list").val()]
+             .project_mgmt
+             .projects
+             [$("#project_list").val()]
              .conditions
          );
 			 }
        load_spreadsheet(
-         $("#experiment_list").val(),
+         $("#project_list").val(),
 				 "Conditions",
 				 "conditions.csv",
 				 "conditions",
@@ -371,20 +373,20 @@ function update_handsontables(){
       );
 
 	    var stim_sheet = Collector.electron.fs.read_file(
-        "Experiments/" + $("#experiment_list").val(),
+        "Projects/" + $("#project_list").val(),
 				stim_file
       );
 		  if(stim_sheet == ""){
 				 stim_sheet = Papa.unparse(
            master_json
-             .exp_mgmt
-             .experiments
-             [$("#experiment_list").val()]
+             .project_mgmt
+             .projects
+             [$("#project_list").val()]
              .all_stims[stim_file]
          );
        }
        load_spreadsheet(
-         $("#experiment_list").val(),
+         $("#project_list").val(),
 				 "Stimuli",
 				 stim_file,
 				 "all_stims[sheet_name]",
@@ -392,19 +394,19 @@ function update_handsontables(){
        );
 
        var proc_sheet = Collector.electron.fs.read_file(
-         "Experiments/"  + $("#experiment_list").val(),
+         "Projects/"  + $("#project_list").val(),
        	 proc_file
        );
 			 if(proc_sheet == ""){
 				 proc_sheet = Papa.unparse(
            master_json
-            .exp_mgmt
-            .experiments
-            [$("#experiment_list").val()]
+            .project_mgmt
+            .projects
+            [$("#project_list").val()]
             .all_procs[proc_file]);
 			 }
        load_spreadsheet(
-         $("#experiment_list").val(),
+         $("#project_list").val(),
          "Procedure",
          proc_file,
          "all_procs[sheet_name]",
@@ -413,9 +415,9 @@ function update_handsontables(){
        break;
       case "github":
       default:
-      	createExpEditorHoT(this_exp.all_stims[stim_file], "Stimuli",   stim_file);
-        createExpEditorHoT(this_exp.all_procs[proc_file], "Procedure", proc_file);
-        createExpEditorHoT(this_exp.cond_array, "Conditions","Conditions.csv");
+      	createExpEditorHoT(this_proj.all_stims[stim_file], "Stimuli",   stim_file);
+        createExpEditorHoT(this_proj.all_procs[proc_file], "Procedure", proc_file);
+        createExpEditorHoT(this_proj.cond_array, "Conditions","Conditions.csv");
         break;
 
   }
@@ -440,8 +442,8 @@ function upload_exp_contents(these_contents,this_filename){
 
 	// note that this is a local function. right?
 	function upload_to_master_json(exp_name,this_content) {
-		master_json.exp_mgmt.experiments[exp_name] = this_content;
-		list_studies();
+		master_json.project_mgmt.projects[exp_name] = this_content;
+		list_projects();
     upload_trialtypes(this_content);
     upload_surveys(this_content);
     list_surveys();
@@ -496,7 +498,7 @@ function upload_exp_contents(these_contents,this_filename){
 		callback: function(exp_name){
       if(exp_name){
         function unique_experiment(suggested_name,content){
-          all_experiments = Object.keys(master_json.exp_mgmt.experiments);
+          all_experiments = Object.keys(master_json.project_mgmt.projects);
           if(all_experiments.indexOf(suggested_name) !== -1){
             bootbox.prompt("<b>" + suggested_name + "</b> is taken. Please suggest another name, or press cancel if you don't want to save this experiment?",function(new_name){
               if(new_name){
@@ -507,8 +509,8 @@ function upload_exp_contents(these_contents,this_filename){
               }
             });
           } else {
-            master_json.exp_mgmt.experiments[suggested_name] = content;
-            list_studies();
+            master_json.project_mgmt.projects[suggested_name] = content;
+            list_projects();
             $("#upload_experiment_modal").hide();
             upload_to_master_json(exp_name,parsed_contents);
 						$("#save_btn").click();

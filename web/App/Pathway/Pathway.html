@@ -45,7 +45,7 @@
         <table>
           <tr>
             <td>
-              <select id='add_study_pathway_select' class='custom-select'></select>
+              <select id='add_project_pathway_select' class='custom-select'></select>
             </td>
             <td>
               <button class="btn btn-primary" id="add_study_to_pathway_btn">Add</button>
@@ -161,11 +161,11 @@ $("#add_pathway_study_btn").on("click", function(){
 
 $("#add_study_to_pathway_btn").on("click", function(){
   master_json.pathway_mgmt.pathways[master_json.pathway_mgmt.current].order.push(
-    $("#add_study_pathway_select").val()
+    $("#add_project_pathway_select").val()
   );
   var conditions_array = [];
-  var conditions_list = Collector.PapaParsed(master_json.exp_mgmt.experiments[
-    $("#add_study_pathway_select").val()
+  var conditions_list = Collector.PapaParsed(master_json.project_mgmt.projects[
+    $("#add_project_pathway_select").val()
   ].conditions).map(row => row.name);
   conditions_list.forEach(function(item){
     conditions_array.push({
@@ -182,7 +182,7 @@ $("#add_study_to_pathway_btn").on("click", function(){
       master_json
         .pathway_mgmt
         .pathways[master_json.pathway_mgmt.current]
-        .items[$("#add_study_pathway_select").val()] = {
+        .items[$("#add_project_pathway_select").val()] = {
           "name" : this_condition
         }
       list_pathway_studies();

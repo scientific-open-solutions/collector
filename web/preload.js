@@ -68,24 +68,24 @@ window.onload=function(){
             return file_content;
           },
           write_data: function(
-            experiment_folder,
+            project_folder,
             this_file,
             file_content
           ){
             write_response = ipc.sendSync('fs_write_data',{
-              "experiment_folder"  : experiment_folder,
+              "project_folder"  : project_folder,
               "this_file"          : this_file,
               "file_content"       : file_content
             });
             return write_response;
           },
-          write_experiment: function(
-            this_experiment,
+          write_project: function(
+            this_project,
             file_content,
             file_action
           ){
-            write_response = ipc.sendSync('fs_write_experiment',{
-              "this_experiment" : this_experiment,
+            write_response = ipc.sendSync('fs_write_project',{
+              "this_project" : this_project,
               "file_content"    : file_content
             });
             file_action(write_response);

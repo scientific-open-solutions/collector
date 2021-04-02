@@ -247,10 +247,10 @@ function bind_unpublish_btn(){
 										"'forgot password' button.");
 		} else {																														// if all good
 			var register_url = $(this).find("span")[0].innerHTML;
-			var experiment = $("#experiment_list").val();
-			var this_exp   = master_json.exp_mgmt.experiments[experiment];
+			var project = $("#project_list").val();
+			var this_proj   = master_json.project_mgmt.projects[project];
 			$.post(register_url,{
-				location:               this_exp.location,
+				location:               this_proj.location,
 				experiment:             experiment,
 				action:                 "unregister_experiment",
 				email:                  $("#email_input").val(),
@@ -263,12 +263,12 @@ function bind_unpublish_btn(){
 }
 
 function publish_experiment(
-  this_exp,
+  this_proj,
   experiment,
   register_url
 ){
   $.post( register_url,{
-				  location:               this_exp.location,
+				  location:               this_proj.location,
 				  experiment:             experiment,
 				  action:                 "update_experiment",
 				  email:                  $("#email_input").val(),
@@ -294,13 +294,13 @@ function publish_experiment(
                 storage_url  = server_info[server_name].storage_url;
               }
             });
-						var experiment = $("#experiment_list").val();
-						var this_exp   = master_json.exp_mgmt.experiments[experiment];
+						var project = $("#project_list").val();
+						var this_proj   = master_json.project_mgmt.projects[project];
 
-            if(typeof(this_exp.storage_scripts) == "undefined"){
-							this_exp.storage_scripts = {};
+            if(typeof(this_proj.storage_scripts) == "undefined"){
+							this_proj.storage_scripts = {};
 						}
-						this_exp.storage_scripts[server_name] = storage_url;
+						this_proj.storage_scripts[server_name] = storage_url;
 
 						$("#save_btn").click();
 					} else {
@@ -323,8 +323,8 @@ function bind_publish_btn(){
 										"at least 8 characters");
 		} else {
 			var register_url = $(this).find("span")[0].innerHTML;
-			var experiment = $("#experiment_list").val();
-			var this_exp   = master_json.exp_mgmt.experiments[experiment];
+			var project = $("#project_list").val();
+			var this_proj   = master_json.project_mgmt.projects[project];
 
 			/*
 				Identify the experiment location
@@ -333,7 +333,7 @@ function bind_publish_btn(){
 				case "github":                                                  // i.e. the experiment is on dropbox
 				case "gitpod":                                                  // i.e. the experiment is on dropbox
 				case "server":                                                  // i.e. the experiment is on dropbox
-					publish_experiment(this_exp,                                  // object with location
+					publish_experiment(this_proj,                                  // object with location
 														 experiment,																// experiment name
 														 register_url)
 					break;
@@ -376,11 +376,11 @@ function bind_publish_btn(){
 							var github_user_org = github_json.username;
 						}
 
-						this_exp.location = github_user_org        + "/" +
+						this_proj.location = github_user_org        + "/" +
 																github_json.repository + "/" +
                                 experiment;
 						publish_experiment(
-              this_exp,
+              this_proj,
               experiment,
               register_url
             );
@@ -418,15 +418,15 @@ function update_server_table(){
 
 
       //<span href='" + server_row.url + "' target='_blank'>link</a>";
-      if($("#experiment_list").val() == undefined ||
-        $("#experiment_list").val() == null){
+      if($("#project_list").val() == undefined ||
+        $("#project_list").val() == null){
         var publish_btn_html      = "no experiment selected";
       } else {
         var publish_btn_html = "code here to send the data to this script";
       }
     } else {
-      if($("#experiment_list").val() == undefined ||
-        $("#experiment_list").val() == null){
+      if($("#project_list").val() == undefined ||
+        $("#project_list").val() == null){
         var publish_btn_html      = "no experiment selected";
       } else {
         var publish_btn_html = "<button class='btn btn-primary publish_btn'>Publish<span style='display:none'>" + server_row.registration_url + "</span></button><button class='btn btn-danger unpublish_btn'>Unpublish<span style='display:none'>" + server_row.registration_url + "</span></button>";

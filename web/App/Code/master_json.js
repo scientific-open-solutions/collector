@@ -2,12 +2,12 @@ default_master_json = {
   "data": {
     "servers": {}
   },
-  "exp_mgmt":  {
+  "project_mgmt":  {
     "any_loaded": 	 		false,
     "authenticated":   	false,
     "current_manager": 	"",
-    "experiment":      	"",
-    "experiments":     	{},
+    "project":      	"",
+    "projects":     	{},
     "incomp_process":  	false,
     "pipe_position": 	 	0,
     "pipe_direction":  	"",

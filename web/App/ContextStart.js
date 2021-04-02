@@ -19,7 +19,7 @@ $_GET = window.location.href.substr(1).split("&").reduce((o,i)=>(u=decodeURIComp
 Collector.tests.run();                        // display the test dialog before anything else (assuming tests are being run)
 
 Collector.start = function(){
-  wait_till_exists("list_studies");
+  wait_till_exists("list_projects");
   wait_till_exists("list_graphics");
   list_mods();
   wait_till_exists("list_trialtypes");
@@ -30,6 +30,23 @@ Collector.start = function(){
   wait_till_exists("list_servers");
   wait_till_exists("list_surveys");
   wait_till_exists("list_pathways");
+}
+
+function update_master(){
+  /*
+  * studies --> projects
+  */
+  if(typeof(master_json.project_mgmt) == "undefined"){
+    master_json.project_mgmt = master_json.exp_mgmt;
+    master_json.project_mgmt.project = master_json
+      .project_mgmt
+      .experiment;
+    master_json.project_mgmt.projects = master_json
+      .project_mgmt
+      .experiments;
+    delete(master_json.project_mgmt.experiment);
+    delete(master_json.project_mgmt.experiments);
+  }
 }
 
 switch(Collector.detect_context()){
@@ -59,7 +76,7 @@ switch(Collector.detect_context()){
             bootbox.alert(write_response);
           }
         }
-        
+        update_master();
         Collector.start();
       }
     },100);

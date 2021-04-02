@@ -977,7 +977,7 @@ function parse_sheets(){
     case "localhost":
     case "onlinepreview":
     case "preview":
-      var folder = "Experiments/"+ Study.get_vars.location;
+      var folder = "Projects/"+ Study.get_vars.location;
       var proc_sheet_content = Collector.electron.fs.read_file(
         folder,
         proc_sheet_name
@@ -999,7 +999,7 @@ function parse_sheets(){
         exp_json.parsed_stim = [null,null].concat(Collector.PapaParsed(exp_json.all_stims[stim_sheet_name]));
         Study.activate_pipe();
       } else {
-        var proc_url = "../User/Experiments/" +
+        var proc_url = "../User/Projects/" +
                        Study.get_vars.location +
                        "/" + proc_sheet_name;
         $.get(proc_url, function(proc_sheet_content){
@@ -1009,7 +1009,7 @@ function parse_sheets(){
             Study.activate_pipe();
           }
         });
-        var stim_url = "../User/Experiments/"  +
+        var stim_url = "../User/Projects/"  +
                        Study.get_vars.location +
                        "/" +  stim_sheet_name;
         $.get(stim_url,function(stim_sheet_content){
@@ -1525,7 +1525,7 @@ function start_study(){
                 .electron
                 .fs
                 .read_file(
-                  "Experiments",
+                  "Projects",
                   Study
                   .get_vars
                   .location + ".json"
@@ -1550,7 +1550,7 @@ function start_study(){
             if(typeof(random_code) == "undefined"){
               random_code = "";
             }
-            $.get("../User/Experiments/" + Study.get_vars.location + ".json?randomcode=" + random_code,function(result){
+            $.get("../User/Projects/" + Study.get_vars.location + ".json?randomcode=" + random_code,function(result){
               exp_json = result;
               Study.activate_pipe();
             })
@@ -1573,8 +1573,8 @@ function start_study(){
 					} else {
 						get_location = Study.get_vars.location;
 					}
-					$.get(get_location,function(this_experiment){
-						exp_json = JSON.parse(this_experiment);
+					$.get(get_location,function(this_project){
+						exp_json = JSON.parse(this_project);
 						Study.activate_pipe();
 					});
 				}
