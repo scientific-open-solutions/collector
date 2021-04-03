@@ -107,18 +107,12 @@ ipc.on('fs_home_dir', (event,args) => {
 });
 
 ipc.on('fs_list_code', (event,args) => {
-  /*
-  * list all files in "Code" folder
-  */
   event.returnValue = JSON.stringify(
     fs.readdirSync(root_dir + "User/Code")
   );
 });
 
 ipc.on('fs_list_projects', (event,args) => {
-  /*
-  * list all files in "Code" folder
-  */
   event.returnValue = JSON.stringify(
     fs.readdirSync(root_dir + "User/Projects")
   );

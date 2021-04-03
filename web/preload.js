@@ -146,12 +146,13 @@ window.onload=function(){
             return this_response;
           },
           exists: function(){
-            return this_response = ipc.sendSync(
-              'git_exists'
-            );
+            return ipc.sendSync('git_exists');
+          },
+          list_repos: function(){
+            return ipc.sendSync('git_list_repos');
           },
           load_master: function(){
-            return ipc.sendSync('git_load_master')
+            return ipc.sendSync('git_load_master');
           },
           pages: function(repo_info){
             return ipc.sendSync(

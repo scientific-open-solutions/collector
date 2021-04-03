@@ -5,6 +5,8 @@ const fs   = require('fs-extra');
 
 var root_dir = require("os").homedir() + "/Documents/Collector/";
 
+root_dir = root_dir.replaceAll("\\","\/");
+
 //make sure there is a Collector folder in documents
 if(!fs.existsSync(root_dir)){
   fs.mkdirSync(root_dir);
@@ -266,6 +268,21 @@ ipc.on('git_exists', (event,args) => {
   }
 });
 
+ipc.on('git_list_repos', (event,args) => {
+
+  var organizations = fs.readdirSync(root_dir + "Repositories");
+
+  organizations.forEach(function(organization){
+    console.log(organization);
+  })
+
+  /*
+  event.returnValue = JSON.stringify(
+    fs.readdirSync(root_dir + "User/Projects")
+  );
+  */
+});
+
 ipc.on('git_load_master', (event,args) => {
   if(!fs.existsSync(root_dir + "repositories")){
     fs.mkdirSync(root_dir + "repositories")
@@ -278,11 +295,16 @@ ipc.on('git_load_master', (event,args) => {
       'utf8'
     );
   }
+  var github_path = root_dir + "repositories/github.json";
+  console.log("github_path");
+  console.log(github_path);
+
   var content = fs.readFileSync(
-    root_dir +
-    "repositories/github.json",
+    github_path,
     'utf8'
   );
+  console.log("content");
+  console.log(content);
   event.returnValue = content;
 });
 

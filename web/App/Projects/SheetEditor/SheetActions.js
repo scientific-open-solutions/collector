@@ -32,41 +32,25 @@ $("#delete_exp_btn").on("click",function(){
 			if(result){
 				//delete from master
 				delete (master.project_mgmt.projects[exp_name]);
-				if(dropbox_check()){
-					dbx.filesDelete({path:"/experiments/"+exp_name+".json"})
-						.then(function(response) {
-              $('#project_list option:contains('+ exp_name +')')[0].remove();
-							if(document.getElementById('project_list').options[0] !== undefined){
-								$("#project_list").val(document.getElementById('project_list').options[1].value);
-							}
-							Collector.custom_alert(exp_name + " succesfully deleted");
-							update_master();
-							$("#save_btn").click();
-							update_handsontables();
-						})
-						.catch(function(error) {
-							Collector.tests.report_error("problem deleting an experiment", "problem deleting an experiment");
-						});
-				} else {
-					$('#project_list option:contains('+ exp_name +')')[0].remove();
-					$("#project_list").val(document.getElementById('project_list').options[1].value);
-					Collector.custom_alert(exp_name +" succesfully deleted");
-					update_master();
-					update_handsontables();
 
-					//delete the local file if this is
-					if(Collector.detect_context() == "localhost"){
-						Collector
-							.electron
-              .fs
-							.delete_experiment(exp_name,
-								function(response){
-									if(response !== "success"){
-										bootbox.alert(response);
-									}
+				$('#project_list option:contains('+ exp_name +')')[0].remove();
+				$("#project_list").val(document.getElementById('project_list').options[1].value);
+				Collector.custom_alert(exp_name +" succesfully deleted");
+				update_master();
+				update_handsontables();
+
+				//delete the local file if this is
+				if(Collector.detect_context() == "localhost"){
+					Collector
+						.electron
+            .fs
+						.delete_experiment(exp_name,
+							function(response){
+								if(response !== "success"){
+									bootbox.alert(response);
 								}
-						);
-					}
+							}
+					);
 				}
 			}
 		});
@@ -348,24 +332,6 @@ $("#rename_exp_btn").on("click",function(){
   							}
   						);
             break;
-        }
-        if(typeof(dbx) !== "undefined"){
-          dbx.filesMove({
-            from_path: "/Projects/" +
-                         original_name +
-                         ".json",
-            to_path:  "/Projects/" +
-                        new_name +
-                        ".json"
-          })
-            .then(function(result){
-  						update_master();
-  						list_projects();
-  						$("#project_list").val(new_name);
-            })
-            .catch(function(error){
-              Collector.tests.report_error("problem moving an experiment", "problem moving an experiment");
-            });
         }
   		}
     }
@@ -847,69 +813,39 @@ $("#save_btn").on("click", function(){
         this_proj = process_procs(this_proj);
         this_proj = process_code(this_proj);
 
-        switch(Collector.detect_context()){
-          case "localhost":
-            this_proj.procs_csv = {};
-  					this_proj.stims_csv = {};
+        this_proj.procs_csv = {};
+				this_proj.stims_csv = {};
 
-  					this_proj = JSON.stringify(this_proj, null, 2);
-  					Collector
-  						.electron
-              .fs
-  						.write_project(
-  							project,
-  							this_proj,
-  							function(response){
-  								if(response !== "success"){
-  									bootbox.alert(response);
-  								}
-  							}
-  						)
-              update_master();
+				this_proj = JSON.stringify(this_proj, null, 2);
+				Collector
+					.electron
+          .fs
+					.write_project(
+						project,
+						this_proj,
+						function(response){
+							if(response !== "success"){
+								bootbox.alert(response);
+							}
+						}
+					)
+          update_master();
 
 
-              var git_json_response = Collector.electron.git.save_master();
-              var write_response = Collector.electron.fs.write_file(
-                "",
-      					"master.json",
-      					JSON.stringify(master, null, 2)
-							);
-      			  if(write_response !== "success"){
-      					bootbox.alert(response);
-      				} else {
-                Collector.custom_alert(
-                  "Succesfully saved " +
-                  project
-                )
-              }
-            break;
-          default:
-            dbx_obj.new_upload({path: "/Projects/"+project+".json", contents: JSON.stringify(this_proj), mode:'overwrite'},
-              function(returned_data){
-                dbx.sharingCreateSharedLink({
-                  path:returned_data.path_lower
-                })
-                  .then(function(returned_link){
-                    this_proj.location = returned_link.url;
-                    dbx_obj.new_upload({path: "/Projects/"+project+".json", contents: JSON.stringify(this_proj), mode:'overwrite'},function(location_saved){
-                        $("#run_link").attr("href","../"+ master.project_mgmt.version + "/Run.html?location="+this_proj.location);
-                        update_master();
-                      },function(error){
-                        Collector.custom_alert("check console for error saving location");
-                        bootbox.alert(error.error + "<br> Perhaps wait a bit and save again?");;
-                      },
-                      "filesUpload");
-                  })
-                  .catch(function(error){
-                    Collector.tests.report_error("problem uploading an experiment", "problem uploading an experiment");
-                  });
-
-              },function(error){
-                alert(error);
-              },
-              "filesUpload");
-            break;
-        }
+          var git_json_response = Collector.electron.git.save_master();
+          var write_response = Collector.electron.fs.write_file(
+            "",
+  					"master.json",
+  					JSON.stringify(master, null, 2)
+					);
+  			  if(write_response !== "success"){
+  					bootbox.alert(response);
+  				} else {
+            Collector.custom_alert(
+              "Succesfully saved " +
+              project
+            )
+          }
       }
     } else {
       switch(Collector.detect_context()){

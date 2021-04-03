@@ -253,7 +253,7 @@ $("#graphic_canvas").contents().on("click",function(){
   }, 500,function(){
     editor.resize();
   });
-  
+
 
 	var element_type = $(".canvas_btn.btn-primary").html();
 
@@ -413,7 +413,6 @@ function select_mod_on(){
         var this_trialtype = master.code.graphic.files[trialtype];
         delete(this_trialtype.mods[mod]);
         load_trialtype_mods();
-        update_master();
       }
     });
   });
@@ -1596,10 +1595,10 @@ graphic_editor_obj = {
 			max_value = these_elements[element].hide.value > max_value ? parseFloat(these_elements[element].hide.value) : max_value;
 			max_value = these_elements[element].show.value > max_value ? parseFloat(these_elements[element].show.value) : max_value;
 			if(these_elements[element].hide.value == ""){
-				endless_element = true;			
+				endless_element = true;
 			}
 		});
-		
+
 		if(endless_element){
 			max_value += 500;
 		}

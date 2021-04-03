@@ -178,50 +178,29 @@ function initiate_actions(){
 
           $("#code_select").attr("previousvalue","");
 
-          switch(Collector.detect_context()){
-            case "github":
-            case "github":
-            case "server":
-              dbx.filesMove({
-                from_path: "/trialtypes/" + original_name + ".html",
-                to_path:   "/trialtypes/" + new_name +      ".html"
-              })
-              .then(function(result){
-                update_master();
-                list_code(function(){
-                  $("#code_select").val(new_name);
-                  $("#code_select").change();
-                });
-              })
-              .catch(function(error){
-                Collector.tests.report_error("problem moving an experiment", "problem moving an experiment");
-              });
 
-            case "localhost":
-              var response = Collector.electron.fs.write_file(
-                "Phasetypes",
-                new_name.replace(".html","") + ".html",
-                master
-                  .trialtypes
-                  .user
-                  [new_name])
-              if(write_response == "success"){
-                Collector.electron.fs.delete_code(
-                    original_name,
-                    function(response){
-                      if(response == "success"){
-                        update_master();
-                        list_code(function(){
-                          $("#code_select").val(new_name);
-                          $("#code_select").change();
-                        });
-                      } else {
-                        bootbox.alert(response);
-                      }
-                    }
-                  )
+          var response = Collector.electron.fs.write_file(
+            "Phasetypes",
+            new_name.replace(".html","") + ".html",
+            master
+              .trialtypes
+              .user
+              [new_name]
+          )
+          if(write_response == "success"){
+            Collector.electron.fs.delete_code(
+              original_name,
+              function(response){
+                if(response == "success"){
+                  list_code(function(){
+                    $("#code_select").val(new_name);
+                    $("#code_select").change();
+                  });
+                } else {
+                  bootbox.alert(response);
                 }
-              break;
+              }
+            )
           }
         }
       });

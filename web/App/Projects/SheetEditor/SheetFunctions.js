@@ -120,26 +120,21 @@ function get_HoT_data(current_sheet) { // needs to be adjusted for
     return data;
 }
 function list_projects(){
-
-
   try{
-
     var local_projects = Collector
       .electron
       .fs
       .list_projects();
 
     local_projects.forEach(function(project){
-      master.project_mgmt.projects
+      master.project_mgmt.projects[project] = JSON.parse(
+        Collector.electron.fs.read_file("Projects",project + ".json")
+      );
     });
 
     name_list = Object.keys(master.project_mgmt.projects);
 
-
-
-
-    function update_exp_list(){
-
+    function update_proj_list(){
       /*
       * reset the selects
       */
@@ -170,32 +165,8 @@ function list_projects(){
 
       });
     }
-    //do longer synch with dropbox if the user is using dropbox
-    if(dropbox_check()){
-      dbx.filesListFolder({path:"/experiments"})
-          .then(function(experiments){
-            experiments.entries.forEach(function(entry){
-              if(entry[".tag"] == "file" && entry.name.indexOf(".json") !== -1 ){
-                var entry_name = entry.name.toLowerCase().replace(".json","");
-                //do not write over master for now if there is an experiment json with the same name
-                if(name_list.indexOf(entry_name) == -1){
-                  name_list.push(entry_name);
-                  synch_experiment(entry_name);
-                }
-              }
-            });
-            update_exp_list();
-          })
-          .catch(function(error){
-            Collector.tests.report_error("problem listing the experiments", "problem listing the experiments");
-          });
-    } else { //just a sanity check that the user is in fact using a localhost version
-      switch(Collector.detect_context()){
-        case "localhost":
-          update_exp_list()
-          break;
-      }
-    }
+
+    update_proj_list();
     Collector.tests.pass("projects",
                          "list");
   } catch(error){
@@ -225,30 +196,8 @@ function new_project(project){
       update_master();
 			$("#save_btn").click();
     }
-		if(dropbox_check()){
-      dbx_obj.new_upload({path:this_path,contents:JSON.stringify(default_experiment)},function(result){
-        dbx.sharingCreateSharedLink({path:this_path})
-          .then(function(returned_link){
-            switch(Collector.detect_context()){
-              case "server":
-							case "gitpod":
-							case "github":
-								update_project_list(project);
-								break;
-            }
-          })
-          .catch(function(error){
-            Collector.tests.report_error("new_project trying to share link","new_project trying to share link");
-          });
-      },function(error){
-        Collector.tests.report_error("new_project trying to upload template to dropbox","new_project trying to upload template to dropbox");
-      },
-      "filesUpload");
-    } else {
-			update_project_list(project);
-    }
+		update_project_list(project);
 	}
-
 }
 function remove_from_list(project){
 	var x = document.getElementById("project_list");
@@ -293,17 +242,7 @@ function stim_proc_selection(stim_proc,sheet_selected){
 	var this_proj   = master.project_mgmt.projects[$("#project_list").val()];
 	createExpEditorHoT(this_proj.all_stims[sheet_selected],stim_proc,sheet_selected);	//sheet_name
 }
-function synch_experiment(entry_name){
-	dbx.sharingCreateSharedLink({path:"/experiments/" + entry_name + ".json"})
-		.then(function(result){
-			$.get(result.url.replace("www.","dl."), function(exp_json){
-				master.project_mgmt.projects[entry_name] = JSON.parse(exp_json);
-			});
-		})
-		.catch(function(error){
-			Collector.tests.report_error("problem synching the experiment","problem synching the experiment");
-		});
-}
+
 function update_dropdown_lists(){
 	var this_proj   = master.project_mgmt.projects[$("#project_list").val()];
 	var stim_values = [];
@@ -433,17 +372,6 @@ function update_handsontables(){
   }
 	$("#dropbox_inputs").show();
 }
-function update_master(){
-	dbx_obj.new_upload({path:"/master.json",
-                      contents:JSON.stringify(master,null,2),
-                      mode:'overwrite'},
-                      function(result){
-
-	},function(error){
-		bootbox.alert(error.error + "<br> Perhaps wait a bit and save again?");
-	},
-	"filesUpload");
-};
 
 
 function upload_exp_contents(these_contents,this_filename){

@@ -27,9 +27,11 @@ Collector.start = function(){
   wait_till_exists("list_servers");
   wait_till_exists("list_surveys");
   wait_till_exists("list_pathways");
+  correct_master();
 }
 
-function update_master(){
+function correct_master(){
+  console.log("updating master json");
   /*
   * studies --> projects
   */
@@ -57,6 +59,10 @@ function update_master(){
       this_project.all_procs[this_proc] = this_project
         .all_procs[this_proc].replace("trial type,","code,");
     });
+    if(typeof(this_project.trialtypes) !== "undefined"){
+      this_project.code = this_project.trialtypes;
+      delete(this_project.trialtypes);
+    }
   });
 
   /*
@@ -110,7 +116,6 @@ switch(Collector.detect_context()){
             bootbox.alert(write_response);
           }
         }
-        update_master();
         Collector.start();
       }
     },100);

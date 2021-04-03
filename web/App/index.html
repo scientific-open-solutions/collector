@@ -40,17 +40,41 @@
 <script src="libraries/popper.min.js"></script>
 <script src="libraries/bootstrap.4.0.min.js"></script>
 <script src="libraries/bootbox.5.4.min.js"></script>
-<script src="libraries/dropbox.2.5.13.min.js"></script>
-<script src="libraries/dropbox.dropins.js"></script>
 <script src="libraries/papaparse.4.3.6.min.js"></script>
 <script src="libraries/ace-master/ace.js"></script>
 <script src="libraries/ace-master/ext-language_tools.js"></script>
 <script src="Handsontables/handsontables.full.js"></script>
 
 <style>
+.citation_info{
+  padding:10px;
+}
 .content_name{
   font-size:0px;
 }
+.logo{
+  height:30px;
+  width:30px;
+}
+
+#data_storage_logo,
+#everything{
+  display: none;
+}
+#github_logo{
+  display:none;
+}
+#loading_spinner{
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin:auto;
+  width: 30rem;
+  height: 30rem;
+}
+
 
 /* custom scrollbar */
 ::-webkit-scrollbar {
@@ -72,19 +96,6 @@
   background-color: #a8bbbf;
 }
 
-#everything{
-  display: none;
-}
-#loading_spinner{
-  position: absolute;
-  top:0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin:auto;
-  width: 30rem;
-  height: 30rem;
-}
 </style>
 
 <div class="spinner-border text-primary" role="status" id="loading_spinner">
@@ -139,38 +150,36 @@
     <button onClick="window.open('https://github.com/scientific-open-solutions/collector/issues', '_blank')" class="top_icon btn btn-primary bi-exclamation-triangle" id="report_bug_link" style="font-size:20px;">
       <span class='content_name'>Report Bug/Issue</span>
     </button>
-
     <button onClick="window.open('https://github.com/scientific-open-solutions/collector/discussions', '_blank')" class="top_icon btn btn-primary bi-chat-dots" id="forum_link" style="font-size:20px;">
       <span class='content_name'>Forum</span>
     </button>
-
     <button onClick="window.open('https://docs.google.com/document/d/1SKYIJF1dAjMDS6EHUIwfZm2KQVOzx17S6LbU_oSGxdE/edit?usp=sharing', '_blank')" class="top_icon btn btn-primary bi-info-circle" id="documentation_link" style="font-size:20px;">
       <span class='content_name'>Documentation</span>
     </button>
-
     <button class="top_icon btn btn-primary bi-lock" id="show_security_info" style="font-size:20px;">
       <span class='content_name'>Security - encryption and attack vectors??</span>
     </button>
-
     <button class="top_icon btn btn-primary bi-heart" id="show_contributors" style="font-size:20px;">
       <span class='content_name'>Contributors</span>
     </button>
-
     <button class="top_icon btn btn-primary bi-geo-alt" id="show_maps" style="font-size:20px;">
       <span class='content_name'>Maps</span>
     </button>
-
     <button class="top_icon btn btn-primary bi-chat-square-quote" id="show_citations" style="font-size:20px;">
       <span class='content_name'>Citations</span>
     </button>
-
     <button class="top_icon btn btn-outline-primary bg-white bi-life-preserver" id="help_btn" style="margin:2px; font-weight:bold">
       <span class='content_name'>Help</span>
     </button>
-
-    <div id="github_div"></div>
-    <div id="platforms_div"></div>
+    <button class="top_icon btn btn-primary bi-server" id="data_storage_logo">
+      <span class='content_name'>Online Data Storage</span>
+    </button>
+    <button class="top_icon btn btn-primary bi-github" id="github_logo">
+      <span class='content_name'>Github</span>
+    </button>
+    <button class="btn btn-primary bi-power" id="power_btn"></button>
   </nav>
+  <div id="github_div"></div>
   <table id="content_table" style="width:100%">
     <tr>
       <td id="content_area"></td>
@@ -179,6 +188,7 @@
   </table>
   <div id="register_div"></div>
 </div>
+
 <script>
 var navbar_names  = [
   "Projects",
@@ -252,6 +262,229 @@ setTimeout(function(){
     $("#everything").fadeIn();
   });
 },500);
+
+$(".top_icon").hover(function(){
+  $(this).find(".content_name").animate({"font-size":"15px"});
+}, function(){
+  $(this).find(".content_name").animate({"font-size":"0px"});
+});
+
+
+$("#github_logo").on("click", function(){
+  if (typeof(github_json) == "undefined") {
+    var git_exists = Collector.electron.git.exists();
+    if(git_exists !== "true-true"){
+      git_exists = git_exists.split("-");
+      if(git_exists[0] !== "true"){
+        bootbox.prompt(
+          "What github email do you want to use?",
+          function(email){
+            var email_response = Collector.electron.git.set_email(email);
+            if(email_response !== "success"){
+              bootbox.alert("error: " + email_response);
+            }
+          }
+        );
+      }
+      if(git_exists[1] !== "true"){
+        bootbox.prompt(
+          "What github username do you want to use?",
+          function(name){
+            var name_response = Collector.electron.git.set_name(name);
+            if(name_response !== "success"){
+              bootbox.alert("error: " + name_response);
+            }
+          }
+        );
+      }
+    } else {
+      github_json = JSON.parse(
+        Collector.electron.git.load_master()
+      );
+      //lazy way of preventing the following slowing down the starting up of Collector
+      setTimeout(function(){
+        if(
+          typeof(github_json.organization) !== "undefined" &&
+          github_json.organization !== ""                  &&
+          typeof(github_json.repository) !== "undefined"   &&
+          github_json.repository !== ""
+        ){
+          var commits_behind = Collector.electron.git.status({
+            organization: github_json.organization,
+            repository: github_json.repository
+          });
+          if(commits_behind !== 0)
+          {
+            bootbox.alert("You are behind by " + commits_behind + " commits (or you'll have just seen an error message). Be careful about pushing or pulling changes until your local repository is synched up with the online repository");
+          };
+        }
+      },1000);
+    }
+  }
+  $('#github_dialog').fadeIn();
+});
+
+switch(Collector.detect_context()){
+
+  case "localhost":
+    //show the github icon
+    $("#github_logo").show();
+    $("#data_storage_logo").show();
+    break;
+  case "github":
+  case "server":
+    $("#data_storage_logo").show();
+    break;
+  default:
+    $("#data_storage_logo").show(); //this might be redundant
+    break;
+};
+
+
+function highlight_account(element_id){
+  $("#" + element_id).animate(
+    {
+      fontSize:"20px"
+    },
+    {
+      duration:1000,
+      complete:function(){
+        $("#"+element_id).animate(
+          {
+            fontSize:"0px"
+          },
+          {
+            duration:1000
+          }
+        );
+      }
+    }
+  );
+}
+
+$(".logo").hover(function(){
+  var account_id = this.id.replace("logo","account_email");
+  $("#" + account_id).show(500);
+  $("#" + account_id).animate({
+    fontSize:"14px"
+  },500);
+},function(){
+  var account_id = this.id.replace("logo","account_email");
+  $("#" + account_id).animate({
+    fontSize:"0px"
+  },500);
+});
+
+
+$("#power_btn").on("click",function(){
+  bootbox.dialog({
+    title: "Do you want to restart or close Collector?",
+    message: "Or you can press cancel if you want to carry on without restarting or closing Collector",
+    buttons: {
+      restart: {
+        label: "Restart",
+        className: "btn-info",
+        callback: function(){
+          location.reload();
+        }
+      },
+      close: {
+        label: "Push Changes and Close",
+        className: "btn-primary",
+        callback: function(){
+          $("#save_btn").click();
+          /*
+          * Push changes in repository to github
+          */
+
+          /*
+          * Give the above a little time to register before closing
+          */
+          setTimeout(function(){
+            close()
+          },2000);
+        }
+      },
+      cancel: {
+        label: "Cancel",
+        className: "btn-secondary",
+        callback: function(){
+
+        }
+      }
+    }
+  })
+});
+$("#show_citations").on("click", function(){
+  $.get("PopOuts/Citations.csv", function(result){
+    var table_html = '<h3 class="text-primary">Citations</h3>' +
+      '<p>';
+
+    Collector.PapaParsed(result).forEach(function(row){
+      table_html += '<a class="btn btn-primary" data-toggle="collapse" href="#cite_' + row.paper + '" role="button" aria-expanded="false" aria-controls="cite_' + row.paper + '" style="margin:2px; width:100%">' +
+        row.description +
+        '</a>';
+
+      table_html += '<div class="collapse" id="cite_' + row.paper + '">' +
+        '<div class="card card-body">' +
+      "<table>" +
+      "<tr>" +
+        "<th>MLA</td>" +
+        "<td><div contenteditable='true' onclick='document.execCommand(\"selectAll\", false, null);' class='citation_info'>" + row.mla + "</div></td>" +
+      "</tr><tr>" +
+        "<th>APA</td>" +
+        "<td><div contenteditable='true' onclick='document.execCommand(\"selectAll\", false, null);' class='citation_info'>" + row.apa + "</div></td>" +
+      "</tr><tr>" +
+        "<th>Chicago</td>" +
+        "<td><div contenteditable='true' onclick='document.execCommand(\"selectAll\", false, null);' class='citation_info'>" + row.chicago + "</div></td>" +
+      "</tr><tr>" +
+        "<th>Harvard</td>" +
+        "<td><div contenteditable='true' onclick='document.execCommand(\"selectAll\", false, null);' class='citation_info'>" + row.harvard + "</div></td>" +
+      "</tr><tr>" +
+        "<th>Vancouver</td>" +
+        "<td><div contenteditable='true' onclick='document.execCommand(\"selectAll\", false, null);' class='citation_info'>" + row.vancouver + "</div></td>" +
+      "</tr></table></div></div>";
+    });
+
+    table_html += "</table>";
+
+    bootbox.alert(table_html);
+  })
+});
+
+$("#show_contributors").on("click", function(){
+  $.get("PopOuts/contributors.html", function(this_html){
+    bootbox.alert({
+      message: this_html,
+      size: "large"
+    });
+  });
+});
+
+$("#show_maps").on("click", function(){
+  $.get("PopOuts/Maps.html", function(this_html){
+    bootbox.alert({
+      message: this_html,
+      size: "large"
+    });
+  });
+});
+
+$("#show_security_info").on("click", function(){
+  $.get("PopOuts/security.html", function(this_html){
+    bootbox.alert({
+      message: this_html,
+      size: "large"
+    });
+  });
+});
+
+$("#data_storage_logo").on("click", function(){
+  update_server_table();
+  $("#login_modal").fadeIn();
+});
 </script>
+
+
 <script src="ContextStart.js"></script>
 <script src="libraries/collector/MobileCheck.js"></script>

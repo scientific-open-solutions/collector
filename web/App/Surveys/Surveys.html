@@ -341,12 +341,8 @@ function list_surveys(){
         class:"bg-white text-dark"
       }));
     });
-    if(Collector.detect_context() !== "localhost"){
-      synch_surveys();
-    } else {
-      Collector.tests.pass("surveys",
-                         "list");
-    }
+    Collector.tests.pass("surveys", "list");
+
   } catch(error){
     /* muting this error for now
 
@@ -429,40 +425,6 @@ function preview_survey(this_survey){
   }
 }
 
-function synch_surveys(){
-	var synch_survey_interval = setInterval(function(){
-		if(typeof(dbx) !== "undefined"){
-			clearInterval(synch_survey_interval);
-			dbx.filesListFolder({path:"/surveys"})
-				.then(function(result){
-          Collector.tests.pass("surveys",
-                               "list");
-					result.entries.forEach(function(entry){
-						if(typeof(master.surveys.user_surveys[entry.name.toLowerCase()]) == "undefined"){
-							dbx.sharingCreateSharedLink({path:entry.path_lower})
-								.then(function(shared_link){
-									$.get(shared_link.url.replace("www.","dl."),function(result){
-										var survey_name = entry.name.toLowerCase().replace(".csv","");
-										master.surveys.user_surveys[survey_name] = Papa.parse(result).data;
-									});
-								})
-								.catch(function(error){
-									Collector.tests.report_error("problem synching the surveys, possibly due to getting the location of a specific survey", "problem synching the surveys, possibly due to getting the location of a specific survey");
-								});
-						}
-					});
-				})
-				.catch(function(error){
-					//assume that the survey folder doesn't exist yet - reimplement error if it seems like some intervention is needed here.
-
-					/*
-					Collector.tests.report_error("problem synching the surveys, possibly due to listing surveys within the survey folder.", "problem synching the surveys, possibly due to listing surveys within the survey folder.");
-					*/
-				});
-		}
-	},2000);
-};
-
 /*
 * Survey actions (i.e. element triggers)
 */
@@ -474,52 +436,32 @@ $("#delete_survey_btn").on("click",function(){
 			delete master.surveys.user_surveys[survey_name];
 
       //need to use electron to delete here
-      switch(Collector.detect_context()){
-        case "localhost":
-          var response = Collector
-            .electron
-            .fs
-            .delete_survey(
-            survey_name
-          );
-          if(response == "success"){
-            Collector.custom_alert(
-              "Succesfully deleted <b>" +
-              survey_name +
-              "</b>"
-            );
-            $('#survey_select option[value="' +
-              $("#survey_select").val() +
-            '"]').remove();
-            $("#survey_select").val(
-              "default|demographics.csv"
-            );
-            create_survey_HoT(
-              master
-                .surveys
-                .default_surveys["demographics.csv"]
-            );
-            $("#save_btn").click();
-          } else {
-            bootbox.alert(response);
-          }
-          break;
-        default:
-          if(typeof(dbx) !== "undefined"){
-            dbx.filesDelete({
-              path:"/surveys/" + survey_name
-            }).then(function(result){
-              Collector.custom_alert("Succesfully deleted <b>" + survey_name + "</b>");
-              $('#survey_select option[value="' + $("#survey_select").val() + '"]').remove();
-              $("#survey_select").val("default|demographics.csv");
-              create_survey_HoT(master.surveys.default_surveys["demographics.csv"]);
-              $("#save_btn").click();
-            })
-            .catch(function(error){
-              Collector.tests.report_error("problem deleting the survey.", "problem deleting the survey.");
-            });
-          }
-          break;
+      var response = Collector
+        .electron
+        .fs
+        .delete_survey(
+        survey_name
+      );
+      if(response == "success"){
+        Collector.custom_alert(
+          "Succesfully deleted <b>" +
+          survey_name +
+          "</b>"
+        );
+        $('#survey_select option[value="' +
+          $("#survey_select").val() +
+        '"]').remove();
+        $("#survey_select").val(
+          "default|demographics.csv"
+        );
+        create_survey_HoT(
+          master
+            .surveys
+            .default_surveys["demographics.csv"]
+        );
+        $("#save_btn").click();
+      } else {
+        bootbox.alert(response);
       }
 		}
 	});
@@ -719,33 +661,15 @@ survey_obj = {
 								survey_content){
 
 		if(typeof(master.surveys.default_surveys[survey_name]) == "undefined"){
-      switch(Collector.detect_context()){
-				case "localhost":
-          var write_response = Collector.electron.fs.write_file(
-              "Surveys",
-              survey_name.toLowerCase()
-                         .replace(".csv","") + ".csv",
-              survey_content
-          )
-          if(write_response !== "success"){
-            bootbox.alert(response);
-          }
-					break;
-				default:
-          dbx_obj.new_upload({
-            path    : "/surveys/" + survey_name,
-            contents : survey_content,
-            mode    : "overwrite"
-          },function(){
-            Collector.custom_alert("Success!");
-            update_master();
-          },function(error){
-            Collector.custom_alert("error - check console!");
-            console.dir(error);
-          },
-          "filesUpload");
-					break;
-			}
+      var write_response = Collector.electron.fs.write_file(
+            "Surveys",
+            survey_name.toLowerCase()
+                       .replace(".csv","") + ".csv",
+            survey_content
+      )
+      if(write_response !== "success"){
+          bootbox.alert(response);
+      }
 		} else {
 			Collector.custom_alert("You were looking at a default survey - no changes made to it");
 		}

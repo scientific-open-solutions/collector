@@ -35,36 +35,16 @@ code_obj = {
 				master.code.file = $("#code_select").val();
 				code_obj.load_file("default");
 				Collector.custom_alert("Successfully deleted "+this_loc);
-				update_master();
-
-				switch(Collector.detect_context()){
-					case "github":
-					case "gitpod":
-					case "server":
-            // i.e. the user is online and using dropbox
-						dbx.filesDelete({path:this_loc+".html"})
-							.then(function(returned_data){
-								//do nothing more
-							})
-							.catch(function(error){
-								Collector
-									.tests
-									.report_error("problem deleting a code file",
-														 	  "problem deleting a code file");
-							});
-						break;
-					case "localhost":
-						Collector
-							.electron
-              .fs
-							.delete_code(deleted_code,
-								function(response){
-									if(response !== "success"){
-										bootbox.alert(response);
-									}
-								});
-						break;
-				}
+				Collector
+				  .electron
+          .fs
+					.delete_code(deleted_code,
+						function(response){
+							if(response !== "success"){
+								bootbox.alert(response);
+							}
+						}
+          );
 			}
 		});
 	},
@@ -130,12 +110,6 @@ code_obj = {
 		} else {
 			Collector.custom_alert("success - " + name + " updated");
 		}
-		dbx_obj.new_upload({path:"/trialtypes/"+name+".html",contents:content,mode:"overwrite"},function(result){
-			Collector.custom_alert("<b>" + name + "updated on dropbox");
-		},function(error){
-			bootbox.alert("error: "+error.error+"<br> try saving again after waiting a little");
-		},
-		"filesUpload");
 		if(typeof(Collector.electron) !== "undefined"){
 			var write_response = Collector.electron.fs.write_file(
         "Code",
@@ -147,26 +121,6 @@ code_obj = {
 			if(write_response !== "success"){
 			  bootbox.alert(write_response);
 			}
-		}
-	},
-	synchPhasetypesFolder:function(){
-		if(dropbox_check()){
-			dbx.filesListFolder({path:"/trialtypes"})
-				.then(function(returned_data){
-					var trialtypes = returned_data.entries.filter(item => item[".tag"] == "file");
-					trialtypes.forEach(function(trialtype){
-						trialtype.name = trialtype.name.replace(".html","");
-						if(typeof(master.code.user[trialtype.name]) == "undefined"){
-							dbx.sharingCreateSharedLink({path:trialtype.path_lower})
-								.then(function(returned_path_info){
-									$.get(returned_path_info.url.replace("www.","dl."),function(content){
-										master.code.user[trialtype.name] = content;
-										$("#code_select").append("<option class='user_code'>"+trialtype.name+"</option>");
-									});
-								});
-						}
-					});
-				});
 		}
 	}
 }
@@ -209,19 +163,9 @@ function list_code(to_do_after){
       user_keys.forEach(function(element){
         $("#code_select").append("<option class='user_code'>" + element + "</option>");
       });
-      code_obj.synchPhasetypesFolder();
-
-
-      switch(Collector.detect_context()){
-        case "server":
-        case "gitpod":
-        case "github":
-				case "localhost":
-          // currently do nothing
-          if(typeof(to_do_after) !== "undefined"){
-            to_do_after();
-          }
-          break;
+      
+      if(typeof(to_do_after) !== "undefined"){
+        to_do_after();
       }
     }
 

@@ -14,18 +14,15 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
- 		
-		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)		
+
+		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
 */
 
-#exp_data > tbody > tr > td { 
-  text-align: center; padding: 15px; 
+#exp_data > tbody > tr > td {
+  text-align: center; padding: 15px;
 }
 #help_area{
-	!display:none;	
-}
-#logout_table td{
-	padding:2px;
+	!display:none;
 }
 #sim_navbar{
   padding: 0px;
@@ -43,11 +40,11 @@
 .custom_table { display: none; border-collapse: collapse; }
 .custom_table > div { display: table-row; }
 .custom_table > div > div { display: table-cell; padding: 2px 4px; max-width: 320px; vertical-align: top; }
-.custom_table > div > .textareaDiv { 
-	padding: 10px; 
-	width: 500px; 
-	max-width: 1200px; 
-	height: 20em; 
+.custom_table > div > .textareaDiv {
+	padding: 10px;
+	width: 500px;
+	max-width: 1200px;
+	height: 20em;
 }
 .custom_table > div > .textareaDiv > textarea {
   padding: 5px;
