@@ -62,12 +62,12 @@ function load_default_surveys(){
     if(list.length > 0){
       var this_survey = list.pop();
       $.get(collector_map[this_survey],function(survey_content){
-        master_json.surveys.default_surveys[this_survey.toLowerCase()] = Papa.parse(survey_content).data;
+        master.surveys.default_surveys[this_survey.toLowerCase()] = Papa.parse(survey_content).data;
         load_survey(list);
       });
     } else {
       //based on solution by "dule" at https://stackoverflow.com/questions/740195/adding-options-to-a-select-using-jquery
-      default_surveys_list = Object.keys(master_json.surveys.default_surveys).sort();
+      default_surveys_list = Object.keys(master.surveys.default_surveys).sort();
       $.each(default_surveys_list, function (i, item) {
         $('#survey_select').append($('<option>', {
           value: "default|" + item , //.value,
@@ -83,7 +83,7 @@ function load_default_surveys(){
           "Surveys",
           default_survey
         );
-        master_json.surveys.default_surveys[default_survey] = Papa.parse(survey_content).data;
+        master.surveys.default_surveys[default_survey] = Papa.parse(survey_content).data;
         $('#survey_select').append($('<option>', {
           value: "default|" + default_survey , //.value,
           text : default_survey, //.text
@@ -253,7 +253,7 @@ function create_survey_HoT(this_survey){
 			var current_survey = $("#survey_select").val()
 																							.split("|")[1];
 
-			if(typeof(master_json.surveys.default_surveys[current_survey]) !== "undefined"){
+			if(typeof(master.surveys.default_surveys[current_survey]) !== "undefined"){
 				Collector.custom_alert("These changes will not be saved, as you are editing a <b>default</b> survey. Please click <b>New Survey</b> to create a new survey");
 			}
 
@@ -317,21 +317,21 @@ function list_surveys(){
     );
     $("#survey_select").val("Select a survey");
 
-    if(typeof(master_json.surveys) == "undefined" ||
-      typeof(master_json.surveys.user_surveys) == "undefined"){
-      master_json.surveys = {
+    if(typeof(master.surveys) == "undefined" ||
+      typeof(master.surveys.user_surveys) == "undefined"){
+      master.surveys = {
         preview         : false,
         user_surveys    : {}
       }
     }
-    master_json.surveys = typeof(master_json.surveys) == "undefined" ? {} : master_json.surveys;
-    master_json.surveys.default_surveys = {};
+    master.surveys = typeof(master.surveys) == "undefined" ? {} : master.surveys;
+    master.surveys.default_surveys = {};
 
-    master_json.surveys.user_surveys = typeof(master_json.surveys.user_surveys) == "undefined" ? {} : master_json.surveys.user_surveys;
-    master_json.surveys.default_surveys = Collector.clean_obj_keys(master_json.surveys.default_surveys);
+    master.surveys.user_surveys = typeof(master.surveys.user_surveys) == "undefined" ? {} : master.surveys.user_surveys;
+    master.surveys.default_surveys = Collector.clean_obj_keys(master.surveys.default_surveys);
 
-    var def_survey_list  = Object.keys(master_json.surveys.default_surveys).sort();
-    var user_survey_list = Object.keys(master_json.surveys.user_surveys).sort();
+    var def_survey_list  = Object.keys(master.surveys.default_surveys).sort();
+    var user_survey_list = Object.keys(master.surveys.user_surveys).sort();
 
     load_default_surveys();
     user_survey_list.forEach(function(user_survey){
@@ -358,7 +358,7 @@ function list_surveys(){
 }
 
 function preview_survey(this_survey){
-  master_json.surveys.preview = true;
+  master.surveys.preview = true;
 	$("#survey_preview").css("height",window.innerHeight - 100)
 	if($("#help_content").is(":visible")){
 		var helper_width = parseFloat($("#help_content").css("width").replace("px",""));
@@ -438,12 +438,12 @@ function synch_surveys(){
           Collector.tests.pass("surveys",
                                "list");
 					result.entries.forEach(function(entry){
-						if(typeof(master_json.surveys.user_surveys[entry.name.toLowerCase()]) == "undefined"){
+						if(typeof(master.surveys.user_surveys[entry.name.toLowerCase()]) == "undefined"){
 							dbx.sharingCreateSharedLink({path:entry.path_lower})
 								.then(function(shared_link){
 									$.get(shared_link.url.replace("www.","dl."),function(result){
 										var survey_name = entry.name.toLowerCase().replace(".csv","");
-										master_json.surveys.user_surveys[survey_name] = Papa.parse(result).data;
+										master.surveys.user_surveys[survey_name] = Papa.parse(result).data;
 									});
 								})
 								.catch(function(error){
@@ -471,7 +471,7 @@ $("#delete_survey_btn").on("click",function(){
 	bootbox.confirm("Are you sure you want to delete this survey?",function(confirmed){
 		if(confirmed){
 			var survey_name = $("#survey_select").val().split("|")[1].toLowerCase().replace(".csv","") + ".csv";
-			delete master_json.surveys.user_surveys[survey_name];
+			delete master.surveys.user_surveys[survey_name];
 
       //need to use electron to delete here
       switch(Collector.detect_context()){
@@ -495,7 +495,7 @@ $("#delete_survey_btn").on("click",function(){
               "default|demographics.csv"
             );
             create_survey_HoT(
-              master_json
+              master
                 .surveys
                 .default_surveys["demographics.csv"]
             );
@@ -512,7 +512,7 @@ $("#delete_survey_btn").on("click",function(){
               Collector.custom_alert("Succesfully deleted <b>" + survey_name + "</b>");
               $('#survey_select option[value="' + $("#survey_select").val() + '"]').remove();
               $("#survey_select").val("default|demographics.csv");
-              create_survey_HoT(master_json.surveys.default_surveys["demographics.csv"]);
+              create_survey_HoT(master.surveys.default_surveys["demographics.csv"]);
               $("#save_btn").click();
             })
             .catch(function(error){
@@ -536,10 +536,10 @@ $("#new_survey_button").on("click",function(){
 					callback: function(survey_name){
             if(survey_name){
               survey_name = survey_name.toLowerCase().replaceAll(".csv","") + ".csv";
-              if(typeof(master_json.surveys.user_surveys[survey_name] == "undefined")){
+              if(typeof(master.surveys.user_surveys[survey_name] == "undefined")){
                 var survey_content = survey_HoT.getData();
-                master_json.surveys.user_surveys[survey_name] = JSON.parse(JSON.stringify(survey_content));
-                create_survey_HoT(master_json.surveys.user_surveys[survey_name]);
+                master.surveys.user_surveys[survey_name] = JSON.parse(JSON.stringify(survey_content));
+                create_survey_HoT(master.surveys.user_surveys[survey_name]);
                 var survey_value   = "user|" + survey_name;
                 $("#survey_select").append($("<option>",{
                   text  : survey_name,
@@ -568,7 +568,7 @@ $("#rename_survey_btn").on("click",function(){
   var old_survey_name = $("#survey_select").val().split("|")[1];
   if($("#survey_select").val() == null){
     bootbox.alert("You haven't selected a survey to rename");
-  } else if (typeof(master_json.surveys.default_surveys[old_survey_name]) !== "undefined") {
+  } else if (typeof(master.surveys.default_surveys[old_survey_name]) !== "undefined") {
     bootbox.alert(
       "You can't rename default experiments."
     );
@@ -581,9 +581,9 @@ $("#rename_survey_btn").on("click",function(){
           .replace(".csv","") + ".csv";
         if(!new_survey_name){
           // do nothing
-        } else if(typeof(master_json.surveys.default_surveys[new_survey_name]) !== "undefined"){
+        } else if(typeof(master.surveys.default_surveys[new_survey_name]) !== "undefined"){
           bootbox.alert("This name clashes with an already existing survey");
-        } else if(typeof(master_json.surveys.user_surveys[new_survey_name]) !== "undefined"){
+        } else if(typeof(master.surveys.user_surveys[new_survey_name]) !== "undefined"){
           bootbox.alert("This name clashes with an already existing survey");
         } else {
           switch(Collector.detect_context()){
@@ -591,16 +591,16 @@ $("#rename_survey_btn").on("click",function(){
               var write_response = Collector.electron.fs.write_file(
                 "Surveys",
                 new_survey_name,
-                master_json.surveys.user_surveys[old_survey_name]
+                master.surveys.user_surveys[old_survey_name]
               );
               if(write_response == "success"){
-                master_json.surveys.user_surveys[new_survey_name] = master_json.surveys.user_surveys[old_survey_name];
+                master.surveys.user_surveys[new_survey_name] = master.surveys.user_surveys[old_survey_name];
                 var delete_response = Collector.electron.fs.delete_survey(old_survey_name);
 
                 if(delete_response !== "success"){
                   bootbox.alert(delete_response);
                 } else {
-                  delete(master_json.surveys.user_surveys[old_survey_name]);
+                  delete(master.surveys.user_surveys[old_survey_name]);
                   list_surveys();
                   $("#survey_select").val("user|" + new_survey_name);
                 }
@@ -679,7 +679,7 @@ $("#survey_select").on("change",function(){
 
 	if(old_survey == ""){ // not the first selected
     // do nothing
-  } else if (Object.keys(master_json.surveys.default_surveys).indexOf(old_survey) == -1){ // not a default trialtype
+  } else if (Object.keys(master.surveys.default_surveys).indexOf(old_survey) == -1){ // not a default trialtype
 		old_survey = old_survey.split("|")[1]
 													 .replace(".csv","") + ".csv";
 
@@ -696,14 +696,14 @@ $("#survey_select").on("change",function(){
     $("#survey_select").addClass("bg-info");
     $("#survey_select").addClass("text-white");
 
-    create_survey_HoT(master_json.surveys.default_surveys[this_survey[1]]);
+    create_survey_HoT(master.surveys.default_surveys[this_survey[1]]);
     $("#spreadsheet_preview_tabs").show();
   } else if(this_survey[0] == "user"){
     $("#survey_select").removeClass("bg-info");
     $("#survey_select").removeClass("text-white");
     $("#survey_select").addClass("bg-light");
 
-		create_survey_HoT(master_json.surveys.user_surveys[this_survey[1]]);
+		create_survey_HoT(master.surveys.user_surveys[this_survey[1]]);
     $("#spreadsheet_preview_tabs").show();
   } else {
     bootbox.alert("It's not clear whether this is supposed to be a default or user survey");
@@ -718,7 +718,7 @@ survey_obj = {
 	save:function(survey_name,
 								survey_content){
 
-		if(typeof(master_json.surveys.default_surveys[survey_name]) == "undefined"){
+		if(typeof(master.surveys.default_surveys[survey_name]) == "undefined"){
       switch(Collector.detect_context()){
 				case "localhost":
           var write_response = Collector.electron.fs.write_file(
@@ -738,7 +738,7 @@ survey_obj = {
             mode    : "overwrite"
           },function(){
             Collector.custom_alert("Success!");
-            update_master_json();
+            update_master();
           },function(error){
             Collector.custom_alert("error - check console!");
             console.dir(error);

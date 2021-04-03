@@ -186,7 +186,7 @@ function createHoT(container, data,sheet_name) {
 			}
 
       var project = $("#project_list").val();
-			var this_proj   = master_json.project_mgmt.projects[project];
+			var this_proj   = master.project_mgmt.projects[project];
 
 			if(sheet_name.toLowerCase() == "conditions.csv"){
 				this_proj.conditions = this.getData();

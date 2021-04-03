@@ -22,20 +22,20 @@ $.ajaxSetup({ cache: false }); // prevents caching, which disrupts $.get calls
 code_obj = {
 	delete_code:function(){
     var deleted_code = $("#code_select").val();
-    master_json.code.file = $("#code_select").val();
-		var this_loc = "/code/" + master_json.code.file;
+    master.code.file = $("#code_select").val();
+		var this_loc = "/code/" + master.code.file;
 		bootbox.confirm("Are you sure you want to delete this " + this_loc + "?", function(result){
 			if(result == true){
-				if(typeof(master_json.code.graphic.files[master_json.code.file]) !== "undefined"){
-					delete(master_json.code.graphic.files[master_json.code.file]);
+				if(typeof(master.code.graphic.files[master.code.file]) !== "undefined"){
+					delete(master.code.graphic.files[master.code.file]);
 				}
-				delete(master_json.code.user[master_json.code.file]);
+				delete(master.code.user[master.code.file]);
         $("#code_select").attr("previousvalue","");
 				$("#code_select option:selected").remove();
-				master_json.code.file = $("#code_select").val();
+				master.code.file = $("#code_select").val();
 				code_obj.load_file("default");
 				Collector.custom_alert("Successfully deleted "+this_loc);
-				update_master_json();
+				update_master();
 
 				switch(Collector.detect_context()){
 					case "github":
@@ -80,7 +80,7 @@ code_obj = {
 			$("#delete_code_button").show();
 		}
 
-		var this_file = master_json.code.file;
+		var this_file = master.code.file;
 
     //python load if localhost
     switch(Collector.detect_context()){
@@ -93,13 +93,13 @@ code_obj = {
 					cleaned_code
         )
 				if(this_content == ""){
-				  editor.setValue(master_json.code[user_default][this_file]);
+				  editor.setValue(master.code[user_default][this_file]);
         } else {
 				  editor.setValue(this_content);
 		    }
         break;
       default:
-				var content = master_json.code[user_default][this_file];
+				var content = master.code[user_default][this_file];
         editor.setValue(content);
         break;
     }
@@ -156,11 +156,11 @@ code_obj = {
 					var trialtypes = returned_data.entries.filter(item => item[".tag"] == "file");
 					trialtypes.forEach(function(trialtype){
 						trialtype.name = trialtype.name.replace(".html","");
-						if(typeof(master_json.code.user[trialtype.name]) == "undefined"){
+						if(typeof(master.code.user[trialtype.name]) == "undefined"){
 							dbx.sharingCreateSharedLink({path:trialtype.path_lower})
 								.then(function(returned_path_info){
 									$.get(returned_path_info.url.replace("www.","dl."),function(content){
-										master_json.code.user[trialtype.name] = content;
+										master.code.user[trialtype.name] = content;
 										$("#code_select").append("<option class='user_code'>"+trialtype.name+"</option>");
 									});
 								});
@@ -178,8 +178,8 @@ function list_code(to_do_after){
       files = JSON.parse(files);
       files = files.map(item => item.replaceAll(".html",""));
       files.forEach(function(file){
-        if(Object.keys(master_json.code.user).indexOf(file) == -1){
-          master_json.code.user[file] = Collector
+        if(Object.keys(master.code.user).indexOf(file) == -1){
+          master.code.user[file] = Collector
             .electron
             .fs
             .read_file("Code", file + ".html");
@@ -194,9 +194,9 @@ function list_code(to_do_after){
       $("#code_select").val("Select a file");
 
       var default_code = JSON.parse(returned_data);
-      var user = master_json.code.user;
+      var user = master.code.user;
 
-      master_json.code.default = default_code;
+      master.code.default = default_code;
       default_keys = Object.keys(default_code).sort((a, b) => a.localeCompare(b, undefined, {sensitivity: 'base'}));
 
       user_keys = Object.keys(user).sort((a, b) => a.localeCompare(b, undefined, {sensitivity: 'base'}));
@@ -204,7 +204,7 @@ function list_code(to_do_after){
       default_keys.forEach(function(element){
         $("#code_select").append("<option class='default_code'>"+element+"</option>");
       });
-      master_json.code.user = user;
+      master.code.user = user;
 
       user_keys.forEach(function(element){
         $("#code_select").append("<option class='user_code'>" + element + "</option>");
@@ -235,14 +235,14 @@ function list_code(to_do_after){
               "Code",
               item
             );
-            master_json.code.default[
+            master.code.default[
               item.toLowerCase().replace(".html","")
             ] = trial_content;
             get_default(list);
             break;
           default:
               $.get(collector_map[item],function(trial_content){
-                master_json.code.default[
+                master.code.default[
                   item.toLowerCase().replace(".html","")
                 ] = trial_content;
                 get_default(list);
@@ -251,7 +251,7 @@ function list_code(to_do_after){
           }
 
       } else {
-        process_returned(JSON.stringify(master_json.code.default));
+        process_returned(JSON.stringify(master.code.default));
       }
     }
     var default_list = Object.keys(isolation_map[".."]["Default"]["DefaultPhasetypes"]);

@@ -405,7 +405,7 @@ $("#select_repository").on("change", function(){
   bootbox.confirm("Changing your repository will cause you to lose all your changes you've made since you last pushed them. Are you sure you want to do this?", function(response){
     var this_org = $("#select_organization").val();
     if(response){
-      master_json
+      master
         .github
         .repository = $("#select_repository").val();
 
@@ -425,7 +425,7 @@ $("#select_repository").on("change", function(){
       location.reload();
     } else {
       $("#select_repository").val(
-        master_json
+        master
         .github
         .repository
       );

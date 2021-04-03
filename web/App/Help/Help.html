@@ -176,19 +176,19 @@ function helperActivate(help_title, cellValue,help_type){
 			item_type_html += "<div id='mod_help'></div>";
 			$("#help_text").html(item_type_html);
 
-			if(Object.keys(master_json.mods).length > 0){
+			if(Object.keys(master.mods).length > 0){
 				var mod_help_text = "";
-				if(typeof(master_json.mods._help)	 == "undefined"){
-					master_json.mods._help = {};
+				if(typeof(master.mods._help)	 == "undefined"){
+					master.mods._help = {};
 				}
-				var mod_names = Object.keys(master_json.mods).filter(mod_name => mod_name !== "_help");
+				var mod_names = Object.keys(master.mods).filter(mod_name => mod_name !== "_help");
 				mod_names.forEach(function(mod_name){
           if(
             typeof(
-              master_json.mods._help[mod_name]
+              master.mods._help[mod_name]
             ) !== "undefined"
           ){
-            var mod_content = master_json.mods._help[mod_name];
+            var mod_content = master.mods._help[mod_name];
             if(mod_content.indexOf("/*-----help-----") == -1){
 							mod_help_text += 	"<h6>"+mod_name+"</h6>"+
 																	  "The author of this snippet hasn't (yet) given any advice how to use it. If you are the author, you can add help by writing <br> /*-----help----- <br> then your advice, and then <br>----help-----*/";
@@ -196,7 +196,7 @@ function helperActivate(help_title, cellValue,help_type){
 						mod_help_text += snippet_content.split("-----help-----")[1];
 						mod_help_text.mods._help[mod_name] = mod_help_text;
 					} else {
-						mod_help_text += master_json.mods._help[mod_name];
+						mod_help_text += master.mods._help[mod_name];
 					}
 				});
 				$("#mod_help").html("<br><h5 class='text-primary'>Mods</h5>" + mod_help_text);
@@ -221,8 +221,8 @@ function helperActivate(help_title, cellValue,help_type){
 	if(proc_sheets.indexOf(help_type) !== -1){
     if(help_title == "survey"){
       $("#help_subtitle").html("Currently available surveys");
-      var def_surveys  = Object.keys(master_json.surveys.default_surveys).sort();
-      var user_surveys = Object.keys(master_json.surveys.user_surveys).sort();
+      var def_surveys  = Object.keys(master.surveys.default_surveys).sort();
+      var user_surveys = Object.keys(master.surveys.user_surveys).sort();
 
       def_surveys  = def_surveys.join("<br>");
       user_surveys = user_surveys.join("<br>");

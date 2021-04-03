@@ -66,15 +66,15 @@
 * Functions
 */
 function list_pathways(){
-  if(typeof(master_json.pathway_mgmt) == "undefined"){
-    master_json.pathway_mgmt = {};
+  if(typeof(master.pathway_mgmt) == "undefined"){
+    master.pathway_mgmt = {};
   }
-  console.dir("typeof(master_json.pathway_mgmt.pathways)");
-  console.dir(typeof(master_json.pathway_mgmt.pathways));
-  if(typeof(master_json.pathway_mgmt.pathways) == "undefined"){
-    master_json.pathway_mgmt.pathways = {};
+  console.dir("typeof(master.pathway_mgmt.pathways)");
+  console.dir(typeof(master.pathway_mgmt.pathways));
+  if(typeof(master.pathway_mgmt.pathways) == "undefined"){
+    master.pathway_mgmt.pathways = {};
   }
-  var pathways = Object.keys(master_json.pathway_mgmt.pathways)
+  var pathways = Object.keys(master.pathway_mgmt.pathways)
       pathways = pathways.sort();
       pathways.forEach(function(pathway){
         $("#pathway_select").append(
@@ -89,7 +89,7 @@ function list_pathway_studies(){
   var pathway_div_html = "<table>" +
     "<tr>" +
       "<td colspan=3><h3 class='text-primary'>Start</h3></td>" ;
-  var studies_list = master_json.pathway_mgmt.pathways[master_json.pathway_mgmt.current].order;
+  var studies_list = master.pathway_mgmt.pathways[master.pathway_mgmt.current].order;
   studies_list.forEach(function(study_item){
     pathway_div_html += "<tr>" +
       '<td style="height:30px">' +
@@ -130,20 +130,20 @@ function list_pathway_studies(){
   $(".remove_btn").on("click",function(){
     var remove_value = this.value;
     var new_order = [];
-    master_json
+    master
       .pathway_mgmt
-      .pathways[master_json.pathway_mgmt.current].order.forEach(function(order_item){
+      .pathways[master.pathway_mgmt.current].order.forEach(function(order_item){
         if(order_item !== remove_value){
           new_order.push(order_item);
         }
       });
-      master_json
+      master
         .pathway_mgmt
-        .pathways[master_json.pathway_mgmt.current].order = new_order;
+        .pathways[master.pathway_mgmt.current].order = new_order;
     delete(
-      master_json
+      master
        .pathway_mgmt
-       .pathways[master_json.pathway_mgmt.current]
+       .pathways[master.pathway_mgmt.current]
        .items[this.value]
      );
      list_pathway_studies();
@@ -160,11 +160,11 @@ $("#add_pathway_study_btn").on("click", function(){
 });
 
 $("#add_study_to_pathway_btn").on("click", function(){
-  master_json.pathway_mgmt.pathways[master_json.pathway_mgmt.current].order.push(
+  master.pathway_mgmt.pathways[master.pathway_mgmt.current].order.push(
     $("#add_project_pathway_select").val()
   );
   var conditions_array = [];
-  var conditions_list = Collector.PapaParsed(master_json.project_mgmt.projects[
+  var conditions_list = Collector.PapaParsed(master.project_mgmt.projects[
     $("#add_project_pathway_select").val()
   ].conditions).map(row => row.name);
   conditions_list.forEach(function(item){
@@ -179,9 +179,9 @@ $("#add_study_to_pathway_btn").on("click", function(){
     inputOptions: conditions_array,
     value: conditions_array[0].value,
     callback: function(this_condition){
-      master_json
+      master
         .pathway_mgmt
-        .pathways[master_json.pathway_mgmt.current]
+        .pathways[master.pathway_mgmt.current]
         .items[$("#add_project_pathway_select").val()] = {
           "name" : this_condition
         }
@@ -200,16 +200,16 @@ $("#add_pathway_rule_btn").on("click", function(){
 $("#new_pathway_button").on("click",function(){
   bootbox.prompt("What would you like to call this new pathway?", function(new_pathway){
     if(new_pathway){
-      if(typeof(master_json.pathway_mgmt) == "undefined"){
-        master_json.pathway_mgmt = {
+      if(typeof(master.pathway_mgmt) == "undefined"){
+        master.pathway_mgmt = {
           current : "",
           pathways  : {}
         };
       }
-      if(typeof(master_json.pathway_mgmt[new_pathway]) !== "undefined"){
+      if(typeof(master.pathway_mgmt[new_pathway]) !== "undefined"){
         bootbox.alert("The pathway <b>" + new_pathway + "</b> already exists. Please choose a different name");
       } else {
-        master_json.pathway_mgmt.pathways[new_pathway] = {
+        master.pathway_mgmt.pathways[new_pathway] = {
           "order" : [],
           "items" : {}
         };
@@ -217,7 +217,7 @@ $("#new_pathway_button").on("click",function(){
             text: new_pathway
         }));
         $("#pathway_select").val(new_pathway);
-        master_json.pathway_mgmt.current = new_pathway;
+        master.pathway_mgmt.current = new_pathway;
       }
       $("#pathway_interface").show();
     }
@@ -238,7 +238,7 @@ $("#run_pathway_btn").on("click", function(){
                       github_json.repository   + "/" +
                       "App/Pathway.html"            + "?" +
                       "pathway="                       +
-                      master_json.pathway_mgmt.current + "&" +
+                      master.pathway_mgmt.current + "&" +
                       "platform=online";
 
   bootbox.dialog({
@@ -251,7 +251,7 @@ $("#run_pathway_btn").on("click", function(){
                                                     "/" + Collector.version + "/";
           window.open(
             this_url  	+ "Pathway.html?" +
-              "pathway="   + master_json.pathway_mgmt.current + "&" +
+              "pathway="   + master.pathway_mgmt.current + "&" +
               "platform=localhost",
             "_blank"
           );
@@ -274,8 +274,8 @@ $("#save_pathway_btn").on("click", function(){
                               .toLowerCase()
                               .replace(".json","") + ".json",
           JSON.stringify(
-            master_json.pathway_mgmt.pathways[
-              master_json.pathway_mgmt.current
+            master.pathway_mgmt.pathways[
+              master.pathway_mgmt.current
             ],
             null,
             2
@@ -285,7 +285,7 @@ $("#save_pathway_btn").on("click", function(){
           "",
           "master.json",
           JSON.stringify(
-            master_json,
+            master,
             null,
             2
           )

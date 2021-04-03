@@ -1,4 +1,4 @@
-default_master_json = {
+default_master = {
   "code":  {
     "default"	 : {},
     "file"     : "",

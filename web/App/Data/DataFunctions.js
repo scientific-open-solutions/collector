@@ -22,7 +22,7 @@ encrypt_obj = {
                   bootbox.alert("This password isn't working. Are you sure it's the right password, and that you're decrypting the data with the correct installation of Collector? (i.e. do you have multiple versions of Collector you are conducting research with?");
                 } else {
                   this_private_key = keys_list.pop();
-                  var decrypted_private_key_obj = CryptoJS.AES.decrypt(master_json.keys.encrypted_private_key, user_password);
+                  var decrypted_private_key_obj = CryptoJS.AES.decrypt(master.keys.encrypted_private_key, user_password);
                   try{
                     var decrypted_private_key = decrypted_private_key_obj.toString(CryptoJS.enc.Utf8);
                   } catch(error) {
@@ -254,14 +254,14 @@ encrypt_obj = {
                   }
                 }
               }
-              if(typeof(master_json.keys.archived) == "undefined"){
-                master_json.keys.archived = [];
+              if(typeof(master.keys.archived) == "undefined"){
+                master.keys.archived = [];
               }
 							var all_private_keys = []
-              master_json.keys.archived.forEach(function(row){
+              master.keys.archived.forEach(function(row){
                 all_private_keys.push(row.encrypted_private_key);
               });
-              all_private_keys.push(master_json.keys.encrypted_private_key);
+              all_private_keys.push(master.keys.encrypted_private_key);
               combine_password_key(all_private_keys,user_password);
             };
           }
@@ -277,17 +277,17 @@ encrypt_obj = {
 
 			/*
 			this functionality will be in version 1
-      master_json.data.save_script = this_url;
+      master.data.save_script = this_url;
 			*/
 
     })
 	},
   archive_keys:function(){
     var keypair = {
-                    public_key : master_json.keys.public_key,
-                    encrypted_private_key : master_json.keys.encrypted_private_key
+                    public_key : master.keys.public_key,
+                    encrypted_private_key : master.keys.encrypted_private_key
                   };
-    master_json.keys.archived.push(keypair);
+    master.keys.archived.push(keypair);
   },
   change_password:function(){
     bootbox.dialog({
@@ -319,7 +319,7 @@ encrypt_obj = {
     this_encrypted_message = JSON.parse(this_encrypted_message);
 
     bootbox.prompt("Let's quadruple check everything is working - if you put in your password you should see the message 'howdy', which has just been encrypted using your public key",function(user_password){
-      var decrypted_private_key_obj = CryptoJS.AES.decrypt(master_json.keys.encrypted_private_key, user_password);
+      var decrypted_private_key_obj = CryptoJS.AES.decrypt(master.keys.encrypted_private_key, user_password);
       var decrypted_private_key = decrypted_private_key_obj.toString(CryptoJS.enc.Utf8);
       this_decrypted_message = encrypt_obj.decrypt(decrypted_private_key,this_encrypted_message);
       bootbox.alert(this_decrypted_message);
@@ -370,13 +370,13 @@ encrypt_obj = {
     receiverPublicKey = nacl.util.encodeBase64(keypair.publicKey);
     receiverSecretKey = nacl.util.encodeBase64(keypair.secretKey)
 
-    if(typeof(master_json.keys) == "undefined"){
-      master_json.keys = {
+    if(typeof(master.keys) == "undefined"){
+      master.keys = {
         archived : []
       };
     }
 
-    master_json.keys.public_key = receiverPublicKey;
+    master.keys.public_key = receiverPublicKey;
 
     //if(typeof(encrypt_dialog) == "undefined"){ //this seems unnecessary (and unhelpful)
       encrypt_dialog = bootbox.prompt("In order to encrypt and decrypt your participants' data, we need a password. Make sure you will remember this password, if you forget it then any data that is encrypted will be lost forever.",function(result){
@@ -390,7 +390,7 @@ encrypt_obj = {
               var plaintext = decrypted.toString(CryptoJS.enc.Utf8);
 
               if(plaintext == receiverSecretKey){
-                master_json.keys.encrypted_private_key = encryptedAES_string;
+                master.keys.encrypted_private_key = encryptedAES_string;
                 encrypt_obj.confirm_keys();
                 list_keys();
               } else {
@@ -412,8 +412,8 @@ encrypt_obj = {
 function list_data_servers(){
   var select_server_html = "<select class='form-control' id='select_data_server'>" +
                                 "<option disabled selected>--Please select a server--</option>";
-  Object.keys(master_json.data.servers).forEach(function(this_server){
-    var this_server_info = master_json.data.servers[this_server];
+  Object.keys(master.data.servers).forEach(function(this_server){
+    var this_server_info = master.data.servers[this_server];
 
     if(typeof(this_server_info.registration_url) !== "undefined"){
 
@@ -427,11 +427,11 @@ function list_data_servers(){
 }
 
 function list_keys(){
-  if(typeof(master_json.keys) !== "undefined" &&
-     typeof(master_json.keys.public_key) !== "undefined" &&
-     master_json.keys.public_key !== ""){
-    $("#public_key").val(master_json.keys.public_key);
-    $("#private_key").val(master_json.keys.encrypted_private_key);
+  if(typeof(master.keys) !== "undefined" &&
+     typeof(master.keys.public_key) !== "undefined" &&
+     master.keys.public_key !== ""){
+    $("#public_key").val(master.keys.public_key);
+    $("#private_key").val(master.keys.encrypted_private_key);
   } else {
     encrypt_obj.generate_keys();
   }
@@ -582,7 +582,7 @@ function request_data_list(){
     }
   },10000);
 
-  $.post(master_json.data.servers[$("#select_data_server").val()].registration_url,{
+  $.post(master.data.servers[$("#select_data_server").val()].registration_url,{
     email:    $("#data_user_email").val(),
     password: $("#data_user_password").val(),
     action:   "list_data"
@@ -665,7 +665,7 @@ function request_data_list(){
         var this_folder = $(this).find("span")[0].innerHTML;
         var data_server = $("#select_data_server").val();
         $(this).closest("div").remove();
-        $.post(master_json.data.servers[data_server].registration_url,{
+        $.post(master.data.servers[data_server].registration_url,{
           email:       $("#data_user_email").val(),
           password:    $("#data_user_password").val(),
           action:      "delete_server_data",
@@ -680,7 +680,7 @@ function request_data_list(){
       $(".download_server_data_btn").unbind();
       $(".download_server_data_btn").on("click",function(){
         var this_folder = $(this).find("span")[0].innerHTML;
-        $.post(master_json.data.servers[$("#select_data_server").val()].registration_url,{
+        $.post(master.data.servers[$("#select_data_server").val()].registration_url,{
           email:       $("#data_user_email").val(),
           password:    $("#data_user_password").val(),
           action:      "download_server_data",
@@ -713,7 +713,7 @@ function request_data_list(){
       $(".download_storage_data_btn").unbind();
       $(".download_storage_data_btn").on("click",function(){
         var this_folder = $(this).find("span")[0].innerHTML;
-        $.post(master_json.data.servers[$("#select_data_server").val()].registration_url,{
+        $.post(master.data.servers[$("#select_data_server").val()].registration_url,{
           email:       $("#data_user_email").val(),
           password:    $("#data_user_password").val(),
           action:      "download_storage_data",
@@ -747,7 +747,7 @@ function request_data_list(){
       $(".delete_storage_data_btn").on("click",function(){
         $(this).closest("div").remove();
         var this_folder = $(this).find("span")[0].innerHTML;
-        $.post(master_json.data.servers[$("#select_data_server").val()].registration_url,{
+        $.post(master.data.servers[$("#select_data_server").val()].registration_url,{
           email:       $("#data_user_email").val(),
           password:    $("#data_user_password").val(),
           action:      "delete_storage_data",
@@ -766,7 +766,7 @@ function request_data_list(){
       $(".download_backup_data_btn").unbind();
       $(".download_backup_data_btn").on("click",function(){
         var this_folder = $(this).find("span")[0].innerHTML;
-        $.post(master_json.data.servers[$("#select_data_server").val()].registration_url,{
+        $.post(master.data.servers[$("#select_data_server").val()].registration_url,{
           email:       $("#data_user_email").val(),
           password:    $("#data_user_password").val(),
           action:      "download_storage_data",
@@ -801,7 +801,7 @@ function request_data_list(){
       $(".delete_backup_data_btn").on("click",function(){
         $(this).closest("div").remove();
         var this_folder = $(this).find("span")[0].innerHTML;
-        $.post(master_json.data.servers[$("#select_data_server").val()].registration_url,{
+        $.post(master.data.servers[$("#select_data_server").val()].registration_url,{
           email:       $("#data_user_email").val(),
           password:    $("#data_user_password").val(),
           action:      "delete_storage_data",

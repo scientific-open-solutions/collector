@@ -95,15 +95,15 @@ $("#add_server").on("click",function(){
         bootbox.prompt("What will you call this server?",function(server_name){
           if(server_name){
             this_server_info.name = server_name;
-            if(typeof(master_json.data.servers[server_name]) !== "undefined"){
+            if(typeof(master.data.servers[server_name]) !== "undefined"){
               bootbox.confirm("You already have a server called <b>" + server_name + "</b> - do you want to override it?", function(result){
-                master_json.data.servers[this_server_info.name] = {
+                master.data.servers[this_server_info.name] = {
                   storage_url      : this_server_info.url,
                   registration_url : this_server_info.registration_url
                 }
               });
             } else {
-              master_json.data.servers[this_server_info.name] = {
+              master.data.servers[this_server_info.name] = {
                 storage_url      : this_server_info.url,
                 registration_url : this_server_info.registration_url
               }
@@ -129,7 +129,7 @@ $("#sos_server_query").on("click",function(){
       var storage_scripts      = updated_server_info.storage_scripts.split(",");
 
       server_names.forEach(function(server_name,this_index){
-        master_json.data.servers[server_name] = {
+        master.data.servers[server_name] = {
           server           : server_name,
           registration_url : registration_scripts[this_index],
           storage_url      : storage_scripts[this_index]
@@ -207,7 +207,7 @@ function bind_delete_server_btns(){
 
     //find span
     var server_name = $(this).find("span")[0].innerHTML;
-    delete(master_json.data.servers[server_name]);
+    delete(master.data.servers[server_name]);
     list_servers();
   });
 }
@@ -248,7 +248,7 @@ function bind_unpublish_btn(){
 		} else {																														// if all good
 			var register_url = $(this).find("span")[0].innerHTML;
 			var project = $("#project_list").val();
-			var this_proj   = master_json.project_mgmt.projects[project];
+			var this_proj   = master.project_mgmt.projects[project];
 			$.post(register_url,{
 				location:               this_proj.location,
 				experiment:             experiment,
@@ -286,7 +286,7 @@ function publish_experiment(
 																 "created this experiment"){
 						var server_name;
 						var storage_url;
-            var server_info = master_json.data.servers;
+            var server_info = master.data.servers;
             Object.keys(server_info).forEach(function(this_server_name){
               console.dir(this_server_name);
               if(server_info[this_server_name].registration_url == register_url){
@@ -295,7 +295,7 @@ function publish_experiment(
               }
             });
 						var project = $("#project_list").val();
-						var this_proj   = master_json.project_mgmt.projects[project];
+						var this_proj   = master.project_mgmt.projects[project];
 
             if(typeof(this_proj.storage_scripts) == "undefined"){
 							this_proj.storage_scripts = {};
@@ -324,7 +324,7 @@ function bind_publish_btn(){
 		} else {
 			var register_url = $(this).find("span")[0].innerHTML;
 			var project = $("#project_list").val();
-			var this_proj   = master_json.project_mgmt.projects[project];
+			var this_proj   = master.project_mgmt.projects[project];
 
 			/*
 				Identify the experiment location
@@ -393,8 +393,8 @@ function bind_publish_btn(){
 
 
 function update_server_table(){
-  if(typeof(master_json.data.servers) == "undefined"){
-		master_json.data.servers = {};
+  if(typeof(master.data.servers) == "undefined"){
+		master.data.servers = {};
 	}
 
   var server_table =  "<table class='table'>"+
@@ -406,8 +406,8 @@ function update_server_table(){
                         "</tr>" +
                       "</thead>";
 
-  Object.keys(master_json.data.servers).forEach(function(this_server){
-    var server_row = master_json.data.servers[this_server];
+  Object.keys(master.data.servers).forEach(function(this_server){
+    var server_row = master.data.servers[this_server];
 
     if(server_row.registration_url == "" |
        server_row.registration_url == null){
@@ -480,7 +480,7 @@ function update_server_table(){
 }
 
 function list_servers(){
-  server_info = Object.keys(master_json.data.servers);
+  server_info = Object.keys(master.data.servers);
   update_server_table();
 }
 $("#dismiss_login_btn").on("click",function(){

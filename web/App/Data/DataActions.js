@@ -24,7 +24,7 @@ $("#list_data_btn").on("click",function(){
   } else if($("#select_data_server").val() == null){
     bootbox.alert("Please select a server");
   } else {
-    if(typeof(master_json.data.servers[$("#select_data_server").val()].manage_url) == "undefined"){
+    if(typeof(master.data.servers[$("#select_data_server").val()].manage_url) == "undefined"){
       //fix the lack of a manage_url now (perhaps auto click the update );
 
       // then request list

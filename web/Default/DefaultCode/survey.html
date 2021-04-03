@@ -399,9 +399,9 @@ function load_survey(survey){
   */
   if(typeof(parent.collector_survey_preview) !== "undefined"){
     survey_content = survey;
-  } else if(typeof(parent.master_json) !== "undefined" && parent.master_json.surveys.preview){
+  } else if(typeof(parent.master) !== "undefined" && parent.master.surveys.preview){
     survey_content = survey;
-    survey_obj.mods = parent.master_json.mods;
+    survey_obj.mods = parent.master.mods;
   } else {
     survey = survey.toLowerCase().replace(".csv","") + ".csv";
 

@@ -131,7 +131,7 @@ function check_authenticated(){
           $("#intro_switch_dbx").on("click",function(){
             force_reauth_dbx();
           });
-          initiate_master_json();
+          initiate_master();
         })
         .catch(function(error){
           console.dir("Dropbox not logged in yet");
@@ -192,10 +192,10 @@ dbx_obj = {
 function dropbox_check(){
   return $("#dropbox_account_email").html() !== "No dropbox account";
 }
-function initiate_master_json(){
+function initiate_master(){
 	dbx.sharingCreateSharedLink({path:"/master.json"})
 		.then(function(link_created){
-			load_master_json(link_created);
+			load_master(link_created);
 		})
     .catch(function(error){   //i.e. this is the first login
       legacy_initiate_uber(); //or they have a legacy account
@@ -204,14 +204,14 @@ function initiate_master_json(){
 function legacy_initiate_uber(){
   dbx.sharingCreateSharedLink({path:"/uberMegaFile.json"})
 		.then(function(link_created){
-			$.get(link_created.url.replace("www","dl"),function(master_json){
+			$.get(link_created.url.replace("www","dl"),function(master){
 				dbx_obj.new_upload({path:"/master.json",
-                            contents:master_json,
+                            contents:master,
                             mode:'overwrite'},
                             function(result){
                               dropbox_dialog.modal('hide');
                               //location.reload();
-                              initiate_master_json();
+                              initiate_master();
                             },
                             function(error){
                               Collector.tests.report_error("Initial file causing error in legacy_initiate_uber()", "problems creating initial files");
@@ -229,22 +229,22 @@ function legacy_initiate_uber(){
 			new_dropbox_account(dropbox_dialog);
 		});
 }
-function load_master_json(link_created){
+function load_master(link_created){
   $.get(link_created.url.replace("www.","dl."),function(returned_data){
     //moving what to do to the "done" outcome below:
 	})
   .done(function(returned_data){
-    master_json = JSON.parse(returned_data);
+    master = JSON.parse(returned_data);
 
     //probable would be good to have a list of things that follow, but for now:
-    if(typeof(master_json.keys) == "undefined"){
+    if(typeof(master.keys) == "undefined"){
       encrypt_obj.generate_keys();
     } else {
 			list_keys();
       list_data_servers();
 		}
-		if(typeof(master_json.data) == "undefined"){
-			master_json.data = {};
+		if(typeof(master.data) == "undefined"){
+			master.data = {};
 		}
 
 
@@ -255,21 +255,21 @@ function load_master_json(link_created){
 		});
 		// add mods if not already present
 		//////////////////////////////////////
-		if(typeof(master_json.mods) == "undefined"){
-			master_json.mods = {};
+		if(typeof(master.mods) == "undefined"){
+			master.mods = {};
 		}
 		renderItems();
 
   })
   .fail(function(){
     bootbox.alert("An attempt to load you resources from dropbox failed, trying again...");
-    load_master_json(link_created);
+    load_master(link_created);
   });
 }
 function new_dropbox_account(dropbox_dialog){
   $.get("Default/master.json",function(this_json){
     console.dir(this_json);
-    master_json = this_json;
+    master = this_json;
     //create more general dropbox update function that queues any dropbox request?
     var these_folders = ["mods",
                          "experiments",
@@ -296,12 +296,12 @@ function new_dropbox_account(dropbox_dialog){
                           },
                           "filesCreateFolder");
     dbx_obj.new_upload({path:"/master.json",
-                        contents:JSON.stringify(master_json, null, 2),
+                        contents:JSON.stringify(master, null, 2),
                         mode:'overwrite'},
                         function(result){
                           dropbox_dialog.modal('hide');
                           //location.reload();
-                          initiate_master_json();
+                          initiate_master();
                         },
                         function(error){
                           Collector.tests.report_error("Problem creating initial files in new_dropbox_account()", "Initial master file causing error");

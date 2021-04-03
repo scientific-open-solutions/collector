@@ -176,11 +176,11 @@ window.onload=function(){
               typeof(github_json) !==
               "undefined"
             ){
-              var git_master_json = JSON.stringify(github_json);
+              var git_master = JSON.stringify(github_json);
               return ipc.sendSync(
                 'git_save_master',
                 {
-                  "git_master_json": git_master_json
+                  "git_master": git_master
                 }
               );
             }

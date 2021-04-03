@@ -504,7 +504,7 @@ ipc.on('git_save_master', (event,args) => {
   fs.writeFileSync(
     root_dir +
     "repositories/github.json",
-    args["git_master_json"],
+    args["git_master"],
     'utf8'
   );
   event.returnValue = "success";

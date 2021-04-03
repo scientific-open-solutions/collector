@@ -44,7 +44,7 @@ ipc.on('fs_delete_project', (event,args) => {
       );
       event.returnValue = "success";
     } catch(error){
-      //to trigger an attempt to load a trialtype from the master_json
+      //to trigger an attempt to load a trialtype from the master
       event.returnValue = "failed to delete: " + error;
     }
 
@@ -142,7 +142,7 @@ ipc.on('fs_read_default', (event,args) => {
       );
       event.returnValue = content;
     } catch(error){
-      //to trigger an attempt to load a trialtype from the master_json
+      //to trigger an attempt to load a trialtype from the master
       event.returnValue = "";
     }
 
@@ -190,7 +190,7 @@ ipc.on('fs_read_file', (event,args) => {
                                     'utf8');
       event.returnValue = content;
     } catch(error){
-      //to trigger an attempt to load a trialtype from the master_json
+      //to trigger an attempt to load a trialtype from the master
       event.returnValue = "";
     }
 
@@ -257,7 +257,7 @@ ipc.on('fs_write_data', (event,args) => {
       );
       event.returnValue = "success";
     } catch(error){
-      //to trigger an attempt to load a trialtype from the master_json
+      //to trigger an attempt to load a trialtype from the master
       event.returnValue = error;
     }
 
@@ -335,7 +335,7 @@ ipc.on('fs_write_project', (event,args) => {
        });
       event.returnValue = "success";
     } catch(error){
-      //to trigger an attempt to load a trialtype from the master_json
+      //to trigger an attempt to load a trialtype from the master
       event.returnValue = "failed to save " + error;
     }
   }
@@ -360,7 +360,7 @@ ipc.on('fs_write_file', (event,args) => {
                                      'utf8');
       event.returnValue = "success";
     } catch(error){
-      //to trigger an attempt to load a trialtype from the master_json
+      //to trigger an attempt to load a trialtype from the master
       event.returnValue = "failed to save";
     }
 

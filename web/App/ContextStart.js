@@ -33,25 +33,25 @@ function update_master(){
   /*
   * studies --> projects
   */
-  if(typeof(master_json.project_mgmt) == "undefined"){
-    master_json.project_mgmt = master_json.exp_mgmt;
-    master_json.project_mgmt.project = master_json
+  if(typeof(master.project_mgmt) == "undefined"){
+    master.project_mgmt = master.exp_mgmt;
+    master.project_mgmt.project = master
       .project_mgmt
       .experiment;
-    master_json.project_mgmt.projects = master_json
+    master.project_mgmt.projects = master
       .project_mgmt
       .experiments;
-    delete(master_json.project_mgmt.experiment);
-    delete(master_json.project_mgmt.experiments);
+    delete(master.project_mgmt.experiment);
+    delete(master.project_mgmt.experiments);
   }
 
   /*
   * "trial type" --> "code" for each project
   */
 
-  var projects = Object.keys(master_json.project_mgmt.projects);
+  var projects = Object.keys(master.project_mgmt.projects);
   projects.forEach(function(project){
-    var this_project = master_json.project_mgmt.projects[project];
+    var this_project = master.project_mgmt.projects[project];
     var all_procs = Object.keys(this_project.all_procs);
     all_procs.forEach(function(this_proc){
       this_project.all_procs[this_proc] = this_project
@@ -60,26 +60,26 @@ function update_master(){
   });
 
   /*
-  * "trialtype" --> code for master_json
+  * "trialtype" --> code for master
   */
-  if(typeof(master_json.trialtypes) !== "undefined"){
-    master_json.code         = master_json.trialtypes;
-    master_json.code.default = master_json.code.default_trialtypes;
-    master_json.code.file    = master_json.code.file;
-    master_json.code.user    = master_json.code.user_codes;
-    delete(master_json.trialtype);
-    delete(master_json.trialtypes);
-    delete(master_json.code.default_trialtypes);
-    delete(master_json.code.user_codes);
+  if(typeof(master.trialtypes) !== "undefined"){
+    master.code         = master.trialtypes;
+    master.code.default = master.code.default_trialtypes;
+    master.code.file    = master.code.file;
+    master.code.user    = master.code.user_codes;
+    delete(master.trialtype);
+    delete(master.trialtypes);
+    delete(master.code.default_trialtypes);
+    delete(master.code.user_codes);
   }
-  if(typeof(master_json.code.default) == "undefined"){
-    master_json.code.default = {};
+  if(typeof(master.code.default) == "undefined"){
+    master.code.default = {};
   }
-  if(typeof(master_json.code.user) == "undefined"){
-    master_json.code.user = {};
+  if(typeof(master.code.user) == "undefined"){
+    master.code.user = {};
   }
-  if(typeof(master_json.code.graphic.files) == "undefined"){
-    master_json.code.graphic.files = master_json.code.graphic.trialtypes;
+  if(typeof(master.code.graphic.files) == "undefined"){
+    master.code.graphic.files = master.code.graphic.trialtypes;
   }
 }
 
@@ -97,15 +97,15 @@ switch(Collector.detect_context()){
       //alert("hi");
       if(typeof(Collector.electron) !== "undefined"){
         clearInterval(wait_for_electron);
-        master_json = Collector.electron.fs.read_file("","master.json");
-        if(master_json !== ""){
-          master_json = JSON.parse(master_json);
+        master = Collector.electron.fs.read_file("","master.json");
+        if(master !== ""){
+          master = JSON.parse(master);
         } else {
-          master_json = default_master_json;
+          master = default_master;
           var write_response = Collector.electron.fs.write_file(
             "",
             "master.json",
-            JSON.stringify(master_json, null, 2));
+            JSON.stringify(master, null, 2));
           if(write_response !== "success"){
             bootbox.alert(write_response);
           }
