@@ -19,19 +19,19 @@
 */
 var this_sheet;
 var this_selection;
-function isTrialTypeHeader(colHeader) {
-	var isTrialTypeCol = false;
-  if (colHeader === 'trial type') isTrialTypeCol = true;
+function isPhaseTypeHeader(colHeader) {
+	var isPhaseTypeCol = false;
+  if (colHeader === 'trial type') isPhaseTypeCol = true;
   if (   colHeader.substr(0, 5).toLowerCase() === 'post '
 		&& colHeader.substr(-11)  === ' trial type'
 	) {
 		postN = colHeader.substr(5, colHeader.length - 16);
 		postN = parseInt(postN);
 		if (!isNaN(postN) && postN != 0) {
-			isTrialTypeCol = true;
+			isPhaseTypeCol = true;
 		}
 	}
-	return isTrialTypeCol;
+	return isPhaseTypeCol;
 }
 function isNumericHeader(colHeader) {
 	var isNum = false;
@@ -238,7 +238,7 @@ function createHoT(container, data,sheet_name) {
 		} else {
 			var thisHeader = this.instance.getDataAtCell(0,col);
 			if (typeof thisHeader === 'string' && thisHeader != '') {
-				if (isTrialTypeHeader(thisHeader)) {
+				if (isPhaseTypeHeader(thisHeader)) {
 					cellProperties.type = 'dropdown';
 					cellProperties.source = trialTypes;
 					cellProperties.renderer = trialTypesRenderer;

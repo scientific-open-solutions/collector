@@ -193,10 +193,10 @@ $("#delete_stim_button").on("click",function(){
   }
 });
 
-$("#download_experiment_button").on("click",function(){
+$("#download_project_button").on("click",function(){
 	var project = $("#project_list").val();
 	var exp_json = master_json.project_mgmt.projects[project];
-	var default_filename = experiment + ".json";
+	var default_filename = project + ".json";
 	bootbox.prompt({
 		title: "What do you want to save this file as?",
 		value: default_filename, //"data.csv",
@@ -224,13 +224,13 @@ $("#project_list").on("change",function(){
   $("#save_btn").click();
 });
 
-$("#new_experiment_button").on("click",function(){
+$("#new_project_button").on("click",function(){
 	bootbox.prompt("What would you like to name the new experiment?",function(result){
 		if(result !== null){
 			if($("#project_list").text().indexOf(result) !== -1){
 				bootbox.alert("You already have an experiment with this name");
 			} else {
-				new_experiment(result);
+				new_project(result);
 				$("#save_btn").click();
 			}
 		}
@@ -727,29 +727,31 @@ $("#save_btn").on("click", function(){
           bootbox.alert("You have a space in row <b>" + (row_index + 2) + "</b> of your procedure <b>" + proc_name + "</b>. Please fix this before trying to run your experiment.");
         }
         if(cleaned_row.item == 0){
+
           if(typeof(master_json.code.user[cleaned_row["code"]]) !== "undefined"){
-            var this_trialtype = master_json.code.user[cleaned_row["code"]];
+            var this_code = master_json.code.user[cleaned_row["code"]];
           } else if(typeof(master_json.code.default[cleaned_row["code"]]) !== "undefined"){
-            var this_trialtype = master_json.code.default[cleaned_row["code"]];
+            var this_code = master_json.code.default[cleaned_row["code"]];
+
+            these_variables = Collector.list_variables(this_code);
+
+            these_variables.forEach(function(this_variable){
+              if(Object.keys(cleaned_row).indexOf(this_variable) == -1 &&
+                 this_variable !== "survey" &&
+                 cleaned_row["code"] !== "survey"){          //i.e. this variable is not part of this procedure
+                Collector.custom_alert("Error: You have your item set to <b>0</b> in row <b>" + (row_index + 2) +
+                "</b>. However, it seems like the trialtype <b>" +
+                cleaned_row["code"] + "</b> will be looking for a variable <b>" + this_variable + "</b> in your" +
+                " stimuli sheet.");
+              }
+            });
+
           } else {
             bootbox.alert("The trialtype <b>" + cleaned_row["code"] + "</b> doesn't appear to exist");
           }
-          these_variables = Collector.list_variables(this_trialtype);
 
-          these_variables.forEach(function(this_variable){
-            if(Object.keys(cleaned_row).indexOf(this_variable) == -1 &&
-               this_variable !== "survey" &&
-               cleaned_row["code"] !== "survey"){          //i.e. this variable is not part of this procedure
-              Collector.custom_alert("You have your item set to <b>0</b> in row <b>" +
-                            (row_index + 2) +
-                            "</b>. However, it seems like the trialtype <b>" +
-                            cleaned_row["code"] +
-                            "</b> will be looking for a variable <b>" + this_variable + "</b> in your" +
-                            " stimuli sheet.");
-            }
-          });
 
-          //need to take into account the trialtypes might be referring to a header in the procedure sheet
+          //need to take into account the code might be referring to a header in the procedure sheet
         }
         return cleaned_row;
       });

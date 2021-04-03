@@ -66,11 +66,17 @@ function update_master(){
     master_json.code         = master_json.trialtypes;
     master_json.code.default = master_json.code.default_trialtypes;
     master_json.code.file    = master_json.code.file;
-    master_json.code.user    = master_json.code.user_trialtypes;
+    master_json.code.user    = master_json.code.user_codes;
     delete(master_json.trialtype);
     delete(master_json.trialtypes);
     delete(master_json.code.default_trialtypes);
-    delete(master_json.code.user_trialtypes);
+    delete(master_json.code.user_codes);
+  }
+  if(typeof(master_json.code.default) == "undefined"){
+    master_json.code.default = {};
+  }
+  if(typeof(master_json.code.user) == "undefined"){
+    master_json.code.user = {};
   }
   if(typeof(master_json.code.graphic.files) == "undefined"){
     master_json.code.graphic.files = master_json.code.graphic.trialtypes;

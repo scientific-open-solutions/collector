@@ -120,8 +120,24 @@ function get_HoT_data(current_sheet) { // needs to be adjusted for
     return data;
 }
 function list_projects(){
+
+
   try{
+
+    var local_projects = Collector
+      .electron
+      .fs
+      .list_projects();
+
+    local_projects.forEach(function(project){
+      master_json.project_mgmt.projects
+    });
+
     name_list = Object.keys(master_json.project_mgmt.projects);
+
+
+
+
     function update_exp_list(){
 
       /*
@@ -188,8 +204,8 @@ function list_projects(){
                          error);
   }
 }
-function new_experiment(experiment){
-  if($("#project_list").text().indexOf(experiment) !== -1){
+function new_project(project){
+  if($("#project_list").text().indexOf(project) !== -1){
 		bootbox.alert("Name already exists. Please try again.");
 	} else {
 
@@ -198,13 +214,13 @@ function new_experiment(experiment){
       JSON.stringify(default_experiment)
     );
 
-		var this_path = "/Projects/" + experiment + ".json";
+		var this_path = "/Projects/" + project + ".json";
 
-    function update_project_list(experiment){
+    function update_project_list(project){
 			$('#project_list').append($('<option>', {
-        text : experiment
+        text : project
       }));
-      $("#project_list").val(experiment);
+      $("#project_list").val(project);
       update_handsontables();
       update_master_json();
 			$("#save_btn").click();
@@ -217,29 +233,27 @@ function new_experiment(experiment){
               case "server":
 							case "gitpod":
 							case "github":
-								update_project_list(experiment);
+								update_project_list(project);
 								break;
             }
           })
           .catch(function(error){
-            Collector.tests.report_error("new_experiment trying to share link","new_experiment trying to share link");
+            Collector.tests.report_error("new_project trying to share link","new_project trying to share link");
           });
       },function(error){
-        Collector.tests.report_error("new_experiment trying to upload template to dropbox","new_experiment trying to upload template to dropbox");
+        Collector.tests.report_error("new_project trying to upload template to dropbox","new_project trying to upload template to dropbox");
       },
       "filesUpload");
-
     } else {
-
-			update_project_list(experiment);
+			update_project_list(project);
     }
 	}
 
 }
-function remove_from_list(experiment){
+function remove_from_list(project){
 	var x = document.getElementById("project_list");
-	x.remove(experiment);
-	if(experiment !== "Select a dropbox experiment"){
+	x.remove(project);
+	if(project !== "Select a dropbox project"){
 		update_handsontables();
 	}
 }
@@ -248,9 +262,7 @@ function renderItems() {
   ////////////////////////////////////////////////////////////
   highlight_account("dropbox_account_email");
   highlight_account("collector_account_email");
-
   first_load = true;
-
   list_projects();
 	list_mods();
   list_surveys();

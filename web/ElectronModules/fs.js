@@ -67,7 +67,6 @@ ipc.on('fs_delete_survey', (event,args) => {
   /*
   * Security checks - should probably have more
   */
-
   if(args["survey_name"].indexOf("..") !== -1){
     event.returnValue = "This request could be insecure, and was blocked";
   } else {
@@ -80,7 +79,6 @@ ipc.on('fs_delete_survey', (event,args) => {
       event.returnValue = "failed to delete the survey: " +
                           error;
     }
-
   }
 });
 
@@ -89,12 +87,11 @@ ipc.on('fs_delete_code', (event,args) => {
   /*
   * Security checks - should probably have more
   */
-
   if(args["trialtype_name"].indexOf("..") !== -1){
     event.returnValue = "This request could be insecure, and was blocked";
   } else {
     try{
-      var content = fs.unlinkSync(root_dir + "User/Trialtypes/" +
+      var content = fs.unlinkSync(root_dir + "User/Code/" +
                                   args["trialtype_name"] +
                                   ".html");
       event.returnValue = "success";
@@ -102,7 +99,6 @@ ipc.on('fs_delete_code', (event,args) => {
       event.returnValue = "failed to delete the trialtype: " +
                           error;
     }
-
   }
 });
 
@@ -112,10 +108,19 @@ ipc.on('fs_home_dir', (event,args) => {
 
 ipc.on('fs_list_code', (event,args) => {
   /*
-  * list all files in "Trialtypes" folder
+  * list all files in "Code" folder
   */
   event.returnValue = JSON.stringify(
-    fs.readdirSync(root_dir + "User/Trialtypes")
+    fs.readdirSync(root_dir + "User/Code")
+  );
+});
+
+ipc.on('fs_list_projects', (event,args) => {
+  /*
+  * list all files in "Code" folder
+  */
+  event.returnValue = JSON.stringify(
+    fs.readdirSync(root_dir + "User/Projects")
   );
 });
 
@@ -203,6 +208,9 @@ ipc.on('fs_write_data', (event,args) => {
   if(!fs.existsSync(root_dir + "Data")){
     fs.mkdirSync(root_dir + "Data");
   }
+  if(!fs.existsSync(root_dir + "User/Code")){
+    fs.mkdirSync(root_dir + "User/Code");
+  }
   if(!fs.existsSync(root_dir + "User/Projects")){
     fs.mkdirSync(root_dir + "User/Projects");
   }
@@ -215,9 +223,7 @@ ipc.on('fs_write_data', (event,args) => {
   if(!fs.existsSync(root_dir + "User/Surveys")){
     fs.mkdirSync(root_dir + "User/Surveys");
   }
-  if(!fs.existsSync(root_dir + "User/Trialtypes")){
-    fs.mkdirSync(root_dir + "User/Trialtypes");
-  }
+
 
 
   /*

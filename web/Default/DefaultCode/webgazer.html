@@ -89,7 +89,7 @@ Updates by Anthony Haffey (a.haffey@reading.ac.uk) 2020 to make this a task that
         <h1>Proceed</h1>
         <br />
         Click "Proceed" to move onto the next trial
-        <button onclick="Trial.submit()" class="btn">Proceed</button>
+        <button onclick="Phase.submit()" class="btn">Proceed</button>
       </div>
     </div>
 
@@ -140,7 +140,7 @@ Updates by Anthony Haffey (a.haffey@reading.ac.uk) 2020 to make this a task that
 var all_fixation_rts = [];
 
 var image_pair;
-Trial.set_timer(function(){
+Phase.set_timer(function(){
   function refuse_height(){
     bootbox.confirm("Your window height needs to be at least {{min_height}} before starting. Please make your window as big as possible before proceeding.", function(result){
       if(window.innerHeight < parseFloat("{{min_height}}".replace("px",""))){
@@ -478,7 +478,7 @@ function prepareBlock() {
       } else {
         $('#instruction_message').html(design.blocks[block_no].instruction).show();
         setTimeout("$('#instruction_message').fadeOut(1000);", design.blocks[block_no].instruction_duration);
-        setTimeout("prepareTrial();", design.blocks[block_no].instruction_duration + 2000);
+        setTimeout("preparePhase();", design.blocks[block_no].instruction_duration + 2000);
       }
     } else {
       endExperiment();
@@ -825,7 +825,7 @@ function endValidation() {
   webgazer.pause();
   $('#instruction_message').html(design.blocks[block_no].instruction).show();
   setTimeout("$('#instruction_message').fadeOut(1000);", design.blocks[block_no].instruction_duration);
-  setTimeout("prepareTrial();", design.blocks[block_no].instruction_duration + 2000);
+  setTimeout("preparePhase();", design.blocks[block_no].instruction_duration + 2000);
 }
 
 
@@ -834,7 +834,7 @@ function endValidation() {
  * START EXPERIMENT
  ************************************/
 var t_trial_start;
-function prepareTrial() {
+function preparePhase() {
     status = "prepare";
     $('.stimuli').hide();
     data_current = {
@@ -844,11 +844,11 @@ function prepareTrial() {
         'raw': []
     };
     webgazer.resume();
-    startTrial();
+    startPhase();
 }
 
 
-function startTrial() {
+function startPhase() {
   t_trial_start = new Date().getTime();
   $('#stimuli_fixation').show();
   status = "fixation_onset";
@@ -859,7 +859,7 @@ function startTrial() {
 
 
 var heat;
-function endTrial() {
+function endPhase() {
   clearTimeout(t);
   cam.recording = 0;
   webgazer.pause();
@@ -869,7 +869,7 @@ function endTrial() {
   saveData();
 
   if (trial_no < design.blocks[block_no].trials) {
-    setTimeout("prepareTrial();", design.blocks[block_no].iti);
+    setTimeout("preparePhase();", design.blocks[block_no].iti);
   } else {
     block_no++;
     if (block_no < design.blocks.length) {
@@ -1057,7 +1057,7 @@ function sendData() {
 
 
 function endExperiment() {
-  Trial.submit();
+  Phase.submit();
 }
 
 
@@ -1099,7 +1099,7 @@ function simpleStart() {
 function simpleShowdot() {
     status = "stimulus_onset";
     $("#stimuli_dot").show();
-    setTimeout('status = "stimulus_offset"; endTrial();',  2000);
+    setTimeout('status = "stimulus_offset"; endPhase();',  2000);
 }
 
 
@@ -1154,7 +1154,7 @@ function posnerShowprime() {
 function posnerShowTarget() {
     $('#stimuli_prime').hide();
     $('#stimuli_target').show();
-    setTimeout("endTrial();", 1500);
+    setTimeout("endPhase();", 1500);
 }
 
 
@@ -1209,7 +1209,7 @@ function pursuitStart() {
             'linear',
         function() {
             status = "pursuit_end";
-            setTimeout("endTrial();", 500);
+            setTimeout("endPhase();", 500);
         });
     }, 1500);
 }
@@ -1381,7 +1381,7 @@ function freeviewShow() {
   status = 'stimulus_onset';
   $('#stimuli_img_left').show();
   $('#stimuli_img_right').show();
-  setTimeout("status = 'stimulus_offset'; endTrial();", stim_duration);
+  setTimeout("status = 'stimulus_offset'; endPhase();", stim_duration);
 }
 
 

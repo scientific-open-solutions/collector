@@ -21,7 +21,7 @@ $.ajaxSetup({ cache: false }); // prevents caching, which disrupts $.get calls
 
 code_obj = {
 	delete_code:function(){
-    var deleted_trialtype = $("#code_select").val();
+    var deleted_code = $("#code_select").val();
     master_json.code.file = $("#code_select").val();
 		var this_loc = "/code/" + master_json.code.file;
 		bootbox.confirm("Are you sure you want to delete this " + this_loc + "?", function(result){
@@ -33,7 +33,7 @@ code_obj = {
         $("#code_select").attr("previousvalue","");
 				$("#code_select option:selected").remove();
 				master_json.code.file = $("#code_select").val();
-				code_obj.load_file("default_trialtype");
+				code_obj.load_file("default");
 				Collector.custom_alert("Successfully deleted "+this_loc);
 				update_master_json();
 
@@ -57,7 +57,7 @@ code_obj = {
 						Collector
 							.electron
               .fs
-							.delete_code(deleted_trialtype,
+							.delete_code(deleted_code,
 								function(response){
 									if(response !== "success"){
 										bootbox.alert(response);
@@ -69,48 +69,40 @@ code_obj = {
 		});
 	},
 	load_file:function(user_default){
-		$("#ACE_editor").show();
+    $("#ACE_editor").show();
 		$("#new_code_button").show();
 		$("#rename_code_button").show();
-		if(user_default == "default_trialtype"){
+		if(user_default == "default"){
 			$("#delete_code_button").hide();
-      $("#default_user_code_span").html("default_trialtype");
-      $("#code_select").removeClass("user_trialtype")
-                             .addClass("default_trialtype");
-        //[0].className = $("#code_select")[0].className.replace("user_","default_");
+      $("#code_select").removeClass("user_code")
+                       .addClass("default_code");
 		} else {
 			$("#delete_code_button").show();
 		}
 
-		var trialtype = master_json.code.file;
+		var this_file = master_json.code.file;
 
     //python load if localhost
     switch(Collector.detect_context()){
       case "localhost":
-        cleaned_trialtype = trialtype.toLowerCase()
-                                     .replace(".html","") +
-                                     ".html";
-				trialtype_content = Collector.electron.fs.read_file(
-          "Trialtypes",
-					cleaned_trialtype
+        cleaned_code = this_file
+          .toLowerCase()
+          .replace(".html","") + ".html";
+				this_content = Collector.electron.fs.read_file(
+          "Code",
+					cleaned_code
         )
-				if(trialtype_content == ""){
-				  editor.setValue(
-            master_json.code
-						[user_default + "s"]
-            [trialtype]
-          );
+				if(this_content == ""){
+				  editor.setValue(master_json.code[user_default][this_file]);
         } else {
-				  editor.setValue(trialtype_content);
+				  editor.setValue(this_content);
 		    }
         break;
       default:
-				var content = master_json.code[user_default+"s"][trialtype];
+				var content = master_json.code[user_default][this_file];
         editor.setValue(content);
         break;
     }
-
-
 	},
 	save:function(content, name, new_old, graphic_code){
 		if(new_old == "new"){
@@ -123,7 +115,7 @@ code_obj = {
 			$('#code_select').append($("<option>", {
 				value: name,
 				text : name,
-				class: "user_trialtype"
+				class: "user_code"
 			}));
 			$("#code_select").val(name);
 			$("#code_select")[0].className = $("#code_select")[0].className.replace("default_","user_");
@@ -134,7 +126,6 @@ code_obj = {
 				$("#graphic_editor").show();
 			}
 			$("#trial_type_file_select").show();
-			$("#default_user_code_span").html("user_trialtype");
 			Collector.custom_alert("success - " + name + " created");
 		} else {
 			Collector.custom_alert("success - " + name + " updated");
@@ -147,18 +138,18 @@ code_obj = {
 		"filesUpload");
 		if(typeof(Collector.electron) !== "undefined"){
 			var write_response = Collector.electron.fs.write_file(
-        "Trialtypes",
+        "Code",
 				name
 					.toLowerCase()
 					.replace(".html","") + ".html",
 				content
       )
 			if(write_response !== "success"){
-			     bootbox.alert(result);
+			  bootbox.alert(write_response);
 			}
 		}
 	},
-	synchTrialtypesFolder:function(){
+	synchPhasetypesFolder:function(){
 		if(dropbox_check()){
 			dbx.filesListFolder({path:"/trialtypes"})
 				.then(function(returned_data){
@@ -170,7 +161,7 @@ code_obj = {
 								.then(function(returned_path_info){
 									$.get(returned_path_info.url.replace("www.","dl."),function(content){
 										master_json.code.user[trialtype.name] = content;
-										$("#code_select").append("<option class='user_trialtype'>"+trialtype.name+"</option>");
+										$("#code_select").append("<option class='user_code'>"+trialtype.name+"</option>");
 									});
 								});
 						}
@@ -179,6 +170,7 @@ code_obj = {
 		}
 	}
 }
+
 function list_code(to_do_after){
 	//try{
 		if(typeof(Collector.electron) !== "undefined"){
@@ -210,14 +202,14 @@ function list_code(to_do_after){
       user_keys = Object.keys(user).sort((a, b) => a.localeCompare(b, undefined, {sensitivity: 'base'}));
 
       default_keys.forEach(function(element){
-        $("#code_select").append("<option class='default_trialtype'>"+element+"</option>");
+        $("#code_select").append("<option class='default_code'>"+element+"</option>");
       });
       master_json.code.user = user;
 
       user_keys.forEach(function(element){
-        $("#code_select").append("<option class='user_trialtype'>" + element + "</option>");
+        $("#code_select").append("<option class='user_code'>" + element + "</option>");
       });
-      code_obj.synchTrialtypesFolder();
+      code_obj.synchPhasetypesFolder();
 
 
       switch(Collector.detect_context()){
@@ -262,7 +254,7 @@ function list_code(to_do_after){
         process_returned(JSON.stringify(master_json.code.default));
       }
     }
-    var default_list = Object.keys(isolation_map[".."]["Default"]["DefaultTrialtypes"]);
+    var default_list = Object.keys(isolation_map[".."]["Default"]["DefaultPhasetypes"]);
 
     get_default(default_list);
 

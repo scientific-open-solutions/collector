@@ -1,4 +1,14 @@
 default_master_json = {
+  "code":  {
+    "default"	 : {},
+    "file"     : "",
+    "filetype" : "",
+    "graphic"  : {
+      "files"  : []
+    },
+    "user"		 : {},
+    "version"  : 0
+  },
   "data": {
     "servers": {}
   },
@@ -19,12 +29,5 @@ default_master_json = {
     "organizations" : {}
   },
   "mods":    {},
-  "surveys" : {},
-  "trialtypes":  {
-    "default"	: {},
-    "trialtype" 			    : "",
-    "filetype"  			    : "",
-    "version"   			    : 0,
-    "user"		  : {}
-  }
+  "surveys" : {}
 }

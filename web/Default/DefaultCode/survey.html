@@ -298,8 +298,8 @@ $("#proceed_button").on("click",function(){
       var next_table_no = parseFloat($(".table_break:visible")[0].id.replace("table","")) + 1;
 
       if($(".table_break#table"+next_table_no).length == 0){
-        if(typeof(Trial) !== "undefined"){
-          Trial.submit();
+        if(typeof(Phase) !== "undefined"){
+          Phase.submit();
         } else {
           bootbox.alert("You've finished! Click on the preview button to restart.")
         }
@@ -1329,8 +1329,8 @@ function write_survey(this_survey, this_id){
 * Load survey
 */
 current_survey = "{{survey}}";
-if(typeof(Trial) !== "undefined"){
-  Trial.set_timer(function(){
+if(typeof(Phase) !== "undefined"){
+  Phase.set_timer(function(){
     load_survey(current_survey);
   },100);
 } else {

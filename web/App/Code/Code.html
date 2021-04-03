@@ -20,29 +20,19 @@
 */
 -->
 <style>
-.user_trialtype{
+.user_code{
   background-color:PaleGreen ;
 }
-.default_trialtype{
+.default_code{
   background-color:LightSkyBlue ;
 }
-
-#default_user_code_span{
-	padding : 5px;
-	border-radius : 5px;
-}
-#trial_progress_span{
-	margin:auto;
-	width:300px;
-}
-#trialtype_preview{
+#code_preview{
   width: 100%;
 	height: 100%;
   margin:30px;
 }
 </style>
 <br><br>
-<div id="trial_progress_span"></div>
 
 <div id="Code" class="hide_show_elements">
 
@@ -54,14 +44,14 @@
           <a class="nav-link active text-white" id="code_editor-tab" data-toggle="pill" href="#code_editor" role="tab" aria-controls="code_editor" aria-selected="true">Editor</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" id="trialtype-preview-tab" data-toggle="pill" href="#trialtype-preview" role="tab" aria-controls="trialtype-preview" aria-selected="false">Preview</a>
+          <a class="nav-link text-white" id="code-preview-tab" data-toggle="pill" href="#trialtype-preview" role="tab" aria-controls="trialtype-preview" aria-selected="false">Preview</a>
         </li>
       </ul>
     </div>
     <div class="col">
       <ul class="mb-9 col form-inline">
         <select id="code_project_select" class="form-control" style="margin:2px">
-          <option disabled selected>Experiment (optional)</option>
+          <option disabled selected>Project (optional)</option>
           <option>None</option>
         </select>
         <select id="code_procedure_select" class="form-control"  style="margin:2px; display:none">
@@ -89,19 +79,17 @@
         -->
       	<div class="col-md-3">
       		<select id="code_select" class="form-control" previousValue ="">
-      			<option hidden disabled selected>Select a Trial Type</option>
+      			<option hidden disabled selected>Select a Phase Type</option>
       		</select>
       	</div>
       	<div class="col-md-9">
-            <span id="default_user_code_span"></span>
-        		<button id="new_code_button" 		class="btn btn-primary">New</button>
+            <button id="new_code_button" 		class="btn btn-primary">New</button>
         		<button id="rename_code_button" class="btn btn-primary" style="display:none">Rename</button>
         		<button id="delete_code_button" class="btn btn-primary" style="display:none">Delete</button>
         		<button id="save_code_button" class="btn btn-primary">Save</button>
         		<button class="btn btn-outline-primary" id="view_code_btn">Code</button>
         		<button class="btn btn-outline-primary" id="view_graphic_btn">Graphic</button>
       	</div>
-
       </div>
 
 
@@ -114,21 +102,21 @@
         <div id="ACE_editor" 			style="display:none;width:100%"></div>
       </div>
     </div>
-    <div class="tab-pane fade" id="trialtype-preview" role="tabpanel" aria-labelledby="trialtype-preview-tab" style="height:100%">
-      <iframe id="trialtype_preview"></iframe>
+    <div class="tab-pane fade" id="trialtype-preview" role="tabpanel" aria-labelledby="code-preview-tab" style="height:100%">
+      <iframe id="code_preview"></iframe>
     </div>
   </div>
 </div>
 
-
+<script src="iframe_library.js"></script>
 <script>
 $("#graphic_editor").load(collector_map["Graphic.html"]);
 
 $("#community_code_btn").on("click",function(){
-	var win = window.open('https://github.com/scientific-open-solutions/collector/discussions/categories/trial-types', '_blank');
+	var win = window.open('https://github.com/scientific-open-solutions/collector/discussions/categories/code', '_blank');
 });
 
-$("#trialtype-preview-tab").on("click",function(){
+$("#code-preview-tab").on("click",function(){
   /*
   * try to run the code in the ace editor into the iframe
   */
@@ -157,7 +145,7 @@ $("#trialtype-preview-tab").on("click",function(){
   }
 
   doc = document
-    .getElementById('trialtype_preview')
+    .getElementById('code_preview')
     .contentWindow
     .document;
 	doc.open();
@@ -184,7 +172,7 @@ editor.setOptions({
 editor.$blockScrolling = Infinity;
 
 editor.on("focus",function(){
-	helperActivate("Trialtype Code", "","trialtype_code");
+	helperActivate("Code", "","trialtype_code");
 });
 
 editor.completers.push({
@@ -193,35 +181,35 @@ editor.completers.push({
   ) {
 		callback(null, [
 			{
-        value: "Trial.add_response()",
+        value: "Phase.add_response()",
         score: 1000,
         meta: "add row to responses"
       },{
-        value: "Trial.submit()",
+        value: "Phase.submit()",
         score: 1000,
         meta: "end trial - C"
       },{
-        value: "Trial.elapsed()",
+        value: "Phase.elapsed()",
         score: 1000,
         meta: "since trial start - C"
       },{
-        value: "Trial.set_timer()",
+        value: "Phase.set_timer()",
         score: 1000,
         meta: "at trial start - C"
       },{
-        value: "Trial.set()",
+        value: "Phase.set()",
         score: 1000,
         meta: "for another trial -C"
       },{
-        value: "Trial.get()",
+        value: "Phase.get()",
         score: 1000,
         meta: "from an earlier trial -C"
       },{
-        value: "Trial.get_proc()",
+        value: "Phase.get_proc()",
         score: 1000,
         meta: "load a proc sheet -C"
       },{
-        value: "Trial.get_stim()",
+        value: "Phase.get_stim()",
         score: 1000,
         meta: "load a stim sheet -C"
       }

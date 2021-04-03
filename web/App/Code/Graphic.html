@@ -80,13 +80,13 @@
 				<div id="graphic_general_settings">
 					<div class="input-group mb-3">
 						<div class="input-group-prepend">
-							<span class="input-group-text" id="trial_width_prep">Trial Width (px)</span>
+							<span class="input-group-text" id="trial_width_prep">Phase Width (px)</span>
 						</div>
 						<input type="number" class="form-control" aria-describedby="trial_width_prep" id="trial_width" value="600">
 					</div>
 					<div class="input-group mb-3">
 						<div class="input-group-prepend">
-							<span class="input-group-text" id="trial_height_prep">Trial Height (px)</span>
+							<span class="input-group-text" id="trial_height_prep">Phase Height (px)</span>
 						</div>
 						<input type="number" class="form-control" aria-describedby="trial_height_prep" id="trial_height" value="600">
 					</div>
@@ -113,7 +113,7 @@
 						</div>
 						<div class="custom-control custom-checkbox">
 							<input type="checkbox" class="custom-control-input" id="keyboard_end_press" checked="checked">
-							<label class="custom-control-label text-primary" for="keyboard_end_press">End Trial on key press</label>
+							<label class="custom-control-label text-primary" for="keyboard_end_press">End Phase on key press</label>
 						</div>
 					</div>
 					<h3 class="text-primary"> mods </h3>
@@ -751,7 +751,7 @@ graphic_editor_obj = {
 									"  class_list.splice(class_list.indexOf('update_name'),1);\n" +
 									"  $('input[name = \"' + class_list + '\"]').val(this.value);\n" +
 									"  if(end_trial){\n" +
-									"    Trial.submit();\n" +
+									"    Phase.submit();\n" +
 									"  }\n" +
 									"});\n";
 
@@ -773,7 +773,7 @@ graphic_editor_obj = {
 				this_code += 	"      $(\"#keyboard_response\").val(String.fromCharCode(event.which).toLowerCase());\n";
 
 											if(this_trialtype.keyboard.end_press){
-				this_code +=  "      Trial.submit();\n";
+				this_code +=  "      Phase.submit();\n";
 											}
 				this_code +=  "      break;\n" +
 											"  }\n" +
@@ -800,7 +800,7 @@ graphic_editor_obj = {
       });
 		}
 
-		// add code to Ace editor and update the user_trialtype
+		// add code to Ace editor and update the user_code
 		///////////////////////////////////////////////////////
 		editor.setValue(this_code);
 		master_json.code.user[trialtype] = this_code;
@@ -1402,18 +1402,18 @@ graphic_editor_obj = {
     }
   },
   parse_script:function(element_info,element_id){
-		set_timer_comment = "//Trial.set_timer is a Collector function required because of buffering (which prevents the use of setTimeout)";
+		set_timer_comment = "//Phase.set_timer is a Collector function required because of buffering (which prevents the use of setTimeout)";
 
     //show and hide
 		var new_code = '';
 		if(element_info.show.value !== 0 & element_info.show.value !== ""){
-			new_code += "Trial.set_timer(function(){$('#" + element_id + "').show()},'"+element_info.show.value+"'); " + set_timer_comment + " \n";
+			new_code += "Phase.set_timer(function(){$('#" + element_id + "').show()},'"+element_info.show.value+"'); " + set_timer_comment + " \n";
 		}
 		if(element_info.hide.value !== 0 & element_info.hide.value !== ""){
-			new_code += "Trial.set_timer(function(){$('#" + element_id + "').hide()},'"+element_info.hide.value+"'); " + set_timer_comment + " \n";
+			new_code += "Phase.set_timer(function(){$('#" + element_id + "').hide()},'"+element_info.hide.value+"'); " + set_timer_comment + " \n";
 		}
     if(typeof(element_info.delay) !== "undefined" && element_info.delay.value !== "-1"){                  //assuming this element is a video that needs to start automatically after xxx ms
-      new_code += "Trial.set_timer(function(){$('#" + element_id + "').find('" + element_info.type +"')[0].play()},'" + element_info.delay.value + "');" + set_timer_comment + "\n";
+      new_code += "Phase.set_timer(function(){$('#" + element_id + "').find('" + element_info.type +"')[0].play()},'" + element_info.delay.value + "');" + set_timer_comment + "\n";
     }
 		return new_code
 	},

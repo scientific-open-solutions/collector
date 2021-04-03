@@ -44,6 +44,15 @@ window.onload=function(){
           list_code: function(){
             return ipc.sendSync('fs_list_code');
           },
+          list_projects: function(){
+            var projects = JSON.parse(ipc.sendSync(
+              'fs_list_projects'
+            ));
+            projects = projects.filter(
+              item => item.indexOf(".json") == -1
+            )
+            return projects;
+          },
           home_dir: function(){
             return ipc.sendSync('fs_home_dir')
           },

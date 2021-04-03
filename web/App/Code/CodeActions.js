@@ -41,10 +41,10 @@ function initiate_actions(){
         "end_checks_experiment"
       ];
 
-      if(quality_checks.indexOf(this_name)){
+      if(quality_checks.indexOf(this_name) !== -1){
         bootbox.alert("<b>" +
           this_name + "</b>" +
-          "is protected, please choose another name"
+          " is protected, please choose another name"
         );
         return false;
       } else {
@@ -98,15 +98,13 @@ function initiate_actions(){
           className: 'btn-primary',
           callback: function(){
             var new_name = $("#new_code_name").val().toLowerCase();
-            if(valid_trialtype(new_name)){
-              content = "";
-              if(protected_name_check(new_name)){
-                if(valid_new_name(new_name)){
-                  master_json.code.user[new_name] = content;
-                  master_json.code.file = new_name;
-                  code_obj.save(content,new_name,"new","code");
-                  editor.textInput.getElement().onkeydown = "";
-                }
+            if(protected_name_check(new_name)){
+              if(valid_new_name(new_name)){
+                var content = "";
+                master_json.code.user[new_name] = content;
+                master_json.code.file = new_name;
+                code_obj.save(content,new_name,"new","code");
+                editor.textInput.getElement().onkeydown = "";
               }
             }
           }
@@ -155,11 +153,11 @@ function initiate_actions(){
         }
       }
     })
-      .off("shown.bs.modal")
-      .on("shown.bs.modal", function() {
-        $("#new_code_name").focus();
-      })
-      .modal("show");
+    .off("shown.bs.modal")
+    .on("shown.bs.modal", function() {
+      $("#new_code_name").focus();
+    })
+    .modal("show");
   });
 
   $("#rename_code_button").on("click",function(){
@@ -168,7 +166,7 @@ function initiate_actions(){
     if(typeof(master_json.code.default[trialtype_selected]) !== "undefined"){
       bootbox.alert("You can't rename a default trialtype");
     } else {
-      bootbox.prompt("What would you like to rename the Trialtype to?",function(new_name){
+      bootbox.prompt("What would you like to rename the Phasetype to?",function(new_name){
         if(new_name == null){
           // close the window
         } else if($("#code_select").text().indexOf(new_name) !== -1){
@@ -201,7 +199,7 @@ function initiate_actions(){
 
             case "localhost":
               var response = Collector.electron.fs.write_file(
-                "Trialtypes",
+                "Phasetypes",
                 new_name.replace(".html","") + ".html",
                 master_json
                   .trialtypes
@@ -246,14 +244,14 @@ function initiate_actions(){
       Object.keys(master_json.code.default).indexOf(old_code) == -1){ code_obj.save(master_json.code.user[old_code],old_code,"old");
     }
     $(this).attr('previousValue', this.value);
-    var trialtype = this.value;
+    var code_file = this.value;
 
-    if(typeof(master_json.code.graphic.files[trialtype]) !== "undefined"){
-      master_json.code.file = trialtype;
+    if(typeof(master_json.code.graphic.files[code_file]) !== "undefined"){
+      master_json.code.file = code_file;
       editor.textInput.getElement().onkeydown = graphic_editor_obj.graphic_warning;
 
       //clear canvas
-      graphic_editor_obj.load_canvas(master_json.code.graphic.files[trialtype].elements);
+      graphic_editor_obj.load_canvas(master_json.code.graphic.files[code_file].elements);
       graphic_editor_obj.clean_canvas();
 
       load_trialtype_mods();
@@ -265,7 +263,6 @@ function initiate_actions(){
       $("#view_graphic_btn").addClass("btn-primary");
       $("#graphic_editor").show();
 
-
     } else {
       editor.setOption("readOnly",false);
       $("#graphic_editor").hide();
@@ -274,20 +271,22 @@ function initiate_actions(){
 
       editor.textInput.getElement().onkeydown = "";
       $("#ACE_editor").show();
-      master_json.code.file = trialtype;
+      master_json.code.file = code_file;
 
 
-      var user_default = this.children[this.selectedIndex].className;
+      if(typeof(master_json.code.default[code_file]) == "undefined"){
+        user_default = "user";
+      } else {
+        user_default = "default";
+      }
 
-      $("#code_select").removeClass("user_trialtype");
+      $("#code_select").removeClass("user_code");
       $("#code_select").removeClass("default_trialtype");
-      if(user_default == "user_trialtype"){
-        $("#code_select").addClass("user_trialtype");
+      if(user_default == "user"){
+        $("#code_select").addClass("user_code");
       } else {
         $("#code_select").addClass("default_trialtype");
       }
-
-      $("#default_user_code_span").html(user_default);
       code_obj.load_file(user_default);
     }
   });

@@ -22,7 +22,7 @@
   },
 	"max time":{
     "subtitle":"In milliseconds",
-    "text":"<b>User</b> will leave the trial going as long as it takes the participant to complete it. You can specify a time limit in <b>milliseconds</b> though. Be careful when specifying this. This will start from when the trial is presented to the participant. Unless you are presenting a very simple trial, you may want to use a <b>Trial.start_timer()</b> within the trialtype code in the experiment."
+    "text":"<b>User</b> will leave the trial going as long as it takes the participant to complete it. You can specify a time limit in <b>milliseconds</b> though. Be careful when specifying this. This will start from when the trial is presented to the participant. Unless you are presenting a very simple trial, you may want to use a <b>Phase.start_timer()</b> within the trialtype code in the experiment."
   },
 	"repeat":{
 		"subtitle":"How many repetitions?",

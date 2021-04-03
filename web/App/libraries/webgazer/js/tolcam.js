@@ -261,7 +261,7 @@ function prepareBlock() {
             } else {
                 $('#instruction_message').html(design.blocks[block_no].instruction).show();
                 setTimeout("$('#instruction_message').fadeOut(1000);", design.blocks[block_no].instruction_duration);
-                setTimeout("prepareTrial();", design.blocks[block_no].instruction_duration + 2000);
+                setTimeout("preparePhase();", design.blocks[block_no].instruction_duration + 2000);
             }
         } else {
             endExperiment();
@@ -466,7 +466,7 @@ function endValidation() {
     webgazer.pause();
     $('#instruction_message').html(design.blocks[block_no].instruction).show();
     setTimeout("$('#instruction_message').fadeOut(1000);", design.blocks[block_no].instruction_duration);
-    setTimeout("prepareTrial();", design.blocks[block_no].instruction_duration + 2000);
+    setTimeout("preparePhase();", design.blocks[block_no].instruction_duration + 2000);
 }
 
 
@@ -475,7 +475,7 @@ function endValidation() {
  * START EXPERIMENT
  ************************************/
 var t_trial_start;
-function prepareTrial() {
+function preparePhase() {
     status = "prepare";
     $('.stimuli').hide();
     data_current = {
@@ -485,11 +485,11 @@ function prepareTrial() {
         'raw': []
     };
     webgazer.resume();
-    startTrial();
+    startPhase();
 }
 
 
-function startTrial() {
+function startPhase() {
     t_trial_start = new Date().getTime();
     $('#stimuli_fixation').show();
     status = "fixation_onset";
@@ -500,7 +500,7 @@ function startTrial() {
 
 
 var heat;
-function endTrial() {
+function endPhase() {
     clearTimeout(t);
     cam.recording = 0;
     webgazer.pause();
@@ -510,7 +510,7 @@ function endTrial() {
     saveData();
 
     if (trial_no < design.blocks[block_no].trials) {
-        setTimeout("prepareTrial();", design.blocks[block_no].iti);
+        setTimeout("preparePhase();", design.blocks[block_no].iti);
     } else {
         block_no++;
         if (block_no < design.blocks.length) {
@@ -629,7 +629,7 @@ function simpleStart() {
 function simpleShowdot() {
     status = "stimulus_onset";
     $("#stimuli_dot").show();
-    setTimeout('status = "stimulus_offset"; endTrial();',  2000);
+    setTimeout('status = "stimulus_offset"; endPhase();',  2000);
 }
 
 
@@ -684,7 +684,7 @@ function posnerShowprime() {
 function posnerShowTarget() {
     $('#stimuli_prime').hide();
     $('#stimuli_target').show();
-    setTimeout("endTrial();", 1500);
+    setTimeout("endPhase();", 1500);
 }
 
 
@@ -739,7 +739,7 @@ function pursuitStart() {
             'linear',
         function() {
             status = "pursuit_end";
-            setTimeout("endTrial();", 500);
+            setTimeout("endPhase();", 500);
         });
     }, 1500);
 }
@@ -790,7 +790,7 @@ function freeviewStart() {
 function freeviewShow() {
     status = 'stimulus_onset';
     $('#stimuli_img').show();
-    setTimeout("status = 'stimulus_offset'; endTrial();", 3000);
+    setTimeout("status = 'stimulus_offset'; endPhase();", 3000);
 }
 
 

@@ -100,7 +100,7 @@ $("#welcome_html").load("Welcome.html");
 </div>
 <div id="participant_country"></div>
 <script src="iframe_library.js"></script>
-<script src="TrialFunctions.js"></script>
+<script src="PhaseFunctions.js"></script>
 
 
 <!-- will look into making the following libraries local in the future -->
@@ -191,7 +191,7 @@ Project = {
 
 
   /*
-  * Trial functions
+  * Phase functions
   */
   detect_context: function(){
     //turn to false to make use of eel and python
@@ -369,7 +369,7 @@ Project = {
 
 		//look through all variables and replace with the value
 
-		this_trialtype =  "<scr" + "ipt> Trial = {}; Trial.trial_no = '"+trial_no+"'; Trial.post_no ='"+post_no+"' </scr" + "ipt>" + "<scr" + "ipt src = 'TrialFunctions.js' ></scr" + "ipt>" + this_trialtype ; //; trial_script +
+		this_trialtype =  "<scr" + "ipt> Phase = {}; Phase.trial_no = '"+trial_no+"'; Phase.post_no ='"+post_no+"' </scr" + "ipt>" + "<scr" + "ipt src = 'PhaseFunctions.js' ></scr" + "ipt>" + this_trialtype ; //; trial_script +
 
 
 		this_trialtype = this_trialtype.replace("[trial_no]",trial_no);

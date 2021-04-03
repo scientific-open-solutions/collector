@@ -17,33 +17,33 @@
 
 		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
 */
-if(typeof(Trial) !== "undefined"){
+if(typeof(Phase) !== "undefined"){
 
-	Trial.add_response = function (response_obj){
+	Phase.add_response = function (response_obj){
 		response_obj.inserted_time_ms = (new Date()).getTime();
 		response_obj.inserted_time_date = new Date().toString('MM/dd/yy HH:mm:ss');
 		parent.parent.exp_json.responses.push(response_obj);
 	}
 
-	Trial.elapsed = function(){
-		if(Trial.post_no == ""){
-			Trial.post_no = 0;
+	Phase.elapsed = function(){
+		if(Phase.post_no == ""){
+			Phase.post_no = 0;
 		}
-		return (new Date()).getTime() - parent.parent.exp_json.this_trial["post_"+Trial.post_no+"_trial_start_ms"];
+		return (new Date()).getTime() - parent.parent.exp_json.this_trial["post_"+Phase.post_no+"_trial_start_ms"];
 	}
-  Trial.get = function(this_name){
+  Phase.get = function(this_name){
     return  parent.parent.exp_json.study_vars[this_name];
   }
-  Trial.get_proc = function(this_name){
+  Phase.get_proc = function(this_name){
     return parent.parent.exp_json.all_procs[this_name];
   }
-  Trial.get_stim = function(this_name){
+  Phase.get_stim = function(this_name){
     return parent.parent.exp_json.all_stims[this_name];
   }
-  Trial.go_to = function(new_trial_no){
+  Phase.go_to = function(new_trial_no){
     parent.parent.Project.go_to(new_trial_no);
   }
-  Trial.set = function(this_name,this_content){
+  Phase.set = function(this_name,this_content){
     if(typeof(parent.parent.exp_json.study_vars) == "undefined"){
       parent.parent.exp_json.study_vars = {};
     }
@@ -51,14 +51,14 @@ if(typeof(Trial) !== "undefined"){
   }
 
   /*
-  * Make the Trial.setTimeout timer function here
+  * Make the Phase.setTimeout timer function here
   * based on https://stackoverflow.com/questions/7798680/add-duration-to-js-settimeout-after-the-timer-is-running
   */
-  Trial.timer = function(callback, time){
+  Phase.timer = function(callback, time){
     this.setTimeout(callback, time);
   }
 
-  Trial.timer.prototype.setTimeout = function(callback, time) {
+  Phase.timer.prototype.setTimeout = function(callback, time) {
     var self = this;
     if(this.timer) {
         clearTimeout(this.timer);
@@ -73,7 +73,7 @@ if(typeof(Trial) !== "undefined"){
     this.start = Date.now();
   }
 
-  Trial.timer.prototype.add = function(time) {
+  Phase.timer.prototype.add = function(time) {
      if(!this.finished) {
          // add time to time left
          time = this.time - (Date.now() - this.start) + time;
@@ -81,18 +81,18 @@ if(typeof(Trial) !== "undefined"){
      }
   }
 
-  Trial.setTimeout = function(this_function, duration){
+  Phase.setTimeout = function(this_function, duration){
 
   }
-	Trial.set_timer = function(this_function,duration){
+	Phase.set_timer = function(this_function,duration){
 		parent.parent.exp_json.time_outs.push({
-			trial_no : Trial.trial_no,
-			post_no  : Trial.post_no,
+			trial_no : Phase.trial_no,
+			post_no  : Phase.post_no,
 			duration : duration,
 			this_func: this_function
 		});
   }
-  Trial.submit = function(){
+  Phase.submit = function(){
     parent.parent.exp_json.inputs = jQuery( "[name]" );
     parent.parent.Project.finish_trial();
   }

@@ -387,7 +387,7 @@ function preview_survey(this_survey){
   switch(Collector.detect_context()){
     case "localhost":
       survey_template = Collector.electron.fs.read_default(
-        "Trialtypes",
+        "Phasetypes",
         "survey.html"
       );
       survey_template = survey_template.replace(
@@ -409,7 +409,7 @@ function preview_survey(this_survey){
   							survey_template);
       break;
     default:
-      survey_template = $.get("../Default/Trialtypes/survey.html", function(survey_template){
+      survey_template = $.get("../Default/Phasetypes/survey.html", function(survey_template){
         survey_template = survey_template.replace('"{{survey}}"',
                                                   JSON.stringify(this_survey));
 

@@ -106,7 +106,7 @@ cell_editor.setOptions({                                                        
 cell_editor.$blockScrolling = Infinity;
 
 cell_editor.on("focus",function(){                                                                //give the same advice for this as for trialtypes
-	helperActivate("Trialtype Code", "","trialtype_code");
+	helperActivate("Code", "","trialtype_code");
 });
 
 $("#cell_editor_div").css("height",window.innerHeight-120);
@@ -161,12 +161,12 @@ cell_editor.getSession().on('change', function(){
 cell_editor.completers.push({                                         // same suggestions as for trialtype editor, as I think this still applies
 	getCompletions: function(cell_editor, session, pos, prefix, callback) {
 		callback(null, [
-			{value: "Trial.add_response()", score: 1000, meta: "add row to responses"},
-			{value: "Trial.submit()",     	score: 1000, meta: "end trial - C"},
-			{value: "Trial.elapsed()",    	score: 1000, meta: "since trial start - C"},
-			{value: "Trial.set_timer()",  	score: 1000, meta: "at trial start - C"},
-      {value: "Trial.set()",        	score: 1000, meta: "for another trial -C"},
-      {value: "Trial.get()",        	score: 1000, meta: "from an earlier trial -C"}
+			{value: "Phase.add_response()", score: 1000, meta: "add row to responses"},
+			{value: "Phase.submit()",     	score: 1000, meta: "end trial - C"},
+			{value: "Phase.elapsed()",    	score: 1000, meta: "since trial start - C"},
+			{value: "Phase.set_timer()",  	score: 1000, meta: "at trial start - C"},
+      {value: "Phase.set()",        	score: 1000, meta: "for another trial -C"},
+      {value: "Phase.get()",        	score: 1000, meta: "from an earlier trial -C"}
 		]);
 	}
 });
