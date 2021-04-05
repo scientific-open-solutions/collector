@@ -32,7 +32,7 @@ var lazy_organization_interval = setInterval(function(){
       typeof(github_json.organization) !== "undefined" &&
       github_json.organization !== ""
      ){
-       var repos = github_json.organizations[github_json.organization].repositories;
+       var repos = github_json.organizations[github_json.organization].Repositories;
 
        Object.keys(repos).forEach(function(repository){
          $('#select_repository').append($('<option>', {
@@ -50,7 +50,7 @@ $("#add_organization_btn").on("click",function(){
     if(response){
       if(typeof(github_json.organizations[response]) == "undefined"){
         github_json.organizations[response] = {
-          "repositories" : {}
+          "Repositories" : {}
         };
         $('#select_organization').append($('<option>', {
           value: response,
@@ -62,7 +62,7 @@ $("#add_organization_btn").on("click",function(){
       /* Empty repository list */
       $("#select_repository").empty();
 
-      Object.keys(github_json.organizations[response].repositories).forEach(function(repository){
+      Object.keys(github_json.organizations[response].Repositories).forEach(function(repository){
         $('#select_repository').append($('<option>', {
           value: repository,
           text: repository
@@ -132,7 +132,7 @@ $("#add_repository_btn").on("click",function(){
             if(typeof(github_json
                         .organizations
                         [$("#select_organization").val()]
-                        .repositories
+                        .Repositories
                         [repository]) == "undefined"){
               $('#select_repository').append($('<option>', {
                 value: repository,
@@ -141,7 +141,7 @@ $("#add_repository_btn").on("click",function(){
               github_json
                 .organizations
                 [$("#select_organization").val()]
-                .repositories
+                .Repositories
                 [repository] = {};
             }
             $("#select_repository").val(repository);
@@ -219,7 +219,7 @@ $("#add_token_btn").on("click",function(){
 });
 
 $("#delete_organization_btn").on("click", function (){
-  bootbox.confirm("Are you sure you want to delete this organisation and all the repositories on your computer? (this will not delete them online)", function(result){
+  bootbox.confirm("Are you sure you want to delete this organisation and all the Repositories on your computer? (this will not delete them online)", function(result){
     if(result){
       delete(
         github_json
@@ -244,7 +244,7 @@ $("#delete_repo_btn").on("click",function(){
         github_json
           .organizations
           [github_json.organization]
-          .repositories
+          .Repositories
           [github_json.repository]
       )
       if(Collector.detect_context() == "localhost"){
@@ -379,7 +379,7 @@ $("#select_organization").on("change", function(){
 
       $("#select_repository").empty();
       Object.keys(
-        github_json.organizations[this_org].repositories
+        github_json.organizations[this_org].Repositories
       ).forEach(function(repository){
         $('#select_repository').append($('<option>', {
             value: repository,

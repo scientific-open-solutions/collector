@@ -20,7 +20,7 @@ function online_save(experiment_id,
     experiment_id:   experiment_id,
     participant_id:  participant_id,
     prehashed_code:  prehashed_code,
-		study_location:  exp_json.location,
+		study_location:  project_json.location,
 		trial_all:       trial_all,
 		trial_no:        trial_no,
   };
@@ -89,7 +89,7 @@ function online_save(experiment_id,
       * If it is the final trial then the user needs to download their data
       */
       if(data.trial_no == "_all_data"){
-        precrypted_data(exp_json,"We've tried to send your data, but it has failed multiple times. Please accept the download and send it directly to the researcher. What do you want to save this file as?");
+        precrypted_data(project_json,"We've tried to send your data, but it has failed multiple times. Please accept the download and send it directly to the researcher. What do you want to save this file as?");
       }
     }
 	}

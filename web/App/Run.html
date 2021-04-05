@@ -115,7 +115,7 @@ $("#welcome_html").load("Welcome.html");
 <input type="hidden" id="prehashed_code" name="prehashed_code"/>
 <script>
 
-exp_json = {}; //this will get updated
+project_json = {}; //this will get updated
 
 /////////////
 // Objects //
@@ -165,7 +165,7 @@ Project = {
     "start_study",
     "select_condition",
     "full_screen",
-    "create_exp_json_variables",
+    "create_project_json_variables",
     "parse_sheets",
     "parse_current_proc",
     "clean_code",
@@ -180,7 +180,7 @@ Project = {
   // start functions are the functions required when NOT resuming
   start_functions : [
     "detect_exe",
-    "create_exp_json_variables",
+    "create_project_json_variables",
     "parse_sheets",
     "parse_current_proc",
     "clean_code",
@@ -213,30 +213,30 @@ Project = {
   finish_trial: function(go_to_info){
     trial_end_ms = (new Date()).getTime();
     trial_inputs = {};
-    $("#experiment_progress").css("width",(100 * exp_json.trial_no/(exp_json.parsed_proc.length-1))+"%");
+    $("#experiment_progress").css("width",(100 * project_json.trial_no/(project_json.parsed_proc.length-1))+"%");
 
-    for(var i = 0; i < exp_json.inputs.length; i++){
-      if($("input[name='"+exp_json.inputs[i].name+"']:checked").length == 0){
-        trial_inputs[exp_json.inputs[i].name]=exp_json.inputs[i].value;
+    for(var i = 0; i < project_json.inputs.length; i++){
+      if($("input[name='"+project_json.inputs[i].name+"']:checked").length == 0){
+        trial_inputs[project_json.inputs[i].name]=project_json.inputs[i].value;
       } else {
-        if(exp_json.inputs[i].checked){
-          trial_inputs[exp_json.inputs[i].name]=exp_json.inputs[i].value;
+        if(project_json.inputs[i].checked){
+          trial_inputs[project_json.inputs[i].name]=project_json.inputs[i].value;
         }
       }
     }
 
-    this_proc = exp_json.parsed_proc[exp_json.trial_no];
-    if(typeof(exp_json.parsed_stim[this_proc.item]) == "undefined"){
+    this_proc = project_json.parsed_proc[project_json.trial_no];
+    if(typeof(project_json.parsed_stim[this_proc.item]) == "undefined"){
       this_stim = {};
     } else {
-      this_stim = exp_json.parsed_stim[this_proc.item];
+      this_stim = project_json.parsed_stim[this_proc.item];
     }
 
     if(this_stim == null){
       this_stim = {};
     }
 
-    var objs = [exp_json.this_trial, trial_inputs, this_proc, this_stim],
+    var objs = [project_json.this_trial, trial_inputs, this_proc, this_stim],
     response_data =  objs.reduce(function (r, o) {
         Object.keys(o).forEach(function (k) {
             r[k] = o[k];
@@ -244,61 +244,61 @@ Project = {
         return r;
     }, {});
 
-    response_data["post_"+exp_json.post_no+"_trial_window_inner_width"]  = window.innerWidth;
-    response_data["post_"+exp_json.post_no+"_trial_window_inner_height"] = window.innerHeight;
-    response_data["post_"+exp_json.post_no+"_trial_end_ms"]              = trial_end_ms;
-    response_data["post_"+exp_json.post_no+"_rt_ms"]                     = trial_end_ms - response_data["post_"+exp_json.post_no+"_trial_start_ms"];
-    response_data["post_"+exp_json.post_no+"_trial_end_date"]            = new Date(parseInt(trial_end_ms, 10)).toString('MM/dd/yy HH:mm:ss');
+    response_data["post_"+project_json.post_no+"_trial_window_inner_width"]  = window.innerWidth;
+    response_data["post_"+project_json.post_no+"_trial_window_inner_height"] = window.innerHeight;
+    response_data["post_"+project_json.post_no+"_trial_end_ms"]              = trial_end_ms;
+    response_data["post_"+project_json.post_no+"_rt_ms"]                     = trial_end_ms - response_data["post_"+project_json.post_no+"_trial_start_ms"];
+    response_data["post_"+project_json.post_no+"_trial_end_date"]            = new Date(parseInt(trial_end_ms, 10)).toString('MM/dd/yy HH:mm:ss');
     response_data["platform"] = window.navigator.platform;
     response_data["username"] = $("#participant_code").val();
 
 
-    Object.keys(exp_json.this_condition).forEach(function(condition_item){
-      response_data["condition_" + condition_item] = exp_json.this_condition[condition_item];
+    Object.keys(project_json.this_condition).forEach(function(condition_item){
+      response_data["condition_" + condition_item] = project_json.this_condition[condition_item];
     });
 
-    exp_json.this_trial                  = response_data;
+    project_json.this_trial                  = response_data;
     response_data["participant_browser"] = participant_browser;
-    response_data["trial_number"]        = exp_json.trial_no;
+    response_data["trial_number"]        = project_json.trial_no;
 
     var not_final_trial = true;
 
     if(
-      $("#trial"+exp_json.trial_no)
+      $("#trial"+project_json.trial_no)
         .contents()
         .children()
-        .find("iframe").length == exp_json.post_no + 1
+        .find("iframe").length == project_json.post_no + 1
     ){
-      $("#trial"+exp_json.trial_no).remove();
-      exp_json.responses.push(exp_json.this_trial);
+      $("#trial"+project_json.trial_no).remove();
+      project_json.responses.push(project_json.this_trial);
       if(
-        exp_json.trial_no == exp_json.parsed_proc.length - 1 &
+        project_json.trial_no == project_json.parsed_proc.length - 1 &
         typeof(go_to_info) == "undefined"
       ){
         not_final_trial = false;
         final_trial();
       } else {
-        exp_json.this_trial = {};
-        exp_json.trial_no = parseFloat(exp_json.trial_no) + 1;
-        exp_json.post_no = 0;
+        project_json.this_trial = {};
+        project_json.trial_no = parseFloat(project_json.trial_no) + 1;
+        project_json.post_no = 0;
         setTimeout(function(){
-          var this_index = parseFloat(exp_json.trial_no) +
-            parseFloat(exp_json.this_condition.buffer) - 1;
+          var this_index = parseFloat(project_json.trial_no) +
+            parseFloat(project_json.this_condition.buffer) - 1;
           write_trial_iframe(this_index);
         });
         Project.start_post(go_to_info);
       }
     } else {
-      exp_json.post_no++;
+      project_json.post_no++;
       var start_time = (new Date()).getTime();
-      exp_json.this_trial[
-        "post_"+exp_json.post_no+"_trial_start_ms"
+      project_json.this_trial[
+        "post_"+project_json.post_no+"_trial_start_ms"
       ] = (new Date()).getTime();
-      exp_json.this_trial[
-        "post_"+exp_json.post_no+"_trial_start_date"
+      project_json.this_trial[
+        "post_"+project_json.post_no+"_trial_start_date"
       ] = new Date(parseInt(start_time, 10)).toString('MM/dd/yy HH:mm:ss');
 
-      $("#trial"+exp_json.trial_no)
+      $("#trial"+project_json.trial_no)
         .contents()
         .children()
         .find("iframe")
@@ -312,7 +312,7 @@ Project = {
           Project.get_vars.location,
             $("#participant_code").val() + "_" +
             $("#completion_code").val()  + ".csv",
-            Papa.unparse(Collector.complete_csv(exp_json.responses),{
+            Papa.unparse(Collector.complete_csv(project_json.responses),{
               quotes: false,        //or array of booleans
               header: true,
               skipEmptyLines: true, //or 'greedy',
@@ -334,20 +334,20 @@ Project = {
                 $("#prehashed_code").val(),
                 JSON.stringify(
                   encrypt(
-                    exp_json.public_key,
+                    project_json.public_key,
                     JSON.stringify(
-                      [exp_json.responses[
-                        exp_json.responses.length - 1
+                      [project_json.responses[
+                        project_json.responses.length - 1
                       ]]
                     )
                   )
                 ), //data
-                exp_json.storage_scripts,
+                project_json.storage_scripts,
   							function(){
 
   							},
                 "trial",
-                exp_json.responses.length - 1
+                project_json.responses.length - 1
               );
   				});
         }
@@ -359,13 +359,13 @@ Project = {
   },
 
   generate_trial: function(trial_no,post_no){
-    if(typeof(exp_json.parsed_proc[trial_no]) == "undefined"){
+    if(typeof(project_json.parsed_proc[trial_no]) == "undefined"){
 			return false;
 		}
 
 		post_no = post_no == 0 ? "" : "post "+post_no+" ";
-		this_proc 	   = exp_json.parsed_proc[trial_no];
-		this_trialtype = exp_json.code[this_proc[post_no+"code"]];
+		this_proc 	   = project_json.parsed_proc[trial_no];
+		this_trialtype = project_json.code[this_proc[post_no+"code"]];
 
 		//look through all variables and replace with the value
 
@@ -377,7 +377,7 @@ Project = {
 
 		if(this_proc["item"].toString() !== "0"){
 
-			this_stim = exp_json.parsed_stim[this_proc["item"]];
+			this_stim = project_json.parsed_stim[this_proc["item"]];
 
       variable_list = Object.keys(this_proc).concat(Object.keys(this_stim));
 		} else {
@@ -453,22 +453,22 @@ Project = {
 
   start_post: function(go_to_info){
     if(typeof(go_to_info) !== "undefined"){
-      exp_json.trial_no = go_to_info[0];
-      exp_json.post_no = go_to_info[1];
+      project_json.trial_no = go_to_info[0];
+      project_json.post_no = go_to_info[1];
       $(".trial_iframe").remove();
-      var this_buffer = exp_json.this_condition.buffer;
-      var trial_no    = exp_json.trial_no;
+      var this_buffer = project_json.this_condition.buffer;
+      var trial_no    = project_json.trial_no;
       for(var index = trial_no; index < trial_no + this_buffer; index++){
         write_trial_iframe(index);
       };
     }
-		if(typeof(exp_json.responses[exp_json.trial_no]) == "undefined"){
-			exp_json.responses[exp_json.trial_no] = {};
+		if(typeof(project_json.responses[project_json.trial_no]) == "undefined"){
+			project_json.responses[project_json.trial_no] = {};
 		}
-		exp_json.this_trial["post_"+exp_json.post_no+"_trial_start_ms"] = (new Date()).getTime();
-		if($("#trial"+exp_json.trial_no).contents().children().length > 0){
-			var this_post_iframe = $("#trial"+exp_json.trial_no).contents().children().find("iframe").filter(function(element){
- 				return element == exp_json.post_no;
+		project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new Date()).getTime();
+		if($("#trial"+project_json.trial_no).contents().children().length > 0){
+			var this_post_iframe = $("#trial"+project_json.trial_no).contents().children().find("iframe").filter(function(element){
+ 				return element == project_json.post_no;
 			})[0];
 			this_post_iframe.style["visibility"] = "visible";
 
@@ -476,13 +476,13 @@ Project = {
       * apply zoom
       */
       var these_iframes = document
-                          .getElementById("trial" + exp_json.trial_no)
+                          .getElementById("trial" + project_json.trial_no)
                           .contentWindow
                           .document
                           .getElementsByClassName("post_iframe");
 
 
-      $("#trial" + exp_json.trial_no)
+      $("#trial" + project_json.trial_no)
         .contents()
         .find(".post_iframe")
         .contents()
@@ -519,39 +519,39 @@ Project = {
         //lazy fix for now
       }
 
-			$("#trial"+exp_json.trial_no).css("display","inline-block");
-			$("#trial"+exp_json.trial_no).css("width", "100%");
-			$("#trial"+exp_json.trial_no).css("height", "100%");
-			$("#trial"+exp_json.trial_no).css("visibility","visible");
-      $("#trial"+exp_json.trial_no).contents().find("#post"+exp_json.post_no).contents().find("#zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz").focus(); //or anything that no-one would accidentally create.
+			$("#trial"+project_json.trial_no).css("display","inline-block");
+			$("#trial"+project_json.trial_no).css("width", "100%");
+			$("#trial"+project_json.trial_no).css("height", "100%");
+			$("#trial"+project_json.trial_no).css("visibility","visible");
+      $("#trial"+project_json.trial_no).contents().find("#post"+project_json.post_no).contents().find("#zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz").focus(); //or anything that no-one would accidentally create.
 
 			//detect if max time exists and start timer
-			if(exp_json.post_no == 0){
+			if(project_json.post_no == 0){
 				var post_val = "";
 			} else {
-				post_val = "post "+exp_json.post_no + " ";
+				post_val = "post "+project_json.post_no + " ";
 			}
-			if(typeof(exp_json.parsed_proc[exp_json.trial_no][post_val + "max time"]) == "undefined"){
+			if(typeof(project_json.parsed_proc[project_json.trial_no][post_val + "max time"]) == "undefined"){
 				max_time = "user";
 			} else {
-				var max_time = exp_json
+				var max_time = project_json
           .parsed_proc
-          [exp_json.trial_no]
+          [project_json.trial_no]
           [post_val + "max time"];
 			}
 			if(max_time !== "" & max_time.toLowerCase() !== "user"){
-				var this_trial_no = exp_json.trial_no;
-				var this_post_no  = exp_json.post_no;
+				var this_trial_no = project_json.trial_no;
+				var this_post_no  = project_json.post_no;
         Project.trial_timer = new Collector.timer(function(){
-          if(this_trial_no == exp_json.trial_no && this_post_no == exp_json.post_no){
+          if(this_trial_no == project_json.trial_no && this_post_no == project_json.post_no){
 						Project.finish_trial();
 					}
 				},parseFloat(max_time) * 1000);
 			}
       participant_backup();
 
-      var this_timeout = exp_json.time_outs.filter(function(row){
-        return row.trial_no == parseFloat(exp_json.trial_no);
+      var this_timeout = project_json.time_outs.filter(function(row){
+        return row.trial_no == parseFloat(project_json.trial_no);
       });
 
 			if(this_timeout.length !== 0){ //should have  && this_timeout.length == 1 - need to deal with when there are multiple
@@ -573,12 +573,12 @@ Project = {
 */
 
 function buffer_trials(){
-  var this_buffer = exp_json.this_condition.buffer;
-	var trial_no    = exp_json.trial_no;
+  var this_buffer = project_json.this_condition.buffer;
+	var trial_no    = project_json.trial_no;
   for(var index = trial_no; index < trial_no + this_buffer; index++){
 		write_trial_iframe(index);
 	};
-	if(trial_no >= exp_json.parsed_proc.length){
+	if(trial_no >= project_json.parsed_proc.length){
 		$("#experiment_div").html("<h1>You have already completed this experiment</h1>");
 	}
   Project.activate_pipe();
@@ -604,11 +604,11 @@ function clean_this_condition(this_cond){
 }
 
 function clean_code(){
-  exp_json.parsed_proc.forEach(function(row,row_index){
+  project_json.parsed_proc.forEach(function(row,row_index){
     //identify code columns
     var tt_cols = Object.keys(row).filter(this_key => this_key.indexOf("code") !== -1);
     tt_cols.forEach(function(tt_col){
-      exp_json.parsed_proc[row_index][tt_col] = exp_json.parsed_proc[row_index][tt_col].toLowerCase();
+      project_json.parsed_proc[row_index][tt_col] = project_json.parsed_proc[row_index][tt_col].toLowerCase();
     });
   });
   Project.activate_pipe();
@@ -623,19 +623,19 @@ function clean_var(this_variable,default_value){
 	return this_variable;
 }
 
-function create_exp_json_variables(){
-	if(typeof(exp_json.trial_no) == "undefined"){
-		exp_json.this_trial = {};
-		exp_json.uninitiated_stims = [];
-		exp_json.uninitiated_stims_sum = 0;
-		exp_json.initiated_stims = 0;
-		exp_json.time_outs = [];
-		exp_json.inputs = [];
-		exp_json.progress_bar_visible = true; //not doing anything at the moment
-		exp_json.trial_no = 0;
-		exp_json.post_no  = 0;
-		if(typeof(exp_json.responses) == "undefined"){
-			exp_json.responses = [];
+function create_project_json_variables(){
+	if(typeof(project_json.trial_no) == "undefined"){
+		project_json.this_trial = {};
+		project_json.uninitiated_stims = [];
+		project_json.uninitiated_stims_sum = 0;
+		project_json.initiated_stims = 0;
+		project_json.time_outs = [];
+		project_json.inputs = [];
+		project_json.progress_bar_visible = true; //not doing anything at the moment
+		project_json.trial_no = 0;
+		project_json.post_no  = 0;
+		if(typeof(project_json.responses) == "undefined"){
+			project_json.responses = [];
 		}
 	}
 	Project.activate_pipe();
@@ -666,17 +666,17 @@ function final_trial(){
             JSON.stringify(
               encrypt(
                 //the public key
-                exp_json.public_key,
+                project_json.public_key,
                 //the data
-                JSON.stringify(exp_json.responses)
+                JSON.stringify(project_json.responses)
               )
             ),
-					  exp_json.storage_scripts,
+					  project_json.storage_scripts,
   					function(returned_data){
   						message_data = returned_data.split(" encrypted data = ");
   						if(message_data.length == 1){
   							//retrieve researcher e-mail address
-  							precrypted_data(exp_json,"Problem encrypting: <b>"+ message_data +"</b>, we'll try again every 10 seconds, but in case it fails, please download and e-mail this file. What do you want to save this file as? (you will get this message each time we fail to e-mail your data to the researcher)");
+  							precrypted_data(project_json,"Problem encrypting: <b>"+ message_data +"</b>, we'll try again every 10 seconds, but in case it fails, please download and e-mail this file. What do you want to save this file as? (you will get this message each time we fail to e-mail your data to the researcher)");
   							setTimeout(function(){
   								final_trial();
   							},10000);
@@ -708,22 +708,22 @@ function final_trial(){
   								});
   							});
   							$("#raw_click").on("click",function(){
-  								precrypted_data(exp_json,"What do you want to save this file as?");
+  								precrypted_data(project_json,"What do you want to save this file as?");
   							});
   							online_data_obj.finished_and_stored = true;
   						}
   					},
             "all",
-            exp_json.responses.length
+            project_json.responses.length
           );
 				}
 			);
-			var download_at_end = exp_json.this_condition.download_at_end;
+			var download_at_end = project_json.this_condition.download_at_end;
 			if(download_at_end == undefined){
 				download_at_end = "on";
 			}
-			if(typeof(exp_json.this_condition.end_message) !== "undefined" && exp_json.this_condition.end_message !== ""){
-				$("#experiment_div").html("<h3 class='text-primary'>"+exp_json.this_condition.end_message+"</h3>");
+			if(typeof(project_json.this_condition.end_message) !== "undefined" && project_json.this_condition.end_message !== ""){
+				$("#experiment_div").html("<h3 class='text-primary'>"+project_json.this_condition.end_message+"</h3>");
 			} else {
 				$("#experiment_div").html("");
 			}
@@ -749,22 +749,22 @@ function final_trial(){
             online_data_obj.finished_and_stored = true;
             $("#google_progress").css("width","100%");
             setTimeout(function(){
-							if(typeof(exp_json.this_condition.forward_at_end) !== "undefined" &&
-												exp_json.this_condition.forward_at_end  !== ""){
-								bootbox.alert("The next phase of your experiment is <a class='btn btn-primary' style='margin:2px' href='"+ exp_json.this_condition.forward_at_end +"' target='_blank'>here</a> - please continue there.");
+							if(typeof(project_json.this_condition.forward_at_end) !== "undefined" &&
+												project_json.this_condition.forward_at_end  !== ""){
+								bootbox.alert("The next phase of your experiment is <a class='btn btn-primary' style='margin:2px' href='"+ project_json.this_condition.forward_at_end +"' target='_blank'>here</a> - please continue there.");
 							}
-              if(exp_json.this_condition.download_at_end !== "off"){
+              if(project_json.this_condition.download_at_end !== "off"){
                 var download_at_end_html = " If you'd like to download your raw data <span id='download_json'>click here</span></h1>";
               } else {
                 var download_at_end_html = "";
               }
               $("#experiment_div").html("<h1>Thank you for participating." + download_at_end_html);
               $("#download_json").on("click",function(){
-                precrypted_data(exp_json,"What do you want to save this file as?");
+                precrypted_data(project_json,"What do you want to save this file as?");
               });
               $("#participant_country").show();
               $("#participant_country").load("ParticipantCountry.html");
-              window.localStorage.removeItem("exp_json");
+              window.localStorage.removeItem("project_json");
               window.localStorage.removeItem("username");
               window.localStorage.removeItem("completion_code");
               window.localStorage.removeItem("prehashed_code");
@@ -781,16 +781,16 @@ function final_trial(){
     case "localhost":
     case "preview":
       online_data_obj.finished_and_stored = true;
-      if(exp_json.this_condition.download_at_end !== "off"){
+      if(project_json.this_condition.download_at_end !== "off"){
         download_message = "You can download the data by clicking <b><span id='download_json'>here</span></b>.";
       } else {
         download_message = "";
       }
       $("#experiment_div").html("<h1>You have finished. " + download_message + "</h1>");
       $("#download_json").on("click",function(){
-        precrypted_data(exp_json,"What do you want to save this file as?");
+        precrypted_data(project_json,"What do you want to save this file as?");
       });
-      window.localStorage.removeItem("exp_json");
+      window.localStorage.removeItem("project_json");
       window.localStorage.removeItem("username");
       window.localStorage.removeItem("completion_code");
       window.localStorage.removeItem("prehashed_code");
@@ -799,8 +799,8 @@ function final_trial(){
 }
 
 function full_screen(){
-  if(typeof(exp_json.this_condition.fullscreen) !== "undefined"){
-    if(exp_json.this_condition.fullscreen == "on"){
+  if(typeof(project_json.this_condition.fullscreen) !== "undefined"){
+    if(project_json.this_condition.fullscreen == "on"){
       var elem = $(document.body);
 
       if((window.fullScreen) ||
@@ -865,14 +865,14 @@ function get_htmls(){
 }
 
 function insert_end_checks(){
-  var this_proc  = exp_json.parsed_proc;
+  var this_proc  = project_json.parsed_proc;
   var this_proc_end = {
     item: 0,
     max_time: "",
     text: "",
     "code": "end_checks_experiment"
   }
-  var shuffle_levels = Object.keys(exp_json.parsed_proc[0]).filter(item => item.indexOf("shuffle") !== -1);
+  var shuffle_levels = Object.keys(project_json.parsed_proc[0]).filter(item => item.indexOf("shuffle") !== -1);
   shuffle_levels.forEach(function(shuffle_level){
     this_proc_end[shuffle_level] = "off";
   });
@@ -889,7 +889,7 @@ function insert_start(){
       text:"",
       "code": code
     }
-    var shuffle_levels = Object.keys(exp_json.parsed_proc[0]).filter(item => item.indexOf("shuffle") !== -1);
+    var shuffle_levels = Object.keys(project_json.parsed_proc[0]).filter(item => item.indexOf("shuffle") !== -1);
     shuffle_levels.forEach(function(shuffle_level){
       this_trialtype_info[shuffle_level] = "off";
     });
@@ -900,7 +900,7 @@ function insert_start(){
   function load_quality_checks(quality_list){
     var this_check = quality_list.pop();
     $.get(this_check.url,function(this_check_html){
-      exp_json.code[this_check.name] = this_check_html;
+      project_json.code[this_check.name] = this_check_html;
       if(quality_list.length > 0){
         load_quality_checks(quality_list);
       } else {
@@ -910,7 +910,7 @@ function insert_start(){
   }
 
 
-  var this_proc  = exp_json.parsed_proc;
+  var this_proc  = project_json.parsed_proc;
   if(Project.get_vars.platform == "preview"){
     this_proc = add_to_start(this_proc, "quality_preview_start");
     load_quality_checks([{
@@ -925,8 +925,8 @@ function insert_start(){
     this_proc = add_to_start(this_proc, "quality_details_warning");
 
     if(
-      typeof(exp_json.this_condition.age_check) !== "undefined" &&
-      exp_json.this_condition.age_check.toLowerCase() == "no"
+      typeof(project_json.this_condition.age_check) !== "undefined" &&
+      project_json.this_condition.age_check.toLowerCase() == "no"
     ){
       //skip this
     } else {
@@ -965,10 +965,10 @@ function insert_start(){
 
 
 function parse_sheets(){
-  var proc_sheet_name = exp_json.this_condition.procedure
+  var proc_sheet_name = project_json.this_condition.procedure
       .toLowerCase()
       .replace(".csv","") + ".csv";
-  var stim_sheet_name = exp_json.this_condition.stimuli
+  var stim_sheet_name = project_json.this_condition.stimuli
       .toLowerCase()
       .replace(".csv","") + ".csv"
   proc_stim_loaded = [];
@@ -986,17 +986,17 @@ function parse_sheets(){
         folder,
         stim_sheet_name
       );
-      exp_json.parsed_proc = Collector
+      project_json.parsed_proc = Collector
         .PapaParsed(proc_sheet_content);
-      exp_json.parsed_stim = [null,null].concat(
+      project_json.parsed_stim = [null,null].concat(
         Collector.PapaParsed(stim_sheet_content)
       );
       Project.activate_pipe();
       break;
     case "github":
       if(typeof(Project.get_vars.dropbox) !== "undefined" && Project.get_vars.dropbox){
-        exp_json.parsed_proc = Collector.PapaParsed(exp_json.all_procs[proc_sheet_name]);
-        exp_json.parsed_stim = [null,null].concat(Collector.PapaParsed(exp_json.all_stims[stim_sheet_name]));
+        project_json.parsed_proc = Collector.PapaParsed(project_json.all_procs[proc_sheet_name]);
+        project_json.parsed_stim = [null,null].concat(Collector.PapaParsed(project_json.all_stims[stim_sheet_name]));
         Project.activate_pipe();
       } else {
         var proc_url = "../User/Projects/" +
@@ -1004,7 +1004,7 @@ function parse_sheets(){
           "/" +
           proc_sheet_name;
         $.get(proc_url, function(proc_sheet_content){
-          exp_json.parsed_proc = Collector.PapaParsed(proc_sheet_content);
+          project_json.parsed_proc = Collector.PapaParsed(proc_sheet_content);
           proc_stim_loaded[1] = "procedure";
           if(proc_stim_loaded.join("-") == "stimuli-procedure"){
             Project.activate_pipe();
@@ -1014,7 +1014,7 @@ function parse_sheets(){
           Project.get_vars.location +
           "/" +  stim_sheet_name;
         $.get(stim_url,function(stim_sheet_content){
-          exp_json.parsed_stim = [null,null].concat(Collector.PapaParsed(stim_sheet_content));
+          project_json.parsed_stim = [null,null].concat(Collector.PapaParsed(stim_sheet_content));
           proc_stim_loaded[0] = "stimuli";
           if(proc_stim_loaded.join("-") == "stimuli-procedure"){
             Project.activate_pipe();
@@ -1024,11 +1024,11 @@ function parse_sheets(){
       break;
     case "server":
       proc_stim_loaded[1] = "procedure";
-      exp_json.parsed_proc = Collector.PapaParsed(exp_json.all_procs[proc_sheet_name]);
+      project_json.parsed_proc = Collector.PapaParsed(project_json.all_procs[proc_sheet_name]);
       if(proc_stim_loaded.join("-") == "stimuli-procedure"){
         Project.activate_pipe();
       }
-      exp_json.parsed_stim = [null,null].concat(Collector.PapaParsed(exp_json.all_stims[stim_sheet_name]));
+      project_json.parsed_stim = [null,null].concat(Collector.PapaParsed(project_json.all_stims[stim_sheet_name]));
       proc_stim_loaded[0] = "stimuli";
       if(proc_stim_loaded.join("-") == "stimuli-procedure"){
         Project.activate_pipe();
@@ -1039,7 +1039,7 @@ function parse_sheets(){
 
 function parse_current_proc(){
   function proc_apply_repeats(){
-  	var this_proc = exp_json.parsed_proc;
+  	var this_proc = project_json.parsed_proc;
   	repeat_cols = ["weight","frequency","freq","repeat"];
   	var repeat_cols_pres = [];
   	Object.keys(this_proc[0]).forEach(function(header){
@@ -1069,10 +1069,10 @@ function parse_current_proc(){
   			filled_proc.push(this_row);
   		}
   	}
-  	exp_json.parsed_proc = filled_proc;
+  	project_json.parsed_proc = filled_proc;
   }
   function proc_fill_items(){
-  	var this_proc   = exp_json.parsed_proc;
+  	var this_proc   = project_json.parsed_proc;
   	var filled_proc = [];
 
   	for(var j = 0; j < this_proc.length; j++){
@@ -1108,9 +1108,9 @@ function parse_current_proc(){
   			});
   		}
   	};
-  	exp_json.parsed_proc = filled_proc;
+  	project_json.parsed_proc = filled_proc;
   }
-	exp_json.parsed_proc = exp_json.parsed_proc.filter( function(row){
+	project_json.parsed_proc = project_json.parsed_proc.filter( function(row){
     return Object.keys(row).every(function(x) { return row[x]===''||row[x]===null;}) === false;
   });
 	proc_fill_items();
@@ -1119,7 +1119,7 @@ function parse_current_proc(){
 }
 
 function participant_backup(){
-  window.localStorage.setItem("exp_json",JSON.stringify(exp_json));
+  window.localStorage.setItem("project_json",JSON.stringify(project_json));
   window.localStorage.setItem("username",$("#participant_code").val());
 }
 
@@ -1215,7 +1215,7 @@ function precrypted_data(decrypted_data,message){
 }
 
 function process_welcome(){
-  if(document.getElementById("loading_exp_json") !== null) {
+  if(document.getElementById("loading_project_json") !== null) {
     /*
     * skip participant id? (and thus start_message)
     */
@@ -1223,7 +1223,7 @@ function process_welcome(){
     if(Project.get_vars.platform == "preview"){
       var pp_id_setting = "random";
     } else {
-      var pp_id_setting = exp_json.this_condition.participant_id;
+      var pp_id_setting = project_json.this_condition.participant_id;
     }
 
 		if(pp_id_setting == "off"){																// put in a participant ID that is clearly not unique (e.g. "notUnique").
@@ -1234,15 +1234,15 @@ function process_welcome(){
 			$("#participant_code").val(this_code);
       post_welcome(this_code,"random");
 		} else if(pp_id_setting  == "on"){
-			$("#loading_exp_json").fadeOut(500);
+			$("#loading_project_json").fadeOut(500);
 			$("#researcher_message").fadeIn(2000);
 			$("#participant_id_div").show(1000);
 		}	else {
 			bootbox.alert("It's not clear if the researcher wants you to give them a user id - please contact them before proceeding.");
 		}
 
-		if(exp_json.this_condition.start_message !== ""){
-			$("#researcher_message").html(exp_json.this_condition.start_message);
+		if(project_json.this_condition.start_message !== ""){
+			$("#researcher_message").html(project_json.this_condition.start_message);
 		} else {
 			def_start_msg = "<h1 class='text-primary'> Collector</h1>"+
         "<br><br>" +
@@ -1272,8 +1272,8 @@ function requestFullScreen(element) {
 }
 
 function select_condition(){
-  var conditions = Collector.PapaParsed(exp_json.conditions);
-  exp_json.this_condition = conditions.filter(function(row){
+  var conditions = Collector.PapaParsed(project_json.conditions);
+  project_json.this_condition = conditions.filter(function(row){
     return row.name == Project.get_vars.name;
   })[0];
 
@@ -1281,8 +1281,8 @@ function select_condition(){
   * Check if use of mobile devices is off
   */
   if(
-    typeof(exp_json.this_condition.mobile) !== "undefined" &&
-    exp_json.this_condition.mobile.toLowerCase() == "no" &&
+    typeof(project_json.this_condition.mobile) !== "undefined" &&
+    project_json.this_condition.mobile.toLowerCase() == "no" &&
     window.mobilecheck()
   ){
     alert("This experiment will not run on a mobile device. Please complete it on a laptop or desktop (using google chrome if possible).");
@@ -1337,31 +1337,31 @@ function shuffle_start_exp(){
 	//perhaps also have "shuffle" works as shuffle 1
 	//perhaps also have "block shuffle 1" as shuffle 2, etc.
 
-	var shuffle_levels = Object.keys(exp_json.parsed_proc[0]).filter(item => item.indexOf("shuffle") !== -1);
+	var shuffle_levels = Object.keys(project_json.parsed_proc[0]).filter(item => item.indexOf("shuffle") !== -1);
 			shuffle_levels = shuffle_levels.sort()
 																		 .reverse();
 
 	shuffle_levels.forEach(function(shuffle_level){
-		for(var i = 0; i < exp_json.parsed_proc.length; i++){
-			if(exp_json.parsed_proc[i][shuffle_level] == ""){
-				exp_json.parsed_proc[i][shuffle_level] = "off";
+		for(var i = 0; i < project_json.parsed_proc.length; i++){
+			if(project_json.parsed_proc[i][shuffle_level] == ""){
+				project_json.parsed_proc[i][shuffle_level] = "off";
 			}
 		}
 
 		if(shuffle_level !== "shuffle 1"){
 
-			//split exp_json.parsed_proc into chunks based on this_level
+			//split project_json.parsed_proc into chunks based on this_level
 			//off rows don't change their order
-			var shuffle_block_names = [exp_json.parsed_proc[0][shuffle_level]];
-			var shuffle_block_rows  = [[exp_json.parsed_proc[0]]];
+			var shuffle_block_names = [project_json.parsed_proc[0][shuffle_level]];
+			var shuffle_block_rows  = [[project_json.parsed_proc[0]]];
 
-			for(var i = 1; i < exp_json.parsed_proc.length; i++){
-				if(exp_json.parsed_proc[i][shuffle_level] !== exp_json.parsed_proc[i-1][shuffle_level] ||
-					 exp_json.parsed_proc[i][shuffle_level] == "off"){
-					shuffle_block_names.push(exp_json.parsed_proc[i][shuffle_level]);
-					shuffle_block_rows.push([exp_json.parsed_proc[i]]);
+			for(var i = 1; i < project_json.parsed_proc.length; i++){
+				if(project_json.parsed_proc[i][shuffle_level] !== project_json.parsed_proc[i-1][shuffle_level] ||
+					 project_json.parsed_proc[i][shuffle_level] == "off"){
+					shuffle_block_names.push(project_json.parsed_proc[i][shuffle_level]);
+					shuffle_block_rows.push([project_json.parsed_proc[i]]);
 				} else {
-					shuffle_block_rows[shuffle_block_rows.length-1].push(exp_json.parsed_proc[i]);
+					shuffle_block_rows[shuffle_block_rows.length-1].push(project_json.parsed_proc[i]);
 				}
 			}
 			var shuffled_block_names = JSON.parse(JSON.stringify(shuffle_block_names));
@@ -1407,16 +1407,16 @@ function shuffle_start_exp(){
 				});
 			});
 
-			exp_json.parsed_proc.forEach(function(row, row_no){
+			project_json.parsed_proc.forEach(function(row, row_no){
 				if(row[shuffle_level] !== "off"){
-					exp_json.parsed_proc[row_no] = all_rows[row_no];
+					project_json.parsed_proc[row_no] = all_rows[row_no];
 				}
 			});
 		}
 	});
 
 	shuffle_array = {};
-	exp_json.parsed_proc.forEach(function(row,index){
+	project_json.parsed_proc.forEach(function(row,index){
 			var this_shuffle = row["shuffle 1"];
 			if(typeof(shuffle_array[this_shuffle]) == "undefined"){
 				shuffle_array[this_shuffle] = [index];
@@ -1428,30 +1428,30 @@ function shuffle_start_exp(){
 	Object.keys(shuffle_array).forEach(function(key){
 			shuffleArray(shuffle_array[key]);
 	});
-	//apply shuffle to exp_json.parsed_proc
-	new_proc = exp_json.parsed_proc.map(function(row,original_index){
+	//apply shuffle to project_json.parsed_proc
+	new_proc = project_json.parsed_proc.map(function(row,original_index){
 			if(row["shuffle 1"] !== "off" & row["shuffle 1"] !== ""){
 					this_shuffle = row["shuffle 1"];
 					var this_pos = shuffle_array[this_shuffle].pop();
-					return exp_json.parsed_proc[this_pos];
+					return project_json.parsed_proc[this_pos];
 			}
 			if(row["shuffle 1"] == "off"){
-					return exp_json.parsed_proc[original_index];
+					return project_json.parsed_proc[original_index];
 			}
 	});
-	exp_json.parsed_proc = new_proc;
-	if(typeof(exp_json.responses) == "undefined"){
-		exp_json.responses 	 = [];
+	project_json.parsed_proc = new_proc;
+	if(typeof(project_json.responses) == "undefined"){
+		project_json.responses 	 = [];
 	}
 
-	exp_json.wait_to_proc	= false;
+	project_json.wait_to_proc	= false;
   Project.activate_pipe();
 }
 
 function start_restart(){
   if(isSafari){
     bootbox.alert("This experiment will not run in safari. Please close and use another browser");
-  } else if(window.localStorage.getItem("exp_json") !== null &
+  } else if(window.localStorage.getItem("project_json") !== null &
      Project.get_vars.platform !== "preview"){
 
     bootbox.dialog({
@@ -1462,7 +1462,7 @@ function start_restart(){
           label: "Resume",
   				className: 'btn-primary',
   				callback: function(){
-            exp_json = JSON.parse(window.localStorage.getItem("exp_json"));
+            project_json = JSON.parse(window.localStorage.getItem("project_json"));
 
             var participant_code = window.localStorage.getItem("username");
             var completion_code = window.localStorage.getItem("completion_code");
@@ -1511,7 +1511,7 @@ function start_study(){
 
 	//detect if resuming
 
-	if(Object.keys(exp_json) == 0){
+	if(Object.keys(project_json) == 0){
 		switch(Project.get_vars.platform){
       case "onlinepreview":
       case "localhost":
@@ -1519,7 +1519,7 @@ function start_study(){
         electron_wait = setInterval(function(){
           if(typeof(Collector.electron.fs.read_file) !== "undefined"){
             clearInterval(electron_wait);
-            exp_json = JSON.parse(
+            project_json = JSON.parse(
               Collector
                 .electron
                 .fs
@@ -1538,7 +1538,7 @@ function start_study(){
 			case "github":
 				if(typeof(Project.get_vars.dropbox) !== "undefined" && Project.get_vars.dropbox){
 					$.get(Project.get_vars.dropbox.replace("www.","dl."),function(result){
-						exp_json = JSON.parse(result);
+						project_json = JSON.parse(result);
 						Project.activate_pipe();
 					});
 				} else {
@@ -1550,7 +1550,7 @@ function start_study(){
               random_code = "";
             }
             $.get("../User/Projects/" + Project.get_vars.location + ".json?randomcode=" + random_code,function(result){
-              exp_json = result;
+              project_json = result;
               Project.activate_pipe();
             })
             .catch(function(error){
@@ -1573,7 +1573,7 @@ function start_study(){
 						get_location = Project.get_vars.location;
 					}
 					$.get(get_location,function(this_project){
-						exp_json = JSON.parse(this_project);
+						project_json = JSON.parse(this_project);
 						Project.activate_pipe();
 					});
 				}
@@ -1586,7 +1586,7 @@ function start_study(){
 
 function write_trial_iframe(index){
 
-	if(typeof(exp_json.parsed_proc[index]) == "undefined"){
+	if(typeof(project_json.parsed_proc[index]) == "undefined"){
 		return null;
 	}
 
@@ -1600,7 +1600,7 @@ function write_trial_iframe(index){
 	$("#experiment_div").append(trial_iframe);
 
 
-	this_proc = exp_json.parsed_proc[index];
+	this_proc = project_json.parsed_proc[index];
 
 	var post_code =  Object.keys(this_proc).filter(function(key) {
 		return /code/.test(key);
@@ -1678,29 +1678,29 @@ function write_trial_iframe(index){
     doc.scrollTo(0,0);
 
 		var no_images = (trial_content.match(/<img/g) || []).length;
-		exp_json.uninitiated_stims.push(no_images);
-		exp_json.uninitiated_stims_sum = exp_json.uninitiated_stims.reduce(function(acc,val){return acc + val });
+		project_json.uninitiated_stims.push(no_images);
+		project_json.uninitiated_stims_sum = project_json.uninitiated_stims.reduce(function(acc,val){return acc + val });
 
 		if(typeof(stim_interval) == "undefined"){
 			//need code here to deal with "buffering" when there are no images.
 			stim_interval = setInterval(function(){
-				exp_json.initiated_stims = 0;
-				for(var j = exp_json.trial_no; j < exp_json.trial_no + exp_json.this_condition.buffer; j++){
+				project_json.initiated_stims = 0;
+				for(var j = project_json.trial_no; j < project_json.trial_no + project_json.this_condition.buffer; j++){
 					if($("#trial"+j).contents().children().find("iframe").contents().children().find("img").prop("complete")){
 					//if($("#trial"+j).contents().find('img').prop('complete') == true){
-						exp_json.initiated_stims += $("#trial"+j).contents().children().find("iframe").contents().children().find("img").length;
+						project_json.initiated_stims += $("#trial"+j).contents().children().find("iframe").contents().children().find("img").length;
 					}
 				}
-				var completion = 100-exp_json.initiated_stims/exp_json.uninitiated_stims_sum;
+				var completion = 100-project_json.initiated_stims/project_json.uninitiated_stims_sum;
 				$("#stim_listing").css("width",completion+"%");
-				if(completion == 100 | exp_json.uninitiated_stims_sum == 0){
+				if(completion == 100 | project_json.uninitiated_stims_sum == 0){
 					clearInterval(stim_interval);
 					$("#loading_div").hide();
 					$("#stim_progress").fadeOut(1000);
 					if($("#calibrate_div").is(':visible') == false){
 						$("#experiment_div").fadeIn(500);
 					}
-					if(exp_json.wait_to_proc){
+					if(project_json.wait_to_proc){
 						bootbox.alert("It looks like you have closed the window midway through an experiment. Please press OK when you are ready to resume the experiment!", function(){
 							Project.start_post();
 						});
@@ -1721,7 +1721,7 @@ $(window).bind('keydown', function(event) {
 		switch (String.fromCharCode(event.which).toLowerCase()) {
 			case 's':
 				event.preventDefault();
-				precrypted_data(exp_json,"What do you want to save this file as?");
+				precrypted_data(project_json,"What do you want to save this file as?");
 			break;
 		}
 	}
@@ -1740,7 +1740,7 @@ window.onbeforeunload = function() {
             online_data_obj.finished_and_stored = true; //even though it's not
           }
         });
-        precrypted_data(exp_json,"It looks like you're trying to leave the experiment before you're finished (or at least before the data has been e-mailed to the researcher. Please choose a filename to save your data as and e-mail it to the researcher. It should appear in your downloads folder.");
+        precrypted_data(project_json,"It looks like you're trying to leave the experiment before you're finished (or at least before the data has been e-mailed to the researcher. Please choose a filename to save your data as and e-mail it to the researcher. It should appear in your downloads folder.");
 
         return "Please do not try to refresh - you will have to restart if you do so.";
       }

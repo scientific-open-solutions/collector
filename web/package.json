@@ -45,7 +45,7 @@
     ],
     "files": [
       "**/*",
-      "!repositories/*",
+      "!Repositories/*",
       "!User/**"
     ],
     "linux": {

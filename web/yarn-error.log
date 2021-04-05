@@ -73,7 +73,7 @@ npm manifest:
       ],
       "files": [
         "**/*",
-        "!repositories/*",
+        "!Repositories/*",
         "!User/**"
       ],
       "linux": {

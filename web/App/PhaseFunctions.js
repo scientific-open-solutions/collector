@@ -22,32 +22,32 @@ if(typeof(Phase) !== "undefined"){
 	Phase.add_response = function (response_obj){
 		response_obj.inserted_time_ms = (new Date()).getTime();
 		response_obj.inserted_time_date = new Date().toString('MM/dd/yy HH:mm:ss');
-		parent.parent.exp_json.responses.push(response_obj);
+		parent.parent.project_json.responses.push(response_obj);
 	}
 
 	Phase.elapsed = function(){
 		if(Phase.post_no == ""){
 			Phase.post_no = 0;
 		}
-		return (new Date()).getTime() - parent.parent.exp_json.this_trial["post_"+Phase.post_no+"_trial_start_ms"];
+		return (new Date()).getTime() - parent.parent.project_json.this_trial["post_"+Phase.post_no+"_trial_start_ms"];
 	}
   Phase.get = function(this_name){
-    return  parent.parent.exp_json.study_vars[this_name];
+    return  parent.parent.project_json.study_vars[this_name];
   }
   Phase.get_proc = function(this_name){
-    return parent.parent.exp_json.all_procs[this_name];
+    return parent.parent.project_json.all_procs[this_name];
   }
   Phase.get_stim = function(this_name){
-    return parent.parent.exp_json.all_stims[this_name];
+    return parent.parent.project_json.all_stims[this_name];
   }
   Phase.go_to = function(new_trial_no){
     parent.parent.Project.go_to(new_trial_no);
   }
   Phase.set = function(this_name,this_content){
-    if(typeof(parent.parent.exp_json.study_vars) == "undefined"){
-      parent.parent.exp_json.study_vars = {};
+    if(typeof(parent.parent.project_json.study_vars) == "undefined"){
+      parent.parent.project_json.study_vars = {};
     }
-    parent.parent.exp_json.study_vars[this_name] = this_content;
+    parent.parent.project_json.study_vars[this_name] = this_content;
   }
 
   /*
@@ -85,7 +85,7 @@ if(typeof(Phase) !== "undefined"){
 
   }
 	Phase.set_timer = function(this_function,duration){
-		parent.parent.exp_json.time_outs.push({
+		parent.parent.project_json.time_outs.push({
 			trial_no : Phase.trial_no,
 			post_no  : Phase.post_no,
 			duration : duration,
@@ -93,7 +93,7 @@ if(typeof(Phase) !== "undefined"){
 		});
   }
   Phase.submit = function(){
-    parent.parent.exp_json.inputs = jQuery( "[name]" );
+    parent.parent.project_json.inputs = jQuery( "[name]" );
     parent.parent.Project.finish_trial();
   }
 }
@@ -104,7 +104,7 @@ $(window).bind('keydown', function(event) {
 		switch (String.fromCharCode(event.which).toLowerCase()) {
 			case 's':
 				event.preventDefault();
-				parent.parent.precrypted_data(parent.parent.exp_json,"What do you want to save this file as?");
+				parent.parent.precrypted_data(parent.parent.project_json,"What do you want to save this file as?");
 			break;
 		}
 	}

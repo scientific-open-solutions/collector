@@ -528,32 +528,25 @@ $("#rename_survey_btn").on("click",function(){
         } else if(typeof(master.surveys.user_surveys[new_survey_name]) !== "undefined"){
           bootbox.alert("This name clashes with an already existing survey");
         } else {
-          switch(Collector.detect_context()){
-      			case "localhost":
-              var write_response = Collector.electron.fs.write_file(
-                "Surveys",
-                new_survey_name,
-                master.surveys.user_surveys[old_survey_name]
-              );
-              if(write_response == "success"){
-                master.surveys.user_surveys[new_survey_name] = master.surveys.user_surveys[old_survey_name];
-                var delete_response = Collector.electron.fs.delete_survey(old_survey_name);
+          var write_response = Collector.electron.fs.write_file(
+            "Surveys",
+            new_survey_name,
+            master.surveys.user_surveys[old_survey_name]
+          );
+          if(write_response == "success"){
+            master.surveys.user_surveys[new_survey_name] = master.surveys.user_surveys[old_survey_name];
+            var delete_response = Collector.electron.fs.delete_survey(old_survey_name);
 
-                if(delete_response !== "success"){
-                  bootbox.alert(delete_response);
-                } else {
-                  delete(master.surveys.user_surveys[old_survey_name]);
-                  list_surveys();
-                  $("#survey_select").val("user|" + new_survey_name);
-                }
-              } else {
-                bootbox.alert(write_response);
-              }
-            break;
-      			case "server":
-      				//it must be a dropbox renaming, right?
-      				break;
-          }
+            if(delete_response !== "success"){
+              bootbox.alert(delete_response);
+            } else {
+              delete(master.surveys.user_surveys[old_survey_name]);
+              list_surveys();
+              $("#survey_select").val("user|" + new_survey_name);
+            }
+          } else {
+            bootbox.alert(write_response);
+          }  
         }
       }
     );

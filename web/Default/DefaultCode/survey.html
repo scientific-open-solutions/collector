@@ -405,19 +405,19 @@ function load_survey(survey){
   } else {
     survey = survey.toLowerCase().replace(".csv","") + ".csv";
 
-    if(typeof(parent.parent.exp_json.surveys) !== "undefined" &&
-       typeof(parent.parent.exp_json.surveys[survey]) !== "undefined"){
-      survey_content = parent.parent.exp_json.surveys[survey];
-      survey_obj.mods = parent.parent.exp_json.mods;
+    if(typeof(parent.parent.project_json.surveys) !== "undefined" &&
+       typeof(parent.parent.project_json.surveys[survey]) !== "undefined"){
+      survey_content = parent.parent.project_json.surveys[survey];
+      survey_obj.mods = parent.parent.project_json.mods;
 
     } else if(
-      typeof(parent.parent.exp_json.surveys) !== "undefined" &&
-      typeof(parent.parent.exp_json.surveys[
+      typeof(parent.parent.project_json.surveys) !== "undefined" &&
+      typeof(parent.parent.project_json.surveys[
         survey.replace(".csv","")
       ])
     ){
-			survey_content = parent.parent.exp_json.surveys[survey.replace(".csv","")];
-      survey_obj.mods = parent.parent.exp_json.mods;
+			survey_content = parent.parent.project_json.surveys[survey.replace(".csv","")];
+      survey_obj.mods = parent.parent.project_json.mods;
 		}	else {
       bootbox.alert("Survey " + survey  + " doesn't appear to exist");
     }

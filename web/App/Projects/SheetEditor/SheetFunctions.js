@@ -50,9 +50,9 @@ function check_trialtypes_in_proc(procedure,post_trialtype){
 	});
 }
 function clean_conditions(){
-  exp_json = master.project_mgmt.projects[$("#project_list").val()];
+  project_json = master.project_mgmt.projects[$("#project_list").val()];
 
-  var parsed_conditions = Collector.PapaParsed(exp_json.conditions);
+  var parsed_conditions = Collector.PapaParsed(project_json.conditions);
   parsed_conditions = parsed_conditions.filter(row => row.procedure !== "");
   parsed_conditions = parsed_conditions.map(function(row){
     row.name = row.name.replaceAll(" ","_");
@@ -64,7 +64,7 @@ function clean_conditions(){
     return row;
   });
 
-  exp_json.conditions = Papa.unparse(parsed_conditions);
+  project_json.conditions = Papa.unparse(parsed_conditions);
 
   update_handsontables();
 }
@@ -180,8 +180,7 @@ function new_project(project){
 		bootbox.alert("Name already exists. Please try again.");
 	} else {
 
-    //create it first in dropbox, THEN update table with location
-		master.project_mgmt.projects[project] = JSON.parse(
+    master.project_mgmt.projects[project] = JSON.parse(
       JSON.stringify(default_experiment)
     );
 
@@ -193,8 +192,7 @@ function new_project(project){
       }));
       $("#project_list").val(project);
       update_handsontables();
-      update_master();
-			$("#save_btn").click();
+      $("#save_btn").click();
     }
 		update_project_list(project);
 	}
@@ -202,25 +200,11 @@ function new_project(project){
 function remove_from_list(project){
 	var x = document.getElementById("project_list");
 	x.remove(project);
-	if(project !== "Select a dropbox project"){
+	if(project !== "Select a project"){
 		update_handsontables();
 	}
 }
-function renderItems() {
-  // Highlight to users which accounts they are logged in with
-  ////////////////////////////////////////////////////////////
-  highlight_account("dropbox_account_email");
-  highlight_account("collector_account_email");
-  first_load = true;
-  list_projects();
-	list_mods();
-  list_surveys();
-	list_code();
-	list_graphics();
-  list_servers();
-	initiate_actions();
-  autoload_mods();
-}
+
 function stim_proc_defaults(proc_values,stim_values){
 	var this_proj   = master.project_mgmt.projects[$("#project_list").val()];
 
@@ -370,7 +354,7 @@ function update_handsontables(){
         break;
 
   }
-	$("#dropbox_inputs").show();
+	$("#project_inputs").show();
 }
 
 

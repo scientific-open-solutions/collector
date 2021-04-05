@@ -1014,7 +1014,7 @@ function sendData() {
                       "-" +
                       sub_trial_no,
                       "-trial-" +
-                      parent.parent.exp_json.trial_no +
+                      parent.parent.project_json.trial_no +
                       "-" +
                       trial_no,
                     parent.parent.$("#completion_code").val(),
@@ -1035,7 +1035,7 @@ function sendData() {
                       parent.parent.$("#participant_code").val() +
                         "-" + gaze_phase +
                         "-trial-" +
-                        parent.parent.exp_json.trial_no +
+                        parent.parent.project_json.trial_no +
                         "-" +
                         trial_no +
                         "-" +
@@ -1270,8 +1270,8 @@ function process_freeview_image_file(){
 };
 
 //check if the freeview file matches one of the stimuli files
-if(typeof(parent.parent.exp_json.all_stims[freeview_image_file]) !== "undefined"){
-  var freeview_contents = parent.parent.exp_json.all_stims[freeview_image_file];
+if(typeof(parent.parent.project_json.all_stims[freeview_image_file]) !== "undefined"){
+  var freeview_contents = parent.parent.project_json.all_stims[freeview_image_file];
   var freeview_clean    = freeview_contents.map(function(row){
     return row.filter(item => item !== null);
   });
@@ -1281,7 +1281,7 @@ if(typeof(parent.parent.exp_json.all_stims[freeview_image_file]) !== "undefined"
   }).data;
   process_freeview_image_file();
 } else {
-  if(freeview_image_file.toLowerCase().indexOf("https://") == -1){                //i.e. isn't stored on dropbox or some other remote location
+  if(freeview_image_file.toLowerCase().indexOf("https://") == -1){
     freeview_image_file = "../User/" + freeview_image_file;
   }
   $.get(freeview_image_file,function(result){

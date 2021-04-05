@@ -12,7 +12,7 @@ Collector.exe
 /Updater/dist
 /Updater/UpdateCollector.spec
 /web/dist
-/web/repositories
+/web/Repositories
 /web/User/Data
 /web/User/Private
 /venv
