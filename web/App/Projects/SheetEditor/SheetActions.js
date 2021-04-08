@@ -185,7 +185,11 @@ $("#download_project_button").on("click",function(){
 		value: default_filename, //"data.csv",
 		callback:function(result){
 			if(result){
-				Collector.download_file(result,JSON.stringify(project_json),"json");
+				Collector.download_file(
+          result,
+          JSON.stringify(project_json, null, 2),
+          "json"
+        );
 			}
 		}
 	});
@@ -419,19 +423,9 @@ $("#run_btn").on("click",function(){
 		});
     */
 	}
-  if(typeof(github_json) == "undefined"){
-    try{
-      github_json = JSON.parse(Collector.electron.git.load_master());
-      var organization = github_json.organization;
-      var repository   = github_json.repository;
-    } catch(error){
-      organization = "Your github json seems broken";
-      repository = "";
-    }
-  } else {
-    var organization = github_json.organization;
-    var repository   = github_json.repository;
-  }
+  var organization = master.github.organization;
+  var repository   = master.github.repository;
+
 
   var github_url =  "https://" +
     organization +
@@ -491,7 +485,7 @@ $("#run_btn").on("click",function(){
       "https://"                            +
         organization                        +
         ".github.io"                        + "/" +
-        github_json.repository              + "/" +
+        master.github.repository              + "/" +
         "web"                               + "/" +
         "App"                               + "/" +
         "Run.html?platform=github&"    +
@@ -557,7 +551,6 @@ $("#save_btn").on("click", function(){
       return this_proj;
     };
   }
-
   function process_procs(this_proj){
     Object.keys(this_proj.all_procs).forEach(function(proc_name){
       this_proc = Collector.PapaParsed(this_proj.all_procs[proc_name]);
@@ -620,6 +613,8 @@ $("#save_btn").on("click", function(){
       });
       this_proc = cleaned_parsed_proc.map(function(row, row_index){
         var cleaned_row = Collector.clean_obj_keys(row);
+        console.log("cleaned_row");
+        console.log(cleaned_row);
         if(code_files.indexOf(cleaned_row["code"]) == -1){
           code_files.push(cleaned_row["code"].toLowerCase());
         }
@@ -679,7 +674,7 @@ $("#save_btn").on("click", function(){
     return this_proj;
   }
 
-  //try{
+  // try{
     $("#save_code_button").click();
     $("#save_survey_btn").click();
     $("#save_snip_btn").click();
@@ -762,7 +757,6 @@ $("#save_btn").on("click", function(){
 					}
 				);
 
-        var git_json_response = Collector.electron.git.save_master();
         var write_response = Collector.electron.fs.write_file(
           "",
 					"master.json",
@@ -778,23 +772,17 @@ $("#save_btn").on("click", function(){
         }
       }
     } else {
-      switch(Collector.detect_context()){
-        case "localhost":
-          var git_json_response = Collector.electron.git.save_master();
-
-          var write_response = Collector.electron.fs.write_file(
-            "",
-            "master.json",
-            JSON.stringify(master, null, 2));
-          if(write_response !== "success"){
-            bootbox.alert(response);
-          } else {
-            Collector.custom_alert(
-              "Succesfully saved master"
-            )
-          }
-          var git_json_response = Collector.electron.git.save_master();
-      };
+      var write_response = Collector.electron.fs.write_file(
+        "",
+        "master.json",
+        JSON.stringify(master, null, 2));
+      if(write_response !== "success"){
+        bootbox.alert(response);
+      } else {
+        Collector.custom_alert(
+          "Succesfully saved master"
+        )
+      }
     }
 
     Collector.tests.pass("projects",

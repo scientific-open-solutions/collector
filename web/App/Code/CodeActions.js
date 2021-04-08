@@ -180,7 +180,7 @@ function initiate_actions(){
 
 
           var response = Collector.electron.fs.write_file(
-            "Phasetypes",
+            "Phase",
             new_name.replace(".html","") + ".html",
             master
               .trialtypes

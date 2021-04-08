@@ -27,7 +27,7 @@ var isolation_map = {
         'empathy_quotient_40.csv' : 'file',
   			"info_sheet.csv"					: 'file'
       },
-      DefaultPhasetypes:{
+      DefaultCode:{
         "instruct.html" :         "file",
   			"instruct_keyboard.html": "file",
         "survey.html":            "file",

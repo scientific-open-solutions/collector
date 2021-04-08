@@ -1,11 +1,6 @@
-/*
-* Detect if a mac device
-*/
-const fs   = require('fs-extra');
-
+const fs     = require('fs-extra');
 var root_dir = require("os").homedir() + "/Documents/Collector/";
-
-root_dir = root_dir.replaceAll("\\","\/");
+    root_dir = root_dir.replaceAll("\\","\/");
 
 //make sure there is a Collector folder in documents
 if(!fs.existsSync(root_dir)){
@@ -25,7 +20,7 @@ const { Octokit }     = require("@octokit/rest");
 const simpleGit       = require('simple-git');
 
 /*
-* var git = simpleGit(); has to be called in individual functions to make sure it's fresh rather than has carrying over information from previous calls
+var git = simpleGit(); has to be called in individual functions to make sure it's fresh rather than has carrying over information from previous calls
 */
 var commandExistsSync = require('command-exists').sync;
 const git_token_location = root_dir + "Repositories/Private/github_token.txt";
@@ -33,7 +28,6 @@ const git_token_location = root_dir + "Repositories/Private/github_token.txt";
 /*
 * In alphabetical order
 */
-
 ipc.on('git_add_changes', (event, args) => {
 
   /*
@@ -270,42 +264,25 @@ ipc.on('git_exists', (event,args) => {
 
 ipc.on('git_list_repos', (event,args) => {
 
+  var repo_list = {};
   var organizations = fs.readdirSync(root_dir + "Repositories");
 
+
   organizations.forEach(function(organization){
-    console.log(organization);
-  })
+    if(organization !== "Private"){
+      repo_list[organization] = [];
+      var repos = fs.readdirSync(
+        root_dir + "Repositories" + "/" + organization
+      );  
+      repos.forEach(function(repo){
+        repo_list[organization].push(repo);
+      });
+    }
+  });
+  console.log("repo_list");
+  console.log(repo_list);
 
-  /*
-  event.returnValue = JSON.stringify(
-    fs.readdirSync(root_dir + "User/Projects")
-  );
-  */
-});
-
-ipc.on('git_load_master', (event,args) => {
-  if(!fs.existsSync(root_dir + "Repositories")){
-    fs.mkdirSync(root_dir + "Repositories")
-  }
-  if(!fs.existsSync(root_dir + "Repositories/github.json")){
-    fs.writeFileSync(
-      root_dir +
-      "Repositories/github.json",
-      "{}",
-      'utf8'
-    );
-  }
-  var github_path = root_dir + "Repositories/github.json";
-  console.log("github_path");
-  console.log(github_path);
-
-  var content = fs.readFileSync(
-    github_path,
-    'utf8'
-  );
-  console.log("content");
-  console.log(content);
-  event.returnValue = content;
+  event.returnValue = JSON.stringify(repo_list);
 });
 
 ipc.on('git_pages', (event,args) => {
@@ -520,16 +497,6 @@ ipc.on('git_push', (event,args) => {
       console.log(error)
       event.returnValue = "error when pushing:" + error;
     });
-});
-
-ipc.on('git_save_master', (event,args) => {
-  fs.writeFileSync(
-    root_dir +
-    "Repositories/github.json",
-    args["git_master"],
-    'utf8'
-  );
-  event.returnValue = "success";
 });
 
 ipc.on('git_set_email', (event, args) => {

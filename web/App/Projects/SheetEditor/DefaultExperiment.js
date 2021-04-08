@@ -3,7 +3,7 @@ default_experiment = {
     "procedure_1.csv": [
       [
         "item",
-        "trial type",
+        "code",
         "max time",
         "text",
         "Shuffle 1"

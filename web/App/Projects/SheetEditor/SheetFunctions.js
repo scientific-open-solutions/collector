@@ -262,11 +262,13 @@ function update_handsontables(){
   proc_file = Object.keys(this_proj.all_procs)[0];
 
 
-	function load_spreadsheet(experiment,
-														sheet_type,
+	function load_spreadsheet(sheet_type,
 														sheet_name,
 													  project_mgmt_location,
 														sheet_content){
+
+    console.log("sheet_content");
+    console.log(sheet_content);
     if(sheet_content.split(",").length > 1){
       createExpEditorHoT(sheet_content,
 												 sheet_type,
@@ -278,82 +280,65 @@ function update_handsontables(){
 			createExpEditorHoT(sheet_json,
 												 sheet_type,
 												 sheet_name);
-		}
+	  }
 	}
 
-  switch(Collector.detect_context()){
-      case "localhost":
-				var conditions_sheet = Collector.electron.fs.read_file(
-          "Projects/"  + $("#project_list").val(),
-				  "conditions.csv"
-        );
+		var conditions_sheet = Collector.electron.fs.read_file(
+      "Projects/"  + $("#project_list").val(),
+		  "conditions.csv"
+    );
 
-			 if(conditions_sheet == ""){
-				 conditions_sheet = Papa.unparse(
-           master
-             .project_mgmt
-             .projects
-             [$("#project_list").val()]
-             .conditions
-         );
-			 }
-       load_spreadsheet(
-         $("#project_list").val(),
-				 "Conditions",
-				 "conditions.csv",
-				 "conditions",
-				 conditions_sheet
-      );
+	 if(conditions_sheet == ""){
+		 conditions_sheet = Papa.unparse(
+       master
+         .project_mgmt
+         .projects
+         [$("#project_list").val()]
+         .conditions
+     );
+	 }
+   load_spreadsheet(
+     "Conditions",
+		 "conditions.csv",
+		 "conditions",
+		 conditions_sheet
+  );
 
-	    var stim_sheet = Collector.electron.fs.read_file(
-        "Projects/" + $("#project_list").val(),
-				stim_file
-      );
-		  if(stim_sheet == ""){
-				 stim_sheet = Papa.unparse(
-           master
-             .project_mgmt
-             .projects
-             [$("#project_list").val()]
-             .all_stims[stim_file]
-         );
-       }
-       load_spreadsheet(
-         $("#project_list").val(),
-				 "Stimuli",
-				 stim_file,
-				 "all_stims[sheet_name]",
-				 stim_sheet
-       );
+  var stim_sheet = Collector.electron.fs.read_file(
+    "Projects/" + $("#project_list").val(),
+		stim_file
+  );
+  if(stim_sheet == ""){
+	  stim_sheet = master
+      .project_mgmt
+      .projects
+      [$("#project_list").val()]
+      .all_stims[stim_file];
+   }
+   load_spreadsheet(
+     "Stimuli",
+		 stim_file,
+		 "all_stims[sheet_name]",
+		 stim_sheet
+   );
 
-       var proc_sheet = Collector.electron.fs.read_file(
-         "Projects/"  + $("#project_list").val(),
-       	 proc_file
-       );
-			 if(proc_sheet == ""){
-				 proc_sheet = Papa.unparse(
-           master
-            .project_mgmt
-            .projects
-            [$("#project_list").val()]
-            .all_procs[proc_file]);
-			 }
-       load_spreadsheet(
-         $("#project_list").val(),
-         "Procedure",
-         proc_file,
-         "all_procs[sheet_name]",
-				 proc_sheet
-       );
-       break;
-      case "github":
-      default:
-      	createExpEditorHoT(this_proj.all_stims[stim_file], "Stimuli",   stim_file);
-        createExpEditorHoT(this_proj.all_procs[proc_file], "Procedure", proc_file);
-        createExpEditorHoT(this_proj.cond_array, "Conditions","Conditions.csv");
-        break;
-
-  }
+   var proc_sheet = Collector.electron.fs.read_file(
+     "Projects/"  + $("#project_list").val(),
+   	 proc_file
+   );
+	 if(proc_sheet == ""){
+		 proc_sheet = master
+      .project_mgmt
+      .projects
+      [$("#project_list").val()]
+      .all_procs[proc_file];
+	 }
+   load_spreadsheet(
+     "Procedure",
+     proc_file,
+     "all_procs[sheet_name]",
+		 proc_sheet
+   );
 	$("#project_inputs").show();
 }
 

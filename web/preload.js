@@ -151,9 +151,6 @@ window.onload=function(){
           list_repos: function(){
             return ipc.sendSync('git_list_repos');
           },
-          load_master: function(){
-            return ipc.sendSync('git_load_master');
-          },
           pages: function(repo_info){
             return ipc.sendSync(
               'git_pages',
@@ -171,20 +168,6 @@ window.onload=function(){
               'git_push',
               repo_info
             );
-          },
-          save_master: function(){
-            if(
-              typeof(github_json) !==
-              "undefined"
-            ){
-              var git_master = JSON.stringify(github_json);
-              return ipc.sendSync(
-                'git_save_master',
-                {
-                  "git_master": git_master
-                }
-              );
-            }
           },
           set_email: function(email){
             return ipc.sendSync(

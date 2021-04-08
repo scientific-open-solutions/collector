@@ -14,37 +14,6 @@ document.onkeydown = function(evt) {
   }
 };
 
-var lazy_organization_interval = setInterval(function(){
-  if(typeof(github_json) !== "undefined"){
-    clearInterval(lazy_organization_interval);
-    if(typeof(github_json.organizations) == "undefined"){
-      github_json.organizations = {};
-    }
-    Object.keys(github_json.organizations).forEach(function(organization){
-      $('#select_organization').append($('<option>', {
-          value: organization,
-          text: organization
-      }));
-    });
-    $("#select_organization").val(github_json.organization);
-
-    if(
-      typeof(github_json.organization) !== "undefined" &&
-      github_json.organization !== ""
-     ){
-       var repos = github_json.organizations[github_json.organization].Repositories;
-
-       Object.keys(repos).forEach(function(repository){
-         $('#select_repository').append($('<option>', {
-             value: repository,
-             text: repository
-         }));
-       });
-       $("#select_repository").val(github_json.repository);
-    }
-  }
-},500);
-
 $("#add_organization_btn").on("click",function(){
   bootbox.prompt("What is the name of the github organization the repository is/will be in? (This organization must already exist)", function(response){
     if(response){
@@ -58,8 +27,7 @@ $("#add_organization_btn").on("click",function(){
         }));
       }
       $("#select_organization").val(response);
-      github_json.organization = response;
-      /* Empty repository list */
+      master.github.organization = response;
       $("#select_repository").empty();
 
       Object.keys(github_json.organizations[response].Repositories).forEach(function(repository){
@@ -145,14 +113,13 @@ $("#add_repository_btn").on("click",function(){
                 [repository] = {};
             }
             $("#select_repository").val(repository);
-            github_json.repository = repository;
+            master.github.repository = repository;
             var this_response = Collector.electron.git.add_repo({
               organization: $("#select_organization").val(),
               repository: $("#select_repository").val()
             });
             if(this_response !== "success"){
               bootbox.alert(this_response);
-              Collector.electron.git.save_master();
               return false;
             } else {
               Collector.custom_alert("success");
@@ -232,7 +199,6 @@ $("#delete_organization_btn").on("click", function (){
         });
       }
       $("#select_organization option[value='" + $("#select_organization").val() + "']").remove();
-      Collector.electron.git.save_master();
     }
   });
 });
@@ -254,7 +220,6 @@ $("#delete_repo_btn").on("click",function(){
         });
       }
       $("#select_repository option[value='" + $("#select_repository").val() + "']").remove();
-      Collector.electron.git.save_master();
     }
   });
 });
@@ -370,58 +335,48 @@ $("#push_repo_btn").on("click",function(){
 });
 
 $("#select_organization").on("change", function(){
-  bootbox.confirm("If you change this you will lose any changes to this repository since you last saved - would you like to proceed?", function(result){
-    if(result){
-      $("#select_repository").attr("disabled",false);
-      $("#add_repository_btn").attr("disabled",false);
-      var this_org = $("#select_organization").val();
+  $("#select_repository").attr("disabled",false);
+  $("#add_repository_btn").attr("disabled",false);
+  var this_org = $("#select_organization").val();
 
 
-      $("#select_repository").empty();
-      Object.keys(
-        github_json.organizations[this_org].Repositories
-      ).forEach(function(repository){
-        $('#select_repository').append($('<option>', {
-            value: repository,
-            text:  repository
-        }));
-      });
-
-      $('#select_repository').append($('<option>', {
-          value: "select a repository",
-          text:  "select a repository",
-          disabled: true
-      }));
-
-      $('#select_repository').val("select a repository");
-
-    } else {
-      $("#select_organization").val(github_json.organization)
-    }
+  $("#select_repository").empty();
+  github_json[this_org].forEach(function(repository){
+    $('#select_repository').append($('<option>', {
+        value: repository,
+        text:  repository
+    }));
   });
+
+  $('#select_repository').append($('<option>', {
+      value: "Select a repository",
+      text:  "Select a repository",
+      disabled: true
+  }));
+  $('#select_repository').val("Select a repository");
 });
 
 $("#select_repository").on("change", function(){
   bootbox.confirm("Changing your repository will cause you to lose all your changes you've made since you last pushed them. Are you sure you want to do this?", function(response){
     var this_org = $("#select_organization").val();
     if(response){
-      master
-        .github
-        .repository = $("#select_repository").val();
+      console.log("howdy");
+      master.github.repository = $("#select_repository").val();
 
       Collector
         .electron
         .git
         .switch_repo({
-          old_org:      github_json.organization,
-          old_rep:      github_json.repository,
+          old_org:      master.github.organization,
+          old_rep:      master.github.repository,
           repository:   $("#select_repository").val(),
           organization: this_org
         });
 
-      github_json.organization = this_org;
-      github_json.repository = $("#select_repository").val();
-      Collector.electron.git.save_master();
+
+      master.github.organization = this_org;
+      master.github.repository = $("#select_repository").val();
+      $("#save_btn").click();
       location.reload();
     } else {
       $("#select_repository").val(

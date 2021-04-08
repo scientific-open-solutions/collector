@@ -163,7 +163,7 @@ function list_code(to_do_after){
       user_keys.forEach(function(element){
         $("#code_select").append("<option class='user_code'>" + element + "</option>");
       });
-      
+
       if(typeof(to_do_after) !== "undefined"){
         to_do_after();
       }
@@ -198,7 +198,7 @@ function list_code(to_do_after){
         process_returned(JSON.stringify(master.code.default));
       }
     }
-    var default_list = Object.keys(isolation_map[".."]["Default"]["DefaultPhasetypes"]);
+    var default_list = Object.keys(isolation_map[".."]["Default"]["DefaultCode"]);
 
     get_default(default_list);
 

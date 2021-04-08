@@ -87,6 +87,14 @@ function correct_master(){
   if(typeof(master.code.graphic.files) == "undefined"){
     master.code.graphic.files = master.code.graphic.trialtypes;
   }
+
+  /*
+  * remove any duplicates of default code fiels in the user
+  */
+  var default_code_files = Object.keys(master.code.default);
+  default_code_files.forEach(function(default_file){
+    delete(master.code.user[default_file]);
+  });
 }
 
 switch(Collector.detect_context()){

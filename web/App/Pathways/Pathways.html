@@ -233,9 +233,9 @@ $("#run_pathway_btn").on("click", function(){
   var pathway = $("#pathway_select").val();
 
   var pathway_url =  "https://" +
-                      github_json.organization +
+                      master.github.organization +
                       ".github.io/"                   +
-                      github_json.repository   + "/" +
+                      master.github.repository   + "/" +
                       "App/Pathway.html"            + "?" +
                       "pathway="                       +
                       master.pathway_mgmt.current + "&" +

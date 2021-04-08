@@ -81,7 +81,6 @@
 <script>
 
 $("#add_server").on("click",function(){
-  //resume here
   var this_server_info = {
     storage_url      : '',
     registration_url : '',
@@ -334,15 +333,15 @@ function bind_publish_btn(){
 				github_json = {};
 			}
 			if(typeof(github_json.organization) == "undefined"){
-        github_json.organization = '';
+        master.github.organization = '';
 			}
 			if(typeof(github_json.repository) == "undefined"){
-				github_json.repository = '';
+				master.github.repository = '';
 			}
 			if(typeof(github_json.username) == "undefined"){
 				github_json.username = '';
 			}
-			if(github_json.repository == "" | github_json.organization == "" && github_json.username == ""){
+			if(master.github.repository == "" | master.github.organization == "" && github_json.username == ""){
 				bootbox.alert("You appear to be using an installed " +
 				"version of Collector rather than an online version. " +
 				"You will need to identify which github repository " +
@@ -351,14 +350,14 @@ function bind_publish_btn(){
 				"github button in the top right of the page.");
 			} else {
 
-				if(github_json.organization !== ""){
+				if(master.github.organization !== ""){
 					var github_user_org = github_json.organization;
 				}	else {
 					var github_user_org = github_json.username;
 				}
 
 				this_proj.location = github_user_org        + "/" +
-														 github_json.repository + "/" +
+														 master.github.repository + "/" +
                              experiment;
 				publish_experiment(
           this_proj,

@@ -299,19 +299,40 @@ $("#github_logo").on("click", function(){
       }
     } else {
       github_json = JSON.parse(
-        Collector.electron.git.load_master()
+        Collector.electron.git.list_repos()
       );
-      //lazy way of preventing the following slowing down the starting up of Collector
+
+      Object.keys(github_json).forEach(function(organization){
+        $('#select_organization').append($('<option>', {
+            value: organization,
+            text: organization
+        }));
+      });
+      var org = master.github.organization;
+      $("#select_organization").val(org);
+
+      if(typeof(org) !== "undefined" && org !== ""){
+         var repos = github_json[org];
+
+         repos.forEach(function(repository){
+           $('#select_repository').append($('<option>', {
+               value: repository,
+               text: repository
+           }));
+         });
+         $("#select_repository").val(master.github.repository);
+      }
+
       setTimeout(function(){
         if(
-          typeof(github_json.organization) !== "undefined" &&
-          github_json.organization !== ""                  &&
-          typeof(github_json.repository) !== "undefined"   &&
-          github_json.repository !== ""
+          typeof(master.github.organization) !== "undefined" &&
+                 master.github.organization  !== ""          &&
+          typeof(master.github.repository) !== "undefined"   &&
+                 master.github.repository !== ""
         ){
           var commits_behind = Collector.electron.git.status({
-            organization: github_json.organization,
-            repository: github_json.repository
+            organization: master.github.organization,
+            repository:   master.github.repository
           });
           if(commits_behind !== 0)
           {
