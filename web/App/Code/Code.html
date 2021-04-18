@@ -63,6 +63,7 @@
           <option disabled selected>Stimuli sheet (optional)</option>
           <option>None</option>
         </select>
+        <button id="code_preview_fullscreen" class="btn btn-primary">Fullscreen</button>
       </ul>
     </div>
   </div>
@@ -108,8 +109,54 @@
   </div>
 </div>
 
+
+
 <script src="iframe_library.js"></script>
 <script>
+//https://stackoverflow.com/a/32100295/4490801
+$("#code_preview_fullscreen").on("click", function(){
+
+  // if already full screen; exit
+  // else go fullscreen
+  if (
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement ||
+    document.msFullscreenElement
+  ) {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+  } else {
+    element = $('#code_preview').get(0);
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+    }
+  }
+
+  /*
+  var this_width = window.innerWidth;
+  var this_height = window.innerHeight;
+  $("#code_preview").css("height", this_height);
+  $("#code_preview").css("width",  this_width);
+  $("#code_preview").css("position",  "absolute");
+  $("#code_preview").css("top",  "0px");
+  $("#code_preview").css("left",  "0px");
+  */
+});
+
 $("#graphic_editor").load(collector_map["Graphic.html"]);
 
 $("#community_code_btn").on("click",function(){
@@ -128,6 +175,16 @@ $("#code-preview-tab").on("click",function(){
   iframe_variables = eval(
     iframe_content.split("---development---")[1]
   );
+
+  /*
+  * use ../User folder
+  */
+  var home_dir = Collector
+    .electron
+    .fs
+    .home_dir();
+  iframe_content = iframe_content.replaceAll("../User/",  home_dir + "/User/");
+
   if(typeof(iframe_variables) !== "undefined"){
     iframe_variables.forEach(function(row){
       var this_key = Object.keys(row);
