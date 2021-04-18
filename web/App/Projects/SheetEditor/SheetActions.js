@@ -156,8 +156,8 @@ $("#delete_stim_button").on("click",function(){
         * Delete the file locally if in electron
         */
         var file_path = "Projects" + "/" +
-                          experiment  + "/" +
-                          stim_file
+                        project    + "/" +
+                        stim_file
         if(Collector.detect_context() == "localhost"){
           var this_response = Collector
             .electron

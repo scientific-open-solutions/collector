@@ -54,7 +54,7 @@ $("#welcome_html").load("Welcome.html");
 
 
 <style>
-.trial_iframe{
+.phase_iframe{
   visibility:hidden;
 	overflow:hidden;
 	width:0%;
@@ -62,7 +62,7 @@ $("#welcome_html").load("Welcome.html");
 	margin-left: auto;
 	margin-right: auto;
 }
-#experiment_div{
+#project_div{
 	display: none;
 	width  : 100%;
 	margin : auto;
@@ -96,7 +96,7 @@ $("#welcome_html").load("Welcome.html");
 		<input type="button" value="Understood" id="proc_button">
 	</div>
   <div id = "calibrate_div"></div>
-	<div id="experiment_div" scrolling="no"></div>
+	<div id="project_div" scrolling="no"></div>
 </div>
 <div id="participant_country"></div>
 <script src="iframe_library.js"></script>
@@ -284,7 +284,7 @@ Project = {
         setTimeout(function(){
           var this_index = parseFloat(project_json.trial_no) +
             parseFloat(project_json.this_condition.buffer) - 1;
-          write_trial_iframe(this_index);
+          write_phase_iframe(this_index);
         });
         Project.start_post(go_to_info);
       }
@@ -363,7 +363,7 @@ Project = {
 			return false;
 		}
 
-		post_no = post_no == 0 ? "" : "post "+post_no+" ";
+		post_no       = post_no == 0 ? "" : "post "+post_no+" ";
 		this_proc 	   = project_json.parsed_proc[trial_no];
 		this_trialtype = project_json.code[this_proc[post_no+"code"]];
 
@@ -455,11 +455,11 @@ Project = {
     if(typeof(go_to_info) !== "undefined"){
       project_json.trial_no = go_to_info[0];
       project_json.post_no = go_to_info[1];
-      $(".trial_iframe").remove();
+      $(".phase_iframe").remove();
       var this_buffer = project_json.this_condition.buffer;
       var trial_no    = project_json.trial_no;
       for(var index = trial_no; index < trial_no + this_buffer; index++){
-        write_trial_iframe(index);
+        write_phase_iframe(index);
       };
     }
 		if(typeof(project_json.responses[project_json.trial_no]) == "undefined"){
@@ -576,10 +576,10 @@ function buffer_trials(){
   var this_buffer = project_json.this_condition.buffer;
 	var trial_no    = project_json.trial_no;
   for(var index = trial_no; index < trial_no + this_buffer; index++){
-		write_trial_iframe(index);
+		write_phase_iframe(index);
 	};
 	if(trial_no >= project_json.parsed_proc.length){
-		$("#experiment_div").html("<h1>You have already completed this experiment</h1>");
+		$("#project_div").html("<h1>You have already completed this experiment</h1>");
 	}
   Project.activate_pipe();
 }
@@ -686,7 +686,7 @@ function final_trial(){
 
   							encrypted_data = message_data[1];
 
-  							$("#experiment_div").html("<h1 class='text-primary'>" + message_data[0] + " <br><br> You can download the encrypted version of your data <span id='encrypt_click' class='text-success'>here</span> <br><br>or an unencrypted version <span id='raw_click' class='text-success'>here</span></h1>");
+  							$("#project_div").html("<h1 class='text-primary'>" + message_data[0] + " <br><br> You can download the encrypted version of your data <span id='encrypt_click' class='text-success'>here</span> <br><br>or an unencrypted version <span id='raw_click' class='text-success'>here</span></h1>");
 
   							$("#encrypt_click").on("click",function(){
   								bootbox.prompt({
@@ -723,11 +723,11 @@ function final_trial(){
 				download_at_end = "on";
 			}
 			if(typeof(project_json.this_condition.end_message) !== "undefined" && project_json.this_condition.end_message !== ""){
-				$("#experiment_div").html("<h3 class='text-primary'>"+project_json.this_condition.end_message+"</h3>");
+				$("#project_div").html("<h3 class='text-primary'>"+project_json.this_condition.end_message+"</h3>");
 			} else {
-				$("#experiment_div").html("");
+				$("#project_div").html("");
 			}
-			$("#experiment_div").append("<div id='download_div'></div>");
+			$("#project_div").append("<div id='download_div'></div>");
 
 			if(download_at_end == "on"){
 				$("#download_div").html("<h1 class='text-danger'>" +
@@ -758,7 +758,7 @@ function final_trial(){
               } else {
                 var download_at_end_html = "";
               }
-              $("#experiment_div").html("<h1>Thank you for participating." + download_at_end_html);
+              $("#project_div").html("<h1>Thank you for participating." + download_at_end_html);
               $("#download_json").on("click",function(){
                 precrypted_data(project_json,"What do you want to save this file as?");
               });
@@ -786,7 +786,7 @@ function final_trial(){
       } else {
         download_message = "";
       }
-      $("#experiment_div").html("<h1>You have finished. " + download_message + "</h1>");
+      $("#project_div").html("<h1>You have finished. " + download_message + "</h1>");
       $("#download_json").on("click",function(){
         precrypted_data(project_json,"What do you want to save this file as?");
       });
@@ -846,10 +846,26 @@ function get_gets() {
 }
 
 function get_htmls(){
+
   var htmls = [{
     "name": "Timer",
     "path": "libraries/collector/Timer.html"
   }];
+
+
+
+  /*
+  project_json.code should loop through trialtypes and get them from the Code folder. This location will depend on whether this is on the researcher's computer or not...
+  */
+
+
+
+
+
+
+
+
+
   function loop_htmls(html_list){
     var this_html = html_list.pop();
     $.get(this_html.path, function(this_code){
@@ -1154,7 +1170,7 @@ function post_welcome_data(returned_data){
     if(id_error == "skip"){
       $("#welcome_div").hide();
       $("#post_welcome").show();
-      $("#experiment_div").show();
+      $("#project_div").show();
       full_screen();
     } else if(id_error == "random"){
       var this_code = Math.random().toString(36).substr(2, 16);
@@ -1165,7 +1181,7 @@ function post_welcome_data(returned_data){
         if(response){
           $("#welcome_div").hide();
           $("#post_welcome").show();
-          $("#experiment_div").show();
+          $("#project_div").show();
           full_screen();
         }
       });
@@ -1584,20 +1600,20 @@ function start_study(){
 	}
 }
 
-function write_trial_iframe(index){
+function write_phase_iframe(index){
 
 	if(typeof(project_json.parsed_proc[index]) == "undefined"){
 		return null;
 	}
 
-  var trial_iframe = $("<iframe>");
+  var phase_iframe = $("<iframe>");
 
-      trial_iframe.addClass("trial_iframe")
+      phase_iframe.addClass("phase_iframe")
                   .attr("frameBorder", "0")
                   .attr("id", "trial" + index)
                   .attr("scrolling", "no");
 
-	$("#experiment_div").append(trial_iframe);
+	$("#project_div").append(phase_iframe);
 
 
 	this_proc = project_json.parsed_proc[index];
@@ -1605,14 +1621,14 @@ function write_trial_iframe(index){
 	var post_code =  Object.keys(this_proc).filter(function(key) {
 		return /code/.test(key);
 	});
-	trial_events = post_code.filter(function(post_trialtype){
-    return this_proc[post_trialtype] !== "";
+	phase_events = post_code.filter(function(post_phase){
+    return this_proc[post_phase] !== "";
   });
-	trial_iframe_code = '';
+	phase_iframe_code = '';
 
   // write an iframe with the required number of sub_iframes
-	for(var i = 0; i < trial_events.length; i++){
-		if(this_proc[trial_events[i]] !== ""){
+	for(var i = 0; i < phase_events.length; i++){
+		if(this_proc[phase_events[i]] !== ""){
       var post_iframe = $("<iframe>");
           post_iframe.addClass("post_iframe")
                      .attr("frameBorder", "0")
@@ -1620,7 +1636,7 @@ function write_trial_iframe(index){
                      .css("height", "100%")
                      .css("width", "100%")
 
-      trial_iframe_code += post_iframe[0].outerHTML;
+      phase_iframe_code += post_iframe[0].outerHTML;
 		}
 	}
 	doc = document
@@ -1629,16 +1645,16 @@ function write_trial_iframe(index){
     .document;
 	doc.open();
   try{
-    doc.write(trial_iframe_code);
+    doc.write(phase_iframe_code);
   } catch(error){
     alert("failed to write the trial_code");
     alert(error);
   }
 	doc.close();
 
-	for(var i = 0; i < trial_events.length; i++){
-		var trial_content = Project.generate_trial(index,i);
-        trial_content += "<button style='opacity:0; filter: alpha(opacity=0)' id='zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'></button>";
+	for(var i = 0; i < phase_events.length; i++){
+		var phase_content = Project.generate_trial(index,i);
+        phase_content += "<button style='opacity:0; filter: alpha(opacity=0)' id='zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'></button>";
 
 		doc = document
       .getElementById('trial'+index)
@@ -1668,7 +1684,7 @@ function write_trial_iframe(index){
     }
     doc.document.write(
       libraries +
-      trial_content +
+      phase_content +
       timer_code +
       img_check_code
     );
@@ -1677,7 +1693,7 @@ function write_trial_iframe(index){
     //autoscroll to top of iframe (in case the trial runs over)
     doc.scrollTo(0,0);
 
-		var no_images = (trial_content.match(/<img/g) || []).length;
+		var no_images = (phase_content.match(/<img/g) || []).length;
 		project_json.uninitiated_stims.push(no_images);
 		project_json.uninitiated_stims_sum = project_json.uninitiated_stims.reduce(function(acc,val){return acc + val });
 
@@ -1698,7 +1714,7 @@ function write_trial_iframe(index){
 					$("#loading_div").hide();
 					$("#stim_progress").fadeOut(1000);
 					if($("#calibrate_div").is(':visible') == false){
-						$("#experiment_div").fadeIn(500);
+						$("#project_div").fadeIn(500);
 					}
 					if(project_json.wait_to_proc){
 						bootbox.alert("It looks like you have closed the window midway through an experiment. Please press OK when you are ready to resume the experiment!", function(){

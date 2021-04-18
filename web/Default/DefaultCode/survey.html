@@ -278,7 +278,6 @@ $("#proceed_button").on("click",function(){
       min_resp_length = 0;
     }
 
-
     var quest_resp = isJSON($("#"+response_elements[i].id).val());
     if (quest_resp.length < min_resp_length){
       proceed = false;
@@ -616,6 +615,7 @@ function process_question(row, row_no){
     if(row["type"].toLowerCase() == "instruct"){
       row_html  = write("instruct",row);
     } else if(row["type"].toLowerCase() == "jumbled"){
+      //row_html  = question_td + write("jumbled",row); <-- this is better, but being paused for placement work Anthony is doing
       row_html  = write("jumbled",row);
 		} else if(row["type"].toLowerCase() == "likert"){
 
@@ -732,6 +732,12 @@ function row_perc(this_rat){
 function response_check(submitted_element){
   switch(submitted_element.type){
     case "checkbox":
+
+      console.log(submitted_element);
+      console.log(submitted_element.name);
+
+
+
       var checked_responses = $("[name='"+submitted_element.name+"']:checked");
       if(checked_responses.length){ //i.e. more than 0
         var values = [];
@@ -742,6 +748,9 @@ function response_check(submitted_element){
       } else {
         $("#"+submitted_element.name+"_response").val("");
       }
+      console.log($("#"+submitted_element.name+"_response").val());
+      console.log($("#"+submitted_element.name+"_response"));
+
       break;
 
       case "button":
@@ -977,6 +986,7 @@ function write(type, row){
 
   } else if(type == "checkbox_vertical"){
     var options = row["answers"].split("|");
+    var values  = row["values"].split("|");
     for(var i = 0; i < options.length; i++){
       feedback_string = generate_feedback_string(
         feedback_array, i, feedback_color, row
@@ -987,6 +997,7 @@ function write(type, row){
             .addClass("custom-checkbox");
       var this_checkbox = $("<input>");
           this_checkbox[0].id= row["item_name"]+ i;
+          this_checkbox[0].value = options[i];
           this_checkbox[0].type = "checkbox";
           this_checkbox[0].name = 'survey_'+
             row["item_name"].toLowerCase();
@@ -1030,6 +1041,12 @@ function write(type, row){
           .attr("name", "survey_" + row["item_name"])
           .css("margin", "0px")
           .css("width", "auto");
+
+    /* this will be necessary to tidy up jumbled sentences
+    if(typeof(row["item_name_old"]) !== "undefined"){
+      this_dropdown.addClass(row["item_name_old"] + "_item");
+    }
+    */
 
     this_dropdown.append("<option selected disabled hidden>-- no option selected --</option>");
     options.forEach(function(this_option){
@@ -1208,9 +1225,9 @@ function write(type, row){
           this_input
             .addClass("custom-control-input")
             .addClass(row["this_class"])
-            .addClass("response")
             .addClass("custom-control")
             .addClass("custom-radio")
+            .addClass("response")
             .addClass(row["item_name"] + "_item_row_" + row["row_no"]);
       var this_label = $("<label>");
           this_label[0].htmlFor = row["item_name"]+i;

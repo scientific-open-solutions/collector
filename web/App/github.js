@@ -17,8 +17,8 @@ document.onkeydown = function(evt) {
 $("#add_organization_btn").on("click",function(){
   bootbox.prompt("What is the name of the github organization the repository is/will be in? (This organization must already exist)", function(response){
     if(response){
-      if(typeof(github_json.organizations[response]) == "undefined"){
-        github_json.organizations[response] = {
+      if(typeof(github_json[response]) == "undefined"){
+        github_json[response] = {
           "Repositories" : {}
         };
         $('#select_organization').append($('<option>', {
@@ -30,7 +30,7 @@ $("#add_organization_btn").on("click",function(){
       master.github.organization = response;
       $("#select_repository").empty();
 
-      Object.keys(github_json.organizations[response].Repositories).forEach(function(repository){
+      Object.keys(github_json[response]).forEach(function(repository){
         $('#select_repository').append($('<option>', {
           value: repository,
           text: repository
@@ -98,18 +98,14 @@ $("#add_repository_btn").on("click",function(){
           function(){
             repository = valid_repository_name(repository);
             if(typeof(github_json
-                        .organizations
                         [$("#select_organization").val()]
-                        .Repositories
                         [repository]) == "undefined"){
               $('#select_repository').append($('<option>', {
                 value: repository,
                 text: repository
               }));
               github_json
-                .organizations
                 [$("#select_organization").val()]
-                .Repositories
                 [repository] = {};
             }
             $("#select_repository").val(repository);
@@ -190,7 +186,6 @@ $("#delete_organization_btn").on("click", function (){
     if(result){
       delete(
         github_json
-          .organizations
           [github_json.organization]
       )
       if(Collector.detect_context() == "localhost"){
@@ -208,9 +203,7 @@ $("#delete_repo_btn").on("click",function(){
     if(result){
       delete(
         github_json
-          .organizations
           [github_json.organization]
-          .Repositories
           [github_json.repository]
       )
       if(Collector.detect_context() == "localhost"){
