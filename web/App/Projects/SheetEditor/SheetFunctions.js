@@ -262,40 +262,47 @@ function update_handsontables(){
   proc_file = Object.keys(this_proj.all_procs)[0];
 
 
-	function load_spreadsheet(sheet_type,
-														sheet_name,
-													  project_mgmt_location,
-														sheet_content){
-
-    console.log("sheet_content");
-    console.log(sheet_content);
-    if(sheet_content.split(",").length > 1){
-      createExpEditorHoT(sheet_content,
-												 sheet_type,
-												 sheet_name);
+	function load_spreadsheet(
+		sheet_type,
+		sheet_name,
+		project_mgmt_location,
+		sheet_content
+	){
+		if(typeof(sheet_content) !== "string"){
+			sheet_content = Papa.unparse(sheet_content);
+		}
+		if(sheet_content.split(",").length > 1){
+      createExpEditorHoT(
+				sheet_content,
+				sheet_type,
+				sheet_name
+			);
 		} else {
       var sheet_json = master.project_mgmt
-																	.projects[project]
-																	[project_mgmt_location];
-			createExpEditorHoT(sheet_json,
-												 sheet_type,
-												 sheet_name);
+				.projects
+				[$("#project_list").val()]
+				[project_mgmt_location];
+			createExpEditorHoT(
+				sheet_json,
+				sheet_type,
+				sheet_name
+			);
 	  }
 	}
 
-		var conditions_sheet = Collector.electron.fs.read_file(
-      "Projects/"  + $("#project_list").val(),
-		  "conditions.csv"
-    );
+	var conditions_sheet = Collector.electron.fs.read_file(
+    "Projects/" + $("#project_list").val(),
+	  "conditions.csv"
+  );
 
-	 if(conditions_sheet == ""){
-		 conditions_sheet = Papa.unparse(
-       master
-         .project_mgmt
-         .projects
-         [$("#project_list").val()]
-         .conditions
-     );
+	if(conditions_sheet == ""){
+		var this_cond_sheet = master
+			.project_mgmt
+			.projects
+			[$("#project_list").val()]
+			.conditions;
+		if(typeof(this_cond_sheet) == "object")
+		conditions_sheet = Papa.unparse(this_cond_sheet);
 	 }
    load_spreadsheet(
      "Conditions",

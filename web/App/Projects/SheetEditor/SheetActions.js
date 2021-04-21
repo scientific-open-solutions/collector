@@ -613,8 +613,6 @@ $("#save_btn").on("click", function(){
       });
       this_proc = cleaned_parsed_proc.map(function(row, row_index){
         var cleaned_row = Collector.clean_obj_keys(row);
-        console.log("cleaned_row");
-        console.log(cleaned_row);
         if(code_files.indexOf(cleaned_row["code"]) == -1){
           code_files.push(cleaned_row["code"].toLowerCase());
         }

@@ -18,6 +18,7 @@ $_GET = window.location.href.substr(1).split("&").reduce((o,i)=>(u=decodeURIComp
 
 Collector.tests.run();
 Collector.start = function(){
+  correct_master();
   wait_till_exists("list_projects");
   wait_till_exists("list_graphics");
   wait_till_exists("list_code");
@@ -27,11 +28,9 @@ Collector.start = function(){
   wait_till_exists("list_servers");
   wait_till_exists("list_surveys");
   wait_till_exists("list_pathways");
-  correct_master();
 }
 
 function correct_master(){
-  console.log("updating master json");
   /*
   * studies --> projects
   */
@@ -47,23 +46,35 @@ function correct_master(){
     delete(master.project_mgmt.experiments);
   }
 
-  /*
-  * "trial type" --> "code" for each project
-  */
+
+
 
   var projects = Object.keys(master.project_mgmt.projects);
   projects.forEach(function(project){
     var this_project = master.project_mgmt.projects[project];
+
+
+    /*
+    * "trial type" --> "code" for each project
+    */
     var all_procs = Object.keys(this_project.all_procs);
     all_procs.forEach(function(this_proc){
+      if(typeof(this_project.all_procs[this_proc]) == "object"){
+        this_project.all_procs[this_proc] = Papa.unparse(this_project.all_procs[this_proc]);
+      }
       this_project.all_procs[this_proc] = this_project
         .all_procs[this_proc].replace("trial type,","code,");
+
+      this_project.all_procs[this_proc] = Collector.PapaParsed(this_project.all_procs[this_proc]);
+
     });
     if(typeof(this_project.trialtypes) !== "undefined"){
       this_project.code = this_project.trialtypes;
       delete(this_project.trialtypes);
     }
   });
+
+
 
   /*
   * "trialtype" --> code for master
@@ -84,9 +95,21 @@ function correct_master(){
   if(typeof(master.code.user) == "undefined"){
     master.code.user = {};
   }
+
+  if(typeof(master.code.user_trialtypes) !== "undefined"){
+    Object.keys(master.code.user_trialtypes).forEach(function(item){
+      console.log(item);
+      if(typeof(master.code.user[item]) == "undefined"){
+        master.code.user[item] = master.code.user_trialtypes[item];
+      }
+    });
+  }
+
+
   if(typeof(master.code.graphic.files) == "undefined"){
     master.code.graphic.files = master.code.graphic.trialtypes;
   }
+
 
   /*
   * remove any duplicates of default code fiels in the user
@@ -105,8 +128,10 @@ switch(Collector.detect_context()){
     break;
   case "localhost":
 
-    Collector.tests.pass("helper",
-                         "startup");          // this can't fail in localhost version
+    Collector.tests.pass(
+      "helper",
+      "startup"
+    );          // this can't fail in localhost version
     wait_for_electron = setInterval(function(){
       //alert("hi");
       if(typeof(Collector.electron) !== "undefined"){
