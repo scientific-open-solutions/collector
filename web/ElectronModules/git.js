@@ -265,7 +265,14 @@ ipc.on('git_exists', (event,args) => {
 ipc.on('git_list_repos', (event,args) => {
 
   var repo_list = {};
-  var organizations = fs.readdirSync(root_dir + "Repositories");
+  var organizations = fs.readdirSync(
+    root_dir + "Repositories",
+    { withFileTypes: true }
+  ) .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+
+  console.log("organizations");
+  console.log(organizations);
 
 
   organizations.forEach(function(organization){
@@ -273,7 +280,7 @@ ipc.on('git_list_repos', (event,args) => {
       repo_list[organization] = [];
       var repos = fs.readdirSync(
         root_dir + "Repositories" + "/" + organization
-      );  
+      );
       repos.forEach(function(repo){
         repo_list[organization].push(repo);
       });
