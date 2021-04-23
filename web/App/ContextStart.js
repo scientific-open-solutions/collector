@@ -34,6 +34,9 @@ function correct_master(){
   /*
   * studies --> projects
   */
+
+  console.log("hi there 1");
+
   if(typeof(master.project_mgmt) == "undefined"){
     master.project_mgmt = master.exp_mgmt;
     master.project_mgmt.project = master
@@ -46,34 +49,42 @@ function correct_master(){
     delete(master.project_mgmt.experiments);
   }
 
+  console.log("hi there 2");
 
 
 
   var projects = Object.keys(master.project_mgmt.projects);
   projects.forEach(function(project){
-    var this_project = master.project_mgmt.projects[project];
+
+    try{
+      var this_project = master.project_mgmt.projects[project];
 
 
-    /*
-    * "trial type" --> "code" for each project
-    */
-    var all_procs = Object.keys(this_project.all_procs);
-    all_procs.forEach(function(this_proc){
-      if(typeof(this_project.all_procs[this_proc]) == "object"){
-        this_project.all_procs[this_proc] = Papa.unparse(this_project.all_procs[this_proc]);
+      /*
+      * "trial type" --> "code" for each project
+      */
+      var all_procs = Object.keys(this_project.all_procs);
+      all_procs.forEach(function(this_proc){
+        if(typeof(this_project.all_procs[this_proc]) == "object"){
+          this_project.all_procs[this_proc] = Papa.unparse(this_project.all_procs[this_proc]);
+        }
+        this_project.all_procs[this_proc] = this_project
+          .all_procs[this_proc].replace("trial type,","code,");
+
+        this_project.all_procs[this_proc] = Collector.PapaParsed(this_project.all_procs[this_proc]);
+
+      });
+      if(typeof(this_project.trialtypes) !== "undefined"){
+        this_project.code = this_project.trialtypes;
+        delete(this_project.trialtypes);
       }
-      this_project.all_procs[this_proc] = this_project
-        .all_procs[this_proc].replace("trial type,","code,");
-
-      this_project.all_procs[this_proc] = Collector.PapaParsed(this_project.all_procs[this_proc]);
-
-    });
-    if(typeof(this_project.trialtypes) !== "undefined"){
-      this_project.code = this_project.trialtypes;
-      delete(this_project.trialtypes);
+    } catch(error){
+      console.log("skipping this");
     }
+
   });
 
+  console.log("hi there 3");
 
 
   /*
