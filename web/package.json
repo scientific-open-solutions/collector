@@ -20,9 +20,9 @@
   "license": "GNU General Public License",
   "devDependencies": {
     "coffee-script": "~1.6.3",
-    "electron": "^10.2.0",
-    "electron-builder": "^22.9.1",
-    "png-to-ico": "^2.1.1"
+    "electron": "^10.4.4",
+    "electron-builder": "^22.10.5",
+    "png-to-ico": "^2.1.2"
   },
   "build": {
     "appId": "yourappid",
@@ -66,18 +66,18 @@
     }
   },
   "dependencies": {
-    "@octokit/auth": "^2.0.0",
-    "@octokit/auth-token": "^2.4.2",
+    "@octokit/auth": "^2.0.1",
+    "@octokit/auth-token": "^2.4.5",
     "@octokit/rest": "^17.11.2",
     "command-exists": "^1.2.9",
     "download-git-repo": "^3.0.2",
-    "electron-context-menu": "^2.3.0",
-    "eval": "^0.1.4",
+    "electron-context-menu": "^2.5.2",
+    "eval": "^0.1.6",
     "fs": "0.0.1-security",
-    "fs-extra": "^9.0.1",
+    "fs-extra": "^9.1.0",
     "git-clone": "^0.1.0",
     "papaparse": "^5.3.0",
     "require": "^2.4.20",
-    "simple-git": "^2.20.1"
+    "simple-git": "^2.38.0"
   }
 }
