@@ -2567,7 +2567,7 @@ require@^2.4.20:
   integrity sha1-Zstrqqu2XeinHXk/XGX9GE83mLY=
   dependencies:
     std "0.1.40"
-    uglify-js "2.3.0"
+    uglify-js "2.6.0"
 
 resolve@^1.10.0:
   version "1.17.0"
@@ -2985,9 +2985,9 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-uglify-js@2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.3.0.tgz#2cdec16d378a8a2b6ecfb6989784cf8b7ae5491f"
+uglify-js@2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.6.0.tgz#2cdec16d378a8a2b6ecfb6989784cf8b7ae5491f"
   integrity sha1-LN7BbTeKiituz7aYl4TPi3rlSR8=
   dependencies:
     async "~0.2.6"
