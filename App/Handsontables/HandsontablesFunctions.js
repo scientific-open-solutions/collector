@@ -146,7 +146,9 @@ function createHoT(container, data,sheet_name) {
         if(k >= this.countCols()){
 					break;
 				}
-
+				if(this.getDataAtCell(0,k).toLowerCase()=="trial type"){
+					this.setDataAtCell(0,k,"code");
+				}
         // checking for invalid item number (i.e. one)
 				if(this.getDataAtCell(0,k).toLowerCase()=="item"){
           // loop through each row
