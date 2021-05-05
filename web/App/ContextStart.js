@@ -35,23 +35,13 @@ function correct_master(){
   * studies --> projects
   */
 
-  console.log("hi there 1");
-
   if(typeof(master.project_mgmt) == "undefined"){
     master.project_mgmt = master.exp_mgmt;
-    master.project_mgmt.project = master
-      .project_mgmt
-      .experiment;
-    master.project_mgmt.projects = master
-      .project_mgmt
-      .experiments;
+    master.project_mgmt.project  = master.project_mgmt.experiment;
+    master.project_mgmt.projects = master.project_mgmt.experiments;
     delete(master.project_mgmt.experiment);
     delete(master.project_mgmt.experiments);
   }
-
-  console.log("hi there 2");
-
-
 
   var projects = Object.keys(master.project_mgmt.projects);
   projects.forEach(function(project){
@@ -83,9 +73,6 @@ function correct_master(){
     }
 
   });
-
-  console.log("hi there 3");
-
 
   /*
   * "trialtype" --> code for master

@@ -17,8 +17,8 @@
 
 		Kitten/Cat release (2019-2020) author: Dr. Anthony Haffey (team@someopen.solutions)
 */
-$("#default_experiments_select").on("change",function(){
-	if($("#default_experiments_select").val() !== "Select an experiment"){
+$("#default_projects_select").on("change",function(){
+	if($("#default_projects_select").val() !== "Select an experiment"){
 		$("#upload_default_exp_btn").attr("disabled",false);
 	}
 });
@@ -218,7 +218,7 @@ $("#new_project_button").on("click",function(){
 });
 
 $("#new_proc_button").on("click",function(){
-  var proc_template = default_experiment.all_procs["procedure_1.csv"];
+  var proc_template = default_project.all_procs["procedure_1.csv"];
 	bootbox.prompt("What would you like the name of the new <b>procedure</b> sheet to be?",function(new_proc_name){
 		var project = $("#project_list").val();
 		var this_proj   = master.project_mgmt.projects[project];
@@ -242,7 +242,7 @@ $("#new_proc_button").on("click",function(){
 });
 
 $("#new_stim_button").on("click",function(){
-	var stim_template = default_experiment.all_stims["stimuli_1.csv"];
+	var stim_template = default_project.all_stims["stimuli_1.csv"];
 	bootbox.prompt("What would you like the name of the new <b>Stimuli</b> sheet to be?",function(new_sheet_name){
 		var project = $("#project_list").val();
 		var this_proj   = master.project_mgmt.projects[project];
@@ -431,7 +431,6 @@ $("#run_btn").on("click",function(){
     organization +
     ".github.io" + "/" +
     repository   + "/" +
-    "web"        + "/" +
     "App"        + "/" +
     "Run.html?platform=github&" +
     "location=" +
@@ -482,16 +481,15 @@ $("#run_btn").on("click",function(){
 	});
   $("#select_condition").on("change",function(){
     $("#experiment_url_input").val(
-      "https://"                            +
-        organization                        +
-        ".github.io"                        + "/" +
-        master.github.repository              + "/" +
-        "web"                               + "/" +
-        "App"                               + "/" +
-        "Run.html?platform=github&"    +
-				"location="                         +
-          $("#project_list").val() + "&" +
-				"name="                             +
+      "https://"                     +
+        organization                 +
+        ".github.io"                 + "/" +
+        master.github.repository     + "/" +
+        "App"                        + "/" +
+        "Run.html?platform=github&"  +
+				"location="                  +
+          $("#project_list").val() 	 + "&" +
+				"name="                      +
         $("#select_condition").val()
     );
   });
@@ -817,10 +815,10 @@ $("#code_project_select").on("change", function(){
 });
 
 $("#upload_default_exp_btn").on("click",function(){
-	var default_experiment_name = $("#default_experiments_select").val();
-	if(default_experiment_name !== "Select an experiment"){
-		$.get("Default/DefaultProjects/" + default_experiment_name + ".json",function(experiment_json){
-			upload_exp_contents(JSON.stringify(experiment_json),default_experiment_name);
+	var default_project_name = $("#default_projects_select").val();
+	if(default_project_name !== "Select an experiment"){
+		$.get("Default/DefaultProjects/" + default_project_name + ".json",function(experiment_json){
+			upload_exp_contents(JSON.stringify(experiment_json),default_project_name);
 			$("#upload_experiment_modal").hide();
 		});
 	}
@@ -830,7 +828,7 @@ $("#upload_experiment_button").on("click",function(){
 	$("#upload_experiment_modal").show();
 });
 
-$("#upload_experiment_input").on("change",function(){
+$("#upload_project_input").on("change",function(){
 	if (this.files && this.files[0]) {
 		var myFile = this.files[0];
 		var reader = new FileReader();

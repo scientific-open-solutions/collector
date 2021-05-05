@@ -353,12 +353,11 @@ $("#select_repository").on("change", function(){
   bootbox.confirm("Changing your repository will cause you to lose all your changes you've made since you last pushed them. Are you sure you want to do this?", function(response){
     var this_org = $("#select_organization").val();
     if(response){
-      console.log("howdy");
       master.github.repository = $("#select_repository").val();
 
       $("#save_btn").click();
-      
-      Collector
+
+      var response = Collector
         .electron
         .git
         .switch_repo({
@@ -368,10 +367,13 @@ $("#select_repository").on("change", function(){
           organization: this_org
         });
 
-
-      master.github.organization = this_org;
-      master.github.repository = $("#select_repository").val();
-      location.reload();
+      if(response !== "success"){
+        bootbox.alert(response)
+      } else {
+        master.github.organization = this_org;
+        master.github.repository = $("#select_repository").val();
+        location.reload();
+      }
     } else {
       $("#select_repository").val(
         master

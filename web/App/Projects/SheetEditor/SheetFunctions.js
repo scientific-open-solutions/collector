@@ -181,7 +181,7 @@ function new_project(project){
 	} else {
 
     master.project_mgmt.projects[project] = JSON.parse(
-      JSON.stringify(default_experiment)
+      JSON.stringify(default_project)
     );
 
 		var this_path = "/Projects/" + project + ".json";

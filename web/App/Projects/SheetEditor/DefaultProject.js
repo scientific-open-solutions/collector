@@ -1,4 +1,4 @@
-default_experiment = {
+default_project = {
   "all_procs":{
     "procedure_1.csv": [
       [
@@ -63,10 +63,10 @@ default_experiment = {
   }
 }
 
-default_experiment.all_procs["procedure_1.csv"] = Papa.unparse(
-  default_experiment.all_procs["procedure_1.csv"]
+default_project.all_procs["procedure_1.csv"] = Papa.unparse(
+  default_project.all_procs["procedure_1.csv"]
 )
 
-default_experiment.all_stims["stimuli_1.csv"] = Papa.unparse(
-  default_experiment.all_stims["stimuli_1.csv"]
+default_project.all_stims["stimuli_1.csv"] = Papa.unparse(
+  default_project.all_stims["stimuli_1.csv"]
 )

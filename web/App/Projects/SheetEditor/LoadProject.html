@@ -19,23 +19,24 @@
 		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
 -->
 
-<script src="Projects/SheetEditor/DefaultExperiment.js"></script>
+<script src="Projects/SheetEditor/DefaultProject.js"></script>
 
 <div class="modal" tabindex="-1" role="dialog" id="upload_experiment_modal">
 
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Upload a new experiment</h5>
+        <h5 class="modal-title">Upload a new project</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close_upload_experiment_modal">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="custom-file">
-          <input type="file" class="custom-file-input" id="upload_experiment_input" aria-describedby="upload_experiment_input_addon">
-          <label class="custom-file-label" for="upload_experiment_input">Upload experiment</label>
+          <input type="file" class="custom-file-input" id="upload_project_input" aria-describedby="upload_project_input_addon">
+          <label class="custom-file-label" for="upload_project_input">Upload Project</label>
         </div>
+        <!-- Not sure it makes sense to have default projects?
         <p>
           <table>
             <tr>
@@ -44,7 +45,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" style="width:100%">Default</span>
                   </div>
-                  <select class="form-control" id="default_experiments_select">
+                  <select class="form-control" id="default_projects_select">
                     <option disabled selected>Select an experiment</option>
                     <option>anagram</option>
                     <option>anagram_time_pressure</option>
@@ -59,6 +60,7 @@
             </tr>
           </table>
         </p>
+        -->
       </div>
     </div>
   </div>
@@ -85,7 +87,7 @@ $("#close_upload_experiment_modal").on("click",function(){
 					<button type="button" id="download_project_button" class="btn btn-primary">↓</button>
 					<button id="save_btn" class="btn btn-primary">Save</button>
 					<button id="rename_exp_btn" class="btn btn-primary">Rename</button>
-					<button id="delete_exp_btn" class="btn btn-primary">Delete</button>					
+					<button id="delete_exp_btn" class="btn btn-primary">Delete</button>
 					<button id="run_btn"      class="btn btn-primary">Run</button>
 				</span>
 			</td>
