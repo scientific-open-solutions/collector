@@ -19,6 +19,7 @@ const ipc  = require('electron').ipcMain;
 const { Octokit }     = require("@octokit/rest");
 const simpleGit       = require('simple-git');
 
+
 /*
 var git = simpleGit(); has to be called in individual functions to make sure it's fresh rather than has carrying over information from previous calls
 */
@@ -31,6 +32,7 @@ const git_token_location = root_dir + "Repositories/Private/github_token.txt";
 update = {
   files: [
     "Run.html",
+    "Run.js",
     "Welcome.html",
     "PhaseFunctions.js",
     "iframe_library.js"
@@ -43,7 +45,7 @@ update = {
     "libraries/ace-master",
     "libraries/webgazer"
   ]
-}
+};
 
 /*
 * In alphabetical order
@@ -64,11 +66,11 @@ ipc.on('git_add_changes', (event, args) => {
       fs.copySync(
         "App/" + this_file,
         root_dir +
-        "Repositories"         + "/" +
-          args["organization"] + "/" +
-          args["repository"]   + "/" +
-          "App"                + "/" +
-          this_file,
+        "Repositories"      + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
+          "App"             + "/" +
+          this_file
       );
     });
 
@@ -80,15 +82,15 @@ ipc.on('git_add_changes', (event, args) => {
       fs.copySync(
         "App/" + this_folder,
         root_dir +
-        "Repositories"        + "/" +
-          args["organization"] + "/" +
-          args["repository"]   + "/" +
-          "App"               + "/" +
+        "Repositories"       + "/" +
+          args.organization  + "/" +
+          args.repository    + "/" +
+          "App"              + "/" +
           this_folder,
         {
           recursive:true
         }
-      )
+      );
     });
 
     /*
@@ -97,10 +99,10 @@ ipc.on('git_add_changes', (event, args) => {
     update.excesses.forEach(function(this_excess){
       fs.rmdirSync(
         root_dir +
-        "Repositories"         + "/" +
-          args["organization"] + "/" +
-          args["repository"]   + "/" +
-          "App"                + "/" +
+        "Repositories"      + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
+          "App"             + "/" +
           this_excess,
         {
           recursive: true
@@ -118,13 +120,13 @@ ipc.on('git_add_changes', (event, args) => {
     "User",
     root_dir +
     "Repositories"         + "/" +
-      args["organization"] + "/" +
-      args["repository"]   + "/" +
+      args.organization + "/" +
+      args.repository   + "/" +
       "User",
     {
       recursive:true
     }
-  )
+  );
   console.log("copy time = " + parseFloat((new Date()).getTime() - baseline_time));
   event.returnValue = "success";
 });
@@ -144,8 +146,8 @@ ipc.on('git_add_repo', (event,args) => {
   });
 
   octokit.repos.get({
-    owner: args["organization"],
-    repo:  args["repository"]
+    owner: args.organization,
+    repo:  args.repository
   }).then(function(result){
     console.log("result of whether repository exists online:");
     console.log(result);
@@ -155,14 +157,14 @@ ipc.on('git_add_repo', (event,args) => {
     var git = simpleGit();
     git.clone(
       "https://github.com" + "/" +
-        args["organization"] + "/" +
-        args["repository"],
+        args.organization + "/" +
+        args.repository,
       root_dir +
       "Repositories"         + "/" +
-        args["organization"] + "/" +
-        args["repository"]
+        args.organization + "/" +
+        args.repository
     ).then(function(result){
-      event.returnValue = "success"
+      event.returnValue = "success";
     }).catch(function(error){
       event.returnValue = "error" + error;
     });
@@ -173,10 +175,10 @@ ipc.on('git_add_repo', (event,args) => {
     * Create repository online
     */
     octokit.repos.createInOrg({
-      org:  args["organization"],
-      name: args["repository"],
+      org:  args.organization,
+      name: args.repository,
     }).then(function(result){
-      console.log("now cloning Collector into the folder - right?")
+      console.log("now cloning Collector into the folder - right?");
       /*
       * Create repository locally
       */
@@ -189,8 +191,8 @@ ipc.on('git_add_repo', (event,args) => {
         "https://github.com/scientific-open-solutions/collector",
         root_dir +
         "Repositories"         + "/" +
-          args["organization"] + "/" +
-          args["repository"]
+          args.organization + "/" +
+          args.repository
       ).then(function(result){
         console.log("cloning worked");
         console.log("result:");
@@ -201,14 +203,14 @@ ipc.on('git_add_repo', (event,args) => {
         fs.rmdirSync(
           root_dir +
           "Repositories"        + "/" +
-            args["organization"] + "/" +
-            args["repository"]   + "/" +
+            args.organization + "/" +
+            args.repository   + "/" +
             ".git",
            {
              recursive: true
            }
         );
-        event.returnValue = "success"
+        event.returnValue = "success";
       }).catch(function(error){
         console.log("cloning failed");
         event.returnValue = "failed to clone Collector onto your computer: " + error;
@@ -216,7 +218,7 @@ ipc.on('git_add_repo', (event,args) => {
     }).catch(function(error){
       console.log("failed to clone Collector into repository, right?");
       event.return = "error - failed to create online repo:" + error;
-    })
+    });
   });
 
 });
@@ -235,7 +237,7 @@ ipc.on('git_add_token', (event,args) => {
   try{
     fs.writeFileSync(
       git_token_location,
-      args["auth_token"],
+      args.auth_token,
       'utf8'
     );
     event.returnValue = "success";
@@ -249,14 +251,14 @@ ipc.on('git_delete_org', (event,args) => {
     fs.rmdirSync(
       root_dir +
       "Repositories"         + "/" +
-        args["organization"],
+        args.organization,
       {
          recursive: true
       }
     );
     event.returnValue = "success";
-  } catch(error) {
-    event.returnValue = "failed to delete: " + error
+  } catch(this_error) {
+    event.returnValue = "failed to delete: " + error;
   }
 });
 
@@ -268,15 +270,15 @@ ipc.on('git_delete_repo', (event,args) => {
     fs.rmdirSync(
       root_dir +
       "Repositories"         + "/" +
-        args["organization"] + "/" +
-        args["repository"],
+        args.organization + "/" +
+        args.repository,
       {
          recursive: true
       }
     );
     event.returnValue = "success";
-  } catch(error) {
-    event.returnValue = "failed to delete:" + error
+  } catch(this_error) {
+    event.returnValue = "failed to delete:" + error;
   }
 });
 
@@ -366,8 +368,8 @@ ipc.on('git_pages', (event,args) => {
   const octokit = new Octokit({
     auth: auth_token,
   }).repos.getPages({
-    "owner":          args["organization"],
-    "repo":           args["repository"]
+    "owner":          args.organization,
+    "repo":           args.repository
   }).then(function(results){
     event.returnValue = "success";
   }).catch(function(error){
@@ -375,8 +377,8 @@ ipc.on('git_pages', (event,args) => {
       const octokit = new Octokit({
         auth: auth_token,
       }).repos.createPagesSite({
-        "owner":          args["organization"],
-        "repo":           args["repository"],
+        "owner":          args.organization,
+        "repo":           args.repository,
         "source": {
           "branch" : "master",
           "path"   : "/"
@@ -386,7 +388,7 @@ ipc.on('git_pages', (event,args) => {
       }).catch(function(error){
         event.returnValue = "error: " + error;
       });
-    } catch(error){
+    } catch(this_error){
       console.log("HERE BE THE ERROR");
       event.returnValue = "error: " + error;
     }
@@ -398,12 +400,12 @@ ipc.on('git_pull', (event,args) => {
     fs.mkdirSync(root_dir + "Repositories");
   }
 
-  if(!fs.existsSync(root_dir + "Repositories" + "/" + args["organization"])){
+  if(!fs.existsSync(root_dir + "Repositories" + "/" + args.organization)){
     fs.mkdirSync(
       root_dir +
       "Repositories"      + "/" +
-      args["organization"]
-    )
+      args.organization
+    );
   }
   /*
   * check if repo exists to confirm whether cloning or pulling
@@ -412,8 +414,8 @@ ipc.on('git_pull', (event,args) => {
     !fs.existsSync(
       root_dir +
       "Repositories"      + "/" +
-      args["organization"] + "/" +
-      args["repository"]
+      args.organization + "/" +
+      args.repository
     )
   ){
     console.log("Repository doesn't exist locally, so cloning");
@@ -421,20 +423,20 @@ ipc.on('git_pull', (event,args) => {
     var git = simpleGit();
     git.clone(
       "https://github.com"   + "/" +
-        args["organization"] + "/" +
-        args["repository"],
+        args.organization + "/" +
+        args.repository,
       root_dir +
         "Repositories"       + "/" +
-        args["organization"] + "/" +
-        args["repository"]
+        args.organization + "/" +
+        args.repository
     )
     .then(function(error){
       //copy and replace the "User" folder
       fs.copySync(
         root_dir +
         "Repositories"         + "/" +
-          args["organization"] + "/" +
-          args["repository"]   + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
           "web"                + "/" +
           "User",
         root_dir +
@@ -449,10 +451,10 @@ ipc.on('git_pull', (event,args) => {
     console.log("Repository exists locally, so pulling in changes");
 
     var remote =  "https://" +
-                    args["organization"] +
+                    args.organization +
                     "@github.com"        + "/" +
-                    args["organization"] + "/" +
-                    args["repository"]   + ".git";
+                    args.organization + "/" +
+                    args.repository   + ".git";
 
     /*
     for debugging
@@ -467,8 +469,8 @@ ipc.on('git_pull', (event,args) => {
       git.cwd(
         root_dir +
         "Repositories"      + "/" +
-        args["organization"] + "/" +
-        args["repository"]
+        args.organization + "/" +
+        args.repository
       ).pull(
         remote,
         'master'
@@ -482,14 +484,14 @@ ipc.on('git_pull', (event,args) => {
           "User", {
             recursive: true
           }
-        )
+        );
 
         try{
           fs.copySync(
             root_dir +
             "Repositories"         + "/" +
-              args["organization"] + "/" +
-              args["repository"]   + "/" +
+              args.organization + "/" +
+              args.repository   + "/" +
               "web"                + "/" +
               "User",
             root_dir +
@@ -499,7 +501,7 @@ ipc.on('git_pull', (event,args) => {
           );
           console.log("succesfully copied over the local user folder using the updated repository");
           event.returnValue = "success";
-        } catch(error){
+        } catch(this_error){
           console.log("failed to copy over the local user folder using the updated repository");
           event.returnValue = "failed to switch to the new repository - are you sure this is a valid Collector repository (e.g. has a user folder)";
         }
@@ -509,8 +511,8 @@ ipc.on('git_pull', (event,args) => {
         console.log(error);
         event.returnValue = "error: " + error;
       });
-    } catch(error){
-      event.returnValue = "error:" + error
+    } catch(this_error){
+      event.returnValue = "error:" + error;
     }
   }
 });
@@ -531,50 +533,50 @@ ipc.on('git_push', (event,args) => {
 
   console.log("auth token time = " + parseFloat((new Date()).getTime() - baseline_time));
 
-  if(typeof(args["message"]) == "undefined"){
-    args["message"] = "automatic commit"
+  if(typeof(args.message) == "undefined"){
+    args.message = "automatic commit";
   }
 
 
   var remote =  "https://" +
-                  args["organization"] + ":" +
+                  args.organization + ":" +
                   auth_token +
                   "@github.com"        + "/" +
-                  args["organization"] + "/" +
-                  args["repository"]   + ".git";
+                  args.organization + "/" +
+                  args.repository   + ".git";
   var git = simpleGit();
   git.cwd(
     root_dir +
     "Repositories"       + "/" +
-    args["organization"] + "/" +
-    args["repository"]
+    args.organization + "/" +
+    args.repository
   ).init().
     add("./*").
-    commit(args["message"]).
+    commit(args.message).
     push(remote, 'master').
     then(function(new_err){
       console.log("success");
-      console.log(new_err)
+      console.log(new_err);
       event.returnValue = "success";
     })
     .catch(function(error){
       console.log("error");
-      console.log(error)
+      console.log(error);
       event.returnValue = "error when pushing:" + error;
     });
 });
 
 ipc.on('git_set_email', (event, args) => {
-  console.log(args["email"]);
+  console.log(args.email);
   var git = simpleGit();
-      git.addConfig("user.email", args["email"]);
+      git.addConfig("user.email", args.email);
   event.returnValue = "success";
 });
 
 ipc.on('git_set_name', (event, args) => {
-  console.log(args["name"]);
+  console.log(args.name);
   var git = simpleGit();
-      git.addConfig("user.name", args["name"]);
+      git.addConfig("user.name", args.name);
   event.returnValue = "success";
 });
 
@@ -584,8 +586,8 @@ ipc.on('git_status', (event, args) =>{
   git.cwd(
     root_dir +
     "Repositories"      + "/" +
-    args["organization"] + "/" +
-    args["repository"]
+    args.organization + "/" +
+    args.repository
   ).fetch().status().then(function(result){
     event.returnValue = result.behind;
   }).catch(function(error){
@@ -601,25 +603,25 @@ ipc.on('git_switch_repo', (event, args) => {
       !fs.existsSync(
         root_dir +
         "Repositories"         + "/" +
-          args["organization"] + "/" +
-          args["repository"]   + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
           "web"
       )
     ){
       fs.mkdirSync(
         root_dir +
         "Repositories"         + "/" +
-          args["organization"] + "/" +
-          args["repository"]   + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
           "web"
-      )
+      );
     }
     if(
       !fs.existsSync(
         root_dir +
         "Repositories"         + "/" +
-          args["organization"] + "/" +
-          args["repository"]   + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
           "web"                + "/" +
           "User"
       )
@@ -627,21 +629,21 @@ ipc.on('git_switch_repo', (event, args) => {
       fs.mkdirSync(
         root_dir +
         "Repositories"         + "/" +
-          args["organization"] + "/" +
-          args["repository"]   + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
           "web"                + "/" +
           "User"
-      )
+      );
     }
-    if(typeof(args["old_repo"]) !== "undefined"){
+    if(typeof(args.old_repo) !== "undefined"){
         fs.copySync(
           root_dir +
           "User",
           root_dir +
-          "Repositories"    + "/" +
-            args["old_org"] + "/" +
-            args["old_rep"] + "/" +
-            "web"           + "/" +
+          "Repositories"  + "/" +
+            args.old_org  + "/" +
+            args.old_repo + "/" +
+            "web"         + "/" +
             "User"
         );
     }
@@ -654,12 +656,12 @@ ipc.on('git_switch_repo', (event, args) => {
       "User", {
         recursive: true
       }
-    )
+    );
     fs.copySync(
       root_dir +
       "Repositories"         + "/" +
-        args["organization"] + "/" +
-        args["repository"]   + "/" +
+        args.organization + "/" +
+        args.repository   + "/" +
         "web"                + "/" +
         "User",
       root_dir +
@@ -678,8 +680,8 @@ ipc.on('git_switch_repo', (event, args) => {
       !fs.existsSync(
         root_dir +
         "Repositories" + "/" +
-        args["organization"] + "/" +
-        args["repository"]   + "/" +
+        args.organization + "/" +
+        args.repository   + "/" +
         "App"
       )
     ){
@@ -687,8 +689,8 @@ ipc.on('git_switch_repo', (event, args) => {
       fs.mkdirSync(
         root_dir +
         "Repositories" + "/" +
-        args["organization"] + "/" +
-        args["repository"]   + "/" +
+        args.organization + "/" +
+        args.repository   + "/" +
         "App"
       );
       // App -> run.html
@@ -696,33 +698,33 @@ ipc.on('git_switch_repo', (event, args) => {
         fs.copySync(
           root_dir +
           "Repositories" + "/" +
-            args["organization"] + "/" +
-            args["repository"]   + "/" +
+            args.organization + "/" +
+            args.repository   + "/" +
             "web"                + "/" +
             "App"                + "/" +
             "Run.html",
           root_dir +
             "Repositories" + "/" +
-            args["organization"] + "/" +
-            args["repository"]   + "/" +
+            args.organization + "/" +
+            args.repository   + "/" +
             "App"                + "/" +
-            "Run.html",
+            "Run.html"
         );
-      } catch(error){
+      } catch(this_error){
         fs.copySync(
           root_dir +
           "Repositories" + "/" +
-            args["organization"] + "/" +
-            args["repository"]   + "/" +
+            args.organization + "/" +
+            args.repository   + "/" +
             "web"                + "/" +
             "App"                + "/" +
             "RunStudy.html",
           root_dir +
             "Repositories" + "/" +
-            args["organization"] + "/" +
-            args["repository"]   + "/" +
+            args.organization + "/" +
+            args.repository   + "/" +
             "App"                + "/" +
-            "Run.html",
+            "Run.html"
         );
       }
 
@@ -732,32 +734,32 @@ ipc.on('git_switch_repo', (event, args) => {
       fs.copySync(
         root_dir +
           "Repositories"       + "/" +
-          args["organization"] + "/" +
-          args["repository"]   + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
           "web"                + "/" +
           "App"                + "/" +
           "Welcome.html",
         root_dir +
           "Repositories"       + "/" +
-          args["organization"] + "/" +
-          args["repository"]   + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
           "App"                + "/" +
-          "Welcome.html",
+          "Welcome.html"
       );
 
       // App -> Quality folder
       fs.copySync(
         root_dir +
           "Repositories" + "/" +
-          args["organization"] + "/" +
-          args["repository"]   + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
           "web"                + "/" +
           "App"                + "/" +
           "Quality",
         root_dir +
           "Repositories" + "/" +
-          args["organization"] + "/" +
-          args["repository"]   + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
           "App"                + "/" +
           "Quality",{
             recursive: true
@@ -767,15 +769,15 @@ ipc.on('git_switch_repo', (event, args) => {
       fs.copySync(
         root_dir +
           "Repositories" + "/" +
-          args["organization"] + "/" +
-          args["repository"]   + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
           "web"                + "/" +
           "App"                + "/" +
           "libraries",
         root_dir +
           "Repositories" + "/" +
-          args["organization"] + "/" +
-          args["repository"]   + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
           "App"                + "/" +
           "libraries",{
             recursive: true
@@ -787,28 +789,28 @@ ipc.on('git_switch_repo', (event, args) => {
         fs.copySync(
           root_dir +
             "Repositories"       + "/" +
-            args["organization"] + "/" +
-            args["repository"]   + "/" +
+            args.organization + "/" +
+            args.repository   + "/" +
             "web"                + "/" +
             "User",
           root_dir +
             "Repositories"       + "/" +
-            args["organization"] + "/" +
-            args["repository"]   + "/" +
+            args.organization + "/" +
+            args.repository   + "/" +
             "User",{
               recursive: true
             }
         );
-      } catch(error){
+      } catch(this_error){
         try{
           fs.mkdirSync(
             root_dir +
               "Repositories"       + "/" +
-              args["organization"] + "/" +
-              args["repository"]   + "/" +
+              args.organization + "/" +
+              args.repository   + "/" +
               "User"
-          )
-        } catch(error){
+          );
+        } catch(this_error){
           //do nothing
         }
       }
@@ -818,8 +820,8 @@ ipc.on('git_switch_repo', (event, args) => {
     fs.rmdirSync(
       root_dir +
         "Repositories"       + "/" +
-        args["organization"] + "/" +
-        args["repository"]   + "/" +
+        args.organization + "/" +
+        args.repository   + "/" +
         "web",
       {
         recursive: true
@@ -829,7 +831,7 @@ ipc.on('git_switch_repo', (event, args) => {
     // might need to create a master_json if it doesn't exist yet.
     if(
       !fs.existsSync(
-        root_dir + "User/master.json",
+        root_dir + "User/master.json"
       )
     ){
       default_master_js = fs.readFileSync(
@@ -851,8 +853,8 @@ ipc.on('git_switch_repo', (event, args) => {
     //update the master.json with the repository and organisation name
 
     this_master = JSON.parse(fs.readFileSync(root_dir + "User/master.json"));
-    this_master.github.organization = args["organization"];
-    this_master.github.repository   = args["repository"];
+    this_master.github.organization = args.organization;
+    this_master.github.repository   = args.repository;
 
     fs.writeFileSync(
       root_dir + "User/master.json",
@@ -885,12 +887,12 @@ ipc.on('git_valid_org', (event, args) => {
     fs.mkdirSync(root_dir + "Repositories");
   }
 
-  if(!fs.existsSync(root_dir + "Repositories" + "/" + args["organization"])){
+  if(!fs.existsSync(root_dir + "Repositories" + "/" + args.organization)){
     fs.mkdirSync(
       root_dir +
       "Repositories"       + "/" +
-      args["organization"]
-    )
+      args.organization
+    );
   }
   var auth_token = fs.readFileSync(
     git_token_location,
@@ -906,7 +908,7 @@ ipc.on('git_valid_org', (event, args) => {
   /*
 
   octokit.orgs.get({
-    org: args["organization"]
+    org: args.organization
   }).then(function(result){
     console.dir("success");
   }).catch(function(error){
@@ -916,7 +918,7 @@ ipc.on('git_valid_org', (event, args) => {
   */
 
   octokit.orgs.get({
-    org: args["organization"]
+    org: args.organization
   }).then(function(result){
     event.returnValue = "success";
   }).catch(function(error){
