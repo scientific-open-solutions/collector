@@ -1,5 +1,28 @@
-const sum = require('./test_example');
+/*
+* can I remove the "run" const?
+*/
+window.$  = require("../App/libraries/jquery-3.3.1.min.js");
+const run = require('../App/Run.js');
 
-test('adds 1 + 2 to equal 3', () => {
-  expect(sum(1, 2)).toBe(3);
+/*
+* clean_code
+*/
+test('Does clean_var turn a variable to lowercase?', () => {
+  expect(run.clean_var("Hi there")).toBe("hi there");
+});
+
+/*
+* clean_this_condition
+*/
+test('Does clean_this_condition assert appropriate defaults?', () => {
+  expect(
+    run.clean_this_condition({
+      beep: "bop"
+    })
+  ).toStrictEqual({
+    beep:           "bop",
+    buffer:         5,
+    download:       "on",
+    participant_id: "on"
+  });
 });
