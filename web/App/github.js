@@ -356,6 +356,8 @@ $("#select_repository").on("change", function(){
       console.log("howdy");
       master.github.repository = $("#select_repository").val();
 
+      $("#save_btn").click();
+      
       Collector
         .electron
         .git
@@ -369,7 +371,6 @@ $("#select_repository").on("change", function(){
 
       master.github.organization = this_org;
       master.github.repository = $("#select_repository").val();
-      $("#save_btn").click();
       location.reload();
     } else {
       $("#select_repository").val(
