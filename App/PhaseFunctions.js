@@ -94,7 +94,7 @@ if(typeof(Phase) !== "undefined"){
   }
   Phase.submit = function(){
     parent.parent.project_json.inputs = jQuery( "[name]" );
-    parent.parent.Project.finish_trial();
+    parent.parent.Project.finish_phase();
   }
 }
 

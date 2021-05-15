@@ -16,7 +16,7 @@ $("#js_decrypt_btn").on("click",function(){
 });
 
 
-$("#list_data_btn").on("click",function(){  
+$("#list_data_btn").on("click",function(){
   if($("#data_user_email").val() == ""){
     bootbox.alert("Please put in your email address that is registered with the server selected.");
   } else if($("#data_user_password").val() == ""){
@@ -41,7 +41,10 @@ switch(Collector.detect_context()){
   case "localhost":
     $("#local_data_btn").show(500);
     $("#local_data_btn").on("click", function(){
-      var response = Collector.electron.open_folder("Data");
+      var response = Collector.electron.open_folder(
+        "home",
+        "Data"
+      );
       console.dir(response);
     });
     break;

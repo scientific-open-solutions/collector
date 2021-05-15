@@ -19,6 +19,8 @@ $_GET = window.location.href.substr(1).split("&").reduce((o,i)=>(u=decodeURIComp
 Collector.tests.run();
 Collector.start = function(){
   correct_master();
+  user = JSON.parse(Collector.electron.fs.load_user());
+  list_repos();
   wait_till_exists("list_projects");
   wait_till_exists("list_graphics");
   wait_till_exists("list_code");
@@ -28,7 +30,7 @@ Collector.start = function(){
   wait_till_exists("list_servers");
   wait_till_exists("list_surveys");
   wait_till_exists("list_pathways");
-}
+};
 
 function correct_master(){
   /*

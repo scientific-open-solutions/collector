@@ -24,18 +24,18 @@ $("#default_projects_select").on("change",function(){
 });
 
 $("#delete_exp_btn").on("click",function(){
-  var exp_name = $("#project_list").val();
-  if(exp_name == null){
+  var proj_name = $("#project_list").val();
+  if(proj_name == null){
     bootbox.alert("You need to select a study to delete it");
   } else {
     bootbox.confirm("Are you sure you want to delete your experiment?", function(result) {
       if(result){
         //delete from master
-        delete (master.project_mgmt.projects[exp_name]);
+        delete (master.project_mgmt.projects[proj_name]);
 
-        $('#project_list option:contains('+ exp_name +')')[0].remove();
+        $('#project_list option:contains('+ proj_name +')')[0].remove();
         $("#project_list").val(document.getElementById('project_list').options[1].value);
-        Collector.custom_alert(exp_name +" succesfully deleted");
+        Collector.custom_alert(proj_name +" succesfully deleted");
         update_handsontables();
 
         //delete the local file if this is
@@ -43,7 +43,7 @@ $("#delete_exp_btn").on("click",function(){
           Collector
             .electron
             .fs
-            .delete_experiment(exp_name,
+            .delete_experiment(proj_name,
               function(response){
                 if(response !== "success"){
                   bootbox.alert(response);

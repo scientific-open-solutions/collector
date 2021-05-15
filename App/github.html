@@ -39,7 +39,7 @@
           <div class="input-group-prepend" style="width:130px">
             <span class="input-group-text bg-primary text-white">Organization</span>
           </div>
-          <select class="form-control" id="select_organization"></select>
+          <select class="form-control" id="select_org"></select>
           <button class="btn btn-primary" id="add_organization_btn" style="margin-left:2px; margin-right:2px">Add</button>
           <button class="btn btn-danger" id="delete_organization_btn">X</button>
         </div>
@@ -47,13 +47,15 @@
           <div class="input-group-prepend"  style="width:130px">
             <span class="input-group-text bg-primary text-white">Repository</span>
           </div>
-          <select class="form-control" id="select_repository"></select>
+          <select class="form-control" id="select_repo"></select>
           <button class="btn btn-primary" id="add_repository_btn" style="margin-left:2px; margin-right:2px">Add</button>
           <button class="btn btn-danger" id="delete_repo_btn">X</button>
         </div>
       </div>
       <div class="modal-footer">
+        <button class="btn btn-primary bi-search" id="find_repo_btn"></button>
         <button type="button" class="btn btn-primary" id="add_token_btn">Add token</button>
+        <button type="button" class="btn btn-primary" id="local_repo_btn">Local Repo</button>
         <button type="button" class="btn btn-primary" id="pull_repo_btn">Pull</button>
         <button type="button" class="btn btn-primary" id="push_repo_btn">Push</button>
         <button type="button" class="btn btn-primary" id="view_repo_btn">View</button>

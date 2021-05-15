@@ -35,7 +35,6 @@
 	Publicly available javascript packages
 -->
 
-<script src="libraries/collector/master.js"></script>
 <script src="libraries/jquery-3.3.1.min.js"></script>
 <script src="libraries/popper.min.js"></script>
 <script src="libraries/bootstrap.4.0.min.js"></script>
@@ -136,6 +135,16 @@
   <script src= "libraries/collector/BrowserCheck.js"></script>
   <script src= "CollectorMap.js"></script>
   <script src= "libraries/collector/SessionCheck.js"></script>
+  <!--
+    Collector Specific files
+  -->
+
+  <script>
+  $.get("../Default/master.json", function(this_json){
+    default_master = this_json;
+  });
+  </script>
+
   <script> collector_map = this_map(''); </script>
   <link rel="stylesheet" type="text/css" href="Style.css">
 
@@ -271,7 +280,7 @@ $(".top_icon").hover(function(){
 
 
 $("#github_logo").on("click", function(){
-  if (typeof(github_json) == "undefined") {
+  if (typeof(user.repos) == "undefined") {
     var git_exists = Collector.electron.git.exists();
     if(git_exists !== "true-true"){
       git_exists = git_exists.split("-");
@@ -298,29 +307,20 @@ $("#github_logo").on("click", function(){
         );
       }
     } else {
-      github_json = JSON.parse(
-        Collector.electron.git.list_repos()
-      );
 
-      Object.keys(github_json).forEach(function(organization){
-        $('#select_organization').append($('<option>', {
-            value: organization,
-            text: organization
-        }));
-      });
-      var org = master.github.organization;
-      $("#select_organization").val(org);
+      list_repos();
 
       if(typeof(org) !== "undefined" && org !== ""){
-         var repos = github_json[org];
-
-         repos.forEach(function(repository){
-           $('#select_repository').append($('<option>', {
-               value: repository,
-               text: repository
-           }));
-         });
-         $("#select_repository").val(master.github.repository);
+        var repos = Object.keys(
+          user.repos[org]
+        );
+        repos.forEach(function(repository){
+          $('#select_repo').append($('<option>', {
+            value: repository,
+            text: repository
+         }));
+       });
+       $("#select_repo").val(master.github.repository);
       }
 
       setTimeout(function(){

@@ -121,15 +121,18 @@ function get_HoT_data(current_sheet) { // needs to be adjusted for
 }
 function list_projects(){
   try{
-    var local_projects = Collector
+		var local_projects = Collector
       .electron
       .fs
       .list_projects();
 
     local_projects.forEach(function(project){
-      master.project_mgmt.projects[project] = JSON.parse(
+			console.log("project");
+			console.log(project);
+			var project_json = JSON.parse(
         Collector.electron.fs.read_file("Projects",project + ".json")
       );
+			master.project_mgmt.projects[project] = project_json;
     });
 
     name_list = Object.keys(master.project_mgmt.projects);
@@ -355,8 +358,8 @@ function upload_exp_contents(these_contents,this_filename){
 	cleaned_filename = this_filename.toLowerCase().replace(".json","");
 
 	// note that this is a local function. right?
-	function upload_to_master(exp_name,this_content) {
-		master.project_mgmt.projects[exp_name] = this_content;
+	function upload_to_master(proj_name,this_content) {
+		master.project_mgmt.projects[proj_name] = this_content;
 		list_projects();
     upload_trialtypes(this_content);
     upload_surveys(this_content);
@@ -409,8 +412,8 @@ function upload_exp_contents(these_contents,this_filename){
 		message: "Please confirm that you would like to upload this experiment and if so, what you would like to call it?",
 		value: cleaned_filename,
 
-		callback: function(exp_name){
-      if(exp_name){
+		callback: function(proj_name){
+      if(proj_name){
         function unique_experiment(suggested_name,content){
           all_experiments = Object.keys(master.project_mgmt.projects);
           if(all_experiments.indexOf(suggested_name) !== -1){
@@ -418,7 +421,7 @@ function upload_exp_contents(these_contents,this_filename){
               if(new_name){
                 unique_experiment(new_name,content);
               } else {
-                upload_to_master(exp_name,parsed_contents);
+                upload_to_master(proj_name,parsed_contents);
 								$("#save_btn").click();
               }
             });
@@ -426,13 +429,13 @@ function upload_exp_contents(these_contents,this_filename){
             master.project_mgmt.projects[suggested_name] = content;
             list_projects();
             $("#upload_experiment_modal").hide();
-            upload_to_master(exp_name,parsed_contents);
+            upload_to_master(proj_name,parsed_contents);
 						$("#save_btn").click();
           }
         }
-        unique_experiment(exp_name,parsed_contents);
+        unique_experiment(proj_name,parsed_contents);
       } else {
-        upload_to_master(exp_name,parsed_contents);
+        upload_to_master(proj_name,parsed_contents);
 				$("#save_btn").click();
       }
 		}
