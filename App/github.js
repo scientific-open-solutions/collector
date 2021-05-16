@@ -323,28 +323,12 @@ $("#push_repo_btn").on("click",function(){
           progress_bootbox({
             start_text: "Pushing to your repository<br><br>",
             steps: [
-              "Updating your local version of the repository",
               "Push your changes to your online repository"
             ],
             labels: [
-              "update_local_repo",
               "push_repo_online"
-
             ],
             actions: [
-              function(){
-                var this_response = Collector.electron.git.add_changes({
-                  "organization" : organization,
-                  "repository"   : repository
-                });
-                if(this_response !== "success"){
-                  bootbox.alert(this_response);
-                  return false;
-                } else {
-                  return true;
-                }
-                $("#update_local_repo_spinner").hide();
-              },
               function(){
                 /*
                 * commit and push changes

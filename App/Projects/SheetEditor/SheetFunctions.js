@@ -127,8 +127,6 @@ function list_projects(){
       .list_projects();
 
     local_projects.forEach(function(project){
-			console.log("project");
-			console.log(project);
 			var project_json = JSON.parse(
         Collector.electron.fs.read_file("Projects",project + ".json")
       );

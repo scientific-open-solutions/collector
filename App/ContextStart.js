@@ -99,7 +99,6 @@ function correct_master(){
 
   if(typeof(master.code.user_trialtypes) !== "undefined"){
     Object.keys(master.code.user_trialtypes).forEach(function(item){
-      console.log(item);
       if(typeof(master.code.user[item]) == "undefined"){
         master.code.user[item] = master.code.user_trialtypes[item];
       }

@@ -1,5 +1,5 @@
 const fs     = require('fs-extra');
-var root_dir = require("os").homedir() + "/Documents/Collector/";
+var root_dir = require("os").homedir() + "/.collector/";
     root_dir = root_dir.replaceAll("\\","\/");
 
 //make sure there is a Collector folder in documents
@@ -26,6 +26,20 @@ var git = simpleGit(); has to be called in individual functions to make sure it'
 var commandExistsSync = require('command-exists').sync;
 const git_token_location = root_dir + "Private/github_token.txt";
 
+
+function user(){
+  var user = JSON.parse(fs.readFileSync(root_dir + "/User.json"));
+
+  if(typeof(user.current.path) == "undefined"){
+    if(user.current.repo !== ""){
+      user.current.path = user.repos
+        [user.current.org]
+        [user.current.repo].path + "/";
+    }
+  }
+  return user;
+}
+
 /*
 * Objects
 */
@@ -50,86 +64,6 @@ update = {
 /*
 * In alphabetical order
 */
-ipc.on('git_add_changes', (event, args) => {
-
-  /*
-  * Update the cat folder using the local folder if in powershell/npm mode
-  */
-  if(fs.existsSync(
-    "App"
-  )){
-
-    /*
-    * update files
-    */
-    update.files.forEach(function(this_file){
-      fs.copySync(
-        "App/" + this_file,
-        root_dir +
-        "Repositories"      + "/" +
-          args.organization + "/" +
-          args.repository   + "/" +
-          "App"             + "/" +
-          this_file
-      );
-    });
-
-    /*
-    * update folders
-    */
-    update.folders.forEach(function(this_folder){
-      console.log(this_folder);
-      fs.copySync(
-        "App/" + this_folder,
-        root_dir +
-        "Repositories"       + "/" +
-          args.organization  + "/" +
-          args.repository    + "/" +
-          "App"              + "/" +
-          this_folder,
-        {
-          recursive:true
-        }
-      );
-    });
-
-    /*
-    * remove excess
-    */
-    update.excesses.forEach(function(this_excess){
-      fs.rmdirSync(
-        root_dir +
-        "Repositories"      + "/" +
-          args.organization + "/" +
-          args.repository   + "/" +
-          "App"             + "/" +
-          this_excess,
-        {
-          recursive: true
-        }
-      );
-    });
-  }
-
-  //copy folder from User folder into repository
-  var baseline_time = (new Date()).getTime();
-  console.log("baseline_time = " + baseline_time);
-
-  fs.copySync(
-    root_dir +
-    "User",
-    root_dir +
-    "Repositories"         + "/" +
-      args.organization + "/" +
-      args.repository   + "/" +
-      "User",
-    {
-      recursive:true
-    }
-  );
-  console.log("copy time = " + parseFloat((new Date()).getTime() - baseline_time));
-  event.returnValue = "success";
-});
 
 ipc.on('git_add_repo', (event,args) => {
 
@@ -330,52 +264,22 @@ ipc.on('git_pages', (event,args) => {
 });
 
 ipc.on('git_pull', (event,args) => {
-  if(!fs.existsSync(root_dir + "Repositories")){
-    fs.mkdirSync(root_dir + "Repositories");
-  }
 
-  if(!fs.existsSync(root_dir + "Repositories" + "/" + args.organization)){
-    fs.mkdirSync(
-      root_dir +
-      "Repositories"      + "/" +
-      args.organization
-    );
-  }
   /*
   * check if repo exists to confirm whether cloning or pulling
   */
-  if(
-    !fs.existsSync(
-      root_dir +
-      "Repositories"      + "/" +
-      args.organization + "/" +
-      args.repository
-    )
-  ){
+  var git = simpleGit();
+
+  if(!fs.existsSync(user().current.path)){
     console.log("Repository doesn't exist locally, so cloning");
     //cloning
-    var git = simpleGit();
     git.clone(
       "https://github.com"   + "/" +
         args.organization + "/" +
         args.repository,
-      root_dir +
-        "Repositories"       + "/" +
-        args.organization + "/" +
-        args.repository
+      user().current.path
     )
     .then(function(error){
-      //copy and replace the "User" folder
-      fs.copySync(
-        root_dir +
-        "Repositories"         + "/" +
-          args.organization + "/" +
-          args.repository   + "/" +
-          "web"                + "/" +
-          "User",
-        root_dir +
-        "User"
-      );
       event.returnValue = "success";
     })
     .catch(function(error){
@@ -398,88 +302,85 @@ ipc.on('git_pull', (event,args) => {
 
     console.log("remote = " + remote);
 
-    try{
-      var git = simpleGit();
-      git.cwd(
-        root_dir +
-        "Repositories"      + "/" +
-        args.organization + "/" +
-        args.repository
-      ).pull(
-        remote,
-        'master'
-      ).then(function(result){
-
-        /*
-        * delete User folder before copying over it
-        */
-        fs.rmdirSync(
-          root_dir +
-          "User", {
-            recursive: true
-          }
-        );
-
-        /*
-        * copying using new (correct) system
-        */
-        try{
-          fs.copySync(
-            root_dir +
-            "Repositories"         + "/" +
-              args.organization + "/" +
-              args.repository   + "/" +
-              "User",
-            root_dir +
-            "User", {
-              recursive: true
-            }
-          );
-          console.log("succesfully copied over the local user folder using the updated repository");
-          event.returnValue = "success";
-        } catch(this_error){
-          /*
-          * falling back on old file structure
-          */
-          try{
-            fs.copySync(
-              root_dir +
-              "Repositories"         + "/" +
-                args.organization + "/" +
-                args.repository   + "/" +
-                "web"                + "/" +
-                "User",
-              root_dir +
-              "User", {
-                recursive: true
-              }
-            );
-            console.log("succesfully copied over the local user folder using the updated repository");
-            event.returnValue = "success";
-          } catch(this_error){
-            console.log("failed to copy over the local user folder using the updated repository");
-            event.returnValue = "failed to switch to the new repository - are you sure this is a valid Collector repository (e.g. has a user folder)";
-          }
-        }
-      }).catch(function(error){
-        console.log("error");
-        console.log(error);
-        event.returnValue = "error: " + error;
-      });
-    } catch(this_error){
-      event.returnValue = "error:" + error;
-    }
+    git.cwd(
+      user().current.path
+    ).pull(
+      remote,
+      'master'
+    ).then(function(result){
+      event.returnValue = "success";
+    }).catch(function(error){
+      console.log("error");
+      console.log(error);
+      event.returnValue = "error: " + error;
+    });
   }
 });
 
 ipc.on('git_push', (event,args) => {
+
+  if(fs.existsSync(
+    "App"
+  )){
+
+    /*
+    * update files
+    */
+    update.files.forEach(function(this_file){
+      fs.copySync(
+        "App/" + this_file,
+        root_dir +
+        "Repositories"      + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
+          "App"             + "/" +
+          this_file
+      );
+    });
+
+    /*
+    * update folders
+    */
+    update.folders.forEach(function(this_folder){
+      console.log(this_folder);
+      fs.copySync(
+        "App/" + this_folder,
+        root_dir +
+        "Repositories"       + "/" +
+          args.organization  + "/" +
+          args.repository    + "/" +
+          "App"              + "/" +
+          this_folder,
+        {
+          recursive:true
+        }
+      );
+    });
+
+    /*
+    * remove excess
+    */
+    update.excesses.forEach(function(this_excess){
+      fs.rmdirSync(
+        root_dir +
+        "Repositories"      + "/" +
+          args.organization + "/" +
+          args.repository   + "/" +
+          "App"             + "/" +
+          this_excess,
+        {
+          recursive: true
+        }
+      );
+    });
+  }
+
   /*
   * check that auth token exists and deal with eventuality if it doesn't
   */
 
   var baseline_time = (new Date()).getTime();
   console.log("baseline_time = " + baseline_time);
-
 
   var auth_token = fs.readFileSync(
     git_token_location,
@@ -499,21 +400,20 @@ ipc.on('git_push', (event,args) => {
                   "@github.com"        + "/" +
                   args.organization + "/" +
                   args.repository   + ".git";
+
+  var repo_path = user().current.path;
+
   var git = simpleGit();
   git.cwd(
-    args.path
+    repo_path
   ).init().
     add("./*").
     commit(args.message).
     push(remote, 'master').
     then(function(new_err){
-      console.log("success");
-      console.log(new_err);
       event.returnValue = "success";
     })
     .catch(function(error){
-      console.log("error");
-      console.log(error);
       event.returnValue = "error when pushing:" + error;
     });
 });

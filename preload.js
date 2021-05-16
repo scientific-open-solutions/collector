@@ -124,12 +124,6 @@ window.onload=function(){
           }
         },
         git:{
-          add_changes: function(repo_info){
-            return ipc.sendSync(
-              'git_add_changes',
-              repo_info
-            );
-          },
           add_repo: function(repo_info){
             return ipc.sendSync(
               'git_add_repo',

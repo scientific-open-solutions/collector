@@ -143,8 +143,30 @@ ipc.on('fs_list_code', (event,args) => {
 });
 
 ipc.on('fs_list_projects', (event,args) => {
-  try{
+  //try{
     if(user().current.path !== ""){
+
+      /*
+      * fixing legacy structure
+      */
+      if(fs.existsSync(
+        user().current.path + "\\User\\Experiments"
+      )){
+        fs.copySync(
+          user().current.path + "\\User\\Experiments",
+          user().current.path + "\\User\\Projects",
+          {
+            recursive:true
+          }
+        );
+        fs.rmdirSync(
+          user().current.path + "\\User\\Expertiments",
+          {
+            recursive: true
+          }
+        );
+      }
+
 
       var projects = JSON.stringify(
         fs.readdirSync(user().current.path + "/User/Projects")
@@ -153,9 +175,9 @@ ipc.on('fs_list_projects', (event,args) => {
     } else {
       event.returnValue = "No repo loaded yet";
     }
-  } catch(error){
-    event.returnValue = error;
-  }
+  //} catch(error){
+  //  event.returnValue = error;
+  //}
 });
 
 ipc.on('fs_load_user', (event,args) => {
@@ -198,21 +220,41 @@ ipc.on('fs_read_file', (event,args) => {
   } else if(args.this_file.indexOf("../") !== -1){
     content = "This request could be insecure, and was blocked";
   } else {
-    /*
-    * create User folder if it doesn't exist (and all the relevant subfolders)
-    */
 
-    try{
+
+    /*
+    * fix legacy file structure if necessary
+    */
+    if(fs.existsSync(
+      user().current.path + "\\web\\User"
+    )){
+      fs.copySync(
+        user().current.path + "\\web\\User",
+        user().current.path + "\\User",
+        {
+          recursive:true
+        }
+      );
+      fs.rmdirSync(
+        user().current.path + "\\web\\User",
+        {
+          recursive: true
+        }
+      );
+    }
+
+
+    //try{
       content = fs.readFileSync(user().current.path +
         "/User"           + "/" +
         args.user_folder + "/" +
         args.this_file,
       'utf8');
       event.returnValue = content;
-    } catch(error){
+    //} catch(error){
       //to trigger an attempt to load a code from the master
-      event.returnValue = "";
-    }
+    //  event.returnValue = "";
+    //}
 
   }
 });
@@ -340,7 +382,6 @@ ipc.on('fs_write_project', (event,args) => {
   }
 });
 
-
 ipc.on('fs_write_file', (event,args) => {
 
   /*
@@ -367,7 +408,6 @@ ipc.on('fs_write_file', (event,args) => {
 
   }
 });
-
 
 ipc.on('fs_write_user', (event,args) => {
   /*
