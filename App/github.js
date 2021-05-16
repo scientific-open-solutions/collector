@@ -127,7 +127,7 @@ $("#add_repository_btn").on("click",function(){
 
             user.current.org = $("#select_org").val();
             user.current.repo = $("#select_repo").val();
-            this_response = Collector.electron.fs.write_user();
+            this_response = Collector.save_user();
             if(this_response !== "success"){
               bootbox.alert(this_response);
               return false;
@@ -250,9 +250,7 @@ $("#local_repo_btn").on("click", function(){
       path: path
     };
     user.current.path = path;
-    Collector.electron.fs.write_user(
-      JSON.stringify(user, null, 2)
-    );
+    Collector.save_user();
     list_repos();
     $("#select_org").val(user.current.org);
     $("#select_repo").val(user.current.repo);
@@ -404,9 +402,7 @@ $("#select_repo").on("change", function(){
         .repos
         [user.current.org]
         [user.current.repo].path;
-      Collector.electron.fs.write_user(
-        JSON.stringify(user, null, 2)
-      );
+      Collector.save_user();
       location.reload();
     }
   });

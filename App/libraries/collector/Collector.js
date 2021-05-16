@@ -16,7 +16,7 @@ Collector = {
       Object.keys(csv_row).forEach(function(header){
         if(response_headers.indexOf(header) == -1){
           response_headers.push(header);
-        };
+        }
       });
     }
     for(var i =0; i < this_csv.length; i++){
@@ -193,34 +193,37 @@ Collector = {
       document.body.removeChild(elem);
     }
   },
+  save_user: function(){
+    Collector.electron.fs.write_user(JSON.stringify(user, null, 2));
+  },
   //https://stackoverflow.com/a/20745721/4490801
   timer: function(callback, delay) {
     var id, started, remaining = delay, running;
     this.start = function() {
-      running = true
-      started = new Date()
-      id = setTimeout(callback, remaining)
-    }
+      running = true;
+      started = new Date();
+      id = setTimeout(callback, remaining);
+    };
 
     this.pause = function() {
-      running = false
-      clearTimeout(id)
-      remaining -= new Date() - started
-    }
+      running = false;
+      clearTimeout(id);
+      remaining -= new Date() - started;
+    };
 
     this.getTimeLeft = function() {
       if (running) {
-        this.pause()
-        this.start()
+        this.pause();
+        this.start();
       }
-      return remaining
-    }
+      return remaining;
+    };
 
     this.getStateRunning = function() {
-      return running
-    }
+      return running;
+    };
 
-    this.start()
+    this.start();
   },
 
   version: "cat"
@@ -246,7 +249,7 @@ Collector.makeid = function(length) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
-}
+};
 
 /*
 * functions added from other files
@@ -267,4 +270,4 @@ Collector.makeid = function(length) {
 String.prototype.replaceAll = function(str1, str2, ignore)
 {
   return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
-}
+};

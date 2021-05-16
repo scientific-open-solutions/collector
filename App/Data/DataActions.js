@@ -1,3 +1,12 @@
+$("#change_local_data_btn").on("click", function(){
+  var folder_dir = Collector.electron.find_path()[0];
+  if(folder_dir){
+    user.data_folder = folder_dir;
+    Collector.save_user();
+    $("#local_data_folder").val(user.data_folder);
+  }
+});
+
 $("#fileToLoad").on("change",function(){
   if($("#fileToLoad").val() !== ""){
     loadFileAsText();
@@ -7,7 +16,7 @@ $("#fileToLoad").on("change",function(){
 $("#google_script_btn").on("click",function(){
   $.get("Data/Google/CollectorSave.txt",function(google_script){
     bootbox.alert("//Select and copy the following to a <b>google apps script</b>: <br><br><textarea style='white-space: pre-wrap;' onclick='this.focus();this.select()' readonly='readonly'>" + google_script + "</textarea>");
-  })
+  });
 });
 
 $("#js_decrypt_btn").on("click",function(){
@@ -42,8 +51,8 @@ switch(Collector.detect_context()){
     $("#local_data_btn").show(500);
     $("#local_data_btn").on("click", function(){
       var response = Collector.electron.open_folder(
-        "home",
-        "Data"
+        "relative",
+        user.data_folder
       );
       console.dir(response);
     });

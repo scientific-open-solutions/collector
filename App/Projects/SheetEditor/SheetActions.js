@@ -23,7 +23,7 @@ $("#default_projects_select").on("change",function(){
   }
 });
 
-$("#delete_exp_btn").on("click",function(){
+$("#delete_proj_btn").on("click",function(){
   var proj_name = $("#project_list").val();
   if(proj_name == null){
     bootbox.alert("You need to select a study to delete it");
@@ -55,7 +55,6 @@ $("#delete_exp_btn").on("click",function(){
     });
   }
 });
-
 
 $("#delete_proc_button").on("click",function(){
   if($("#proc_select option").length <2 ){
@@ -195,6 +194,13 @@ $("#download_project_button").on("click",function(){
   });
 });
 
+$("#open_proj_folder").on("click", function(){
+  Collector.electron.open_folder(
+    "repo",
+    "User/Projects/" + $("#project_list").val()
+  );
+});
+
 $("#project_list").on("change",function(){
   project_json = master.project_mgmt.projects[this.value];
   clean_conditions();
@@ -282,7 +288,7 @@ $("#proc_select").on("change",function(){
   );
 });
 
-$("#rename_exp_btn").on("click",function(){
+$("#rename_proj_btn").on("click",function(){
   bootbox.prompt("What would you like to rename this experiment to?",function(new_name){
     if(new_name){
       if($("#project_list").text().indexOf(new_name) !== -1){

@@ -29,6 +29,8 @@
   display:none;
 }
 
+
+.data_navbar_input,
 .delete_server_data_btn,
 .download_server_data_btn,
 .delete_storage_data_btn,
@@ -37,7 +39,7 @@
 .download_backup_data_btn,
 .delete_data_btn,
 .download_data_btn{
-  margin:5px;
+  margin:2px;
 }
 
 .key_textarea{
@@ -54,12 +56,14 @@
 
 
 <nav class="navbar navbar-primary bg-white fixed-top fixed-top-2">
-  <span> <!-- to block formatting that puts the next button on the far right -->
-    <button class="btn btn-primary" id="js_decrypt_btn">Decrypt file(s)</button>
-    <input type="file" id="fileToLoad" style="display:none" multiple>
-    <button class="btn btn-primary" onclick="encrypt_obj.change_password()">Change password</button>
-    <button class="btn btn-primary" id="google_script_btn">Google Script</button>
-    <button class="btn btn-primary" id="local_data_btn">Local Data</button>
+  <span class="form-inline"> <!-- to block formatting that puts the next button on the far right -->
+    <button class="btn btn-primary data_navbar_input" id="js_decrypt_btn">Decrypt file(s)</button>
+    <input class="data_navbar_input" type="file" id="fileToLoad" style="display:none" multiple>
+    <button class="btn btn-primary data_navbar_input" onclick="encrypt_obj.change_password()">Change password</button>
+    <button class="btn btn-primary data_navbar_input" id="google_script_btn">Google Script</button>
+    <button class="btn btn-primary data_navbar_input" id="local_data_btn">Local Data</button>
+		<input class="form-control data_navbar_input" id="local_data_folder" readonly onClick="this.select();">
+		<button class="btn btn-primary data_navbar_input" id="change_local_data_btn">Change folder</button>
   </span>
 </nav>
 

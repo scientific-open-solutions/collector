@@ -47,27 +47,24 @@ if(typeof(user.current.path) == "undefined"){
 ipc.on('open_folder', (event,args) => {
 
   switch(args.location){
-    case "absolute":
-
-      break;
     case "home":
       var this_dir = root_dir + args.folder;
       console.log("this_dir");
       console.log(this_dir);
-      shell.showItemInFolder(
+      shell.openPath(
         this_dir.replaceAll("\/","\\")
       );
       event.returnValue = "done";
       break;
     case "relative":
-      shell.showItemInFolder(args.folder);
+      shell.openPath(args.folder);
       event.returnValue = "done";
       break;
     case "repo":
       console.log("user.current.path");
       console.log(user.current.path);
-      shell.showItemInFolder(
-        user.current.path.replaceAll("\/","\\") +
+      shell.openPath(
+        user.current.path.replaceAll("\/","\\") + "\\" +
         args.folder
       );
       event.returnValue = "done";
@@ -91,7 +88,7 @@ ipc.on('open_folder', (event,args) => {
     "resources\\app.asar\\",
     ""
   );
-  shell.showItemInFolder(
+  shell.openPath(
     location
   );
   */

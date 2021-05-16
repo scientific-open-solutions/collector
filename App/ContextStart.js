@@ -20,6 +20,7 @@ Collector.tests.run();
 Collector.start = function(){
   correct_master();
   user = JSON.parse(Collector.electron.fs.load_user());
+  correct_user();
   list_repos();
   wait_till_exists("list_projects");
   wait_till_exists("list_graphics");
@@ -119,7 +120,22 @@ function correct_master(){
     delete(master.code.user[default_file]);
   });
 }
-
+function correct_user(){
+  if(typeof(user.data_folder) == "undefined" || user.data_folder == ""){
+    bootbox.confirm("You don't (yet) have a folder where we'll put your data <b>when you test participants <u>on this device</u></b>. You're about to be asked where you would like this data to go. Please think carefully about this to make sure that your participant data is secure.", function(result){
+      if(result){
+        var data_folder = Collector.electron.find_path()[0];
+        if(data_folder){
+          user.data_folder = data_folder;
+          $("#local_data_folder").val(data_folder);
+          Collector.save_user();
+        }
+      }
+    });
+  } else {
+    $("#local_data_folder").val(user.data_folder);
+  }
+}
 switch(Collector.detect_context()){
   case "gitpod":
   case "server":
