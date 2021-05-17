@@ -625,11 +625,11 @@ $("#save_btn").on("click", function(){
           bootbox.alert("You have a space in row <b>" + (row_index + 2) + "</b> of your procedure <b>" + proc_name + "</b>. Please fix this before trying to run your experiment.");
         }
         if(cleaned_row.item == 0){
-
+          var this_code;
           if(typeof(master.code.user[cleaned_row.code]) !== "undefined"){
-            var this_code = master.code.user[cleaned_row.code];
+            this_code = master.code.user[cleaned_row.code];
           } else if(typeof(master.code.default[cleaned_row.code]) !== "undefined"){
-            var this_code = master.code.default[cleaned_row.code];
+            this_code = master.code.default[cleaned_row.code];
 
             these_variables = Collector.list_variables(this_code);
 
@@ -691,6 +691,7 @@ $("#save_btn").on("click", function(){
     /*
     * Only try to save an experiment if there is a valid experiment loaded
     */
+    var write_response;
     if(typeof(project) !== "undefined" & project !== null){
       var this_proj = master.project_mgmt.projects[project];
 
@@ -759,7 +760,7 @@ $("#save_btn").on("click", function(){
           }
         );
 
-        var write_response = Collector.electron.fs.write_file(
+        write_response = Collector.electron.fs.write_file(
           "",
           "master.json",
           JSON.stringify(master, null, 2)
@@ -774,7 +775,7 @@ $("#save_btn").on("click", function(){
         }
       }
     } else {
-      var write_response = Collector.electron.fs.write_file(
+      write_response = Collector.electron.fs.write_file(
         "",
         "master.json",
         JSON.stringify(master, null, 2));
