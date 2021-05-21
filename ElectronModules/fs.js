@@ -283,21 +283,23 @@ ipc.on('fs_write_data', (event,args) => {
       */
 
       if(!fs.existsSync(
-          root_dir + "Data/" + args.project_folder
+          user().data_folder + "/" + args.project_folder
         )
       ){
         fs.mkdirSync(
-          root_dir + "Data/" + args.project_folder
+          user().data_folder + "/" + args.project_folder
         );
       }
       content = fs.writeFileSync(
-        root_dir + "Data/" + args.project_folder + "/" +
+        user().data_folder + "/" + args.project_folder + "/" +
         args.this_file,
         args.file_content,
         'utf8'
       );
+      console.log("saved this data");
       event.returnValue = "success";
     } catch(error){
+      console.log("failed to save this data");
       //to trigger an attempt to load a trialtype from the master
       event.returnValue = error;
     }
