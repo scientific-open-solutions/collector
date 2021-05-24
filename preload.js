@@ -139,6 +139,12 @@ window.onload=function(){
           exists: function(){
             return ipc.sendSync('git_exists');
           },
+          locate_repo: function(repo_info){
+            return ipc.sendSync(
+              'git_locate_repo',
+              repo_info
+            );
+          },
           pages: function(repo_info){
             return ipc.sendSync(
               'git_pages',

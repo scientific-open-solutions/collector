@@ -180,6 +180,12 @@ ipc.on('git_add_token', (event,args) => {
   }
 });
 
+ipc.on('git_locate_repo', (event,args) => {
+  event.returnValue = user().repos
+    [args.org]
+    [args.repo].path;
+});
+
 /*
 * Expanding git_exists to check if there is a valid email
 */

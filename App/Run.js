@@ -300,14 +300,20 @@ Project = {
     */
 
     var home_dir;
+    var org_repo = project_json
+      .location
+      .split("/");
     if(
       typeof(Collector.electron) !== "undefined" &&
       window.navigator.platform.toLowerCase().indexOf("mac") !== -1
     ){
        home_dir = Collector
         .electron
-        .fs
-        .home_dir();
+        .git
+        .locate_repo({
+          org:  org_repo[0],
+          repo: org_repo[1]
+        });
         this_trialtype = this_trialtype.replaceAll(
           "../User/",
           home_dir + "/User/"
@@ -315,8 +321,11 @@ Project = {
     } else if(Project.is_exe){
       home_dir = Collector
         .electron
-        .fs
-        .home_dir();
+        .git
+        .locate_repo({
+          org:  org_repo[0],
+          repo: org_repo[1]
+        });
       this_trialtype = this_trialtype.replaceAll(
         "../User/",
         home_dir + "/User/"
