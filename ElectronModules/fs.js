@@ -277,21 +277,58 @@ ipc.on('fs_write_data', (event,args) => {
     content = "This request could be insecure, and was blocked";
   } else {
     try{
+      /*
+      * create organization folder if it doesn't exist yet
+      */
+      if(!fs.existsSync(
+          user().data_folder +
+            "/" + user().current.org
+        )
+      ){
+        fs.mkdirSync(
+          user().data_folder +
+            "/" + user().current.org
+        );
+      }
+
+      /*
+      * create repository folder if it doesn't exist yet
+      */
+      if(!fs.existsSync(
+          user().data_folder +
+            "/" + user().current.org  +
+            "/" + user().current.repo
+        )
+      ){
+        fs.mkdirSync(
+          user().data_folder +
+            "/" + user().current.org  +
+            "/" + user().current.repo
+        );
+      }
 
       /*
       * create project folder if it doesn't exist yet
       */
-
       if(!fs.existsSync(
-          user().data_folder + "/" + args.project_folder
+          user().data_folder +
+            "/" + user().current.org  +
+            "/" + user().current.repo +
+            "/" + args.project_folder
         )
       ){
         fs.mkdirSync(
-          user().data_folder + "/" + args.project_folder
+          user().data_folder +
+            "/" + user().current.org  +
+            "/" + user().current.repo +
+            "/" + args.project_folder
         );
       }
       content = fs.writeFileSync(
-        user().data_folder + "/" + args.project_folder + "/" +
+        user().data_folder +
+          "/" + user().current.org  +
+          "/" + user().current.repo +
+          "/" + args.project_folder + "/" +
         args.this_file,
         args.file_content,
         'utf8'
@@ -306,6 +343,33 @@ ipc.on('fs_write_data', (event,args) => {
 
   }
 
+});
+
+ipc.on('fs_write_file', (event,args) => {
+
+  /*
+  * Security checks - should probably have more
+  */
+  var content;
+  if(args.user_folder.indexOf("../") !== -1){
+    content = "This request could be insecure, and was blocked";
+  } else if(args.this_file.indexOf("../") !== -1){
+    content = "This request could be insecure, and was blocked";
+  } else {
+    try{
+      content = fs.writeFileSync(
+        user().current.path + "/User/" +
+        args.user_folder  + "/" +
+        args.this_file,
+        args.file_content,
+        'utf8');
+      event.returnValue = "success";
+    } catch(error){
+      //to trigger an attempt to load a trialtype from the master
+      event.returnValue = "failed to save";
+    }
+
+  }
 });
 
 ipc.on('fs_write_project', (event,args) => {
@@ -381,33 +445,6 @@ ipc.on('fs_write_project', (event,args) => {
       //to trigger an attempt to load a trialtype from the master
       event.returnValue = "failed to save " + error;
     }
-  }
-});
-
-ipc.on('fs_write_file', (event,args) => {
-
-  /*
-  * Security checks - should probably have more
-  */
-  var content;
-  if(args.user_folder.indexOf("../") !== -1){
-    content = "This request could be insecure, and was blocked";
-  } else if(args.this_file.indexOf("../") !== -1){
-    content = "This request could be insecure, and was blocked";
-  } else {
-    try{
-      content = fs.writeFileSync(
-        user().current.path + "/User/" +
-        args.user_folder  + "/" +
-        args.this_file,
-        args.file_content,
-        'utf8');
-      event.returnValue = "success";
-    } catch(error){
-      //to trigger an attempt to load a trialtype from the master
-      event.returnValue = "failed to save";
-    }
-
   }
 });
 
