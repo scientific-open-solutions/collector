@@ -269,6 +269,16 @@ $("#local_repo_btn").on("click", function(){
 });
 
 $("#pull_repo_btn").on("click",function(){
+  /*
+  * check if anything is not committed locally
+  */
+  
+
+
+  /*
+  * show the user what they're about to pull
+  */
+
   bootbox.confirm("This will overwrite any changes you have made. Are you sure you want to proceed?", function(confirmed){
     if(confirmed){
       var organization = $("#select_org").val();

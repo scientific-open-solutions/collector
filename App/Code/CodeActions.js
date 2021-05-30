@@ -70,7 +70,7 @@ function initiate_actions(){
     if(typeof(master.code.user[code_file]) == "undefined"){
       master.code.user[code_file] = {
         files : {}
-      }
+      };
     }
     master.code.user[code_file].updated = true;
     master.code.user[code_file]= ace_content;
@@ -186,7 +186,7 @@ function initiate_actions(){
               .trialtypes
               .user
               [new_name]
-          )
+          );
           if(write_response == "success"){
             Collector.electron.fs.delete_code(
               original_name,
@@ -200,7 +200,7 @@ function initiate_actions(){
                   bootbox.alert(response);
                 }
               }
-            )
+            );
           }
         }
       });
@@ -208,7 +208,7 @@ function initiate_actions(){
   });
   $("#save_code_button").on("click",function(){
     if($("#code_select").val() !== null){
-      var content = editor.getValue()
+      var content = editor.getValue();
       var name  = $("#code_select").val();
       if(typeof(master.code.default[name]) == "undefined"){
         code_obj.save(content,name,"old");

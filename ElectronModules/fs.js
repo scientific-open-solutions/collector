@@ -244,17 +244,17 @@ ipc.on('fs_read_file', (event,args) => {
     }
 
 
-    //try{
+    try{
       content = fs.readFileSync(user().current.path +
         "/User"           + "/" +
         args.user_folder + "/" +
         args.this_file,
       'utf8');
       event.returnValue = content;
-    //} catch(error){
+    } catch(error){
       //to trigger an attempt to load a code from the master
-    //  event.returnValue = "";
-    //}
+      event.returnValue = "";
+    }
 
   }
 });

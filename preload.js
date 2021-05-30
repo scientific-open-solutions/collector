@@ -189,8 +189,8 @@ window.onload=function(){
           },
           status: function(repo_info){
             return ipc.sendSync('git_status', {
-              organization: repo_info.organization,
-              repository: repo_info.repository
+              org:  repo_info.org,
+              repo: repo_info.repo
             });
           },
           token_exists: function(){

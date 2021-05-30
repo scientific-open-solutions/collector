@@ -1033,7 +1033,8 @@ function write(type, row){
   } else if(type == "dropdown"){
     var options = row["answers"].split("|");
     var this_dropdown = $("<select>");
-        this_dropdown.addClass("form-control")
+        this_dropdown
+          .addClass("form-select")
           .addClass("response")
           .addClass("txt-primary")
           .addClass(row["item_name"] + "_item")

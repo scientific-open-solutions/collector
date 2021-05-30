@@ -457,14 +457,10 @@ ipc.on('git_set_name', (event, args) => {
 
 ipc.on('git_status', (event, args) =>{
   var git = simpleGit();
-
   git.cwd(
-    root_dir +
-    "Repositories"      + "/" +
-    args.organization + "/" +
-    args.repository
+    user().repos[args.org][args.repo].path
   ).fetch().status().then(function(result){
-    event.returnValue = result.behind;
+    event.returnValue = result;
   }).catch(function(error){
     event.returnValue = error;
   });

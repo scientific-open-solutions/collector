@@ -71,7 +71,7 @@ code_obj = {
 				this_content = Collector.electron.fs.read_file(
           "Code",
 					cleaned_code
-        )
+        );
 				if(this_content == ""){
 				  editor.setValue(master.code[user_default][this_file]);
         } else {

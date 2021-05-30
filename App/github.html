@@ -22,6 +22,10 @@
 #github_dialog{
   top:200px;
 }
+#git_status{
+  width:100%;
+  height:200px;
+}
 </style>
 
 <div class="modal" tabindex="-1" role="dialog" id="github_dialog">
@@ -39,7 +43,7 @@
           <div class="input-group-prepend" style="width:130px">
             <span class="input-group-text bg-primary text-white">Organization</span>
           </div>
-          <select class="form-control" id="select_org"></select>
+          <select class="form-select" id="select_org"></select>
           <button class="btn btn-primary" id="add_organization_btn" style="margin-left:2px; margin-right:2px">Add</button>
           <button class="btn btn-danger" id="delete_organization_btn">X</button>
         </div>
@@ -47,10 +51,37 @@
           <div class="input-group-prepend"  style="width:130px">
             <span class="input-group-text bg-primary text-white">Repository</span>
           </div>
-          <select class="form-control" id="select_repo"></select>
+          <select class="form-select" id="select_repo"></select>
           <button class="btn btn-primary" id="add_repository_btn" style="margin-left:2px; margin-right:2px">Add</button>
           <button class="btn btn-danger" id="delete_repo_btn">X</button>
         </div>
+
+        <h5 class="text-primary">Software like Github desktop give a more complete sense of your repository, but here's a brief summary of your changes:</h5>
+
+        Input groups
+        Ahead: Behind
+
+        collapsable lists
+          - conflicts
+          - deleted
+          - modified
+          - not_added
+          - renamed
+          - staged
+
+        <!--
+        advice for how to resolve the conflicts
+          -pull and then over-write button?
+        -->
+
+
+        <!--
+
+        perhaps collapse panels here to look at each of the types of status info??
+
+        -->
+
+        <textarea id="git_status" readonly></textarea>
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary bi-search" id="find_repo_btn"></button>

@@ -50,16 +50,16 @@
     </div>
     <div class="col">
       <ul class="mb-9 col form-inline">
-        <select id="code_project_select" class="form-control" style="margin:2px">
+        <select id="code_project_select" class="form-select" style="margin:2px">
           <option disabled selected>Project (optional)</option>
           <option>None</option>
         </select>
-        <select id="code_procedure_select" class="form-control"  style="margin:2px; display:none">
+        <select id="code_procedure_select" class="form-select"  style="margin:2px; display:none">
           <option disabled selected>Procedure sheet (optional)</option>
           <option>None</option>
         </select>
         <input class="form-control" type="number" placeholder="row"  style="margin:2px; width:100px; display:none;">
-        <select id="code_stimuli_select" class="form-control"  style="margin:2px; display:none;">
+        <select id="code_stimuli_select" class="form-select"  style="margin:2px; display:none;">
           <option disabled selected>Stimuli sheet (optional)</option>
           <option>None</option>
         </select>
@@ -79,9 +79,7 @@
       	</div>
         -->
       	<div class="col-md-3">
-      		<select id="code_select" class="form-control" previousValue ="">
-      			<option hidden disabled selected>Select a Phase Type</option>
-      		</select>
+      		<select id="code_select" class="form-select" previousValue =""></select>
       	</div>
       	<div class="col-md-9">
             <button id="new_code_button" 		class="btn btn-primary">New</button>
