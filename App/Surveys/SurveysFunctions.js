@@ -302,7 +302,7 @@ function preview_survey(this_survey){
 	'<scr' + 'ipt src= "libraries/bootstrap.4.0.min.js"></scr' + 'ipt>' +
 	'<scr' + 'ipt src= "libraries/bootbox.5.4.min.js"></scr' + 'ipt>' +
 	'<scr' + 'ipt src= "libraries/popper.min.js"></scr' + 'ipt>' +
-	'<lin' + 'k rel="stylesheet" type="text/css" href="libraries/bootstrapCollector.css">' +
+	'<lin' + 'k rel="stylesheet" type="text/css" href="libraries/bootstrap-5.0.1-dist/css/bootstrap.min.css">' +
 	'<lin' + 'k rel="stylesheet" type="text/css" href="libraries/bootbox.fix.css">' +
 	'<scr' + 'ipt src= "libraries/papaparse.4.3.6.min.js"></scr' + 'ipt>' +	survey_template);
 
