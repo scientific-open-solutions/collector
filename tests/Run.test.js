@@ -1,7 +1,7 @@
 /*
 * can I remove the "run" const?
 */
-window.$  = require("../App/libraries/jquery-3.3.1.min.js");
+window.$  = require("../App/libraries/jquery-3.6.0.min.js");
 const run = require('../App/Run.js');
 
 /*

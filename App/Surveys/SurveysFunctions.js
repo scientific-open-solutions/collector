@@ -298,7 +298,7 @@ function preview_survey(this_survey){
     .contentWindow
     .document;
 	doc.open();
-	doc.write('<scr' + 'ipt src="libraries/jquery-3.3.1.min.js"></scr' + 'ipt>' +
+	doc.write('<scr' + 'ipt src="libraries/jquery-3.6.0.min.js"></scr' + 'ipt>' +
 	'<scr' + 'ipt src= "libraries/bootstrap-5.0.1-dist/js/bootstrap.min.js"></scr' + 'ipt>' +
 	'<scr' + 'ipt src= "libraries/bootbox.5.4.min.js"></scr' + 'ipt>' +
 	'<scr' + 'ipt src= "libraries/popper.min.js"></scr' + 'ipt>' +
