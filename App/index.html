@@ -343,6 +343,19 @@ $("#github_logo").on("click", function(){
       },1000);
     }
   }
+
+  /*
+  * check repository information
+  */
+
+  var status = Collector.electron.git.status({
+    "org":  $("#select_org").val(),
+    "repo": $("#select_repo").val()
+  });
+
+  $("#git_ahead").val(status.ahead);
+  $("#git_behind").val(status.behind);
+
   $('#github_dialog').fadeIn();
 });
 

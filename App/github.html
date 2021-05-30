@@ -33,9 +33,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Synch with github repository</h5>
-        <button type="button" class="close" id="fadeout_github">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="fadeout_github"></button>
       </div>
       <div class="modal-body">
         <p class="lead">Put in the information below to allow you to update your online experiments</p>
@@ -59,7 +57,12 @@
         <h5 class="text-primary">Software like Github desktop give a more complete sense of your repository, but here's a brief summary of your changes:</h5>
 
         Input groups
-        Ahead: Behind
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="behind" id="git_behind">
+          <span class="input-group-text bg-primary text-white">Commits behind</span>
+          <span class="input-group-text bg-primary text-white">Commits ahead</span>
+          <input type="text" class="form-control" placeholder="ahead" id="git_ahead">
+        </div>
 
         collapsable lists
           - conflicts

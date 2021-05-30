@@ -56,15 +56,31 @@
 
 
 <nav class="navbar navbar-primary bg-white fixed-top fixed-top-2">
-  <span class="form-inline"> <!-- to block formatting that puts the next button on the far right -->
-    <button class="btn btn-primary data_navbar_input" id="js_decrypt_btn">Decrypt file(s)</button>
-    <input class="data_navbar_input" type="file" id="fileToLoad" style="display:none" multiple>
-    <button class="btn btn-primary data_navbar_input" onclick="encrypt_obj.change_password()">Change password</button>
-    <button class="btn btn-primary data_navbar_input" id="google_script_btn">Google Script</button>
-    <button class="btn btn-primary data_navbar_input" id="local_data_btn">Local Data</button>
-		<input class="form-control data_navbar_input" id="local_data_folder" readonly onClick="this.select();">
-		<button class="btn btn-primary data_navbar_input" id="change_local_data_btn">Change folder</button>
-  </span>
+	<table>
+		<tr>
+			<td>
+		    <button class="btn btn-primary data_navbar_input" id="js_decrypt_btn">Decrypt file(s)</button>
+			</td>
+			<td>
+		    <input class="data_navbar_input" type="file" id="fileToLoad" style="display:none" multiple>
+			</td>
+			<td>
+		    <button class="btn btn-primary data_navbar_input" onclick="encrypt_obj.change_password()">Change password</button>
+			</td>
+			<td>
+		    <button class="btn btn-primary data_navbar_input" id="google_script_btn">Google Script</button>
+			</td>
+			<td>
+		    <button class="btn btn-primary data_navbar_input" id="local_data_btn">Local Data</button>
+			</td>
+			<td>
+				<input class="form-control data_navbar_input" id="local_data_folder" readonly onClick="this.select();">
+			</td>
+			<td>
+				<button class="btn btn-primary data_navbar_input" id="change_local_data_btn">Change folder</button>
+			</td>
+		</tr>
+	</table>
 </nav>
 
 

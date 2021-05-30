@@ -607,7 +607,7 @@ function process_question(row, row_no){
       }
     }
     if(feedback_array){
-        question_td += "<button class='btn btn-outline-info feedback_btn "+row["item_name"]+"_item row_"+row_no+"' data-toggle='tooltip' id='reveal_"+row["item_name"].toLowerCase()+"_feedback' onclick='reveal_answers(this)'>Show</button>";
+        question_td += "<button class='btn btn-outline-info feedback_btn "+row["item_name"]+"_item row_"+row_no+"' id='reveal_"+row["item_name"].toLowerCase()+"_feedback' onclick='reveal_answers(this)'>Show</button>";
     }
   }
   if(typeof(row["type"])== "undefined"){
@@ -1339,11 +1339,7 @@ function write_survey(this_survey, this_id){
     } else {
       bootbox.alert("You have not yet unlocked this tab - maybe try clicking on <b>Proceed</b>?");
     }
-	});
-  $('[data-toggle="tooltip"]').tooltip();
-
-  // not sure why this was ever implemented:
-  //$(".custom-checkbox").prop("indeterminate",true);
+	});  
 }
 
 /*

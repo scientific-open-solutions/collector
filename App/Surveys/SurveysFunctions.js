@@ -225,7 +225,7 @@ function list_surveys(){
       master.surveys = {
         preview         : false,
         user_surveys    : {}
-      }
+      };
     }
     master.surveys = typeof(master.surveys) == "undefined" ? {} : master.surveys;
     master.surveys.default_surveys = {};
@@ -258,12 +258,12 @@ function list_surveys(){
 
 function preview_survey(this_survey){
   master.surveys.preview = true;
-	$("#survey_preview").css("height",window.innerHeight - 100)
-	if($("#help_content").is(":visible")){
+	$("#survey_preview").css("height",window.innerHeight - 100);
+  if($("#help_content").is(":visible")){
 		var helper_width = parseFloat($("#help_content").css("width").replace("px",""));
 
 		if($("#help_content").is(":visible")){
-			var helper_width = parseFloat($("#help_content").css("width").replace("px",""));
+			helper_width = parseFloat($("#help_content").css("width").replace("px",""));
 
 			$("#survey_preview").animate({
 				"width": window.innerWidth - helper_width

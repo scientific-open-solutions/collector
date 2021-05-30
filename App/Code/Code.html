@@ -35,76 +35,82 @@
 <br><br>
 
 <div id="Code" class="hide_show_elements">
-
-<div class="container">
-  <div class="row">
-    <div class="col-">
-      <ul  class="nav nav-pills mb-3 bg-secondary" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active text-white" id="code_editor-tab" data-toggle="pill" href="#code_editor" role="tab" aria-controls="code_editor" aria-selected="true">Editor</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" id="code-preview-tab" data-toggle="pill" href="#trialtype-preview" role="tab" aria-controls="trialtype-preview" aria-selected="false">Preview</a>
-        </li>
-      </ul>
-    </div>
-    <div class="col">
-      <ul class="mb-9 col form-inline">
+  <table>
+    <tr>
+      <td>
+        <ul  class="nav nav-pills bg-secondary" role="tablist">
+          <li class="nav-item" >
+            <button class="nav-link text-white active" id="code_editor-tab" data-bs-toggle="pill" data-bs-target="#code_editor" type="button" role="tab" aria-controls="code_editor" aria-selected="false">Editor</button>
+         </li>
+          <li class="nav-item" >
+            <button class="nav-link text-white" id="code-preview-tab" data-bs-toggle="pill" data-bs-target="#code-preview" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Preview</button>
+          </li>
+        </ul>
+      </td>
+      <td>
         <select id="code_project_select" class="form-select" style="margin:2px">
           <option disabled selected>Project (optional)</option>
           <option>None</option>
         </select>
+      </td>
+      <td>
         <select id="code_procedure_select" class="form-select"  style="margin:2px; display:none">
           <option disabled selected>Procedure sheet (optional)</option>
           <option>None</option>
         </select>
+      </td>
+      <td>
         <input class="form-control" type="number" placeholder="row"  style="margin:2px; width:100px; display:none;">
         <select id="code_stimuli_select" class="form-select"  style="margin:2px; display:none;">
           <option disabled selected>Stimuli sheet (optional)</option>
           <option>None</option>
         </select>
+      </td>
+      <td>
         <button id="code_preview_fullscreen" class="btn btn-primary">Fullscreen</button>
-      </ul>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="tab-content" id="pills-tabContent" style="top:100px; width:800px; height:800px; position: absolute;">
-    <div class="tab-pane fade show active" id="code_editor" role="tabpanel" aria-labelledby="pills-spreadsheet-tab">
-      <br>
-      <div class="row">
-        <!--
-        <div class="col-md-1">
-      		<button class="btn btn-primary" id="community_code_btn">Community</button>
-      	</div>
-        -->
-      	<div class="col-md-3">
-      		<select id="code_select" class="form-select" previousValue =""></select>
-      	</div>
-      	<div class="col-md-9">
-            <button id="new_code_button" 		class="btn btn-primary">New</button>
-        		<button id="rename_code_button" class="btn btn-primary" style="display:none">Rename</button>
-        		<button id="delete_code_button" class="btn btn-primary" style="display:none">Delete</button>
-        		<button id="save_code_button" class="btn btn-primary">Save</button>
-        		<button class="btn btn-outline-primary" id="view_code_btn">Code</button>
-        		<button class="btn btn-outline-primary" id="view_graphic_btn">Graphic</button>
-      	</div>
-      </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <div class="tab-content" id="pills-tabContent" style="top:100px; width:800px; height:800px; position: absolute;">
+          <div class="tab-pane fade show active" id="code_editor" role="tabpanel" aria-labelledby="pills-spreadsheet-tab">
+            <br>
+            <div class="row">
+              <!--
+              <div class="col-md-1">
+            		<button class="btn btn-primary" id="community_code_btn">Community</button>
+            	</div>
+              -->
+            	<div class="col-md-3">
+            		<select id="code_select" class="form-select" previousValue =""></select>
+            	</div>
+            	<div class="col-md-9">
+                  <button id="new_code_button" 		class="btn btn-primary">New</button>
+              		<button id="rename_code_button" class="btn btn-primary" style="display:none">Rename</button>
+              		<button id="delete_code_button" class="btn btn-primary" style="display:none">Delete</button>
+              		<button id="save_code_button" class="btn btn-primary">Save</button>
+              		<button class="btn btn-outline-primary" id="view_code_btn">Code</button>
+              		<button class="btn btn-outline-primary" id="view_graphic_btn">Graphic</button>
+            	</div>
+            </div>
 
 
-      <h6><em>ACE (https://ace.c9.io/)</em> is used for editing code</h6>
-      <div id="graphic_editor" 	style="display:none"></div>
-      <div id="ace_div">
-        <!--
-          This is to allow the ace editor width to change when the helper is shown (or not)
-        -->
-        <div id="ACE_editor" 			style="display:none;width:100%"></div>
-      </div>
-    </div>
-    <div class="tab-pane fade" id="trialtype-preview" role="tabpanel" aria-labelledby="code-preview-tab" style="height:100%">
-      <iframe id="code_preview"></iframe>
-    </div>
-  </div>
+            <h6><em>ACE (https://ace.c9.io/)</em> is used for editing code</h6>
+            <div id="graphic_editor" 	style="display:none"></div>
+            <div id="ace_div">
+              <!--
+                This is to allow the ace editor width to change when the helper is shown (or not)
+              -->
+              <div id="ACE_editor" 			style="display:none;width:100%"></div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="code-preview" role="tabpanel" aria-labelledby="code-preview-tab" style="height:100%">
+            <iframe id="code_preview"></iframe>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
 </div>
 
 
@@ -274,4 +280,3 @@ editor.completers.push({
 </script>
 <script type="text/javascript" src="Code/CodeFunctions.js"></script>
 <script type="text/javascript" src="Code/CodeActions.js"></script>
-</div>
