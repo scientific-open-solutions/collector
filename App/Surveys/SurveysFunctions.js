@@ -299,7 +299,7 @@ function preview_survey(this_survey){
     .document;
 	doc.open();
 	doc.write('<scr' + 'ipt src="libraries/jquery-3.3.1.min.js"></scr' + 'ipt>' +
-	'<scr' + 'ipt src= "libraries/bootstrap.4.0.min.js"></scr' + 'ipt>' +
+	'<scr' + 'ipt src= "libraries/bootstrap-5.0.1-dist/js/bootstrap.min.js"></scr' + 'ipt>' +
 	'<scr' + 'ipt src= "libraries/bootbox.5.4.min.js"></scr' + 'ipt>' +
 	'<scr' + 'ipt src= "libraries/popper.min.js"></scr' + 'ipt>' +
 	'<lin' + 'k rel="stylesheet" type="text/css" href="libraries/bootstrap-5.0.1-dist/css/bootstrap.min.css">' +
