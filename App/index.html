@@ -353,6 +353,22 @@ $("#github_logo").on("click", function(){
     "repo": $("#select_repo").val()
   });
 
+  if(status.ahead > 0){
+    $("#git_ahead").addClass("bg-danger");
+    $("#git_ahead").addClass("text-white");
+  } else {
+    $("#git_ahead").removeClass("bg-danger");
+    $("#git_ahead").removeClass("text-white");
+  }
+
+  if(status.behind > 0){
+    $("#git_behind").addClass("bg-danger");
+    $("#git_behind").addClass("text-white");
+  } else {
+    $("#git_behind").removeClass("bg-danger");
+    $("#git_behind").removeClass("text-white");
+  }
+
   $("#git_ahead").val(status.ahead);
   $("#git_behind").val(status.behind);
 
