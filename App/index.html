@@ -114,7 +114,6 @@
   	Publicly available css packages
   -->
   <link rel="stylesheet" type="text/css" href="libraries/bootstrap-5.0.1-dist/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="libraries/bootbox.fix.css">
   <link rel="stylesheet" type="text/css" href="libraries/bootstrap-icons.css">
 
 
@@ -273,9 +272,15 @@ setTimeout(function(){
   });
 },500);
 
+
+var top_icon_timer;
 $(".top_icon").hover(function(){
-  $(this).find(".content_name").animate({"font-size":"15px"});
+  var this_icon = this;
+  top_icon_timer = setTimeout(function(){
+    $(this_icon).find(".content_name").animate({"font-size":"15px"});
+  },500)
 }, function(){
+  clearTimeout(top_icon_timer);
   $(this).find(".content_name").animate({"font-size":"0px"});
 });
 
@@ -348,12 +353,14 @@ $("#github_logo").on("click", function(){
   * check repository information
   */
 
-  var status = Collector.electron.git.status({
+  var git_status = JSON.parse(Collector.electron.git.status({
     "org":  $("#select_org").val(),
     "repo": $("#select_repo").val()
-  });
+  }));
 
-  if(status.ahead > 0){
+  console.log(git_status);
+
+  if(git_status.ahead > 0){
     $("#git_ahead").addClass("bg-danger");
     $("#git_ahead").addClass("text-white");
   } else {
@@ -361,7 +368,7 @@ $("#github_logo").on("click", function(){
     $("#git_ahead").removeClass("text-white");
   }
 
-  if(status.behind > 0){
+  if(git_status.behind > 0){
     $("#git_behind").addClass("bg-danger");
     $("#git_behind").addClass("text-white");
   } else {
@@ -369,8 +376,62 @@ $("#github_logo").on("click", function(){
     $("#git_behind").removeClass("text-white");
   }
 
-  $("#git_ahead").val(status.ahead);
-  $("#git_behind").val(status.behind);
+  $("#git_ahead").val(git_status.ahead);
+  $("#git_behind").val(git_status.behind);
+
+  /*
+  * clear and update each of the cards for each change
+  */
+
+  var git_updates = [
+    "conflicted",
+    "created",
+    "deleted",
+    "modified",
+    "not_added",
+    "renamed",
+    "staged"
+  ];
+
+  git_updates.forEach(function(git_update){
+    console.log(git_update);
+    console.log(git_status[git_update]);
+    if(git_status[git_update].length>0){
+      $("#git_" + git_update + "_btn").show();
+      $("#git_" + git_update + "_card")
+        .find($(".card-body"))
+        .html("<table>" +
+          git_status[git_update].map(row =>
+            "<tr>" +
+              "<td>" + row + "</td>" +
+              "<td><button class='btn btn-primary " + git_update + " update_btn' value='" + row + "'>Undo</button></td>" +
+            "</tr>"
+          )
+        );
+    } else {
+      $("#git_" + git_update + "_btn").hide();
+    }
+  });
+
+  $(".update_btn").on("click", function(){
+    if($(this).hasClass("not_added")){
+      console.log("new file");
+      console.log($(this).val());
+      var response = Collector.electron.git.undo({
+        org:  $("#select_org").val(),
+        repo: $("#select_repo").val(),
+        path: $(this).val(),
+        type: "not_added"
+      });
+      bootbox.alert(response);
+      $("#github_logo").click();
+    } else if($(this).hasClass("modified")){
+      console.log("modified file")
+    }
+  });
+
+
+
 
   $('#github_dialog').fadeIn();
 });

@@ -199,6 +199,12 @@ window.onload=function(){
               {}
             );
           },
+          undo: function(undo_info){
+            return ipc.sendSync(
+              'git_undo',
+              undo_info
+            );
+          },
           valid_org: function(repo_info){
             return ipc.sendSync(
               'git_valid_org',

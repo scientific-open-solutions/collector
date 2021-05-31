@@ -180,12 +180,6 @@ ipc.on('git_add_token', (event,args) => {
   }
 });
 
-ipc.on('git_locate_repo', (event,args) => {
-  event.returnValue = user().repos
-    [args.org]
-    [args.repo].path;
-});
-
 /*
 * Expanding git_exists to check if there is a valid email
 */
@@ -224,6 +218,12 @@ ipc.on('git_exists', (event,args) => {
   } else {
     event.returnValue = "Git is not yet installed. Please go to https://git-scm.com/ to download and install it so that you can do online research.";
   }
+});
+
+ipc.on('git_locate_repo', (event,args) => {
+  event.returnValue = user().repos
+    [args.org]
+    [args.repo].path;
 });
 
 ipc.on('git_pages', (event,args) => {
@@ -442,6 +442,28 @@ ipc.on('git_repo_info', (event, args) => {
   });
 });
 
+ipc.on('git_undo', (event,args) => {
+  var git = simpleGit();
+
+  if(args.path.indexOf("..") !== -1){
+    event.returnValue = "This request looked unsafe, so was ignored";
+  } else if(args.type == "not_added") {
+    fs.unlinkSync(
+      user().repos[args.org][args.repo].path + "/" + args.path
+    );
+    event.returnValue = "success";
+  } else if(args.type == "modify"){
+    git.cwd(
+      user().repos[args.org][args.repo].path
+    ).checkout([args.path]).then(function(result){
+      console.log("success");
+    }).catch(function(error){
+      console.log(error);
+    });
+    event.returnValue = "success";
+  }
+});
+
 ipc.on('git_set_email', (event, args) => {
   var git = simpleGit();
       git.addConfig("user.email", args.email);
@@ -460,7 +482,7 @@ ipc.on('git_status', (event, args) =>{
   git.cwd(
     user().repos[args.org][args.repo].path
   ).fetch().status().then(function(result){
-    event.returnValue = result;
+    event.returnValue = JSON.stringify(result);
   }).catch(function(error){
     event.returnValue = error;
   });

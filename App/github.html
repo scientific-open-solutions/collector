@@ -36,7 +36,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="fadeout_github"></button>
       </div>
       <div class="modal-body">
-        <p class="lead">Put in the information below to allow you to update your online experiments</p>
         <div class="input-group mb-3">
           <div class="input-group-prepend" style="width:130px">
             <span class="input-group-text bg-primary text-white">Organization</span>
@@ -54,23 +53,97 @@
           <button class="btn btn-danger" id="delete_repo_btn">X</button>
         </div>
 
-        <h5 class="text-primary">Software like Github desktop give a more complete sense of your repository, but here's a brief summary of your changes:</h5>
+        <h5 class="text-primary">Software like Github desktop can help manage repositories. Here's a basic summary:</h5>
 
-        Input groups
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="behind" id="git_behind">
+          <input type="text" class="form-control" placeholder="behind" id="git_behind" readonly>
           <span class="input-group-text bg-primary text-white">Commits behind</span>
           <span class="input-group-text bg-primary text-white">Commits ahead</span>
-          <input type="text" class="form-control" placeholder="ahead" id="git_ahead">
+          <input type="text" class="form-control" placeholder="ahead" id="git_ahead" readonly>
         </div>
 
-        collapsable lists
-          - conflicts
-          - deleted
-          - modified
-          - not_added
-          - renamed
-          - staged
+        <p>
+          <button
+            id="git_conflicted_btn"
+            class="btn btn-primary"
+            data-bs-toggle="collapse"
+            href="#git_conflicted_card"
+            role="button"
+            aria-expanded="false"
+            aria-controls="git_conflicted_card">Conflicts</button>
+
+          <button
+            id="git_deleted_btn"
+            class="btn btn-primary"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#git_deleted_card"
+            aria-expanded="false"
+            aria-controls="git_deleted_card">Deleted</button>
+
+          <button
+            id="git_modified_btn"
+            class="btn btn-primary"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#git_modified_card"
+            aria-expanded="false"
+            aria-controls="git_modified_card">Modified</button>
+
+          <button
+            id="git_not_added_btn"
+            class="btn btn-primary"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#git_not_added_card"
+            aria-expanded="false"
+            aria-controls="git_not_added_card">New</button>
+
+          <button
+            id="git_renamed_btn"
+            class="btn btn-primary"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#git_renamed_card"
+            aria-expanded="false"
+            aria-controls="git_renamed_card">Renamed</button>
+
+          <button
+            id="git_staged_btn"
+            class="btn btn-primary"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#git_staged_card"
+            aria-expanded="false"
+            aria-controls="git_staged_card">Staged</button>
+        </p>
+        <div class="row">
+          <div class="collapse multi-collapse" id="git_conflicted_card">
+            <div class="card-header">Conflicts</div>
+            <div class="card card-body"></div>
+          </div>
+          <div class="collapse multi-collapse" id="git_deleted_card">
+            <div class="card-header">Deleted</div>
+            <div class="card card-body"></div>
+          </div>
+          <div class="collapse multi-collapse" id="git_modified_card">
+            <div class="card-header">Modified</div>
+            <div class="card card-body"></div>
+          </div>
+          <div class="collapse multi-collapse" id="git_not_added_card">
+            <div class="card-header">New</div>
+            <div class="card card-body"></div>
+          </div>
+          <div class="collapse multi-collapse" id="git_renamed_card">
+            <div class="card-header">Renamed</div>
+            <div class="card card-body"></div>
+          </div>
+          <div class="collapse multi-collapse" id="git_staged_card">
+            <div class="card-header">Staged</div>
+            <div class="card card-body"></div>
+          </div>
+        </div>
+
 
         <!--
         advice for how to resolve the conflicts
@@ -78,13 +151,8 @@
         -->
 
 
-        <!--
 
-        perhaps collapse panels here to look at each of the types of status info??
 
-        -->
-
-        <textarea id="git_status" readonly></textarea>
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary bi-search" id="find_repo_btn"></button>
