@@ -3,3 +3,10 @@
 .bootbox .modal-header{
 	display: block;
 }
+.bootbox-close-button{
+	position: absolute;
+	right: 10px;
+	background-color: transparent;
+	border-color: none;
+	border-width: 0px;
+}

@@ -30,7 +30,7 @@ Collector.start = function(){
   wait_till_exists("list_data_servers");
   wait_till_exists("list_servers");
   wait_till_exists("list_surveys");
-  wait_till_exists("list_pathways");
+  wait_till_exists("list_pathways");  
 };
 
 function correct_master(){
