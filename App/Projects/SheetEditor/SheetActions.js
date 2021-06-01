@@ -194,35 +194,6 @@ $("#download_project_button").on("click",function(){
   });
 });
 
-$("#open_proj_folder").on("click", function(){
-  Collector.electron.open_folder(
-    "repo",
-    "User/Projects/" + $("#project_list").val()
-  );
-});
-
-$("#project_list").on("change",function(){
-  project_json = master.project_mgmt.projects[this.value];
-  clean_conditions();
-  $("#project_inputs").show();
-  update_handsontables();
-  update_server_table();
-  $("#save_btn").click();
-});
-
-$("#new_project_button").on("click",function(){
-  bootbox.prompt("What would you like to name the new experiment?",function(result){
-    if(result !== null){
-      if($("#project_list").text().indexOf(result) !== -1){
-        bootbox.alert("You already have an experiment with this name");
-      } else {
-        new_project(result);
-        $("#save_btn").click();
-      }
-    }
-  });
-});
-
 $("#new_proc_button").on("click",function(){
   var proc_template = default_project.all_procs["procedure_1.csv"];
   bootbox.prompt("What would you like the name of the new <b>procedure</b> sheet to be?",function(new_proc_name){
@@ -243,6 +214,19 @@ $("#new_proc_button").on("click",function(){
         "procedure",
         new_proc_name
       );
+    }
+  });
+});
+
+$("#new_project_button").on("click",function(){
+  bootbox.prompt("What would you like to name the new experiment?",function(result){
+    if(result !== null){
+      if($("#project_list").text().indexOf(result) !== -1){
+        bootbox.alert("You already have an experiment with this name");
+      } else {
+        new_project(result);
+        $("#save_btn").click();
+      }
     }
   });
 });
@@ -276,6 +260,22 @@ $("#new_stim_button").on("click",function(){
       */
     }
   });
+});
+
+$("#open_proj_folder").on("click", function(){
+  Collector.electron.open_folder(
+    "repo",
+    "User/Projects/" + $("#project_list").val()
+  );
+});
+
+$("#project_list").on("change",function(){
+  project_json = master.project_mgmt.projects[this.value];
+  clean_conditions();
+  $("#project_inputs").show();
+  update_handsontables();
+  update_server_table();
+  $("#save_btn").click();
 });
 
 $("#proc_select").on("change",function(){
@@ -505,7 +505,81 @@ $("#run_btn").on("click",function(){
 $("#save_btn").attr("previousValue","");
 
 $("#save_btn").on("click", function(){
+  /*
+  * add the org and repo to the project_json
+  */
+  project_json.location = $("#select_org").val() + "/" + $("#select_repo").val();
 
+  function process_code(this_proj){
+    var code_files = [];
+    Object.keys(this_proj.all_procs).forEach(function(proc_name){
+      var this_proc = Collector.PapaParsed(this_proj.all_procs[proc_name]);
+      var cleaned_parsed_proc = [];
+      this_proc.forEach(function(row){
+        if(Object.values(row).join("") !== ""){
+          cleaned_parsed_proc.push(row);
+        }
+      });
+      this_proc = cleaned_parsed_proc.map(function(row, row_index){
+        var cleaned_row = Collector.clean_obj_keys(row);
+        if(code_files.indexOf(cleaned_row.code) == -1){
+          code_files.push(cleaned_row.code.toLowerCase());
+        }
+        cleaned_row.code = cleaned_row.code.toLowerCase();
+        if(cleaned_row.code.indexOf(" ") !== -1){
+          bootbox.alert("You have a space in row <b>" + (row_index + 2) + "</b> of your procedure <b>" + proc_name + "</b>. Please fix this before trying to run your experiment.");
+        }
+        if(cleaned_row.item == 0){
+          var this_code;
+          if(typeof(master.code.user[cleaned_row.code]) !== "undefined"){
+            this_code = master.code.user[cleaned_row.code];
+          } else if(typeof(master.code.default[cleaned_row.code]) !== "undefined"){
+            this_code = master.code.default[cleaned_row.code];
+
+            these_variables = Collector.list_variables(this_code);
+
+            these_variables.forEach(function(this_variable){
+              if(Object.keys(cleaned_row).indexOf(this_variable) == -1 &&
+                 this_variable !== "survey" &&
+                 cleaned_row.code !== "survey"){          //i.e. this variable is not part of this procedure
+                Collector.custom_alert("Error: You have your item set to <b>0</b> in row <b>" + (row_index + 2) +
+                "</b>. However, it seems like the trialtype <b>" +
+                cleaned_row.code + "</b> will be looking for a variable <b>" + this_variable + "</b> in your" +
+                " stimuli sheet.");
+              }
+            });
+
+          } else {
+            bootbox.alert("The trialtype <b>" + cleaned_row.code + "</b> doesn't appear to exist");
+          }
+
+
+          //need to take into account the code might be referring to a header in the procedure sheet
+        }
+        return cleaned_row;
+      });
+      this_proj.all_procs[proc_name] = Papa.unparse(this_proc);
+    });
+    code_files = code_files.filter(Boolean); //remove blanks
+    if(typeof(this_proj.code) == "undefined"){
+      this_proj.trialtypes = {};
+    }
+
+    /*
+    * First loop is to make sure the experiment has all the code_files
+    */
+    code_files.forEach(function(code_file){
+      if(typeof(this_proj.code) == "undefined"){
+        this_proj.code = {};
+      }
+      if(typeof(master.code.user[code_file]) == "undefined"){
+        this_proj.code[code_file] = master.code.default[code_file];
+      } else {
+        this_proj.code[code_file] = master.code.user[code_file];
+      }
+    });
+    return this_proj;
+  }
   function process_conditions(this_proj){
     /*
     * detect if conditions needs to be unparsed
@@ -605,76 +679,7 @@ $("#save_btn").on("click", function(){
     });
     return this_proj;
   }
-  function process_code(this_proj){
-    var code_files = [];
-    Object.keys(this_proj.all_procs).forEach(function(proc_name){
-      var this_proc = Collector.PapaParsed(this_proj.all_procs[proc_name]);
-      var cleaned_parsed_proc = [];
-      this_proc.forEach(function(row){
-        if(Object.values(row).join("") !== ""){
-          cleaned_parsed_proc.push(row);
-        }
-      });
-      this_proc = cleaned_parsed_proc.map(function(row, row_index){
-        var cleaned_row = Collector.clean_obj_keys(row);
-        if(code_files.indexOf(cleaned_row.code) == -1){
-          code_files.push(cleaned_row.code.toLowerCase());
-        }
-        cleaned_row.code = cleaned_row.code.toLowerCase();
-        if(cleaned_row.code.indexOf(" ") !== -1){
-          bootbox.alert("You have a space in row <b>" + (row_index + 2) + "</b> of your procedure <b>" + proc_name + "</b>. Please fix this before trying to run your experiment.");
-        }
-        if(cleaned_row.item == 0){
-          var this_code;
-          if(typeof(master.code.user[cleaned_row.code]) !== "undefined"){
-            this_code = master.code.user[cleaned_row.code];
-          } else if(typeof(master.code.default[cleaned_row.code]) !== "undefined"){
-            this_code = master.code.default[cleaned_row.code];
 
-            these_variables = Collector.list_variables(this_code);
-
-            these_variables.forEach(function(this_variable){
-              if(Object.keys(cleaned_row).indexOf(this_variable) == -1 &&
-                 this_variable !== "survey" &&
-                 cleaned_row.code !== "survey"){          //i.e. this variable is not part of this procedure
-                Collector.custom_alert("Error: You have your item set to <b>0</b> in row <b>" + (row_index + 2) +
-                "</b>. However, it seems like the trialtype <b>" +
-                cleaned_row.code + "</b> will be looking for a variable <b>" + this_variable + "</b> in your" +
-                " stimuli sheet.");
-              }
-            });
-
-          } else {
-            bootbox.alert("The trialtype <b>" + cleaned_row.code + "</b> doesn't appear to exist");
-          }
-
-
-          //need to take into account the code might be referring to a header in the procedure sheet
-        }
-        return cleaned_row;
-      });
-      this_proj.all_procs[proc_name] = Papa.unparse(this_proc);
-    });
-    code_files = code_files.filter(Boolean); //remove blanks
-    if(typeof(this_proj.code) == "undefined"){
-      this_proj.trialtypes = {};
-    }
-
-    /*
-    * First loop is to make sure the experiment has all the code_files
-    */
-    code_files.forEach(function(code_file){
-      if(typeof(this_proj.code) == "undefined"){
-        this_proj.code = {};
-      }
-      if(typeof(master.code.user[code_file]) == "undefined"){
-        this_proj.code[code_file] = master.code.default[code_file];
-      } else {
-        this_proj.code[code_file] = master.code.user[code_file];
-      }
-    });
-    return this_proj;
-  }
 
   // try{
     $("#save_code_button").click();

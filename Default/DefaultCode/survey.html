@@ -929,6 +929,7 @@ function write(type, row){
   row = shuffle_answers(row);
   row["item_name"] = row["item_name"].toLowerCase();
 
+
   if(type == "checkbox_horizontal"){
     var options = row["answers"].split("|");
     var this_table = $("<table>");
@@ -957,6 +958,7 @@ function write(type, row){
               .append(this_label);
       this_cell.innerHTML = this_div[0].outerHTML;
     }
+
     this_html += this_table[0].outerHTML;
 
   } else if(type == "checkbox_single"){
@@ -1017,6 +1019,41 @@ function write(type, row){
               .append(this_label);
 
       this_html += this_div[0].outerHTML;
+    }
+    if(typeof(row["other"]) !== "undefined" && row["other"].toLowerCase() == "yes"){
+      var this_div = $("<div>");
+          this_div
+            .addClass("custom-control")
+            .addClass("custom-checkbox");
+      var this_checkbox = $("<input>");
+          this_checkbox[0].id= row["item_name"]+ "_other";
+          this_checkbox[0].value = "Other";
+          this_checkbox[0].type = "checkbox";
+          this_checkbox[0].name = 'survey_'+
+            row["item_name"].toLowerCase();
+          this_checkbox
+            .addClass("custom-control-input")
+            .addClass(row["this_class"])
+            .addClass("custom-control")
+            .addClass("custom-checkbox")
+            .addClass("response")
+            .addClass(row["item_name"] + "_item_row");
+      var this_label = $("<label>");
+          this_label[0].htmlFor = row["item_name"] + "_other";
+          this_label[0].innerHTML = "Other";
+          this_label.addClass("custom-control-label");
+      this_div.append(this_checkbox)
+              .append(this_label);
+
+      this_html += this_div[0].outerHTML;
+
+      var text_input = $("<input>");
+          text_input.addClass("form-control");
+          text_input.attr("placeholder", "(Please specify if you selected 'Other')");
+          text_input[0].name = 'survey_'+
+            row["item_name"].toLowerCase() +
+            "_other";
+      this_html += text_input[0].outerHTML;
     }
 
   } else if(type == "date"){
@@ -1339,7 +1376,7 @@ function write_survey(this_survey, this_id){
     } else {
       bootbox.alert("You have not yet unlocked this tab - maybe try clicking on <b>Proceed</b>?");
     }
-	});  
+	});
 }
 
 /*

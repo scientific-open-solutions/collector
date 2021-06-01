@@ -172,7 +172,7 @@ Collector.tests = {
                                   "_" +
                                   this_test +"'>" +
                                     '<div class="spinner-border text-secondary" role="status">' +
-                                      '<span class="sr-only">Loading...</span>' +
+                                      '<span class="sr-only"></span>' +
                                     '</div>' +
                                     "</td>" +
                        "</tr>";

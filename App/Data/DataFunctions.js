@@ -568,7 +568,7 @@ function request_data_list(){
     "<h3 class='text-info' id='listing_data_h3'>" +
       "Your data is being listed " +
       '<span class="spinner-border text-primary" role="status" id="listing_data_spinner">' +
-        '<span class="sr-only">Loading...</span>' +
+        '<span class="sr-only"></span>' +
       '</span>' +
     "</h3>"
   );

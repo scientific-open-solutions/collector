@@ -272,7 +272,7 @@ $("#pull_repo_btn").on("click",function(){
   /*
   * check if anything is not committed locally
   */
-  
+
 
 
   /*
@@ -460,7 +460,7 @@ function progress_bootbox(this_object){
         '<span class="spinner-border text-primary" role="status" id="' +
           this_object.labels[step_index] +
           '_spinner">' +
-          '<span class="sr-only">Loading...</span>' +
+          '<span class="sr-only"></span>' +
         '</span>' +
       "</td>" +
     "</tr>";
