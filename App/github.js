@@ -14,6 +14,15 @@ document.onkeydown = function(evt) {
   }
 };
 
+$(".git_btn").on("click", function(){
+  var card_element = $("#" + this.value);
+  if(card_element.is(":visible")){
+    card_element.slideUp();
+  } else {
+    card_element.slideDown();
+  }
+});
+
 $("#add_organization_btn").on("click",function(){
   bootbox.prompt("What is the name of the github organization the repository is/will be in? (This organization must already exist)", function(response){
     if(response){

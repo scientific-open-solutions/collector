@@ -395,20 +395,20 @@ $("#github_logo").on("click", function(){
   ];
 
   git_updates.forEach(function(git_update){
-    console.log(git_update);
-    console.log(git_status[git_update]);
     if(git_status[git_update].length>0){
       $("#git_" + git_update + "_btn").show();
       $("#git_" + git_update + "_card")
         .find($(".card-body"))
         .html("<table>" +
-          git_status[git_update].map(row =>
-            "<tr>" +
-              "<td>" + row + "</td>" +
-              "<td><button class='btn btn-primary " + git_update + " update_btn' value='" + row + "'>Undo</button></td>" +
-            "</tr>"
-          )
-        );
+          git_status[git_update].map(function(row){
+            if(row !== ""){
+              return "<tr>" +
+                "<td>" + row + "</td>" +
+                "<td><button class='btn btn-primary " + git_update + " update_btn' value='" + row + "'>Undo</button></td>" +
+              "</tr>";
+            }
+          }).join("") +
+        "</table>");
     } else {
       $("#git_" + git_update + "_btn").hide();
     }
@@ -430,10 +430,6 @@ $("#github_logo").on("click", function(){
       console.log("modified file")
     }
   });
-
-
-
-
   $('#github_dialog').fadeIn();
 });
 
@@ -452,42 +448,6 @@ switch(Collector.detect_context()){
     $("#data_storage_logo").show(); //this might be redundant
     break;
 };
-
-
-function highlight_account(element_id){
-  $("#" + element_id).animate(
-    {
-      fontSize:"20px"
-    },
-    {
-      duration:1000,
-      complete:function(){
-        $("#"+element_id).animate(
-          {
-            fontSize:"0px"
-          },
-          {
-            duration:1000
-          }
-        );
-      }
-    }
-  );
-}
-
-$(".logo").hover(function(){
-  var account_id = this.id.replace("logo","account_email");
-  $("#" + account_id).show(500);
-  $("#" + account_id).animate({
-    fontSize:"14px"
-  },500);
-},function(){
-  var account_id = this.id.replace("logo","account_email");
-  $("#" + account_id).animate({
-    fontSize:"0px"
-  },500);
-});
-
 
 $("#power_btn").on("click",function(){
   bootbox.dialog({

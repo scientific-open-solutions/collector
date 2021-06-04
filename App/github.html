@@ -65,60 +65,28 @@
         <p>
           <button
             id="git_conflicted_btn"
-            class="btn btn-primary"
-            data-bs-toggle="collapse"
-            href="#git_conflicted_card"
-            role="button"
-            aria-expanded="false"
-            aria-controls="git_conflicted_card">Conflicts</button>
-
+            class="btn btn-primary git_btn"
+            value="git_conflicted_card">Conflicts</button>
           <button
             id="git_deleted_btn"
-            class="btn btn-primary"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#git_deleted_card"
-            aria-expanded="false"
-            aria-controls="git_deleted_card">Deleted</button>
-
+            class="btn btn-primary git_btn"
+            value="git_deleted_card">Deleted</button>
           <button
             id="git_modified_btn"
-            class="btn btn-primary"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#git_modified_card"
-            aria-expanded="false"
-            aria-controls="git_modified_card">Modified</button>
-
+            class="btn btn-primary git_btn" value="git_modified_card">Modified</button>
           <button
             id="git_not_added_btn"
-            class="btn btn-primary"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#git_not_added_card"
-            aria-expanded="false"
-            aria-controls="git_not_added_card">New</button>
-
-          <button
-            id="git_renamed_btn"
-            class="btn btn-primary"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#git_renamed_card"
-            aria-expanded="false"
-            aria-controls="git_renamed_card">Renamed</button>
-
-          <button
-            id="git_staged_btn"
-            class="btn btn-primary"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#git_staged_card"
-            aria-expanded="false"
-            aria-controls="git_staged_card">Staged</button>
+            class="btn btn-primary git_btn"
+            value="git_not_added_card">New</button>
+          <button id="git_renamed_btn"
+            class="btn btn-primary git_btn"
+            value="git_renamed_card">Renamed</button>
+          <button id="git_staged_btn"
+            class="btn btn-primary git_btn"
+            value="git_staged_card">Staged</button>
         </p>
         <div class="row">
-          <div class="collapse multi-collapse" id="git_conflicted_card">
+          <div class="collapse multi-collapse" id="git_conflicted_card" aria-labelledby="headingOne" data-parent="#accordion">
             <div class="card-header">Conflicts</div>
             <div class="card card-body"></div>
           </div>
@@ -143,16 +111,10 @@
             <div class="card card-body"></div>
           </div>
         </div>
-
-
         <!--
         advice for how to resolve the conflicts
           -pull and then over-write button?
         -->
-
-
-
-
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary bi-search" id="find_repo_btn"></button>
