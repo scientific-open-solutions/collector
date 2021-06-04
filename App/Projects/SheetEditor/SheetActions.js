@@ -505,10 +505,6 @@ $("#run_btn").on("click",function(){
 $("#save_btn").attr("previousValue","");
 
 $("#save_btn").on("click", function(){
-  /*
-  * add the org and repo to the project_json
-  */
-  project_json.location = $("#select_org").val() + "/" + $("#select_repo").val();
 
   function process_code(this_proj){
     var code_files = [];
@@ -698,7 +694,14 @@ $("#save_btn").on("click", function(){
     */
     var write_response;
     if(typeof(project) !== "undefined" & project !== null){
+      /*
+      * add the org and repo to the project_json
+      */
+
       var this_proj = master.project_mgmt.projects[project];
+
+      this_proj.location = $("#select_org").val() + "/" + $("#select_repo").val();
+
 
       /*
       * Cleaning the project_json of deprecated properties
