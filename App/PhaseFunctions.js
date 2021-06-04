@@ -91,11 +91,11 @@ if(typeof(Phase) !== "undefined"){
 			duration : duration,
 			this_func: this_function
 		});
-  }
+  };
   Phase.submit = function(){
     parent.parent.project_json.inputs = jQuery( "[name]" );
     parent.parent.Project.finish_phase();
-  }
+  };
 }
 
 
