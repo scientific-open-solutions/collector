@@ -1,7 +1,7 @@
 <!--
 
     Collector (Garcia, Kornell, Kerr, Blake & Haffey)
-    A program for running experiments on the web
+    A program for running projects on the web
     Copyright 2012-2016 Mikey Garcia & Nate Kornell
 
 
@@ -20,9 +20,6 @@
 		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
 -->
 <style>
-#add_server{
-  margin:5px;
-}
 #github_login,
 #institute_div > .modal-body{
   height:80%;
@@ -30,9 +27,6 @@
 }
 #ocollector_login{
   display:none;
-}
-#sos_server_query{
-  width:100%;
 }
 .create_account_btn,
 .delete_account_btn,
@@ -62,65 +56,38 @@
 				<h4 class="modal-title">Servers</h4>
 			</div>
 			<div class="card-body">
-        <div class="row">
+        <div class="input-group mb-3">
 					<input id="email_input" name="user_email" type="email" class="form-control" placeholder="email">
 				</div>
-				<div class="row">
+        <div class="input-group mb-3">
 						<input id="password_input" name="user_password" type="password" class="form-control" placeholder="password">
 				</div>
-        <button class="btn btn-primary" id="sos_server_query">Update SOS servers info</button>
-        <div id="server_table_div"></div>
-        <div class="row">
-          <button class="btn btn-primary" id="add_server" style="width:100%">Add Server/Script</button>
+        <div class="input-group mb-3">
+          <input id="server_input" type="text" class="form-control" placeholder="server url" aria-label="server url" aria-describedby="sos_server_query">
+          <button class="btn btn-primary" type="button" id="sos_server_query">Add server</button>
         </div>
 			</div>
+      <div id="server_table_div"></div>
 		</div>
 	</div>
 </div>
 
 <script>
 
-$("#add_server").on("click",function(){
-  var this_server_info = {
-    storage_url      : '',
-    registration_url : '',
-    name:''
-  }
-  bootbox.prompt("What is the url of the script that will save your data (and/or email it)?",function(script_url){
-    if(script_url){
-      this_server_info.url = script_url;
-      bootbox.prompt("If your 'server' requires registration, type in the url of the regristration script. Otherwise click 'cancel' to proceed",function(registration_url){
-        this_server_info.registration_url = registration_url;
-        bootbox.prompt("What will you call this server?",function(server_name){
-          if(server_name){
-            this_server_info.name = server_name;
-            if(typeof(master.data.servers[server_name]) !== "undefined"){
-              bootbox.confirm("You already have a server called <b>" + server_name + "</b> - do you want to override it?", function(result){
-                master.data.servers[this_server_info.name] = {
-                  storage_url      : this_server_info.url,
-                  registration_url : this_server_info.registration_url
-                }
-              });
-            } else {
-              master.data.servers[this_server_info.name] = {
-                storage_url      : this_server_info.url,
-                registration_url : this_server_info.registration_url
-              }
-              update_server_table();
-            }
-          }
-        });
-      });
-    }
-  });
-});
-
-
 $("#sos_server_query").on("click",function(){
   var user_email = $("#email_input").val();
-  $.post("https://ocollector.org/ValidateUser.php",{
+  $.post($("#server_input").val(),{
     "email" : user_email
-  },function(updated_server_info){
+  },function(server_info){
+    console.log(server_info);
+    try{
+      master.data.servers[$("#server_input").val()] = JSON.parse(server_info);
+    } catch(error){
+      console.log(error);
+      bootbox.alert(server_info);
+    };
+
+    /*
     if(updated_server_info.indexOf("storage_scripts") !== -1){
       updated_server_info      = JSON.parse(updated_server_info);
       var server_names         = updated_server_info.server_names.split(",");
@@ -142,6 +109,7 @@ $("#sos_server_query").on("click",function(){
     } else {
       bootbox.alert(updated_server_info); //i.e. error message
     }
+    */
   });
 });
 
@@ -182,8 +150,8 @@ function bind_delete_account_btns(){
 			var register_url = $(this).find("span")[0].innerHTML;
 			bootbox.confirm("Are you sure you want to delete your account" +
 											"on this server? This will remove your" +
-											"contribution to all experiments, and all" +
-											"experiments in which you are the only" +
+											"contribution to all projects, and all" +
+											"projects in which you are the only" +
 											"researcher!",function(result){
 				if(result){
           // if they confirm
@@ -241,7 +209,7 @@ function bind_unpublish_btn(){
 		if($("#email_input").val().length == 0){													// if missing email
 			bootbox.alert("You are either missing your email address");
 		} else if($("#password_input").val().length == 0){									// if missing password
-			bootbox.alert("You need your password to delete the experiment." +
+			bootbox.alert("You need your password to delete the project." +
 										"If you've forgotten your password, click on the" +
 										"'forgot password' button.");
 		} else {																														// if all good
@@ -250,8 +218,8 @@ function bind_unpublish_btn(){
 			var this_proj   = master.project_mgmt.projects[project];
 			$.post(register_url,{
 				location:               this_proj.location,
-				experiment:             experiment,
-				action:                 "unregister_experiment",
+				project:             project,
+				action:                 "unregister_project",
 				email:                  $("#email_input").val(),
 				password:               $("#password_input").val()
 			},function(server_response){
@@ -261,15 +229,15 @@ function bind_unpublish_btn(){
 	});
 }
 
-function publish_experiment(
+function publish_project(
   this_proj,
-  experiment,
+  project,
   register_url
 ){
   $.post( register_url,{
 				  location:               this_proj.location,
-				  experiment:             experiment,
-				  action:                 "update_experiment",
+				  project:                project,
+				  action:                 "update_project",
 				  email:                  $("#email_input").val(),
 					password:               $("#password_input").val()
 				},function(returned_message){
@@ -278,11 +246,11 @@ function publish_experiment(
 																 " collaborator has been sent." |
 						 returned_message == "success" |
 						 returned_message == "You are already registered " +
-																 "with this experiment." |
+																 "with this project." |
 						 returned_message == "Still awaiting confirmation that" +
 																 "you are a collaborator. Do contact" +
 																 " your colleague who originally " +
-																 "created this experiment"){
+																 "created this project"){
 						var server_name;
 						var storage_url;
             var server_info = master.data.servers;
@@ -326,28 +294,18 @@ function bind_publish_btn(){
 			var this_proj   = master.project_mgmt.projects[project];
 
 			/*
-				Identify the experiment location
+				Identify the project location
 			*/
 
-			if(master.github.repository == "" | master.github.organization == ""){
-				bootbox.alert("You appear to be using an installed " +
-				"version of Collector rather than an online version. " +
-				"You will need to identify which github repository " +
-				"you want to push your experiments to before you can " +
-				"register this experiment. To do this, click on the " +
-				"github button in the top right of the page.");
-			} else {
 
-				this_proj.location = master.github.organization + "/" +
-														 master.github.repository + "/" +
-                             project;
-				publish_experiment(
-          this_proj,
-          project,
-          register_url
-        );
-			}
-
+			this_proj.location = $("#select_org").val() + "/" +
+													 $("#select_repo").val() + "/" +
+                           project;
+			publish_project(
+        this_proj,
+        project,
+        register_url
+      );
 		}
 	});
 }
@@ -361,14 +319,16 @@ function update_server_table(){
   var server_table =  "<table class='table'>"+
                       "<thead>" +
                         "<tr>" +
-                          "<th scope='col'>Server/Script</th>" +
-                          "<th scope='col'>Register User</th>" +
-                          "<th scope='col'>Register Experiment</th>" +
+                          "<th scope='col' style='width:33%'>Server/Script</th>" +
+                          "<th scope='col' style='width:33%'>Register User</th>" +
+                          "<th scope='col' style='width:33%'>Register project</th>" +
                         "</tr>" +
                       "</thead>";
 
   Object.keys(master.data.servers).forEach(function(this_server){
     var server_row = master.data.servers[this_server];
+    console.log("server_row");
+    console.log(server_row);
 
     if(server_row.registration_url == "" |
        server_row.registration_url == null){
@@ -381,14 +341,14 @@ function update_server_table(){
       //<span href='" + server_row.url + "' target='_blank'>link</a>";
       if($("#project_list").val() == undefined ||
         $("#project_list").val() == null){
-        var publish_btn_html      = "no experiment selected";
+        var publish_btn_html      = "no project selected";
       } else {
         var publish_btn_html = "code here to send the data to this script";
       }
     } else {
       if($("#project_list").val() == undefined ||
         $("#project_list").val() == null){
-        var publish_btn_html      = "no experiment selected";
+        var publish_btn_html      = "no project selected";
       } else {
         var publish_btn_html = "<button class='btn btn-primary publish_btn'>Publish<span style='display:none'>" + server_row.registration_url + "</span></button><button class='btn btn-danger unpublish_btn'>Unpublish<span style='display:none'>" + server_row.registration_url + "</span></button>";
       }
@@ -417,9 +377,9 @@ function update_server_table(){
 
 
     server_table += "<tr>"+
-                      "<td>" + this_server      + "</td>" +
-                      "<td>" + account_buttons  + "</td>" +
-                      "<td>" + publish_btn_html + "</td>" +
+                      "<td style='max-width:100px; word-wrap: break-word;'>" + this_server      + "</td>" +
+                      "<td style='width:33%'>" + account_buttons  + "</td>" +
+                      "<td style='width:33%'>" + publish_btn_html + "</td>" +
                     "</tr>";
 
 

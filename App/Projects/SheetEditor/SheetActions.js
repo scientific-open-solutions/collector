@@ -700,7 +700,9 @@ $("#save_btn").on("click", function(){
 
       var this_proj = master.project_mgmt.projects[project];
 
-      this_proj.location = $("#select_org").val() + "/" + $("#select_repo").val();
+      this_proj.location = $("#select_org").val()  + "/" +
+                           $("#select_repo").val() + "/" +
+                           project;
 
 
       /*

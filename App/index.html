@@ -404,7 +404,7 @@ $("#github_logo").on("click", function(){
             if(row !== ""){
               return "<tr>" +
                 "<td>" + row + "</td>" +
-                "<td><button class='btn btn-primary " + git_update + " update_btn' value='" + row + "'>Undo</button></td>" +
+                "<td><button class='btn btn-primary update_btn' value='" + row + "'>Undo " + git_update + "</button></td>" +
               "</tr>";
             }
           }).join("") +
@@ -422,7 +422,7 @@ $("#github_logo").on("click", function(){
         org:  $("#select_org").val(),
         repo: $("#select_repo").val(),
         path: $(this).val(),
-        type: "not_added"
+        type: $(this).html().replace("Undo ")
       });
       bootbox.alert(response);
       $("#github_logo").click();

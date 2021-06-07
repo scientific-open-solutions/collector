@@ -1475,15 +1475,15 @@ function start_project(){
   break;
   default:
   if(typeof(Project.get_vars.location) !== "undefined" && Project.get_vars.location !== ""){
-  if(Project.get_vars.location.indexOf("www.dropbox") !== -1){
-  get_location = Project.get_vars.location.replace("www.","dl.");
-  } else {
-  get_location = Project.get_vars.location;
-  }
-  $.get(get_location,function(this_project){
-  project_json = JSON.parse(this_project);
-  Project.activate_pipe();
-  });
+    if(Project.get_vars.location.indexOf("www.dropbox") !== -1){
+      get_location = Project.get_vars.location.replace("www.","dl.");
+    } else {
+      get_location = Project.get_vars.location;
+    }
+    $.get(get_location,function(this_project){
+      project_json = JSON.parse(this_project);
+      Project.activate_pipe();
+    });
   }
   break;
   }
