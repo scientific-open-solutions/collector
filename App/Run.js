@@ -566,7 +566,7 @@ function final_trial(){
     project_json.storage_scripts,
             function(returned_data){
               message_data = returned_data.split(" encrypted data = ");
-              if(message_data.length == 1){
+              if(message_data.indexOf("error") !== -1){
                 //retrieve researcher e-mail address
                 precrypted_data(project_json,"Problem encrypting: <b>"+ message_data +"</b>, we'll try again every 10 seconds, but in case it fails, please download and e-mail this file. What do you want to save this file as? (you will get this message each time we fail to e-mail your data to the researcher)");
                 setTimeout(function(){
