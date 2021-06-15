@@ -37,14 +37,17 @@ Collector = {
         parseFloat($("#top_navbar").css("height").replace("px","")
       );
 
+      var this_background_color;
+      var border_color; //"#DAA";
+      var this_color;
       if(msg.toLowerCase().indexOf("alert") !== -1){
-        var this_background_color = "#ffc8c8";
-        var border_color = "#800"; //"#DAA";
-        var this_color = "#800";
+        this_background_color = "#ffc8c8";
+        border_color = "#800"; //"#DAA";
+        this_color = "#800";
       } else {
-        var this_background_color = "#96ffa8";
-        var border_color = "#24402a";
-        var this_color = "#24402a";
+        this_background_color = "#96ffa8";
+        border_color = "#24402a";
+        this_color = "#24402a";
       }
 
       var el = $("<div>");
@@ -99,7 +102,7 @@ Collector = {
     } else if(document.URL.indexOf("github.io") !== -1) { //assume it's github
       return "github";
     } else if(document.URL.indexOf("gitpod.io") !== -1){
-      return "gitpod"
+      return "gitpod";
     } else {
       return "server";
     }
