@@ -72,7 +72,6 @@
     "@octokit/auth-token": "^2.4.5",
     "@octokit/rest": "^17.11.2",
     "command-exists": "^1.2.9",
-    "download-git-repo": "^3.0.2",
     "electron-context-menu": "^2.5.2",
     "eval": "^0.1.6",
     "fs": "0.0.1-security",
