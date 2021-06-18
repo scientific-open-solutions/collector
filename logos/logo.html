@@ -1,4 +1,7 @@
+<html>
 <image style="margin:5px; width:30px; height:30px" id='version_logo' title="click here to open the location of your Collector files">
+
+
 <script>
 var possible_versions = ["antelope","cat","cat","puppy"];
 
@@ -24,7 +27,20 @@ $("#version_logo").on("load",function(){
 	}, 400);
 });
 
+var sos_acronyms = [
+  "Scientific Open Solutions",
+  "Suite of Open Software",
+  "Salmons Only Smile",
+  "Study Or Sleep"
+];
+
 $("#version_logo").on("click", function(){
-  Collector.electron.open_folder("");
+  if(sos_acronyms.length > 0){
+    var this_acronym = sos_acronyms.shift();
+    bootbox.alert(this_acronym);
+  } else {
+    bootbox.alert("You got em all. xxx SOS");
+  }
 });
 </script>
+</html>
