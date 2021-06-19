@@ -1,6 +1,6 @@
 <html>
 <image style="margin:5px; width:30px; height:30px" id='version_logo' title="click here to open the location of your Collector files">
-<span id="easter_span" class="text-white" style='display:none'>Scientific Open Solutions</span>
+<span id="easter_span" class="text-white" style='display:none'></span>
 
 
 <script>
@@ -28,11 +28,18 @@ $("#version_logo").on("load",function(){
 	}, 400);
 });
 
+
+$.get("sos.txt", function(results){
+  sos_acronyms = results.split(",");
+});
+/*
 var sos_acronyms = [
   "Suite of Open Software",
   "Salmons Only Smile",
-  "Study Or Sleep"
+  "Study Or Sleep",
+  "Sing One Song"
 ];
+*/
 
 $("#version_logo").on("click", function(){
   $("#easter_span").show(1000);
@@ -41,6 +48,9 @@ $("#version_logo").on("click", function(){
     $("#easter_span").html(this_acronym);
   } else {
     bootbox.alert("You got em all.");
+    $.get("sos.txt", function(results){
+      sos_acronyms = results.split(",");
+    });
   }
 });
 </script>
