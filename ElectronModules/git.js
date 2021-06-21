@@ -343,12 +343,13 @@ ipc.on('git_pull', (event,args) => {
           args.repo,
           result.filePaths
       );
-      //event.returnValue =
+      event.returnValue = "success";
     }).catch(err => {
       console.log(err);
-      event.returnValue = err;
+      event.returnValue = "error:" + err;
     });
 
+    /* deletable, right?
     //cloning
     git.clone(
       "https://github.com" + "/" +
@@ -362,6 +363,7 @@ ipc.on('git_pull', (event,args) => {
     .catch(function(error){
       event.returnValue = "error: " + error;
     });
+    */
   } else {
     console.log("Repository exists locally, so pulling in changes");
 
@@ -406,7 +408,7 @@ ipc.on('git_push', (event,args) => {
     update.files.forEach(function(this_file){
       fs.copySync(
         "App/" + this_file,
-        args.path + "/" +
+        user().current.path + "/" +
           "App"   + "/" +
           this_file
       );
@@ -419,7 +421,7 @@ ipc.on('git_push', (event,args) => {
       console.log(this_folder);
       fs.copySync(
         "App/" + this_folder,
-        args.path + "/" +
+        user().current.path + "/" +
           "App"   + "/" +
           this_folder,
         {
@@ -433,7 +435,7 @@ ipc.on('git_push', (event,args) => {
     */
     update.excesses.forEach(function(this_excess){
       fs.rmdirSync(
-        args.path + "/" +
+        user().current.path + "/" +
           "App"   + "/" +
           this_excess,
         {

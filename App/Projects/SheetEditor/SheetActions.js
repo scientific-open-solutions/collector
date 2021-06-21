@@ -429,20 +429,18 @@ $("#run_btn").on("click",function(){
     });
     */
   }
-  var organization = master.github.organization;
-  var repository   = master.github.repository;
-
+  var org = user.current.org;
+  var repo = user.current.repo;
 
   var github_url =  "https://" +
-    organization +
+    org          +
     ".github.io" + "/" +
-    repository   + "/" +
+    repo         + "/" +
     "App"        + "/" +
     "Run.html?platform=github&" +
     "location=" +
     $("#project_list").val() + "&" +
     "name=" + conditions[0].name;
-
 
   bootbox.dialog({
     title:"Select a Condition",
@@ -488,9 +486,9 @@ $("#run_btn").on("click",function(){
   $("#select_condition").on("change",function(){
     $("#experiment_url_input").val(
       "https://"                     +
-        organization                 +
+        org                          +
         ".github.io"                 + "/" +
-        master.github.repository     + "/" +
+        repo                         + "/" +
         "App"                        + "/" +
         "Run.html?platform=github&"  +
         "location="                  +

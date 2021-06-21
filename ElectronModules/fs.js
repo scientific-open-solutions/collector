@@ -357,6 +357,25 @@ ipc.on('fs_write_file', (event,args) => {
     content = "This request could be insecure, and was blocked";
   } else {
     try{
+      if(!fs.existsSync(user().current.path + "/User")){
+        fs.mkdirSync(user().current.path + "/User");
+      }
+      console.log(JSON.stringify(args));
+      console.log("this_folder");
+      console.log(args.user_folder);
+      if(!fs.existsSync(
+        user().current.path +
+        "/User/" +
+        args.user_folder
+      )){
+        fs.mkdirSync(
+          user().current.path +
+          "/User/" +
+          args.user_folder
+        );
+      }
+      console.log("howdy");
+
       content = fs.writeFileSync(
         user().current.path + "/User/" +
         args.user_folder  + "/" +
@@ -382,6 +401,10 @@ ipc.on('fs_write_project', (event,args) => {
     var content = "This request could be insecure, and was blocked";
   } else {
     try{
+
+      if(!fs.existsSync(user().current.path + "/User/Projects")){
+        fs.mkdirSync(user().current.path + "/User/Projects");
+      }
       /*
       * save JSON
       */

@@ -359,82 +359,81 @@ $("#github_logo").on("click", function(){
   });
 
   if(git_status == "Incomplete org or repo information"){
-    bootbox.alert(git_status);
+    //bootbox.alert(git_status);
   } else {
     git_status = JSON.parse(git_status);
-  }
+    console.log(git_status);
 
-  console.log(git_status);
-
-  if(git_status.ahead > 0){
-    $("#git_ahead").addClass("bg-danger");
-    $("#git_ahead").addClass("text-white");
-  } else {
-    $("#git_ahead").removeClass("bg-danger");
-    $("#git_ahead").removeClass("text-white");
-  }
-
-  if(git_status.behind > 0){
-    $("#git_behind").addClass("bg-danger");
-    $("#git_behind").addClass("text-white");
-  } else {
-    $("#git_behind").removeClass("bg-danger");
-    $("#git_behind").removeClass("text-white");
-  }
-
-  $("#git_ahead").val(git_status.ahead);
-  $("#git_behind").val(git_status.behind);
-
-  /*
-  * clear and update each of the cards for each change
-  */
-
-  var git_updates = [
-    "conflicted",
-    "created",
-    "deleted",
-    "modified",
-    "not_added",
-    "renamed",
-    "staged"
-  ];
-
-  git_updates.forEach(function(git_update){
-    if(git_status[git_update].length>0){
-      $("#git_" + git_update + "_btn").show();
-      $("#git_" + git_update + "_card")
-        .find($(".card-body"))
-        .html("<table>" +
-          git_status[git_update].map(function(row){
-            if(row !== ""){
-              return "<tr>" +
-                "<td>" + row + "</td>" +
-                "<td><button class='btn btn-primary update_btn' value='" + row + "'>Undo " + git_update + "</button></td>" +
-              "</tr>";
-            }
-          }).join("") +
-        "</table>");
+    if(git_status.ahead > 0){
+      $("#git_ahead").addClass("bg-danger");
+      $("#git_ahead").addClass("text-white");
     } else {
-      $("#git_" + git_update + "_btn").hide();
+      $("#git_ahead").removeClass("bg-danger");
+      $("#git_ahead").removeClass("text-white");
     }
-  });
 
-  $(".update_btn").on("click", function(){
-    if($(this).hasClass("not_added")){
-      console.log("new file");
-      console.log($(this).val());
-      var response = Collector.electron.git.undo({
-        org:  $("#select_org").val(),
-        repo: $("#select_repo").val(),
-        path: $(this).val(),
-        type: $(this).html().replace("Undo ")
-      });
-      bootbox.alert(response);
-      $("#github_logo").click();
-    } else if($(this).hasClass("modified")){
-      console.log("modified file")
+    if(git_status.behind > 0){
+      $("#git_behind").addClass("bg-danger");
+      $("#git_behind").addClass("text-white");
+    } else {
+      $("#git_behind").removeClass("bg-danger");
+      $("#git_behind").removeClass("text-white");
     }
-  });
+
+    $("#git_ahead").val(git_status.ahead);
+    $("#git_behind").val(git_status.behind);
+
+    /*
+    * clear and update each of the cards for each change
+    */
+
+    var git_updates = [
+      "conflicted",
+      "created",
+      "deleted",
+      "modified",
+      "not_added",
+      "renamed",
+      "staged"
+    ];
+
+    git_updates.forEach(function(git_update){
+      if(git_status[git_update].length>0){
+        $("#git_" + git_update + "_btn").show();
+        $("#git_" + git_update + "_card")
+          .find($(".card-body"))
+          .html("<table>" +
+            git_status[git_update].map(function(row){
+              if(row !== ""){
+                return "<tr>" +
+                  "<td>" + row + "</td>" +
+                  "<td><button class='btn btn-primary update_btn' value='" + row + "'>Undo " + git_update + "</button></td>" +
+                "</tr>";
+              }
+            }).join("") +
+          "</table>");
+      } else {
+        $("#git_" + git_update + "_btn").hide();
+      }
+    });
+
+    $(".update_btn").on("click", function(){
+      if($(this).hasClass("not_added")){
+        console.log("new file");
+        console.log($(this).val());
+        var response = Collector.electron.git.undo({
+          org:  $("#select_org").val(),
+          repo: $("#select_repo").val(),
+          path: $(this).val(),
+          type: $(this).html().replace("Undo ")
+        });
+        bootbox.alert(response);
+        $("#github_logo").click();
+      } else if($(this).hasClass("modified")){
+        console.log("modified file")
+      }
+    });
+  }
   $('#github_dialog').fadeIn();
 });
 

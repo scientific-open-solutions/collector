@@ -43,18 +43,36 @@ Collector.start = function(){
   }
 };
 
+
+
 function correct_master(){
+  /*
+  * missing objects
+  */
+  master.data = missing_object(master.data);
+  master.data.servers = missing_object(master.data.servers);
+
+  master.surveys.user_surveys = missing_object(master.surveys.user_surveys);
+
   /*
   * studies --> projects
   */
 
   if(typeof(master.project_mgmt) == "undefined"){
     master.project_mgmt = master.exp_mgmt;
-    master.project_mgmt.project  = master.project_mgmt.experiment;
+
+    master.project_mgmt = missing_object(master.project_mgmt);
+
+    if(typeof(master.project_mgmt.experiment) !== "undefined"){
+      master.project_mgmt.project  = master.project_mgmt.experiment;
+    }
     master.project_mgmt.projects = master.project_mgmt.experiments;
     delete(master.project_mgmt.experiment);
     delete(master.project_mgmt.experiments);
   }
+
+  master.project_mgmt.projects = missing_object(master.project_mgmt.projects);
+
 
   var projects = Object.keys(master.project_mgmt.projects);
   projects.forEach(function(project){
@@ -100,12 +118,8 @@ function correct_master(){
     delete(master.code.default_trialtypes);
     delete(master.code.user_codes);
   }
-  if(typeof(master.code.default) == "undefined"){
-    master.code.default = {};
-  }
-  if(typeof(master.code.user) == "undefined"){
-    master.code.user = {};
-  }
+  master.code.default = missing_object(master.code.default);
+  master.code.user = missing_object(master.code.user);
 
   if(typeof(master.code.user_trialtypes) !== "undefined"){
     Object.keys(master.code.user_trialtypes).forEach(function(item){
@@ -114,9 +128,10 @@ function correct_master(){
       }
     });
   }
+  master.code.graphic = missing_object(master.code.graphic);
 
-
-  if(typeof(master.code.graphic.files) == "undefined"){
+  if(typeof(master.code.graphic.files) == "undefined" &
+     typeof(master.code.graphic.trialtypes) !== "undefined"){
     master.code.graphic.files = master.code.graphic.trialtypes;
   }
 
@@ -145,6 +160,15 @@ function correct_user(){
     $("#local_data_folder").val(user.data_folder);
   }
 }
+
+function missing_object(this_obj){
+  if(typeof(this_obj) == "undefined"){
+    return {};
+  } else {
+    return this_obj;
+  }
+}
+
 switch(Collector.detect_context()){
   case "gitpod":
   case "server":
@@ -159,7 +183,7 @@ switch(Collector.detect_context()){
     );          // this can't fail in localhost version
     wait_for_electron = setInterval(function(){
       if(typeof(Collector.electron) !== "undefined"){
-        clearInterval(wait_for_electron);        
+        clearInterval(wait_for_electron);
         Collector.start();
       }
     },100);
