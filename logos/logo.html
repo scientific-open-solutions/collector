@@ -32,17 +32,9 @@ $("#version_logo").on("load",function(){
 $.get("sos.txt", function(results){
   sos_acronyms = results.split(",");
 });
-/*
-var sos_acronyms = [
-  "Suite of Open Software",
-  "Salmons Only Smile",
-  "Study Or Sleep",
-  "Sing One Song"
-];
-*/
 
 $("#version_logo").on("click", function(){
-  $("#easter_span").show(1000);
+  $("#easter_span").fadeIn(1000);
   if(sos_acronyms.length > 0){
     var this_acronym = sos_acronyms.shift();
     $("#easter_span").html(this_acronym);

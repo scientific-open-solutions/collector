@@ -353,10 +353,16 @@ $("#github_logo").on("click", function(){
   * check repository information
   */
 
-  var git_status = JSON.parse(Collector.electron.git.status({
+  var git_status = Collector.electron.git.status({
     "org":  $("#select_org").val(),
     "repo": $("#select_repo").val()
-  }));
+  });
+
+  if(git_status == "Incomplete org or repo information"){
+    bootbox.alert(git_status);
+  } else {
+    git_status = JSON.parse(git_status);
+  }
 
   console.log(git_status);
 

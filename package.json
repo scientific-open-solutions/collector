@@ -18,7 +18,7 @@
     "demo"
   ],
   "author": "Mikey Garcia, Dr. Nate Kornell, Tyson Kerr, Dr. Adam Blake, Dr. Anthony Haffey. Now developed by Scientific Open Solutions <team@sopsols.org>",
-  "license": "GNU General Public License",
+  "license": "GPL-3.0-or-later",
   "devDependencies": {
     "coffee-script": "~1.6.3",
     "electron": "^10.4.7",
@@ -43,13 +43,18 @@
       ]
     },
     "extraFiles": [
-      "Default"
+      "Default",
+      "App/libraries",
+      "App/Run.html",
+      "App/Run.js",
+      "App/Welcome.html"
     ],
     "files": [
       "**/*",
       "!Repositories/*",
-      "!User/**"
-    ],
+      "!User/**",
+      "!App/libraries/ace-master"
+    ],    
     "linux": {
       "target": [
         "AppImage",

@@ -26,7 +26,7 @@ if(!fs.existsSync(root_dir + "/User.json")){
         "org"  : ""
       },
       repos: {} //add organization first
-    }),
+    }, null, 2),
     'utf8'
   );
 }

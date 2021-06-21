@@ -34,7 +34,7 @@ $("#add_organization_btn").on("click",function(){
         }));
       }
       $("#select_org").val(response);
-      master.github.organization = response;
+      user.current.org = response;
       $("#select_repo").empty();
 
       Object.keys(user.repos[response]).forEach(function(repository){
@@ -48,23 +48,22 @@ $("#add_organization_btn").on("click",function(){
 });
 
 $("#add_repository_btn").on("click",function(){
-  bootbox.prompt("What is the name of the repository? (if it doesn't exist yet we'll create it)", function(repository){
-    if(repository){
+  var org = $("#select_org").val();
+  bootbox.prompt("What is the name of the repository? (if it doesn't exist yet we'll create it)", function(repo){
+    if(repo){
       progress_bootbox({
         start_text: "Feel free to get a coffee while we create/clone your github repository",
         steps: [
           "Checking you have an authentication token",
           "Checking if the organization exists and you are a member of it",
-          "Creating/Cloning repository",
-          "Switching to new repo",
-          "Synching with online repository (will be quick if cloning, 5+ minutes if new repository)",
+          "Specify where you want your repository (be ready for this)",
+          "Synching with online repository",
           "Activate the online repository as a website"
         ],
         labels: [
           "check_auth_token",
           "check_valid_org",
           "create_clone_repo",
-          "switch_new_repo",
           "synch_online_repo",
           "activate_github_pages"
         ],
@@ -85,14 +84,9 @@ $("#add_repository_btn").on("click",function(){
 
           // "Checking if the organization exists and you are a member of it"
           function(){
-            var this_response = Collector
-              .electron
-              .git
-              .valid_org(
-              {
-                organization: $("#select_org").val()
-              }
-            );
+            var this_response = Collector.electron.git.valid_org({
+              org: org
+            });
             if(this_response !== "success"){
               bootbox.alert(this_response);
               return false;
@@ -103,60 +97,37 @@ $("#add_repository_btn").on("click",function(){
 
           // "Creating/Cloning repository"
           function(){
-            repository = valid_repository_name(repository);
-            if(typeof(user.repos
-              [$("#select_org").val()]
-              [repository]) == "undefined"){
+            repo = valid_repository_name(repo);
+            if(typeof(user.repos[org][repo]) == "undefined"){
               $('#select_repo').append($('<option>', {
-                value: repository,
-                text: repository
+                value: repo,
+                text: repo
               }));
-              user.repos
-                [$("#select_org").val()]
-                [repository] = {};
+              user.repos[org][repo] = {};
             }
-            $("#select_repo").val(repository);
-            master.github.repository = repository;
+            $("#select_repo").val(repo);
+            user.current.repo = repo;
             var this_response = Collector.electron.git.add_repo({
-              organization: $("#select_org").val(),
-              repository: $("#select_repo").val()
+              org: org,
+              repo: repo
             });
             if(this_response !== "success"){
               bootbox.alert(this_response);
               return false;
             } else {
               Collector.custom_alert("success");
-              $("#save_btn").click();
+              //$("#save_btn").click();
               return true;
             }
           },
 
-          // "Switching to new repo"
+          // "Synching with online repository"
           function(){
-
-            user.current.org = $("#select_org").val();
-            user.current.repo = $("#select_repo").val();
-            this_response = Collector.save_user();
-            if(this_response !== "success"){
-              bootbox.alert(this_response);
-              return false;
-            } else {
-              return true;
-            }
-          },
-
-          // "Synching with online repository (will be quick if cloning, 5+ minutes if new repository)"
-          function(){
-            var this_response = Collector.electron.git.push(
-              user.current.path
-              /*
-
-              {
-              organization: $("#select_org").val(),
-              repository: $("#select_repo").val()
-              }
-              */
-            );
+            var this_response = Collector.electron.git.push({
+              org:  org,
+              repo: repo,
+              path: user.current.path
+            });
             if(this_response !== "success"){
               bootbox.alert(this_response);
               return false;
@@ -168,8 +139,8 @@ $("#add_repository_btn").on("click",function(){
           // "Activate the online repository as a website"
           function(){
             var this_response = Collector.electron.git.pages({
-              organization: $("#select_org").val(),
-              repository: $("#select_repo").val()
+              org: org,
+              repo: repo
             });
             if(this_response !== "success"){
               bootbox.alert(this_response);
@@ -259,22 +230,23 @@ $("#local_repo_btn").on("click", function(){
       path: path
     };
     user.current.path = path;
+    user.current.org = org;
+    user.current.repo = repo;
+
     Collector.save_user();
     list_repos();
     $("#select_org").val(user.current.org);
     $("#select_repo").val(user.current.repo);
+    setTimeout(function(){
+      /*
+      * Let user briefly see the org and repo
+      */
+      location.reload();
+    },1000);
   } else {
     var this_repo = user.repos[org][repo];
     bootbox.alert("You already have this repository in: " + this_repo.path);
   }
-  /*
-  bootbox.prompt(
-    "Please paste in the location of the folder:",
-    function(path){
-
-    }
-  );
-  */
 });
 
 $("#pull_repo_btn").on("click",function(){
@@ -290,8 +262,8 @@ $("#pull_repo_btn").on("click",function(){
 
   bootbox.confirm("This will overwrite any changes you have made. Are you sure you want to proceed?", function(confirmed){
     if(confirmed){
-      var organization = $("#select_org").val();
-      var repository   = $("#select_repo").val();
+      var orga = $("#select_org").val();
+      var repo = $("#select_repo").val();
       progress_bootbox({
         start_text: "Feel free to get a coffee while we pull your github repository",
         steps: [
@@ -303,8 +275,8 @@ $("#pull_repo_btn").on("click",function(){
         actions: [
           function(){
             var pull_response = Collector.electron.git.pull({
-              "organization" : organization,
-              "repository"   : repository
+              "org"  : org,
+              "repo" : repo
             });
             if(pull_response !== "success"){
               bootbox.alert(pull_response);
@@ -332,8 +304,8 @@ $("#push_repo_btn").on("click",function(){
   * check user has a valid token before anything else
   */
   if(Collector.electron.git.token_exists()){
-    var organization = $("#select_org").val();
-    var repository   = $("#select_repo").val();
+    var org  = $("#select_org").val();
+    var repo = $("#select_repo").val();
     bootbox.prompt({
       title: "Please describe this commit:",
       inputType: "textarea",
@@ -353,9 +325,9 @@ $("#push_repo_btn").on("click",function(){
                 * commit and push changes
                 */
                 var this_response = Collector.electron.git.push({
-                  "organization" : organization,
-                  "repository"   : repository,
-                  "message"      : message
+                  "org"     : org,
+                  "repo"    : repo,
+                  "message" : message
                 });
                 if(this_response !== "success"){
                   bootbox.alert(this_response);
@@ -381,10 +353,10 @@ $("#select_org").on("change", function(){
 
 
   $("#select_repo").empty();
-  Object.keys(user.repos[this_org]).forEach(function(repository){
+  Object.keys(user.repos[this_org]).forEach(function(repo){
     $('#select_repo').append($('<option>', {
-        value: repository,
-        text:  repository
+        value: repo,
+        text:  repo
     }));
   });
 
@@ -412,16 +384,12 @@ $("#select_repo").on("change", function(){
 });
 
 $("#view_repo_btn").on("click",function(){
-  var organization = $("#select_org").val();
-  var repository   = $("#select_repo").val();
-
-  if(organization == ""){
-    organization = username;
-  }
+  var org  = $("#select_org").val();
+  var repo = $("#select_repo").val();
   window.open('https://www.github.com/' +
-              organization +
+              org +
               '/' +
-              repository,'_blank');
+              repo,'_blank');
 });
 
 function list_repos(){
@@ -501,10 +469,10 @@ function progress_bootbox(this_object){
   );
 }
 
-function valid_repository_name(repository){
-  if(repository.indexOf(" ") !== -1){
+function valid_repository_name(repo){
+  if(repo.indexOf(" ") !== -1){
     bootbox.alert("<b>" + repository + "</b> has at least one space in it - removing all spaces");
   }
-  repository = repository.replaceAll(" ","");
-  return (repository);
+  repo = repo.replaceAll(" ","");
+  return (repo);
 }

@@ -18,19 +18,29 @@ $_GET = window.location.href.substr(1).split("&").reduce((o,i)=>(u=decodeURIComp
 
 Collector.tests.run();
 Collector.start = function(){
-  correct_master();
   user = JSON.parse(Collector.electron.fs.load_user());
-  correct_user();
-  list_repos();
-  wait_till_exists("list_projects");
-  wait_till_exists("list_graphics");
-  wait_till_exists("list_code");
-  wait_till_exists("initiate_actions");
-  wait_till_exists("list_keys");
-  wait_till_exists("list_data_servers");
-  wait_till_exists("list_servers");
-  wait_till_exists("list_surveys");
-  wait_till_exists("list_pathways");  
+  if(typeof(user.current) == "undefined" || typeof(user.current.path) == "undefined"){
+    var github_dialog_exists = setInterval(function(){
+      if($("#github_dialog").length == 1){
+        clearInterval(github_dialog_exists);
+        $("#github_dialog").show();
+        bootbox.alert("It looks like you haven't yet included any github repositories for your projects. You need to have a github account and organisation to create a project. Once you've done that (see our <a href='https://docs.google.com/document/d/1SKYIJF1dAjMDS6EHUIwfZm2KQVOzx17S6LbU_oSGxdE/edit?usp=sharing' target='_blank'>documents</a>) you can use Collector to build your projects.");
+      }
+    },1000);
+  } else {
+    correct_master();
+    correct_user();
+    list_repos();
+    wait_till_exists("list_projects");
+    wait_till_exists("list_graphics");
+    wait_till_exists("list_code");
+    wait_till_exists("initiate_actions");
+    wait_till_exists("list_keys");
+    wait_till_exists("list_data_servers");
+    wait_till_exists("list_servers");
+    wait_till_exists("list_surveys");
+    wait_till_exists("list_pathways");
+  }
 };
 
 function correct_master(){
@@ -148,22 +158,8 @@ switch(Collector.detect_context()){
       "startup"
     );          // this can't fail in localhost version
     wait_for_electron = setInterval(function(){
-      //alert("hi");
       if(typeof(Collector.electron) !== "undefined"){
-        clearInterval(wait_for_electron);
-        master = Collector.electron.fs.read_file("","master.json");
-        if(master !== ""){
-          master = JSON.parse(master);
-        } else {
-          master = default_master;
-          var write_response = Collector.electron.fs.write_file(
-            "",
-            "master.json",
-            JSON.stringify(master, null, 2));
-          if(write_response !== "success"){
-            bootbox.alert(write_response);
-          }
-        }
+        clearInterval(wait_for_electron);        
         Collector.start();
       }
     },100);

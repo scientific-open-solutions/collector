@@ -157,10 +157,10 @@ window.onload=function(){
               repo_info
             );
           },
-          push: function(path){
+          push: function(repo_info){
             return ipc.sendSync(
               'git_push',
-              path
+              repo_info
             );
           },
           repo_info: function(path){
