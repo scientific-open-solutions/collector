@@ -262,7 +262,7 @@ $("#pull_repo_btn").on("click",function(){
 
   bootbox.confirm("This will overwrite any changes you have made. Are you sure you want to proceed?", function(confirmed){
     if(confirmed){
-      var orga = $("#select_org").val();
+      var org  = $("#select_org").val();
       var repo = $("#select_repo").val();
       progress_bootbox({
         start_text: "Feel free to get a coffee while we pull your github repository",

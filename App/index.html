@@ -419,11 +419,14 @@ $("#github_logo").on("click", function(){
 
     $(".update_btn").on("click", function(){
       var git_type;
-      if($(this).hasClass("not_added")){
-        git_type = "not_added"
-      } else if($(this).hasClass("modified")){
-        git_type = "modified"
-      }
+      var this_element = $(this);
+      git_updates.forEach(function(git_update){
+        if(this_element.hasClass(git_update)){
+          git_type = git_update
+        }
+      });
+      console.log(git_type);
+
       console.log("file");
       console.log($(this).val());
       var response = Collector.electron.git.undo({
