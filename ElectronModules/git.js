@@ -560,7 +560,7 @@ ipc.on('git_undo', (event,args) => {
       user().repos[args.org][args.repo].path + "/" + args.path
     );
     event.returnValue = "success";
-  } else if(args.type == "modify"){
+  } else if(args.type == "modified"){
     git.cwd(
       user().repos[args.org][args.repo].path
     ).checkout([args.path]).then(function(result){
