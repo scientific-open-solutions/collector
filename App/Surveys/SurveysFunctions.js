@@ -233,7 +233,23 @@ function list_surveys(){
     master.surveys.user_surveys = typeof(master.surveys.user_surveys) == "undefined" ? {} : master.surveys.user_surveys;
     master.surveys.default_surveys = Collector.clean_obj_keys(master.surveys.default_surveys);
 
-    var def_survey_list  = Object.keys(master.surveys.default_surveys).sort();
+
+    var survey_files = JSON.parse(Collector.electron.fs.list_surveys());
+
+    console.log("survey_files");
+    console.log(survey_files);
+
+
+    survey_files.forEach(function(survey_file){
+      var survey_csv = Papa.parse(
+        Collector.electron.fs.read_file("Surveys", survey_file)
+      ).data;
+
+      master.surveys.user_surveys[survey_file] = survey_csv;
+    });
+
+
+
     var user_survey_list = Object.keys(master.surveys.user_surveys).sort();
 
     load_default_surveys();

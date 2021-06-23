@@ -56,6 +56,10 @@ window.onload=function(){
             );
             return projects;
           },
+          list_surveys: function(){
+            return ipc.sendSync('fs_list_surveys');
+          },
+
           load_user: function(){
             return ipc.sendSync('fs_load_user', {});
           },

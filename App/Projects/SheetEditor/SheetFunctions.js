@@ -120,61 +120,59 @@ function get_HoT_data(current_sheet) { // needs to be adjusted for
     return data;
 }
 function list_projects(){
-  try{
-		var local_projects = Collector
-      .electron
-      .fs
-      .list_projects();
-
-    local_projects.forEach(function(project){
+	var local_projects = Collector
+    .electron
+    .fs
+    .list_projects();
+	console.log("local_projects");
+	console.log(local_projects);
+  local_projects.forEach(function(project){
+		try{
 			var project_json = JSON.parse(
-        Collector.electron.fs.read_file("Projects",project + ".json")
-      );
-			master.project_mgmt.projects[project] = project_json;
+	      Collector.electron.fs.read_file("Projects", project + ".json")
+	    );
+		} catch(error){
+			bootbox.alert("You have a problem with project:" + project);
+		}
+		console.log("ho");
+		master.project_mgmt.projects[project] = project_json;
+  });
+
+  name_list = Object.keys(master.project_mgmt.projects);
+
+  function update_proj_list(){
+    /*
+    * reset the selects
+    */
+    $("#add_project_pathway_select option").remove();
+    $("#project_list option").remove();
+    $("#code_project_select option").remove();
+
+    /*
+    * add "Select a project" option
+    */
+    var default_option = "<option hidden disabled selected>Select a project</option>";
+
+    $("#add_project_pathway_select").append(default_option);
+    $("#project_list").append(default_option);
+    $("#code_project_select").append(default_option);
+
+    /*
+    * add options to each of the selects
+    */
+    name_list.sort(function(a,b){
+      return a.toLowerCase().localeCompare(b.toLowerCase());
     });
+    name_list.forEach(function(item_name){
+      var this_option = "<option>" + item_name + "</option>";
+      $("#add_project_pathway_select").append(this_option);
+      $("#project_list").append(this_option);
+      $("#code_project_select").append(this_option);
 
-    name_list = Object.keys(master.project_mgmt.projects);
-
-    function update_proj_list(){
-      /*
-      * reset the selects
-      */
-      $("#add_project_pathway_select option").remove();
-      $("#project_list option").remove();
-      $("#code_project_select option").remove();
-
-      /*
-      * add "Select a project" option
-      */
-      var default_option = "<option hidden disabled selected>Select a project</option>";
-
-      $("#add_project_pathway_select").append(default_option);
-      $("#project_list").append(default_option);
-      $("#code_project_select").append(default_option);
-
-      /*
-      * add options to each of the selects
-      */
-      name_list.sort(function(a,b){
-        return a.toLowerCase().localeCompare(b.toLowerCase());
-      });
-      name_list.forEach(function(item_name){
-        var this_option = "<option>" + item_name + "</option>";
-        $("#add_project_pathway_select").append(this_option);
-        $("#project_list").append(this_option);
-        $("#code_project_select").append(this_option);
-
-      });
-    }
-
-    update_proj_list();
-    Collector.tests.pass("projects",
-                         "list");
-  } catch(error){
-    Collector.tests.fail("project",
-                         "list",
-                         error);
+    });
   }
+
+  update_proj_list();
 }
 function new_project(project){
   if($("#project_list").text().indexOf(project) !== -1){

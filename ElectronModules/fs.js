@@ -160,7 +160,7 @@ ipc.on('fs_list_projects', (event,args) => {
           }
         );
         fs.rmdirSync(
-          user().current.path + "\\User\\Expertiments",
+          user().current.path + "\\User\\Experiments",
           {
             recursive: true
           }
@@ -178,6 +178,17 @@ ipc.on('fs_list_projects', (event,args) => {
   //} catch(error){
   //  event.returnValue = error;
   //}
+});
+
+ipc.on('fs_list_surveys', (event,args) => {
+  console.log("user().current.path");
+  console.log(user().current.path);
+  var user_surveys = JSON.stringify(
+    fs.readdirSync(user().current.path + "/User/Surveys")
+  );
+  console.log("user_surveys");
+  console.log(user_surveys);
+  event.returnValue = user_surveys;
 });
 
 ipc.on('fs_load_user', (event,args) => {
