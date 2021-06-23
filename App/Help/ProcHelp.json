@@ -3,7 +3,10 @@
     "subtitle":"The item(s) from the stimuli file",
     "text":"Specify here which row(s) you want to refer to in the stimuli sheet. If you want to refer to just one row, just write the row number. If you want to refer to multiple rows, write <b>to</b>, e.g. '2 to 5'. You should also be able to use commas, e.g. '2,3,5'. "
   },
-
+	"code":{
+		"subtitle": "Name of the code file for this trial",
+		"text": "Using the Code editor <b></></b> above you can create files that control what happens during each trial. You can either write web-code or use the graphic (user interface; GUI) editor to create your code."
+	},
   "description":{
 		"subtitle":"deprecated",
 		"text":"please change this column header to <b>name</b>."
@@ -38,7 +41,7 @@
   },
 	"text":{
     "subtitle":"Mainly for instruct trialtypes",
-    "text":"You can refer to this in any trialtype with <b>{{text}}</b>, but typically this is what you would want presented in an <b>instruct</b> trialtype."
+    "text":"You can refer to this in any trialtype with <b>{{text}}</b>, but typically this is what you would want presented using <b>instruct</b> code."
   },
   "timer_style":{
     "subtitle":"How do you want the timer to look?",

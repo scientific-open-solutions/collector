@@ -60,11 +60,11 @@ ipc.on('fs_delete_project', (event,args) => {
     try{
       // delete the file
       fs.unlinkSync(
-        root_dir + "/User/Projects/" + args.proj_name + ".json"
+        user().current.path + "/User/Projects/" + args.proj_name + ".json"
       );
       // delete the folder
       fs.rmdirSync(
-        root_dir + "/User/Projects/" + args.proj_name,
+        user().current.path + "/User/Projects/" + args.proj_name,
          {
            recursive: true
          }
@@ -181,8 +181,12 @@ ipc.on('fs_list_projects', (event,args) => {
 });
 
 ipc.on('fs_list_surveys', (event,args) => {
-  console.log("user().current.path");
-  console.log(user().current.path);
+  if(!fs.existsSync(user().current.path + "/User")){
+    fs.mkdirSync(user().current.path + "/User");
+  }
+  if(!fs.existsSync(user().current.path + "/User/Surveys")){
+    fs.mkdirSync(user().current.path + "/User/Surveys");
+  }
   var user_surveys = JSON.stringify(
     fs.readdirSync(user().current.path + "/User/Surveys")
   );

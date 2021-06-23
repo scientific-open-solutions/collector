@@ -72,6 +72,7 @@ function correct_master(){
   }
 
   master.project_mgmt.projects = missing_object(master.project_mgmt.projects);
+  master.mods = missing_object(master.mods);
 
 
   var projects = Object.keys(master.project_mgmt.projects);
