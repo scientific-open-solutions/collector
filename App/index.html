@@ -414,6 +414,7 @@ $("#github_logo").on("click", function(){
           "</table>");
       } else {
         $("#git_" + git_update + "_btn").hide();
+        $("#git_" + git_update + "_card").hide();
       }
     });
 
@@ -425,17 +426,13 @@ $("#github_logo").on("click", function(){
           git_type = git_update
         }
       });
-      console.log(git_type);
-
-      console.log("file");
-      console.log($(this).val());
       var response = Collector.electron.git.undo({
         org:  $("#select_org").val(),
         repo: $("#select_repo").val(),
         path: $(this).val(),
         type: git_type
       });
-      bootbox.alert(response);
+      Collector.custom_alert(response);
       $("#github_logo").click();
     });
   }

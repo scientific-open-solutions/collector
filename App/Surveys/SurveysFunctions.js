@@ -166,8 +166,15 @@ function create_survey_HoT(this_survey){
 			var postEmptyRow   = 0;
 
 			for (var k = 0; k < this.countCols()-1; k++){
-        if(this.getDataAtCell(0,k).toLowerCase() == "shuffle"){
+        var col_header = this.getDataAtCell(0,k).toLowerCase();
+
+        if(col_header == "shuffle"){
           this.setDataAtCell(0,k,"shuffle_question");
+        }
+        if(col_header.indexOf("score") !== -1 && col_header.indexOf(" ") !== -1){
+          console.log(col_header);
+          console.log(col_header.indexOf("score"));
+          this.setDataAtCell(0,k, col_header.replaceAll(" ",""));
         }
 
         //Removing Empty middle columns

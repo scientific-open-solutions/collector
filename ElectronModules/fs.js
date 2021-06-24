@@ -98,9 +98,11 @@ ipc.on('fs_delete_survey', (event,args) => {
     event.returnValue = "This request could be insecure, and was blocked";
   } else {
     try{
-      var content = fs.unlinkSync(root_dir + "/User/Surveys/" +
-                                  args.survey_name.replace(".csv","") +
-                                  ".csv");
+      var content = fs.unlinkSync(
+        user().current.path + "/User/Surveys/" +
+        args.survey_name.replace(".csv","") +
+                                  ".csv"
+      );
       event.returnValue = "success";
     } catch(error){
       event.returnValue = "failed to delete the survey: " +
