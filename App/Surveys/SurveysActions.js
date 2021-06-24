@@ -173,8 +173,7 @@ $("#save_survey_btn").on("click",function(){
   		var survey_name     = $("#survey_select").val().split("|")[1]
   																									 .replace(".csv","") + ".csv";
   		var survey_content  = Papa.unparse(survey_HoT.getData());
-  		survey_obj.save(survey_name,
-  										survey_content);
+  		survey_obj.save(survey_name,survey_content);
   	}
   }
 });
