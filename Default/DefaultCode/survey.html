@@ -330,7 +330,7 @@ String.prototype.replaceAll = function(str1, str2, ignore){
 
 
 /*
-Functions
+* Functions
 */
 
 function clean_item(this_item){
@@ -426,7 +426,7 @@ function load_survey(survey){
 }
 
 function process_question(row, row_no){
-  row.values = row.values == "" ? row.answers : row.values;
+  //row.values = row.values == "" ? row.answers : row.values;
   if(row_check("page_break", row)){
     page_break_management.breaks_remaining++;
     question_td = "</tr></table><table id='table" +
@@ -672,7 +672,7 @@ function process_score(row_no, values_col, this_response, item, values_reverse )
   if(typeof(values_reverse) !== "undefined" && values_reverse == "r"){
     item_values.reverse();
   }
-  item_answers      = survey_obj.data[row_no]["answers"].split("|");
+  item_answers      = survey_obj.data[row_no]["values"].split("|");
   var this_value    = item_values[item_answers.indexOf(this_response)];
   $("#survey_" + item + "_score").val(this_value);
   if(typeof(this_value) !== "undefined"){
@@ -734,8 +734,6 @@ function response_check(submitted_element){
   switch(submitted_element.type){
     case "checkbox":
 
-      console.log(submitted_element);
-      console.log(submitted_element.name);
 
 
 
@@ -749,14 +747,12 @@ function response_check(submitted_element){
       } else {
         $("#"+submitted_element.name+"_response").val("");
       }
-      console.log($("#"+submitted_element.name+"_response").val());
-      console.log($("#"+submitted_element.name+"_response"));
 
       break;
 
       case "button":
         $("#" + submitted_element.name + "_response").val(
-          submitted_element.innerHTML
+          submitted_element.value
         );
       break;
 
@@ -880,15 +876,28 @@ function update_score(){
 
     questions.forEach(function(row_no){
       var item = survey_obj.data[row_no].item_name.toLowerCase();
-      var this_response = $("#survey_"+item+"_response").val(); //response
+      var this_response = $("#survey_" + item + "_response").val();
       var normal_reverse = this_scale.questions[row_no];
+
 
       if(normal_reverse.indexOf("-") == -1){
         var multiplier = parseFloat(normal_reverse.replace("r",""));
         if(normal_reverse.indexOf("r") == 0){ //reverse the values
-          this_value = process_score(row_no,"values",this_response,item,"r");
+
+          this_value = process_score(
+            row_no,
+            "values",
+            this_response,
+            item,
+            "r"
+          );
         } else {
-          this_value = process_score(row_no,"values",this_response,item);
+          this_value = process_score(
+            row_no,
+            "values",
+            this_response,
+            item
+          );
         }
       } else {
         values_reverse = normal_reverse.split("-");
