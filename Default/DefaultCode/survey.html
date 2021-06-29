@@ -260,12 +260,8 @@ $("#proceed_button").on("click",function(){
   } else {
     response_elements = $(".table_break:visible").find(".response_element");
   }
-  console.log("response_elements");
-  console.log(response_elements);
   for(var i = 0; i < response_elements.length; i++){
     [row_no,item_name] = retrieve_row_no_item_name(response_elements[i]);
-    console.log("row_no");
-    console.log(row_no);
     if(typeof(survey_obj.data[row_no].optional) !== "undefined"){
       var this_optional = survey_obj.data[row_no].optional.toLowerCase();
 
@@ -686,18 +682,34 @@ function process_score(row_no, values_col, this_response, item, values_reverse )
 }
 
 function process_returned_questionnaire(data){
+  /*
+  * trim the data if it has a blank final row
+  */
+  if(data[data.length - 1].length < data[0].length){
+    data.pop();
+  }
+
   survey_obj.data = data;
-  survey_obj.data = Papa.parse(
-    Papa.unparse(survey_obj.data),{
-      header:true,
-      beforeFirstChunk: function(chunk) {
-        var rows = chunk.split( /\r\n|\r|\n/ );
-        var headings = rows[0].toLowerCase();
-        rows[0] = headings;
-        return rows.join("\r\n");
-      },
-    }
-  ).data;
+  console.log("data");
+  console.log(data);
+
+
+
+
+  survey_obj.data = Papa.unparse(survey_obj.data),{
+    header:true,
+    beforeFirstChunk: function(chunk) {
+      var rows = chunk.split( /\r\n|\r|\n/ );
+      var headings = rows[0].toLowerCase();
+      rows[0] = headings;
+      return rows.join("\r\n");
+    },
+  };
+
+  console.log(JSON.stringify(survey_obj.data));
+
+  survey_obj.data = parent.parent.Collector.PapaParsed(survey_obj.data);
+
   survey_obj.scales = {};
   var col_headers = Object.keys(survey_obj.data[0]);
   col_headers.forEach(function(header){

@@ -5,7 +5,7 @@
 //Publicly available libraries
 window.jQuery        || document.write('<script src="libraries/jquery-3.3.1.min><\/script>');
 
-window.bootstrap || document.write('<script src="libraries/bootstrap-5.0.1-dist/js/bootstrap.min.js"><\/script><link href="libraries/bootstrap-5.0.1-dist/css/bootstrap.min.css" rel="stylesheet">');
+window.bootstrap || document.write('<script src="libraries/bootstrap.5.0.1.min.js"><\/script><link href="libraries/bootstrapCollector.css" rel="stylesheet">');
 
 window.Papa          || document.write('<script src="libraries/papaparse.4.3.6.min.js"><\/script>');
 
@@ -57,7 +57,6 @@ var isolation_map = {
   },
   "CollectorMap.js" : "file",
   "jsFunctions.js"  : "file",
-  "Libraries.html"  : "file",
   "Run.html"   : "file"
 }
 
