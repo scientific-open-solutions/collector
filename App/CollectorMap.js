@@ -7,7 +7,7 @@ window.jQuery        || document.write('<script src="libraries/jquery-3.3.1.min>
 
 window.bootstrap || document.write('<script src="libraries/bootstrap.5.0.1.min.js"><\/script><link href="libraries/bootstrapCollector.css" rel="stylesheet">');
 
-window.Papa          || document.write('<script src="libraries/papaparse.4.3.6.min.js"><\/script>');
+window.Papa          || document.write('<script src="libraries/papaparse.min.js"><\/script>');
 
 // Collector specific
 window.Handsontable || document.write('<link rel="stylesheet" href="Handsontables/handsontables.full.css">' +

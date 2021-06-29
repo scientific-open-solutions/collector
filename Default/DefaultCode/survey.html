@@ -53,7 +53,7 @@ td{
 	min-width:        	900px;
 	max-width:        	9000px;
 	border-radius:    	20px;
-  border-color:     	#069;
+  border-color:     	#006688;
   border-style:     	solid;
   border-width:     	5px;
 	padding:            10px;
@@ -690,24 +690,7 @@ function process_returned_questionnaire(data){
   }
 
   survey_obj.data = data;
-  console.log("data");
-  console.log(data);
-
-
-
-
-  survey_obj.data = Papa.unparse(survey_obj.data),{
-    header:true,
-    beforeFirstChunk: function(chunk) {
-      var rows = chunk.split( /\r\n|\r|\n/ );
-      var headings = rows[0].toLowerCase();
-      rows[0] = headings;
-      return rows.join("\r\n");
-    },
-  };
-
-  console.log(JSON.stringify(survey_obj.data));
-
+  survey_obj.data = Papa.unparse(survey_obj.data);
   survey_obj.data = parent.parent.Collector.PapaParsed(survey_obj.data);
 
   survey_obj.scales = {};
