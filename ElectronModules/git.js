@@ -57,8 +57,7 @@ update = {
     "Quality"
   ],
   excesses: [
-    "libraries/ace-master",
-    "libraries/webgazer"
+    "libraries/ace-master"
   ]
 };
 
@@ -88,11 +87,25 @@ ipc.on('git_add_repo', (event,args) => {
     if(typeof(user.current) == "undefined"){
       user.current = {};
     }
+
+    user.current.org  = args.org;
+    user.current.repo = args.repo;
     user.current.path = result.filePaths[0] + "/" + args.repo;
+
+    if(typeof(user.repos) == "undefined"){
+      user.current.repos = {};
+    }
+
+    if(typeof(user.repos[args.org]) == "undefined"){
+      user.current.repos[args.org] = {};
+    }
+    user.repos[args.org][args.repo] = {
+      path: user.current.path
+    };
 
     fs.writeFileSync(
       root_dir + "/User.json",
-      JSON.stringify(user),
+      JSON.stringify(user, null, 2),
       "utf-8"
     );
 

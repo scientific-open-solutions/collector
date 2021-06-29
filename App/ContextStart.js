@@ -54,6 +54,10 @@ function correct_master(){
 
   master.surveys.user_surveys = missing_object(master.surveys.user_surveys);
 
+  master.code               = missing_object(master.code);
+  master.code.graphic       = missing_object(master.code.graphic);
+  master.code.graphic.files = missing_object(master.code.graphic.files);
+
   /*
   * studies --> projects
   */
@@ -129,7 +133,8 @@ function correct_master(){
       }
     });
   }
-  master.code.graphic = missing_object(master.code.graphic);
+  master.code.graphic       = missing_object(master.code.graphic);
+  master.code.graphic.files = missing_object(master.code.graphic.files);
 
   if(typeof(master.code.graphic.files) == "undefined" &
      typeof(master.code.graphic.trialtypes) !== "undefined"){

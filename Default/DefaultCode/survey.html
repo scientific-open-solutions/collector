@@ -260,35 +260,40 @@ $("#proceed_button").on("click",function(){
   } else {
     response_elements = $(".table_break:visible").find(".response_element");
   }
-
+  console.log("response_elements");
+  console.log(response_elements);
   for(var i = 0; i < response_elements.length; i++){
     [row_no,item_name] = retrieve_row_no_item_name(response_elements[i]);
-    var this_optional = survey_obj.data[row_no].optional.toLowerCase();
+    console.log("row_no");
+    console.log(row_no);
+    if(typeof(survey_obj.data[row_no].optional) !== "undefined"){
+      var this_optional = survey_obj.data[row_no].optional.toLowerCase();
 
-    if(this_optional.indexOf("no") !== -1){
-      this_optional = this_optional.split("-");       // find out whether there's a minimal number of responses
-      if(this_optional.length == 1){                  // default is that length needs to be at least 1
-        var min_resp_length = 1;
-      } else if(this_optional.length == 2) {
-        var min_resp_length = this_optional[1];
+      if(this_optional.indexOf("no") !== -1){
+        this_optional = this_optional.split("-");       // find out whether there's a minimal number of responses
+        if(this_optional.length == 1){                  // default is that length needs to be at least 1
+          var min_resp_length = 1;
+        } else if(this_optional.length == 2) {
+          var min_resp_length = this_optional[1];
+        } else {
+          bootbox.alert("Error - you appear to have too many '-' characters in the 'optional' column");
+          return false;
+        }
       } else {
-        bootbox.alert("Error - you appear to have too many '-' characters in the 'optional' column");
-        return false;
+        min_resp_length = 0;
       }
-    } else {
-      min_resp_length = 0;
-    }
 
-    var quest_resp = isJSON($("#"+response_elements[i].id).val());
-    if (quest_resp.length < min_resp_length){
-      proceed = false;
-			$("#"+response_elements[i].id.replace("response","question")).removeClass("text-dark");
-      $("#"+response_elements[i].id.replace("response","question")).removeClass("text-success");
-      $("#"+response_elements[i].id.replace("response","question")).addClass("text-danger");
-    } else {
-			$("#"+response_elements[i].id.replace("response","question")).removeClass("text-dark");
-      $("#"+response_elements[i].id.replace("response","question")).removeClass("text-danger");
-      $("#"+response_elements[i].id.replace("response","question")).addClass("text-success");
+      var quest_resp = isJSON($("#"+response_elements[i].id).val());
+      if (quest_resp.length < min_resp_length){
+        proceed = false;
+  			$("#"+response_elements[i].id.replace("response","question")).removeClass("text-dark");
+        $("#"+response_elements[i].id.replace("response","question")).removeClass("text-success");
+        $("#"+response_elements[i].id.replace("response","question")).addClass("text-danger");
+      } else {
+  			$("#"+response_elements[i].id.replace("response","question")).removeClass("text-dark");
+        $("#"+response_elements[i].id.replace("response","question")).removeClass("text-danger");
+        $("#"+response_elements[i].id.replace("response","question")).addClass("text-success");
+      }
     }
   }
 

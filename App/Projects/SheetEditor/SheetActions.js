@@ -404,7 +404,7 @@ $("#rename_stim_button").on("click",function(){
 $("#run_btn").on("click",function(){
   var project = $("#project_list").val();
   var project_json = master.project_mgmt.projects[project];
-  var select_html = '<select id="select_condition" class="custom-select">';
+  var select_html = '<select id="select_condition" class="form-select">';
   var conditions = Collector.PapaParsed(project_json.conditions);
   if(typeof(conditions) == "undefined"){
     conditions = conditions.filter(function(condition){

@@ -136,6 +136,9 @@ ipc.on('fs_home_dir', (event,args) => {
 });
 
 ipc.on('fs_list_code', (event,args) => {
+  if(!fs.existsSync(user().current.path + "/User")){
+    fs.mkdirSync(user().current.path + "/User");
+  }
   if(!fs.existsSync(user().current.path + "/User/Code")){
     fs.mkdirSync(user().current.path + "/User/Code");
   }
@@ -169,7 +172,12 @@ ipc.on('fs_list_projects', (event,args) => {
         );
       }
 
-
+      if(!fs.existsSync(user().current.path + "/User")){
+        fs.mkdirSync(user().current.path + "/User");
+      }
+      if(!fs.existsSync(user().current.path + "/User/Projects")){
+        fs.mkdirSync(user().current.path + "/User/Projects");
+      }
       var projects = JSON.stringify(
         fs.readdirSync(user().current.path + "/User/Projects")
       );

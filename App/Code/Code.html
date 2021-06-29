@@ -183,10 +183,14 @@ $("#code-preview-tab").on("click",function(){
   /*
   * use ../User folder
   */
-  var home_dir = Collector
-    .electron
-    .fs
-    .home_dir();
+  home_dir = Collector
+     .electron
+     .git
+     .locate_repo({
+       org:  $("#select_org").val(),
+       repo: $("#select_repo").val()
+    });
+
   iframe_content = iframe_content.replaceAll("../User/",  home_dir + "/User/");
 
   if(typeof(iframe_variables) !== "undefined"){
