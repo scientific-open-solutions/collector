@@ -48,6 +48,27 @@ function user(){
 * fs functions in alphabetical order
 */
 
+
+ipc.on('fs_delete_code', (event,args) => {
+
+  /*
+  * Security checks - should probably have more
+  */
+  if(args.code_filename.indexOf("..") !== -1){
+    event.returnValue = "This request could be insecure, and was blocked";
+  } else {
+    try{
+      var content = fs.unlinkSync(user().current.path + "/User/Code/" +
+                                  args.code_filename +
+                                  ".html");
+      event.returnValue = "success";
+    } catch(error){
+      event.returnValue = "failed to delete the trialtype: " +
+                          error;
+    }
+  }
+});
+
 ipc.on('fs_delete_project', (event,args) => {
 
   /*
@@ -111,25 +132,6 @@ ipc.on('fs_delete_survey', (event,args) => {
   }
 });
 
-ipc.on('fs_delete_code', (event,args) => {
-
-  /*
-  * Security checks - should probably have more
-  */
-  if(args.code_filename.indexOf("..") !== -1){
-    event.returnValue = "This request could be insecure, and was blocked";
-  } else {
-    try{
-      var content = fs.unlinkSync(root_dir + "/User/Code/" +
-                                  args.code_filename +
-                                  ".html");
-      event.returnValue = "success";
-    } catch(error){
-      event.returnValue = "failed to delete the trialtype: " +
-                          error;
-    }
-  }
-});
 
 ipc.on('fs_home_dir', (event,args) => {
   event.returnValue = root_dir;
