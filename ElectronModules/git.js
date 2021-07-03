@@ -97,7 +97,7 @@ ipc.on('git_add_repo', (event,args) => {
     }
 
     if(typeof(user.repos[args.org]) == "undefined"){
-      user.current.repos[args.org] = {};
+      user.repos[args.org] = {};
     }
     user.repos[args.org][args.repo] = {
       path: user.current.path

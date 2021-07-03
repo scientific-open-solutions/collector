@@ -117,6 +117,10 @@
 
 <script src="iframe_library.js"></script>
 <script>
+
+$("#code_editor-tab").on("click", function(){
+  $("#code_preview").prop("src","about:blank");
+});
 //https://stackoverflow.com/a/32100295/4490801
 $("#code_preview_fullscreen").on("click", function(){
 
