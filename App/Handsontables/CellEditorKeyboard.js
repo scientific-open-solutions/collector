@@ -1,3 +1,4 @@
+/* adding brs with enter seems actively unhelpful
 cell_editor.commands.addCommand({
 	name: 'enter_break',
 	bindKey: {win: 'Shift-Enter',  mac: 'Shift-Enter'},
@@ -14,6 +15,7 @@ cell_editor.commands.addCommand({
 	},
 	readOnly: true // false if this command should not apply in readOnly mode
 });
+*/
 
 $("#cell_make_bold").on("click",function(){
 	cell_wrap_tag(cell_editor,"<b>","</b>",true);
@@ -34,7 +36,7 @@ function cell_wrap_tag(editor,tag_open,tag_close,focus_editor){
 		editor.session.insert(editor.getCursorPosition(), tag_open + "--------------------DELETE ME-------------" + tag_close);
 		editor.find("--------------------DELETE ME-------------");
 		var range = editor.selection.getRange();
-		editor.session.replace(range, "");	
+		editor.session.replace(range, "");
 	} else {
 		var selected_text = cell_editor.getSelectedText();
 		var range = editor.selection.getRange();
@@ -42,10 +44,10 @@ function cell_wrap_tag(editor,tag_open,tag_close,focus_editor){
 	}
 	if(focus_editor){
 		cell_editor.focus();
-	}	
-	this_sheet.setDataAtCell(this_selection.start.row, 
+	}
+	this_sheet.setDataAtCell(this_selection.start.row,
 													 this_selection.start.col,
-													 cell_editor.getValue());	
+													 cell_editor.getValue());
 }
 
 $("#cell_apply_color").on("click",function(){
@@ -71,7 +73,7 @@ cell_editor.commands.addCommand({
 	name: 'enter_bold',
 	bindKey: {win: 'Ctrl-B',  mac: 'Command-B'},
 	exec: function(editor) {
-		cell_wrap_tag(editor,"<b>","</b>",true);	
+		cell_wrap_tag(editor,"<b>","</b>",true);
 	},
 	readOnly: true // false if this command should not apply in readOnly mode
 });
