@@ -197,23 +197,25 @@ $("#download_project_button").on("click",function(){
 $("#new_proc_button").on("click",function(){
   var proc_template = default_project.all_procs["procedure_1.csv"];
   bootbox.prompt("What would you like the name of the new <b>procedure</b> sheet to be?",function(new_proc_name){
-    var project = $("#project_list").val();
-    var this_proj   = master.project_mgmt.projects[project];
-    var current_procs = Object.keys(this_proj.all_procs);
-    if(current_procs.indexOf(new_proc_name) !== -1){
-      bootbox.alert("You already have a procedure sheet with that name");
-    } else {
-      new_proc_name = new_proc_name.replace(".csv","") + ".csv";
-      this_proj.all_procs[new_proc_name] = proc_template;
-      $("#proc_select").append($('<option>', {
-        text : new_proc_name
-      }));
-      $("#proc_select").val(new_proc_name);
-      createExpEditorHoT(
-        this_proj.all_procs[new_proc_name],
-        "procedure",
-        new_proc_name
-      );
+    if(new_proc_name){
+      var project = $("#project_list").val();
+      var this_proj   = master.project_mgmt.projects[project];
+      var current_procs = Object.keys(this_proj.all_procs);
+      if(current_procs.indexOf(new_proc_name) !== -1){
+        bootbox.alert("You already have a procedure sheet with that name");
+      } else {
+        new_proc_name = new_proc_name.replace(".csv","") + ".csv";
+        this_proj.all_procs[new_proc_name] = proc_template;
+        $("#proc_select").append($('<option>', {
+          text : new_proc_name
+        }));
+        $("#proc_select").val(new_proc_name);
+        createExpEditorHoT(
+          this_proj.all_procs[new_proc_name],
+          "procedure",
+          new_proc_name
+        );
+      }
     }
   });
 });
@@ -221,6 +223,7 @@ $("#new_proc_button").on("click",function(){
 $("#new_project_button").on("click",function(){
   bootbox.prompt("What would you like to name the new experiment?",function(result){
     if(result !== null){
+      result = result.toLowerCase();
       if($("#project_list").text().indexOf(result) !== -1){
         bootbox.alert("You already have an experiment with this name");
       } else {
@@ -234,30 +237,32 @@ $("#new_project_button").on("click",function(){
 $("#new_stim_button").on("click",function(){
   var stim_template = default_project.all_stims["stimuli_1.csv"];
   bootbox.prompt("What would you like the name of the new <b>Stimuli</b> sheet to be?",function(new_sheet_name){
-    var project = $("#project_list").val();
-    var this_proj   = master.project_mgmt.projects[project];
-    var current_stims = Object.keys(this_proj.all_stims);
-    if(current_stims.indexOf(new_sheet_name) !== -1){
-      bootbox.alert("You already have a <b>Stimuli</b> sheet with that name");
-    } else {
+    if(new_sheet_name){
+      var project = $("#project_list").val();
+      var this_proj   = master.project_mgmt.projects[project];
+      var current_stims = Object.keys(this_proj.all_stims);
+      if(current_stims.indexOf(new_sheet_name) !== -1){
+        bootbox.alert("You already have a <b>Stimuli</b> sheet with that name");
+      } else {
 
-      new_sheet_name = new_sheet_name.replace(".csv","") + ".csv";
-      this_proj.all_stims[new_sheet_name] = stim_template;
-      $("#stim_select").append($('<option>', {
-        text : new_sheet_name
-      }));
-      $("#stim_select").val(new_sheet_name);
+        new_sheet_name = new_sheet_name.replace(".csv","") + ".csv";
+        this_proj.all_stims[new_sheet_name] = stim_template;
+        $("#stim_select").append($('<option>', {
+          text : new_sheet_name
+        }));
+        $("#stim_select").val(new_sheet_name);
 
-      createExpEditorHoT(
-        this_proj.all_stims[new_sheet_name],
-        "stimuli",
-        new_sheet_name
-      );
+        createExpEditorHoT(
+          this_proj.all_stims[new_sheet_name],
+          "stimuli",
+          new_sheet_name
+        );
 
-      /*
-      alert("hardy");
+        /*
+        alert("hardy");
 
-      */
+        */
+      }
     }
   });
 });

@@ -31,6 +31,34 @@ if(!fs.existsSync(root_dir + "/User.json")){
   );
 }
 
+//https://gist.github.com/jakub-g/5903dc7e4028133704a4
+function cleanEmptyFoldersRecursively(folder) {
+  var fs = require('fs');
+  var path = require('path');
+
+  var isDir = fs.statSync(folder).isDirectory();
+  if (!isDir) {
+    return;
+  }
+  var files = fs.readdirSync(folder);
+  if (files.length > 0) {
+    files.forEach(function(file) {
+      var fullPath = path.join(folder, file);
+      cleanEmptyFoldersRecursively(fullPath);
+    });
+
+    // re-evaluate files; after deleting subfolder
+    // we may have parent folder empty now
+    files = fs.readdirSync(folder);
+  }
+
+  if (files.length == 0) {
+    console.log("removing: ", folder);
+    fs.rmdirSync(folder);
+    return;
+  }
+}
+
 function user(){
   var user = JSON.parse(fs.readFileSync(root_dir + "/User.json"));
 
@@ -180,6 +208,10 @@ ipc.on('fs_list_projects', (event,args) => {
       if(!fs.existsSync(user().current.path + "/User/Projects")){
         fs.mkdirSync(user().current.path + "/User/Projects");
       }
+      /*
+      * remove empty directories before listing the
+      */
+      cleanEmptyFoldersRecursively(user().current.path + "/User/Projects");
       var projects = JSON.stringify(
         fs.readdirSync(user().current.path + "/User/Projects")
       );
