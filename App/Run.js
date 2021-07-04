@@ -1362,7 +1362,7 @@ function start_restart(){
 
     bootbox.dialog({
       title:"Resume or Restart?",
-      message: "It looks like you have already started this experiment, would you like to resume or restart?",
+      message: "It looks like you have already started, would you like to resume or restart?",
       buttons: {
         local:{
           label: "Resume",

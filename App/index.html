@@ -358,9 +358,7 @@ $("#github_logo").on("click", function(){
     "repo": $("#select_repo").val()
   });
 
-  if(git_status == "Incomplete org or repo information"){
-    //bootbox.alert(git_status);
-  } else {
+  try{
     git_status = JSON.parse(git_status);
     console.log(git_status);
 
@@ -435,7 +433,16 @@ $("#github_logo").on("click", function(){
       Collector.custom_alert(response);
       $("#github_logo").click();
     });
+  }catch(error){
+    //bootbox.alert(git_status);
   }
+  /*
+  if(git_status == "Incomplete org or repo information"){
+    //bootbox.alert(git_status);
+  } else {
+
+  }
+  */
   $('#github_dialog').fadeIn();
 });
 
