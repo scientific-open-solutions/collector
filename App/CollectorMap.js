@@ -5,7 +5,7 @@
 //Publicly available libraries
 window.jQuery        || document.write('<script src="libraries/jquery-3.3.1.min><\/script>');
 
-window.bootstrap || document.write('<script src="libraries/bootstrap.5.0.1.min.js"><\/script><link href="libraries/bootstrapCollector.css" rel="stylesheet">');
+window.bootstrap || document.write('<script src="libraries/bootstrap.min.js"><\/script><link href="libraries/bootstrapCollector.css" rel="stylesheet">');
 
 window.Papa          || document.write('<script src="libraries/papaparse.min.js"><\/script>');
 
