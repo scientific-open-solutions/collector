@@ -46,6 +46,9 @@ Collector.start = function(){
 
 
 function correct_master(){
+  master = JSON.parse(
+    Collector.electron.fs.read_file("", "master.json")
+  );
   /*
   * missing objects
   */

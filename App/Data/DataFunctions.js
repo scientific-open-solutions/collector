@@ -280,13 +280,13 @@ encrypt_obj = {
       master.data.save_script = this_url;
 			*/
 
-    })
+    });
 	},
   archive_keys:function(){
     var keypair = {
-                    public_key : master.keys.public_key,
-                    encrypted_private_key : master.keys.encrypted_private_key
-                  };
+      public_key :            master.keys.public_key,
+      encrypted_private_key : master.keys.encrypted_private_key
+    };
     master.keys.archived.push(keypair);
   },
   change_password:function(){
@@ -368,7 +368,7 @@ encrypt_obj = {
     var keypair = nacl.box.keyPair();
 
     receiverPublicKey = nacl.util.encodeBase64(keypair.publicKey);
-    receiverSecretKey = nacl.util.encodeBase64(keypair.secretKey)
+    receiverSecretKey = nacl.util.encodeBase64(keypair.secretKey);
 
     if(typeof(master.keys) == "undefined"){
       master.keys = {
@@ -407,7 +407,7 @@ encrypt_obj = {
       });
     //}
   },
-}
+};
 
 function list_data_servers(){
   var select_server_html = "<select class='form-control' id='select_data_server'>" +
@@ -591,7 +591,7 @@ function request_data_list(){
     //try{
 
       var data_obj = JSON.parse(result);
-
+      console.log(result);
       mega_data_obj.server_data_obj = data_obj.participants.filter(
         row => row.server_status !== "d"
       );
