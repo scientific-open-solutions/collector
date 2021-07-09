@@ -478,36 +478,294 @@ function loadFileAsText(){
   }
 }
 
-function populate_data_div(
-  data_div_id,
-  data_obj,
-  bootstrap_class
-){
+var projects;
 
-  // summarise experiments
-  var experiments = data_obj.reduce(function(a,b){
-    if(typeof(a[b.experiment_id]) == "undefined"){
-      a[b.experiment_id] = [b];
+function populate_data_div(data_div_id, data_obj, bootstrap_class){
+
+  // summarise projects
+  projects = data_obj.reduce(function(a,b){
+    if(typeof(a[b.project_id]) == "undefined"){
+      a[b.project_id] = [b];
     } else {
-      a[b.experiment_id].push(b);
+      a[b.project_id].push(b);
     }
     return a;
   },{});
-  console.dir("experiments");
-  console.dir(experiments);
+  console.dir("projects");
+  console.dir(projects);
 
-  server_data_html = '<div class="accordion" id="accordion' + data_div_id + '">';
 
-  Object.keys(experiments).forEach(function(experiment_name, collapse_no){
+  var this_list = $("<div>")
+    .addClass("row")
+    .append(
+      $("<div>")
+      .addClass("col-4")
+      .append(
+        $("<div>")
+          .prop("id", "project_column")
+          .addClass("list-group")
+          .attr("role","tabpanel")
+      )
+    )
+    .append(
+      $("<div>")
+      .addClass("col-8")
+      .prop("id", "participant_column")
+      .append(
+        $("<div>")
+          .prop("id", "project_column")
+          .addClass("tab-content")
+      )
+    );
+  $("#" + data_div_id).html(this_list);
+
+  Object.keys(projects).forEach(function(project_id){
+    console.log(project_id);
+    $("#participant_column").append(
+      $("<div>")
+        .addClass("tab-pane")
+        .addClass("fade")
+        .prop("id", "participant-list-" + project_id)
+        .attr("aria-labelledby","project-list-" + project_id)
+        .html("hi there")
+
+    );
+
+    $("#project_column").append(
+      $("<div>")
+        .addClass("list-group-item")
+        .addClass("list-group-item-action")
+        .prop("id", "project-list-" + project_id)
+        .attr("data-bs-toggle", "list")
+        .attr("href", "#participant-list-" + project_id)
+        .attr("role", "tab")
+        .attr("aria-controls", "participant-list-" + project_id)
+        .html(project_id)
+        .append(
+          $("<input>")
+            .addClass("form-check-input")
+            .addClass("me-1")
+            .attr("type", "checkbox")
+            .css("position", "absolute")
+            .css("right", "5px")
+        )
+    );
+
+
+
+
+    /*
+    projects[project_id].forEach(function(row){
+
+    });
+    */
+
+      /*
+      * Create a div for all the participants within the experiment
+      */
+
+
+    /*
+    * Add participant rows following this
+    */
+
+  });
+
+
+  /*
+  *
+
+
+    <div class="col-8">
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">Hi</div>
+        <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">Ho</div>
+        <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">Silvee</div>
+        <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">Gold</div>
+      </div>
+    </div>
+  </div>
+  */
+
+  /*
+      .append(
+        $("<div>")
+          .addClass("list-group")
+          .prop("id", "list-tab")
+          .attr("role", "tablist")
+          .append(
+            $("<div>")
+              .addClass("list-group-item")
+              .addClass("list-group-item-action")
+              .prop("id", "list-home-list")
+              .attr("data-bs-toggle", "list")
+              .attr("href", "#list-home")
+              .attr("role", "tab")
+              .attr("aria-controls", "list-home")
+              .html("Home")
+              .append(
+                $("<input>")
+                  .addClass("form-check-input")
+                  .addClass("me-1")
+                  .attr("type", "checkbox")
+                  .css("position", "absolute")
+                  .css("right", "5px")
+              )
+          )
+          .append(
+            $("<div>")
+              .addClass("list-group-item")
+              .addClass("list-group-item-action")
+              .prop("id", "list-profile-list")
+              .attr("data-bs-toggle", "list")
+              .attr("href", "#list-profile")
+              .attr("role", "tab")
+              .attr("aria-controls", "list-profile")
+              .html("Profile")
+              .append(
+                $("<input>")
+                  .addClass("form-check-input")
+                  .addClass("me-1")
+                  .attr("type", "checkbox")
+                  .css("position", "absolute")
+                  .css("right", "5px")
+              )
+          )
+      )
+    )
+    .append(
+      $("<div>")
+        .addClass("col-8")
+        .append(
+          $("<div>")
+          .addClass("tab-content")
+          .addClass("nav-tabContent")
+          .append(
+            $("<div>")
+              .addClass("tab-pane")
+              .addClass("fade")
+              .prop("id", "list-home")
+              .attr("role","tabpanel")
+              .attr("aria-labelledby","list-home-list")
+              .html("hi")
+          )
+          .append(
+            $("<div>")
+              .addClass("tab-pane")
+              .addClass("fade")
+              .prop("id", "list-profile")
+              .attr("role","tabpanel")
+              .attr("aria-labelledby","list-profile-list")
+              .html("ho")
+          )
+        )
+      );
+
+
+
+
+  /*
+  *
+  <div class="row">
+    <div class="col-4">
+      <div class="list-group" id="list-tab" role="tablist">
+        <div class="list-group-item list-group-item-action active" id="list-home-list" data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">Home<input class="form-check-input me-1" type="checkbox" value="" aria-label="..." style="position: absolute; right:0px;"></div>
+        <a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">Profile</a>
+        <a class="list-group-item list-group-item-action" id="list-messages-list" data-bs-toggle="list" href="#list-messages" role="tab" aria-controls="list-messages">Messages</a>
+        <a class="list-group-item list-group-item-action" id="list-settings-list" data-bs-toggle="list" href="#list-settings" role="tab" aria-controls="list-settings">Settings</a>
+      </div>
+    </div>
+    <div class="col-8">
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">Hi</div>
+        <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">Ho</div>
+        <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">Silvee</div>
+        <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">Gold</div>
+      </div>
+    </div>
+  </div>
+  */
+
+
+
+  /*
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+        Accordion Item #1
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+      <div class="accordion-body">
+        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+      </div>
+    </div>
+  </div>
+  */
+
+  /*
+  var server_accordion = $("<div>");
+      server_accordion.prop("id", "accordion" + data_div_id)
+        .addClass("accordion");
+
+  //server_data_html = '<div class="accordion" id="accordion' + data_div_id + '">';
+  Object.keys(projects).forEach(function(project_name, collapse_no){
+
+    var this_button = $("<div>");
+        this_button.prop("type", "button")
+          .data("toggle","collapse")
+          .data("target", "#" + data_div_id + '_' + collapse_no)
+          .attr("aria-expanded", "true")
+          .attr("aria-controls", "collapseOne");
+
+    var this_card_header = $("<div>");
+        this_card_header.addClass("card-header")
+          .addClass("text-white")
+          .addClass("bg-" + bootstrap_class);
+
+    this_button.append(this_card_header);
+    var this_h5 = $("<h5>");
+        this_h5.addClass("mb-o")
+          .html(project_name);
+
+    this_card_header.append(this_h5);
+
+    var this_card_collapse = $("<div>");
+      this_card_collapse.addClass("collapse")
+        .prop("id", data_div_id + '_' + collapse_no)
+        .attr("aria-labelledby", "headingOne")
+        .attr("data-parent", "#accordion" + data_div_id);
+
+    this_button.append(this_card_collapse);
+
+    var this_card_body = $("<div>");
+        this_card_body.html("hi there");
+
+    this_card_collapse.append(this_card_body);
+
+    server_accordion.append(this_button);
+
+    $("#" + data_div_id).append(server_accordion);
+
+    /*
+    $("#" + data_div_id).find(".collapse").on("click", function(e){
+      e.preventDefault(); e.stopPropagation()
+    });
+    $("#" + data_div_id).find(".collapse").find("button").on("click", function(e){
+      e.preventDefault(); e.stopPropagation()
+    });
+    */
+
+    /*
     server_data_html += '<div class="card" type="button" data-toggle="collapse" data-target="#' + data_div_id + '_' + collapse_no +'" aria-expanded="true" aria-controls="collapseOne">' +
       '<div class="card-header text-white bg-' + bootstrap_class +'">' +
         '<h5 class="mb-0">' +
-          experiment_name +
+          project_name +
         '</h5>' +
       '</div>' +
       '<div id="' + data_div_id + '_' + collapse_no +'" class="collapse" aria-labelledby="headingOne" data-parent="#accordion' + data_div_id + '">' +
         '<div class="card-body">';
-          experiments[experiment_name].forEach(function(this_pp){
+          projects[project_name].forEach(function(this_pp){
 
             var this_status = this_pp[data_div_id.replace("_data","_status")];
             if(this_status == "f"){
@@ -537,13 +795,13 @@ function populate_data_div(
                   bootstrap_class +
                   " download_" +
                   data_div_id +
-                  "_btn'>Download<span style='display:none'>" + experiment_name +
+                  "_btn'>Download<span style='display:none'>" + project_name +
                   "_____" +
                   this_pp.hashed_user_id +
                   "_____" +
                   file_info +
                   "</span></button>" +
-                "<button class='btn btn-danger delete_" + data_div_id + "_btn'>Delete<span style='display:none'>" + experiment_name + "_____" + this_pp.hashed_user_id  + "_____" + file_info + "</span></button>" +
+                "<button class='btn btn-danger delete_" + data_div_id + "_btn'>Delete<span style='display:none'>" + project_name + "_____" + this_pp.hashed_user_id  + "_____" + file_info + "</span></button>" +
               "</div>";
 
           });
@@ -551,8 +809,10 @@ function populate_data_div(
     server_data_html +=     '</div>' +
                           '</div>' +
                         '</div>';
+
   });
 
+  /*
   $("#" + data_div_id).html(server_data_html);
   $("#" + data_div_id).find(".collapse").on("click", function(e){
     e.preventDefault(); e.stopPropagation()
@@ -560,6 +820,8 @@ function populate_data_div(
   $("#" + data_div_id).find(".collapse").find("button").on("click", function(e){
     e.preventDefault(); e.stopPropagation()
   });
+  */
+
 }
 
 function request_data_list(){
@@ -589,9 +851,9 @@ function request_data_list(){
   },function(result){
       timed_out = false;
     //try{
-
-      var data_obj = JSON.parse(result);
       console.log(result);
+      var data_obj = JSON.parse(result);
+
       mega_data_obj.server_data_obj = data_obj.participants.filter(
         row => row.server_status !== "d"
       );
@@ -605,9 +867,10 @@ function request_data_list(){
       );
 
       var server_data_size = mega_data_obj.server_data_obj.reduce(function(a, b){
-        return a + parseFloat(b["filesize"]);
+        return a + parseFloat(b.filesize);
       }, 0)/1000000;
 
+      /*
       var storage_data_size = mega_data_obj.storage_data_obj.reduce(function(a, b){
         return a + parseFloat(b["filesize"]);
       }, 0)/1000000000;
@@ -615,19 +878,23 @@ function request_data_list(){
       var backup_data_size = mega_data_obj.backup_data_obj.reduce(function(a, b){
         return a + parseFloat(b["filesize"]);
       }, 0)/1000000000;
+      */
 
 
       $("#used_server_space").html(server_data_size + " MB");
-      $("#used_storage_space").html(storage_data_size + " GB");
-      $("#used_backup_space").html(backup_data_size + " GB");
+      //$("#used_storage_space").html(storage_data_size + " GB");
+      //$("#used_backup_space").html(backup_data_size + " GB");
 
       $("#max_server_space").html(data_obj.max_server_space_mb + " MB");
+
+      /*
       $("#max_storage_space").html(
         data_obj.max_storage_space_gb + " GB"
       );
       $("#max_backup_space").html(
         data_obj.max_storage_space_gb + " GB"
       );
+      */
 
       /*
       * Visualise that this has succeeded
@@ -647,6 +914,7 @@ function request_data_list(){
         "primary"
       );
 
+      /*
       populate_data_div(
         "storage_data",
         mega_data_obj.storage_data_obj,
@@ -658,6 +926,7 @@ function request_data_list(){
         mega_data_obj.backup_data_obj,
         "info"
       );
+      */
 
 
       $(".delete_server_data_btn").unbind();
@@ -710,6 +979,7 @@ function request_data_list(){
           }
         });
       });
+      /*
       $(".download_storage_data_btn").unbind();
       $(".download_storage_data_btn").on("click",function(){
         var this_folder = $(this).find("span")[0].innerHTML;
@@ -758,11 +1028,13 @@ function request_data_list(){
           //$("#list_data_btn").click();
         });
       });
+      */
 
 
       /*
       * Backup data buttons
       */
+      /*
       $(".download_backup_data_btn").unbind();
       $(".download_backup_data_btn").on("click",function(){
         var this_folder = $(this).find("span")[0].innerHTML;
@@ -812,6 +1084,7 @@ function request_data_list(){
           //$("#list_data_btn").click();
         });
       });
+      */
 
     /*
     } catch(error){
