@@ -69,15 +69,17 @@ function clean_conditions(){
   update_handsontables();
 }
 function createExpEditorHoT(sheet,selected_handsonTable, sheet_name) {
+	var area;
+	var table_name;
 	if (selected_handsonTable.toLowerCase() == "conditions") {
-		var area = $("#conditionsArea");
-		var table_name = 'handsOnTable_Conditions';
+		area = $("#conditionsArea");
+		table_name = 'handsOnTable_Conditions';
 	} else if (selected_handsonTable.toLowerCase() == "stimuli") {
-		var area = $("#stimsArea");
-		var table_name = 'handsOnTable_Stimuli';
+		area = $("#stimsArea");
+		table_name = 'handsOnTable_Stimuli';
 	} else if (selected_handsonTable.toLowerCase() == "procedure") {
-		var area = $("#procsArea");
-		var table_name = 'handsOnTable_Procedure';
+		area = $("#procsArea");
+		table_name = 'handsOnTable_Procedure';
 	} else {
 		bootstrap.alert("There is a bug in your code - not clear which experiment sheet you want to edit/update/create etc.");
 	}
@@ -131,11 +133,11 @@ function list_projects(){
 			var project_json = JSON.parse(
 	      Collector.electron.fs.read_file("Projects", project + ".json")
 	    );
+			master.project_mgmt.projects[project] = project_json;
 		} catch(error){
 			bootbox.alert("You have a problem with project:" + project);
 		}
-		console.log("ho");
-		master.project_mgmt.projects[project] = project_json;
+
   });
 
   name_list = Object.keys(master.project_mgmt.projects);

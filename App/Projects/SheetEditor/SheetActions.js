@@ -224,6 +224,39 @@ $("#new_project_button").on("click",function(){
   bootbox.prompt("What would you like to name the new experiment?",function(result){
     if(result !== null){
       result = result.toLowerCase();
+      result = result.replaceAll(" ","_")
+        .replaceAll(" ","_")
+        .replaceAll(" ","_")
+        .replaceAll("-","_")
+        .replaceAll("@","_")
+        .replaceAll(".","_")
+        .replaceAll("/","_")
+        .replaceAll("\\","_")
+        .replaceAll("'","_")
+        .replaceAll('"',"_")
+        .replaceAll('|',"_")
+        .replaceAll('?',"_")
+        .replaceAll('#',"_")
+        .replaceAll(',',"_")
+        .replaceAll('[',"_")
+        .replaceAll(']',"_")
+        .replaceAll('(',"_")
+        .replaceAll(')',"_")
+        .replaceAll('*',"_")
+        .replaceAll('^',"_")
+        .replaceAll(':',"_")
+        .replaceAll(';',"_")
+        .replaceAll('%',"_")
+        .replaceAll('$',"_")
+        .replaceAll('£',"_")
+        .replaceAll('!',"_")
+        .replaceAll('`',"_")
+        .replaceAll('+',"_")
+        .replaceAll('=',"_")
+        .replaceAll('<',"_")
+        .replaceAll('>',"_")
+        .replaceAll('~',"_");
+
       if($("#project_list").text().indexOf(result) !== -1){
         bootbox.alert("You already have an experiment with this name");
       } else {
