@@ -80,8 +80,7 @@
   			<button type="button" id="new_stim_button" class="btn btn-primary">New</button>
         <button type="button" id="rename_stim_button" class="btn btn-primary">Rename</button>
         <button type="button" id="delete_stim_button" class="btn btn-primary">Delete</button>
-        <button type="button" id="stim_list_button" class="btn btn-primary">List Stimuli</button>
-        <button type="button" id="stim_folder_button" class="btn btn-primary">Stimuli Folder</button>
+        <button type="button" id="stim_folder_button" class="btn btn-primary">User Folder</button>
       </div>
 			<span id="stimsArea">
 				<div id="stimsheetTable"></div>
@@ -95,14 +94,7 @@
 <script>
 
 $("#stim_folder_button").on("click",function(){
-  Collector.electron.open_folder("User/Stimuli");
-});
-
-$("#stim_list_button").on("click",function(){
-  var web_url = document.URL.split("/");
-      web_url[web_url.length - 1] = "Projects/SheetEditor/StimList.html";
-      web_url = web_url.join("/");
-	window.open(web_url,"stimList",'height=800,width=800');
+  Collector.electron.open_folder("repo","User");
 });
 
 var spreadsheets = {};

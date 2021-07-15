@@ -144,9 +144,12 @@ cell_editor.getSession().on('change', function(){
 
 	if(Collector.electron.fs.home_dir() !== ""){
 		cell_contents = cell_contents.replaceAll("\.\./User", Collector.electron.fs.home_dir() + "/User");
-	} else if(Collector.is_exe){
+	}
+	/* hopefully can delete this:
+	else if(Collector.is_exe){
     cell_contents = cell_contents.replaceAll("\.\./User","../../../User");
   }
+	*/
 
 
 

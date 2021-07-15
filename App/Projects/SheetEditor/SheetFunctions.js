@@ -91,44 +91,39 @@ function createExpEditorHoT(sheet,selected_handsonTable, sheet_name) {
     sheet_name
   );
 }
-function get_HoT_data(current_sheet) { // needs to be adjusted for
-    console.dir(current_sheet);
-    var data = JSON.parse(JSON.stringify(current_sheet.getData()));
+function get_HoT_data(current_sheet) {
+  console.dir(current_sheet);
+  var data = JSON.parse(JSON.stringify(current_sheet.getData()));
 
-    // remove last column and last row
-    data.pop();
+  // remove last column and last row
+  data.pop();
 
-    for (var i=0; i<data.length; ++i) {
-        data[i].pop();
+  for (var i=0; i<data.length; ++i) {
+      data[i].pop();
 
-        for (var j=0; j<data[i].length; ++j) {
-            if (data[i][j] === null) {
-                data[i][j] = '';
-            }
-        }
-    }
+      for (var j=0; j<data[i].length; ++j) {
+          if (data[i][j] === null) {
+              data[i][j] = '';
+          }
+      }
+  }
 
-    // check for unique headers
-    var unique_headers = [];
+  // check for unique headers
+  var unique_headers = [];
 
-    for (var i=0; i<data[0].length; ++i) {
-        while (unique_headers.indexOf(data[0][i]) > -1) {
-            data[0][i] += '*';
-        }
+  for (var i=0; i<data[0].length; ++i) {
+      while (unique_headers.indexOf(data[0][i]) > -1) {
+          data[0][i] += '*';
+      }
 
-        unique_headers.push(data[0][i]);
-    }
+      unique_headers.push(data[0][i]);
+  }
 
-    return data;
+  return data;
 }
 function list_projects(){
-	var local_projects = Collector
-    .electron
-    .fs
-    .list_projects();
-	console.log("local_projects");
-	console.log(local_projects);
-  local_projects.forEach(function(project){
+	var local_projects = Collector.electron.fs.list_projects();
+	local_projects.forEach(function(project){
 		try{
 			var project_json = JSON.parse(
 	      Collector.electron.fs.read_file("Projects", project + ".json")
