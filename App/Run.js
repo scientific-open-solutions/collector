@@ -828,7 +828,17 @@ function insert_start(){
     /*
     * These quality checks are in reverse order
     */
-    this_proc = add_to_start(this_proc, "quality_calibration_zoom");
+
+    if(
+      typeof(project_json.this_condition.zoom_check) !== "undefined" &&
+      project_json.this_condition.zoom_check.toLowerCase() == "no"
+    ){
+      //skip this
+    } else {
+      this_proc = add_to_start(this_proc, "quality_calibration_zoom");
+    }
+
+
     this_proc = add_to_start(this_proc, "quality_details_warning");
 
     if(
@@ -864,6 +874,7 @@ function insert_start(){
       url: "Quality/Problems.html",
       name: "end_checks_experiment"
     }];
+
     load_quality_checks(quality_checks);
   }
 }
