@@ -10,24 +10,24 @@ Collector = {
     return this_obj;
   },
   complete_csv: function(this_csv){
-  response_headers      = [];
-  for(var i = 0; i < this_csv.length ; i++) {
-    csv_row = this_csv[i];
-    Object.keys(csv_row).forEach(function(header){
-      if(response_headers.indexOf(header) == -1){
-        response_headers.push(header);
-      }
-    });
-  }
-  for(var i =0; i < this_csv.length; i++){
-    response_headers.forEach(function(this_header){
-      if(typeof(this_csv[i][this_header]) == "undefined"){
-        this_csv[i][this_header] = "";
-      }
-    });
-  }
-  return this_csv;
-},
+    response_headers      = [];
+    for(var i = 0; i < this_csv.length ; i++) {
+      csv_row = this_csv[i];
+      Object.keys(csv_row).forEach(function(header){
+        if(response_headers.indexOf(header) == -1){
+          response_headers.push(header);
+        }
+      });
+    }
+    for(var i =0; i < this_csv.length; i++){
+      response_headers.forEach(function(this_header){
+        if(typeof(this_csv[i][this_header]) == "undefined"){
+          this_csv[i][this_header] = "";
+        }
+      });
+    }
+    return this_csv;
+  },
   custom_alert: function(msg, duration) {
 
     if(typeof(duration) == "undefined"){
@@ -67,19 +67,19 @@ Collector = {
         top:              (top_padding + 20) + "px",
         "z-index":        1000
       })
-      .html(msg);
+      .html(msg + " (click to keep on screen and click again to hide)");
     /*
     - need to think through how to avoid multiple redundant elements through appending...
     */
 
 
     $("body").append(this_alert);
-    var animation_active = true;
     this_alert.animate(
       {opacity: "1"},
-      100,
+      500,
       "swing"
     );
+
 
     var animation_active = true;
     this_alert.click(function(){
@@ -89,23 +89,23 @@ Collector = {
         animation_active = false;
         this_alert.stop();
       } else {
-        $(this).delay(duration).animate({
-          height:  "0px",
-          padding: "0px"
-        }, 800, "swing", function() {
+        $(this).animate({
+          opacity:  "0"
+        }, 500, "swing", function() {
           $(this).remove();
         });
       }
     });
 
     setTimeout(function() {
-      $(this).delay().animate({
-        height:  "0px",
-        padding: "0px"
-      }, 800, "swing", function() {
-        $(this).remove();
-      },duration);
-    });
+      if(animation_active){
+        $(this_alert).animate({
+          opacity:  "0"
+        }, 500, "swing", function() {
+          $(this_alert).remove();
+        });
+      }
+    },duration);
 
 
 
@@ -519,7 +519,7 @@ window.onload=function(){
         }
       );
     }
-  };  
+  };
 };
 
 
