@@ -13,7 +13,26 @@ const fs   = require('fs-extra');
 const ipc  = require('electron').ipcMain;
 const path = require('path');
 
+const { session } = require('electron');
+
 function createWindow () {
+
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          //"default-src 'self'",
+          //"script-src 'self'",
+          "connect-src 'self'",
+          //"img-src 'self'",
+          //"style-src 'self'",
+          "font-src 'self'"
+        ]
+      }
+    });
+  });
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     // frame: false,
@@ -22,6 +41,7 @@ function createWindow () {
     webPreferences: {
       //contextIsolation:           true, //has to be false with the way I've designed this
       enableRemoteModule:         true,
+      //preload:                    [path.join(__dirname, 'App/libraries/collector/Collector.js')],
       preload:                    path.join(__dirname, 'preload.js'),
       worldSafeExecuteJavaScript: true
     }
