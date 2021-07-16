@@ -269,11 +269,11 @@ Project = {
     * Create input to store the number of focus and blur events for the window, and store these using javascript
     */
     this_phase += $("<input>")
-      .attr("name", "phase_switch_in_out")
+      .attr("name", "window_switch")
       .css("display", "none")
-      .prop("id", "phase_switch_in_out")[0].outerHTML +
+      .prop("id", "window_switch")[0].outerHTML +
     $("<script>")
-      .html("window.addEventListener('blur', function(){ var focus_val = $('#phase_switch_in_out').val();  $('#phase_switch_in_out').val(focus_val + 'leave-' + (new Date()).getTime() + ';')}); window.addEventListener('focus', function(){ var focus_val = $('#phase_switch_in_out').val(); $('#phase_switch_in_out').val(focus_val + 'focus-' + (new Date()).getTime() + ';')}); ")[0].outerHTML;
+      .html("window.addEventListener('blur', function(){ var focus_val = $('#window_switch').val();  $('#window_switch').val(focus_val + 'leave-' + (new Date()).getTime() + ';')}); window.addEventListener('focus', function(){ var focus_val = $('#window_switch').val(); $('#window_switch').val(focus_val + 'focus-' + (new Date()).getTime() + ';')}); ")[0].outerHTML;
 
 /*
 project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new Date()).getTime();
