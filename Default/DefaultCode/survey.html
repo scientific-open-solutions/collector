@@ -147,50 +147,93 @@ if(typeof(settings) !== "undefined"){
 
 if(typeof(settings.tab_hor_vert) == "undefined" || settings.tab_hor_vert.toLowerCase() == "horizontal"){
   settings.tab_hor_vert = "horizontal";
-  var please_wait = $("<div>");
-  var this_survey = $("<div>");
-  var survey_tabs = $("<div>");
-  var proceed_btn = $("<input>");
-  please_wait.attr("id", "please_wait_div")
-             .html("Loading... Please wait");
-  this_survey.addClass("needs-validation")
-             .attr("id", "this_survey_id")
-             .attr("novalidate", true);
-  survey_tabs.attr("id", "survey_tabs")
-             .addClass("border-top")
-             .addClass("border-primary")
-             .css("text-align", "right")
-  proceed_btn.addClass("btn")
-             .addClass("btn-primary")
-             .attr("id", "proceed_button")
-             .attr("type", "submit")
-             .attr("value", "Proceed")
-  $("#survey_outline").append(please_wait)
-                      .append(this_survey)
-                      .append(survey_tabs)
-                      .append(proceed_btn);
 
+  $("#survey_outline")
+    .append(
+      $("<div>")
+        .attr("id", "please_wait_div")
+        .html("Loading... Please wait")
+    )
+    .append(
+      $("<div>")
+        .addClass("needs-validation")
+        .attr("id", "this_survey_id")
+        .attr("novalidate", true)
+    )
+    .append(
+      $("<div>")
+        .attr("id", "survey_tabs")
+        .addClass("border-top")
+        .addClass("border-primary")
+        .css("text-align", "right")
+    )
+    .append(
+      $("<input>")
+        .addClass("btn")
+        .addClass("btn-primary")
+        .attr("id", "proceed_button")
+        .attr("type", "submit")
+        .attr("value", "Proceed")
+    );
 } else if (settings.tab_hor_vert.toLowerCase() == "vertical"){
-  $("#survey_outline").html(
-    '<table>' +
-      '<tr>' +
-        '<td valign="top" class="border-right border-primary">'+
-          '<div id="survey_tabs"></div>' +
-        '</td>' +
-        '<td>'+
-          '<div id="please_wait_div">Please wait while survey is downloading</div>'+
-          '<div id="this_survey_id" class="needs-validation" novalidate></div>' +
-          '<input type="button" value="Proceed" class="btn btn-primary" id="proceed_button">'+
-        '</td>'+
-      '</tr>'+
-    '</table>'
-  );
+  $("#survey_outline")
+    .append(
+      $("<table>")
+        .append(
+          $("<tr>")
+            .append(
+              $("<td>")
+                .prop("valign", "top")
+                .addClass("border-right")
+                .addClass("border-primary")
+                .append(
+                  $("<div>")
+                    .prop("id", "survey_tabs")
+                )
+            )
+            .append(
+              $("<td>")
+                .append(
+                  $("<div>")
+                    .prop("id", "please_wait_div")
+                    .html("Please wait while survey is downloading")
+                )
+                .append(
+                  $("<div>")
+                    .prop("id", "this_survey_id")
+                    .addClass("needs-validation")
+                    .attr("novalidate", true)
+                )
+                .append(
+                  $("<input>")
+                    .attr("type", "button")
+                    .addclass("btn")
+                    .addclass("btn-primary")
+                    .prop("id", "proceed_button")
+                    .val("Proceed")
+
+                )
+            )
+        )
+    );
 } else if(settings.tab_hor_vert.toLowerCase() == "none"){
-  $("#survey_outline").html(
-    '<div id="survey_tabs" style="display:none"></div>' +
-    '<div id="please_wait_div">Please wait while survey is downloading</div>'+
-    '<div id="this_survey_id" class="needs-validation" novalidate></div>'
-  );
+  $("#survey_outline")
+    .append(
+      $("<div>")
+        .css("display", "none")
+        .prop("id", "survey_tabs")
+    )
+    .append(
+      $("<div>")
+        .html("Please wait while survey is downloading")
+        .prop("id", "please_wait_div")
+    )
+    .append(
+      $("<div>")
+        .class("needs-validation")
+        .prop("id", "this_survey_id")
+        .attr("novalidate", true)
+    );
 } else {
   bootbox.alert("If you are the researcher, please check the 'settings for this survey. The input for 'tab_hor_vert' appears to be invalid. Please change it to 'horizontal' or 'vertical' or 'none' or remove 'tab_hot_vert' altogether from the settings, which will make the tabs invisible");
 }
@@ -282,20 +325,21 @@ $("#proceed_button").on("click",function(){
       var quest_resp = isJSON($("#"+response_elements[i].id).val());
       if (quest_resp.length < min_resp_length){
         proceed = false;
-  			$("#"+response_elements[i].id.replace("response","question")).removeClass("text-dark");
-        $("#"+response_elements[i].id.replace("response","question")).removeClass("text-success");
-        $("#"+response_elements[i].id.replace("response","question")).addClass("text-danger");
+  			$("#"+response_elements[i].id.replace("response","question"))
+          .removeClass("text-dark")
+          .removeClass("text-success")
+          .addClass("text-danger");
       } else {
-  			$("#"+response_elements[i].id.replace("response","question")).removeClass("text-dark");
-        $("#"+response_elements[i].id.replace("response","question")).removeClass("text-danger");
-        $("#"+response_elements[i].id.replace("response","question")).addClass("text-success");
+  			$("#"+response_elements[i].id.replace("response","question"))
+          .removeClass("text-dark")
+          .removeClass("text-danger")
+          .addClass("text-success");
       }
     }
   }
 
   if(current_tab == survey_obj.tabs && proceed){
     if(typeof(sql_surveys) == "undefined"){
-      //$(".table_break");
       var next_table_no = parseFloat($(".table_break:visible")[0].id.replace("table","")) + 1;
 
       if($(".table_break#table"+next_table_no).length == 0){
@@ -309,7 +353,9 @@ $("#proceed_button").on("click",function(){
         $(".table_break#table" + next_table_no).show();
       }
     } else {
-      $("#survey_outline").html("<h1> You have finished the preview of this survey.</h1>");
+      $("#survey_outline").append(
+        $("<h1>").html("You have finished the preview of this survey.")
+      );
     }
   } else if(current_tab < survey_obj.tabs && proceed) {
     current_tab ++;
@@ -343,16 +389,24 @@ function clean_item(this_item){
 }
 
 function generate_feedback_string(feedback_array, this_index, feedback_color, row){
-  if(feedback_array){                 //i.e. if it's not null
+  if(feedback_array){
     if(feedback_array.length > 1){
-      return "<div class='feedback_span_multiple "+row["item_name"].toLowerCase()+"_feedback' style='color:"+feedback_color[this_index]+"'>"+feedback_array[this_index]+"</div>";
+      return $("<div>")
+        .addClass(
+          "feedback_span_multiple"       +
+          row["item_name"].toLowerCase() +
+          "_feedback"
+        )
+        .html(feedback_array[this_index])[0].outerHTML;
     } else {
-      return "<div class='feedback_span_single " +
-      row["item_name"].toLowerCase() + "_feedback' style='color:" +
-      feedback_color[this_index] +
-      "'>" +
-      feedback_array[this_index] +
-      "</div>";
+      return $("<div>")
+        .addClass(
+          "feedback_span_single "        +
+          row["item_name"].toLowerCase() +
+          "_feedback"
+        )
+        .css("color", feedback_color[this_index])
+        .html(feedback_array[this_index])[0].outerHTML;
     }
   } else {
     return "";
@@ -382,15 +436,19 @@ function isJSON(str) {
 }
 
 function likert_update(this_element){
-
   [row_no,item_name] = retrieve_row_no_item_name(this_element);
+  $(".row_"+row_no)
+    .removeClass("active")
+    .removeClass("btn-primary")
+    .addClass("btn-outline-primary");
+  $(this_element)
+    .removeClass("btn-outline-primary")
+    .addClass("btn-primary");
+  $("#survey_" + item_name + "_response").val(this_element.innerHTML);
+  $("#survey_" + item_name + "_value").val(this_element.value);
 
-  $(".row_"+row_no).removeClass("active");
-  $(".row_"+row_no).removeClass("btn-primary");
-  $(".row_"+row_no).addClass("btn-outline-primary");
-  $(this_element).removeClass("btn-outline-primary");
-  $(this_element).addClass("btn-primary");
-  $("#survey_"+item_name+"_response").val(this_element.value);
+
+
   response_check(this_element);
 }
 
@@ -476,12 +534,20 @@ function process_question(row, row_no){
 
     [feedback_array,feedback_color] = get_feedback(row);
 
+    var survey_id = "survey_" + row["item_name"].toLowerCase();
 
-    question_td = '<input type="hidden" class="response_element row_' + row_no + '" id="survey_' +
-      row["item_name"].toLowerCase() +
-      '_response" name="survey_' +
-      row["item_name"].toLowerCase() +
-      '_response" value="">';
+    question_td = $("<input>")
+      .attr("type", "hidden")
+      .addClass("response_element row_" + row_no)
+      .prop("id",   survey_id + "_response")
+      .prop("name", survey_id + "_response")
+      .val("")[0].outerHTML +
+      $("<input>")
+        .attr("type", "hidden")
+        .addClass("response_element row_" + row_no)
+        .prop("id",   survey_id + "_value")
+        .prop("name", survey_id + "_value")
+        .val("")[0].outerHTML;
 
     /*
     * Survey settings
@@ -513,7 +579,7 @@ function process_question(row, row_no){
     } else {
       switch(row["type"].toLowerCase()){
         case "page_start":
-          var tabs_html = $("#survey_tabs").html();
+          //var tabs_html = $("#survey_tabs").html();
           if(settings.tab_hor_vert == "horizontal"){
             span_div = "span";
           } else if(settings.tab_hor_vert == "vertical"){
@@ -534,14 +600,24 @@ function process_question(row, row_no){
           } else {
             var vert_btn_block = "";
           }
-
-          tabs_html +=  '<'+span_div+' class="btn-group-toggle" data-toggle="buttons">'+
-            '<label id="tab_' + survey_obj.tabs + '_button" class="btn show_tab '+active_button+' '+vert_btn_block+'">'+
-              '<input type="checkbox" checked autocomplete="off">'+ row['text'] +
-            '</label>'+
-          '</'+span_div+'>';
-
-          $("#survey_tabs").html(tabs_html);
+          $("#survey_tabs").append(
+            $("<" + span_div + ">")
+              .addClass("btn-group-toggle")
+              .attr("data-toggle", "buttons")
+              .append(
+                $("<label>")
+                  .addClass("btn")
+                  .addClass("show_tab")
+                  .html(row["text"])
+                  .prop("id", "tab_" + survey_obj.tabs + "_button")
+                  .append(
+                    $("<input>")
+                      .attr("autocomplete", "off")
+                      .attr("checked", true)
+                      .attr("type", "checkbox")
+                  )
+              )[0].outerHTML
+          );
 
           page_break_indexes = [];
           survey_obj.data.forEach(function(row,this_index){
@@ -551,9 +627,34 @@ function process_question(row, row_no){
           });
 
           if(survey_obj.tabs > 0){
-            question_td += "</td><td></td></tr></table></div><div class='survey_page' id='tab_" + survey_obj.tabs + "' style='display:none'><table id='table_" + survey_obj.tabs + "' class='table_break'><tr>";
+            question_td
+              .append(
+                $("<div>")
+                  .addClass("survey_page")
+                  .css("display", "none")
+                  .prop("id", "tab_" + survey_obj.tabs)
+              )
+              .append(
+                $("<table>")
+                  .addClass("table_break")
+                  .prop("id", "table_" + survey_obj.tabs)
+                  .append("<tr>")
+              );
+
           } else {
-            question_td += "</td><td></td></tr></table><div class='survey_page' id='tab_"+survey_obj.tabs+"' ><table id='table_"+survey_obj.tabs+"' class='table_break'><tr>";
+
+            question_td
+              .append(
+                $("<div>")
+                  .addClass("survey_page")
+                  .prop("id", "tab_" + survey_obj.tabs)
+              )
+              .append(
+                $("<table>")
+                  .addClass("table_break")
+                  .prop("id", "table_" + survey_obj.tabs)
+                  .append("<tr>")
+              );
           }
           break;
         case "checkbox":
@@ -599,7 +700,19 @@ function process_question(row, row_no){
         break;
 
         case "report_score":
-            question_td += "<input disabled class='form-control score_" + row["item_name"] + " "+row["item_name"]+"_item row_"+row_no+"' type='text' name='survey_"+row['item_name'].toLowerCase()+"'>";
+            question_td.append(
+              $("<input>")
+                .addClass("form-control")
+                .addClass("score_" + row["item_name"])
+                .addClass(row["item_name"] + "_item")
+                .addClass("row_" + row_no)
+                .attr("disabled", true)
+                .attr("type", "text")
+                .prop(
+                  "name",
+                  "survey_" + row["item_name"].toLowerCase()
+                )
+            )
         break;
 
         case "text":
@@ -608,7 +721,22 @@ function process_question(row, row_no){
       }
     }
     if(feedback_array){
-        question_td += "<button class='btn btn-outline-info feedback_btn "+row["item_name"]+"_item row_"+row_no+"' id='reveal_"+row["item_name"].toLowerCase()+"_feedback' onclick='reveal_answers(this)'>Show</button>";
+        question_td.append(
+          $("<button>")
+            .addClass("btn")
+            .addClass("btn-outline-info")
+            .addClass("feedback_btn")
+            .addClass(row["item_name"] + "_item")
+            .addClass("row_" + row_no)
+            .html("Show")
+            .on("click", function(){
+              reveal_answers(this)
+            })
+            .prop(
+              "id",
+              "reveal_" + row["item_name"].toLowerCase() + "_feedback"
+            )
+        )
     }
   }
   if(typeof(row["type"])== "undefined"){
@@ -624,32 +752,64 @@ function process_question(row, row_no){
 			if(typeof(row["side_by_side"]) !== "undefined" &&
 				 row["side_by_side"].toLowerCase() == "yes"){
 
-				var row_html="<td class='text-primary' id='survey_"+row["item_name"].toLowerCase().replace(" ","_")+"_question' style='width:"+row_ques_perc+"; text-align:right'>"+row["text"]+"</td><td>"+question_td+"</label></td>";
-
+        var row_html = $("<td>")
+          .addClass("text-primary")
+          .css("text-align", "right")
+          .css("width", row_ques_perc)
+          .html(row["text"])
+          .prop(
+            "id",
+            "survey_" +
+              row["item_name"]
+                .toLowerCase()
+                .replace(" ","_") +
+              "_question"
+          )[0].outerHTML +
+          $("<td>").html(question_td)[0].outerHTML;
 			} else {
-
-				var row_html = "<tr>" +
-						"<td colspan='2'>" +
-							row["text"] +
-						"</td>" +
-					"</tr>" +
-					"<tr>" +
-						"<td colspan='2' align='center'>" +
-							question_td +
-						"</td>" +
-					"</tr>";
+        var row_html = $("<tr>")
+          .append(
+            $("<td>")
+              .attr("colspan", 2)
+              .html(row["text"])
+          )[0].outerHTML +
+          $("<tr>")
+            .append(
+              $("<td>")
+                .attr("colspan", 2)
+                .attr("align", "center")
+                .html(question_td)
+            )[0].outerHTML;
 			}
-
-
     } else if(row["type"].toLowerCase()=="google_slide") {
-      var row_html="<td colspan='2'>"+row["text"]+"</label></td>";
+      var row_html = $("<td>")
+        .attr("colspan", 2)
+        .html(row["text"])[0].outerHTML;
+
+      //var row_html="<td colspan='2'>"+row["text"]+"</label></td>";
     } else if(typeof(row["no_text"]) !== "undefined" && row["no_text"] == "on"){
-      var row_html="<td colspan='2'>"+question_td+"</td>";
+      var row_html = $("<td>")
+        .attr("colspan", 2)
+        .html(question_td)[0].outerHTML;
+
+      //var row_html="<td colspan='2'>"+question_td+"</td>";
     } else {
       if(row['text'].toLowerCase() == "page_start" | row['type'].toLowerCase() == "page_start"){
         row_html = question_td;
       } else {
-        var row_html="<td class='text-primary' id='survey_"+row["item_name"].toLowerCase().replace(" ","_")+"_question' style='width:"+row_ques_perc+"; text-align:right'>"+row["text"]+"</td><td>"+question_td+"</label></td>";
+        var row_html = $("<td>")
+          .addClass("text-primary")
+          .css("text-align", "right")
+          .css("width", row_ques_perc)
+          .html(row["text"])
+          .prop(
+            "id",
+            "survey_" +
+              row["item_name"].toLowerCase().replace(" ","_") +
+              "_question"
+          )[0].outerHTML +
+          $("<td>")
+            .html(question_td)[0].outerHTML
       }
     }
     if(typeof(row["optional"]) !== "undefined"){
@@ -734,20 +894,18 @@ function response_check(submitted_element){
   switch(submitted_element.type){
     case "checkbox":
 
-
-
-
       var checked_responses = $("[name='"+submitted_element.name+"']:checked");
       if(checked_responses.length){ //i.e. more than 0
         var values = [];
         for(var i = 0; i < checked_responses.length; i++){
           values.push(checked_responses[i].value);
         }
-        $("#"+submitted_element.name+"_response").val(JSON.stringify(values));
+        $("#"+submitted_element.name+"_response").val(
+          JSON.stringify(values)
+        );
       } else {
         $("#"+submitted_element.name+"_response").val("");
       }
-
       break;
 
       case "button":
@@ -785,33 +943,36 @@ function retrieve_row_no_item_name(this_element){
 }
 
 function reveal_answers(this_element){
-  var this_response = $("#"+this_element.id.replace("reveal_","survey_").replace("_feedback","_response")).val();
+  var this_response = $("#" + this_element.id.replace(
+    "reveal_",
+    "survey_"
+  ).replace("_feedback","_response")).val();
   response_present = this_response == "" ? false : true;
 
   if(settings.feedback_before_response == false && response_present == false){
     bootbox.alert("Please respond before trying reveal the feedback.")
   } else {
-    if($("#"+this_element.id).hasClass("btn-outline-info")){
-      $("."+this_element.id.replace("reveal_","")).show(500);
+    if($("#" + this_element . id).hasClass("btn-outline-info")){
+      $("." + this_element.id.replace("reveal_","")).show(500);
       if(settings.lock_after_feedback){
         var item_class = this_element.id.replace("_feedback","_item").replace("reveal_","");
         $("."+item_class).prop("disabled",true);
         document.getElementsByClassName(item_class).title = "The person creating this content has set it so that your answers are locked in once you have chosen to see the feedback";
-        $("#"+this_element.id).addClass("btn-info");
-        $("#"+this_element.id).removeClass("btn-outline-info");
-        $("#"+this_element.id).html("Locked");
+        $("#"+this_element.id).addClass("btn-info")
+          .removeClass("btn-outline-info")
+          .html("Locked");
         document.getElementById(this_element.id).title = 'The person creating this content has set it so that your answers are locked in once you have chosen to see the feedback';
         $("#"+this_element.id).addClass("disabled");
       } else {
-        $("#"+this_element.id).html("Hide");
-        $("#"+this_element.id).removeClass("btn-outline-info");
-        $("#"+this_element.id).addClass("btn-info");
+        $("#"+this_element.id).html("Hide")
+          .removeClass("btn-outline-info")
+          .addClass("btn-info");
       }
     } else {
-      $("#"+this_element.id).html("Show");
       $("."+this_element.id.replace("reveal_","")).hide(500);
-      $("#"+this_element.id).addClass("btn-outline-info");
-      $("#"+this_element.id).removeClass("btn-info");
+      $("#"+this_element.id).html("Show")
+        .addClass("btn-outline-info")
+        .removeClass("btn-info");
     }
   }
 }
@@ -823,10 +984,9 @@ function row_check(type, row){
 		  typeof(row["type"]) !== "undefined" &&
 		  row['text'].toLowerCase() == "page_break" |
       row['type'].toLowerCase() == "page_break"
-    )
-
+    );
   } else if(type=""){
-
+    //do nothing
   }
 }
 
@@ -876,7 +1036,7 @@ function update_score(){
 
     questions.forEach(function(row_no){
       var item = survey_obj.data[row_no].item_name.toLowerCase();
-      var this_response = $("#survey_" + item + "_response").val();
+      var this_response = $("#survey_" + item + "_value").val();
       var normal_reverse = this_scale.questions[row_no];
 
 
@@ -918,17 +1078,17 @@ function update_score(){
       }
     });
     if(complete_score){
-      $(".score_"+scale).addClass("bg-success");
-      $(".score_"+scale).removeClass("bg-danger");
-      $(".score_"+scale).addClass("text-light");
-      document.getElementsByClassName("score_"+scale).title = 'All relevant questions have been answered';
+      $(".score_"+scale).addClass("bg-success")
+        .removeClass("bg-danger")
+        .addClass("text-light")
+        .prop("title", "All relevant questions have been answered");
     } else {
-      $(".score_"+scale).removeClass("text-success");
-      $(".score_"+scale).addClass("bg-danger");
-      $(".score_"+scale).addClass("text-light");
-      document.getElementsByClassName("score_"+scale).title = 'At least one relevant questions has NOT been answered';
+      $(".score_"+scale).removeClass("text-success")
+        .addClass("bg-danger")
+        .addClass("text-light")
+        .prop("title","At least one relevant questions has NOT been answered");
     }
-    $(".score_"+scale).val(this_score);
+    $(".score_" + scale).val(this_score);
   });
 }
 
@@ -1166,9 +1326,9 @@ function write(type, row){
       side_text = side_text.map(function(this_side){
         var this_span = $("<span>");
             this_span.css("width", side_width)
-                     .css("padding", "20px")
-                     .addClass("text-primary")
-                     .html("<b>" + this_side + "</b>");
+              .css("padding", "20px")
+              .addClass("text-primary")
+              .html("<b>" + this_side + "</b>");
         return this_span[0].outerHTML;
       });
     } else {
