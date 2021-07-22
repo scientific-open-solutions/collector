@@ -24,10 +24,10 @@ function createWindow () {
         'Content-Security-Policy': [
           //"default-src 'self'",
           //"script-src 'self'",
-          "connect-src 'self'",
+          //"connect-src 'self'",
           //"img-src 'self'",
           //"style-src 'self'",
-          "font-src 'self'"
+          //"font-src 'self'"
         ]
       }
     });
