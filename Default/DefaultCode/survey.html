@@ -538,13 +538,13 @@ function process_question(row, row_no){
 
     question_td = $("<input>")
       .attr("type", "hidden")
-      .addClass("response_element row_" + row_no)
+      .addClass("response_element")
+      .addClass("row_" + row_no)
       .prop("id",   survey_id + "_response")
       .prop("name", survey_id + "_response")
       .val("")[0].outerHTML +
       $("<input>")
         .attr("type", "hidden")
-        .addClass("response_element row_" + row_no)
         .prop("id",   survey_id + "_value")
         .prop("name", survey_id + "_value")
         .val("")[0].outerHTML;
