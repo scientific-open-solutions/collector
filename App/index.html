@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <head>
   <link rel="shortcut icon" type="image/x-icon" href="../logos/collector.ico" />
-  <meta charset="utf-8">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta charset="utf-8" />
+  <meta
+    http-equiv="Cache-Control"
+    content="no-cache, no-store, must-revalidate"
+  />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Collector</title>
@@ -31,7 +34,10 @@
 
 -->
 
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
 
 <!--
 	Publicly available javascript packages
@@ -46,71 +52,68 @@
 <script src="libraries/ace-master/ext-language_tools.js"></script>
 <script src="Handsontables/handsontables.full.js"></script>
 
+<script src="libraries/collector/MobileCheck.js"></script>
+
 <style>
-.citation_info{
-  padding:10px;
-}
-.content_name{
-  font-size:0px;
-}
-.logo{
-  height:30px;
-  width:30px;
-}
+  .citation_info {
+    padding: 10px;
+  }
+  .content_name {
+    font-size: 0px;
+  }
+  .logo {
+    height: 30px;
+    width: 30px;
+  }
 
-#data_storage_logo,
-#everything{
-  display: none;
-}
-#github_logo{
-  display:none;
-}
-#loading_spinner{
-  position: absolute;
-  top:0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin:auto;
-  width: 30rem;
-  height: 30rem;
-}
+  #data_storage_logo,
+  #everything {
+    display: none;
+  }
+  #github_logo {
+    display: none;
+  }
+  #loading_spinner {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 30rem;
+    height: 30rem;
+  }
 
+  /* custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 20px;
+  }
 
-/* custom scrollbar */
-::-webkit-scrollbar {
-  width: 20px;
-}
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
 
-::-webkit-scrollbar-track {
-  background-color: transparent;
-}
+  ::-webkit-scrollbar-thumb {
+    background-color: #006688;
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box;
+  }
 
-::-webkit-scrollbar-thumb {
-  background-color: #006688;
-  border-radius: 20px;
-  border: 6px solid transparent;
-  background-clip: content-box;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: #a8bbbf;
-}
-
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #a8bbbf;
+  }
 </style>
 
 <script>
-Collector.electron.fs.list_projects();
+  Collector.electron.fs.list_projects();
 </script>
 
 <div class="spinner-border text-primary" role="status" id="loading_spinner">
   <span class="sr-only"></span>
 </div>
 
-
-
 <div id="everything">
-
   <!--
     Default files/objects
   -->
@@ -118,42 +121,54 @@ Collector.electron.fs.list_projects();
   <!--
   	Publicly available css packages
   -->
-  <link rel="stylesheet" type="text/css" href="libraries/bootstrapCollector.css">
-  <link rel="stylesheet" type="text/css" href="libraries/bootbox.fix.css">
-  <link rel="stylesheet" type="text/css" href="libraries/bootstrap-icons.css">
-
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="libraries/bootstrapCollector.css"
+  />
+  <link rel="stylesheet" type="text/css" href="libraries/bootbox.fix.css" />
+  <link rel="stylesheet" type="text/css" href="libraries/bootstrap-icons.css" />
 
   <!--
   	handsontable core code and collector specific code
   -->
   <div id="handsontable_html"></div>
   <script>
-  $("#handsontable_html").load("Handsontables/CellEditor.html");
+    $("#handsontable_html").load("Handsontables/CellEditor.html");
   </script>
-  <link rel="stylesheet" type="text/css" href="Handsontables/handsontables.full.css">
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="Handsontables/handsontables.full.css"
+  />
 
   <!--
   	Collector specific files
   -->
-  <script src= "Handsontables/HandsontablesFunctions.js"></script>
-  <script src= "Tests/RunTests.js"></script>
-  <script src= "libraries/collector/BrowserCheck.js"></script>
-  <script src= "CollectorMap.js"></script>
-  <script src= "libraries/collector/SessionCheck.js"></script>
+  <script src="Handsontables/HandsontablesFunctions.js"></script>
+  <script src="Tests/RunTests.js"></script>
+  <script src="libraries/collector/BrowserCheck.js"></script>
+  <script src="CollectorMap.js"></script>
+  <script src="libraries/collector/SessionCheck.js"></script>
   <!--
     Collector Specific files
   -->
 
   <script>
-  $.get("../Default/master.json", function(this_json){
-    default_master = this_json;
-  });
+    $.get("../Default/master.json", function (this_json) {
+      default_master = this_json;
+    });
   </script>
 
-  <script> collector_map = this_map(''); </script>
-  <link rel="stylesheet" type="text/css" href="Style.css">
+  <script>
+    collector_map = this_map("");
+  </script>
+  <link rel="stylesheet" type="text/css" href="Style.css" />
 
-  <nav class="navbar fixed-top navbar-light bg-primary navbar-expand-lg" id="top_navbar">
+  <nav
+    class="navbar fixed-top navbar-light bg-primary navbar-expand-lg"
+    id="top_navbar"
+  >
     <div id="logo_div"></div>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav mr-auto">
@@ -161,13 +176,28 @@ Collector.electron.fs.list_projects();
       </ul>
     </div>
 
-    <button onclick="window.open('https://github.com/scientific-open-solutions/collector/issues', '_blank')" class="top_icon btn btn-primary bi-exclamation-triangle" id="report_bug_link" style="font-size:20px;">
+    <button
+      onclick="window.open('https://github.com/scientific-open-solutions/collector/issues', '_blank')"
+      class="top_icon btn btn-primary bi-exclamation-triangle"
+      id="report_bug_link"
+      style="font-size: 20px"
+    >
       <span class="content_name">Report Bug/Issue</span>
     </button>
-    <button onclick="window.open('https://github.com/scientific-open-solutions/collector/discussions', '_blank')" class="top_icon btn btn-primary bi-chat-dots" id="forum_link" style="font-size:20px;">
+    <button
+      onclick="window.open('https://github.com/scientific-open-solutions/collector/discussions', '_blank')"
+      class="top_icon btn btn-primary bi-chat-dots"
+      id="forum_link"
+      style="font-size: 20px"
+    >
       <span class="content_name">Forum</span>
     </button>
-    <button onclick="window.open('https://docs.google.com/document/d/1SKYIJF1dAjMDS6EHUIwfZm2KQVOzx17S6LbU_oSGxdE/edit?usp=sharing', '_blank')" class="top_icon btn btn-primary bi-info-circle" id="documentation_link" style="font-size:20px;">
+    <button
+      onclick="window.open('https://docs.google.com/document/d/1SKYIJF1dAjMDS6EHUIwfZm2KQVOzx17S6LbU_oSGxdE/edit?usp=sharing', '_blank')"
+      class="top_icon btn btn-primary bi-info-circle"
+      id="documentation_link"
+      style="font-size: 20px"
+    >
       <span class="content_name">Documentation</span>
     </button>
     <!--
@@ -175,16 +205,32 @@ Collector.electron.fs.list_projects();
       <span class='content_name'>Security - encryption and attack vectors??</span>
     </button>
   -->
-    <button class="top_icon btn btn-primary bi-heart" id="show_contributors" style="font-size:20px;">
+    <button
+      class="top_icon btn btn-primary bi-heart"
+      id="show_contributors"
+      style="font-size: 20px"
+    >
       <span class="content_name">Contributors</span>
     </button>
-    <button class="top_icon btn btn-primary bi-geo-alt" id="show_maps" style="font-size:20px;">
+    <button
+      class="top_icon btn btn-primary bi-geo-alt"
+      id="show_maps"
+      style="font-size: 20px"
+    >
       <span class="content_name">Maps</span>
     </button>
-    <button class="top_icon btn btn-primary bi-chat-square-quote" id="show_citations" style="font-size:20px;">
+    <button
+      class="top_icon btn btn-primary bi-chat-square-quote"
+      id="show_citations"
+      style="font-size: 20px"
+    >
       <span class="content_name">Citations</span>
     </button>
-    <button class="top_icon btn btn-outline-primary bg-white bi-life-preserver" id="help_btn" style="margin:2px; font-weight:bold">
+    <button
+      class="top_icon btn btn-outline-primary bg-white bi-life-preserver"
+      id="help_btn"
+      style="margin: 2px; font-weight: bold"
+    >
       <span class="content_name">Help</span>
     </button>
     <button class="top_icon btn btn-primary bi-server" id="data_storage_logo">
@@ -196,7 +242,7 @@ Collector.electron.fs.list_projects();
     <button class="btn btn-primary bi-power" id="power_btn"></button>
   </nav>
   <div id="github_div"></div>
-  <table id="content_table" style="width:100%">
+  <table id="content_table" style="width: 100%">
     <tr>
       <td id="content_area"></td>
       <td id="help_area" class="help_class"></td>

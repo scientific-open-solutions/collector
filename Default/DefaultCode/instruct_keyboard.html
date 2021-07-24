@@ -20,33 +20,33 @@
 */
 -->
 <style>
-#instruct_text{
-  margin:auto;
-  width:500px;
-  padding:50px;
-  max-height:600px;
-  text-align: center;  
-}
-#trial_contents{
-  position: absolute;
-  top:0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin:auto;
-  width:600;
-  height:600;
-}
-* {
-cursor: none;
-}
+  #instruct_text {
+    margin: auto;
+    width: 500px;
+    padding: 50px;
+    max-height: 600px;
+    text-align: center;
+  }
+  #trial_contents {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 600;
+    height: 600;
+  }
+  * {
+    cursor: none;
+  }
 </style>
 <div id="trial_contents">
   <div id="instruct_text">{{text}}</div>
 </div>
 
 <script>
-$(window).bind('keydown', function(event) {
-  Phase.submit();
-});
+  $(window).bind("keydown", function (event) {
+    Phase.submit();
+  });
 </script>

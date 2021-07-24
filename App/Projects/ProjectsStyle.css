@@ -19,52 +19,69 @@
 */
 
 #exp_data > tbody > tr > td {
-  text-align: center; padding: 15px;
+  text-align: center;
+  padding: 15px;
 }
-#help_area{
-	!display:none;
+#help_area {
+  !display: none;
 }
-#sim_navbar{
+#sim_navbar {
   padding: 0px;
 }
-#trialtype_editor_td{
-	vertical-align:top;
+#trialtype_editor_td {
+  vertical-align: top;
 }
-#trial_type_data > div > div{
-  display:none;
+#trial_type_data > div > div {
+  display: none;
 }
 
 .account_info {
-	!display:none;
+  !display: none;
 }
-.custom_table { display: none; border-collapse: collapse; }
-.custom_table > div { display: table-row; }
-.custom_table > div > div { display: table-cell; padding: 2px 4px; max-width: 320px; vertical-align: top; }
+.custom_table {
+  display: none;
+  border-collapse: collapse;
+}
+.custom_table > div {
+  display: table-row;
+}
+.custom_table > div > div {
+  display: table-cell;
+  padding: 2px 4px;
+  max-width: 320px;
+  vertical-align: top;
+}
 .custom_table > div > .textareaDiv {
-	padding: 10px;
-	width: 500px;
-	max-width: 1200px;
-	height: 20em;
+  padding: 10px;
+  width: 500px;
+  max-width: 1200px;
+  height: 20em;
 }
 .custom_table > div > .textareaDiv > textarea {
   padding: 5px;
   width: 1300px;
   height: 50em;
   box-sizing: border-box;
-  border: 0; margin: 0;
+  border: 0;
+  margin: 0;
   vertical-align: bottom;
-  background-color: #E0E0E0;
+  background-color: #e0e0e0;
 }
-.custom_table > div:not(.headers):hover { background-color: #CFC; }
-.custom_table > div.headers > div { text-align: center; font-weight: bold; }
+.custom_table > div:not(.headers):hover {
+  background-color: #cfc;
+}
+.custom_table > div.headers > div {
+  text-align: center;
+  font-weight: bold;
+}
 .fixed-top-2 {
-	margin-top: 50px;
+  margin-top: 50px;
   height: 42px;
 }
-.help_class{
-	width:300px;
+.help_class {
+  width: 300px;
 }
-.logo{
-	height:20px;
-	width:20px;
+.logo {
+  height: 20px;
+  width: 20px;
 }

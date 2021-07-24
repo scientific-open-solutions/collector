@@ -20,31 +20,37 @@
 */
 -->
 <style>
-#instruct_text{
-  margin:auto;
-  width:500px;
-  padding:50px;
-  max-height:600px;
-  text-align: center;  
-}
-#proceed_button{
-  position:absolute;
-  right: 20px;
-}
-#trial_contents{
-  position: absolute;
-  top:0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin:auto;
-  width:600;
-  height:600;
-}
+  #instruct_text {
+    margin: auto;
+    width: 500px;
+    padding: 50px;
+    max-height: 600px;
+    text-align: center;
+  }
+  #proceed_button {
+    position: absolute;
+    right: 20px;
+  }
+  #trial_contents {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 600;
+    height: 600;
+  }
 </style>
 <div id="trial_contents">
   <div id="instruct_text">{{text}}</div>
   <div>
-    <button class="btn btn-primary" id="proceed_button" onclick="Phase.submit()">Proceed</button>
+    <button
+      class="btn btn-primary"
+      id="proceed_button"
+      onclick="Phase.submit()"
+    >
+      Proceed
+    </button>
   </div>
 </div>

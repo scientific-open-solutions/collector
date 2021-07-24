@@ -22,19 +22,31 @@
 <script src="Projects/SheetEditor/DefaultProject.js"></script>
 
 <div class="modal" tabindex="-1" role="dialog" id="upload_experiment_modal">
-
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Upload a new project</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close_upload_experiment_modal">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          id="close_upload_experiment_modal"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="custom-file">
-          <input type="file" class="custom-file-input" id="upload_project_input" aria-describedby="upload_project_input_addon">
-          <label class="custom-file-label" for="upload_project_input">Upload Project</label>
+          <input
+            type="file"
+            class="custom-file-input"
+            id="upload_project_input"
+            aria-describedby="upload_project_input_addon"
+          />
+          <label class="custom-file-label" for="upload_project_input"
+            >Upload Project</label
+          >
         </div>
         <!-- Not sure it makes sense to have default projects?
         <p>
@@ -67,65 +79,79 @@
 </div>
 
 <script>
-$("#close_upload_experiment_modal").on("click",function(){
-  $("#upload_experiment_modal").hide();
-});
+  $("#close_upload_experiment_modal").on("click", function () {
+    $("#upload_experiment_modal").hide();
+  });
 </script>
 
 <div id="load_toolbar">
-	<table>
-		<tr>
-			<td>
-				<button type="button" id="new_project_button" class="btn btn-primary">New</button>
-				<button type="file" id="upload_experiment_button" class="btn btn-primary">↑</button>
-			</td>
-			<td>
-        <select id='project_list' class='form-select'></select>
-			</td>
-			<td>
-				<span id="project_inputs" style="display:none">
-					<button type="button" id="download_project_button" class="btn btn-primary">↓</button>
-					<button id="save_btn"       class="btn btn-primary">Save</button>
-					<button id="rename_proj_btn" class="btn btn-primary">Rename</button>
-					<button id="delete_proj_btn" class="btn btn-primary">Delete</button>
+  <table>
+    <tr>
+      <td>
+        <button type="button" id="new_project_button" class="btn btn-primary">
+          New
+        </button>
+        <button
+          type="file"
+          id="upload_experiment_button"
+          class="btn btn-primary"
+        >
+          ↑
+        </button>
+      </td>
+      <td>
+        <select id="project_list" class="form-select"></select>
+      </td>
+      <td>
+        <span id="project_inputs" style="display: none">
+          <button
+            type="button"
+            id="download_project_button"
+            class="btn btn-primary"
+          >
+            ↓
+          </button>
+          <button id="save_btn" class="btn btn-primary">Save</button>
+          <button id="rename_proj_btn" class="btn btn-primary">Rename</button>
+          <button id="delete_proj_btn" class="btn btn-primary">Delete</button>
           <button id="open_proj_folder" class="btn btn-primary">Folder</button>
-					<button id="run_btn"        class="btn btn-primary">Run</button>
-				</span>
-			</td>
-		</tr>
-	</table>
+          <button id="run_btn" class="btn btn-primary">Run</button>
+        </span>
+      </td>
+    </tr>
+  </table>
 </div>
 
 <script>
+  // CTRL key shortcuts
+  /////////////////////
 
+  var keys = {};
+  $(document).keydown(function (e) {
+    keys[e.which] = true;
+  });
 
-// CTRL key shortcuts
-/////////////////////
-
-var keys = {};
-$(document).keydown(function (e) {
-	keys[e.which] = true;
-});
-
-$(window).bind('keydown', function(event) {
-	if(event.originalEvent.code == "Escape"){
-		if($("#cell_editor_div").is(":visible")){
-			this_sheet.setDataAtCell(this_selection.start.row,
-															 this_selection.start.col,
-															 cell_editor.getValue());
-		}
-		$("#cell_editor_div").fadeOut();
-	}
-  if (event.ctrlKey || event.metaKey) {
-    switch (String.fromCharCode(event.which).toLowerCase()) {
-      case 's':
-        event.preventDefault();
-          $("#save_btn").click();
-        break;
+  $(window).bind("keydown", function (event) {
+    if (event.originalEvent.code == "Escape") {
+      if ($("#cell_editor_div").is(":visible")) {
+        this_sheet.setDataAtCell(
+          this_selection.start.row,
+          this_selection.start.col,
+          cell_editor.getValue()
+        );
+      }
+      $("#cell_editor_div").fadeOut();
     }
-  }
-});
-$(window).bind('keyup', function(event) {
-  delete keys[event.which];
-});
+    if (event.ctrlKey || event.metaKey) {
+      switch (String.fromCharCode(event.which).toLowerCase()) {
+        case "s":
+          event.preventDefault();
+          $("#save_btn").click();
+          break;
+      }
+    }
+  });
+  $(window).bind("keyup", function (event) {
+    delete keys[event.which];
+  });
 </script>

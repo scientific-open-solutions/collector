@@ -1,32 +1,32 @@
 <style>
-.image-wrapper {
-	width: 100%;
-	height: 100%;
-	background-color: #000;
-	border-radius: 50%;
-	margin: 0;
-	padding: 0;
-}
-.ppimg {
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	padding: 0;
-	display: block;
-	border-radius: 50%;
-}
+  .image-wrapper {
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    border-radius: 50%;
+    margin: 0;
+    padding: 0;
+  }
+  .ppimg {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: block;
+    border-radius: 50%;
+  }
 </style>
 
-
-
-<a class="btn btn-primary"
-	data-bs-toggle="collapse"
-	href="#contributors_table"
-	role="button"
-	aria-expanded="false"
-	aria-controls="contributors_table"
-	style="margin:2px; width:100%">
-		Contributors
+<a
+  class="btn btn-primary"
+  data-bs-toggle="collapse"
+  href="#contributors_table"
+  role="button"
+  aria-expanded="false"
+  aria-controls="contributors_table"
+  style="margin: 2px; width: 100%"
+>
+  Contributors
 </a>
 <div class="collapse" id="contributors_table">
   <div class="card card-body">
@@ -35,7 +35,16 @@
   </div>
 </div>
 
-<a class="btn btn-primary" data-bs-toggle="collapse" href="#packages_table" role="button" aria-expanded="false" aria-controls="packages_table" style="margin:2px; width:100%">Packages</a>
+<a
+  class="btn btn-primary"
+  data-bs-toggle="collapse"
+  href="#packages_table"
+  role="button"
+  aria-expanded="false"
+  aria-controls="packages_table"
+  style="margin: 2px; width: 100%"
+  >Packages</a
+>
 <div class="collapse" id="packages_table">
   <div class="card card-body">
     <div id="packages_div"></div>
@@ -43,55 +52,71 @@
 </div>
 
 <script>
-$.get("PopOuts/OpenSourcePackages.csv", function(result){
-  var packages = Collector.PapaParsed(result);
-  var contributors_html = "<table class='table'>" +
-    "<thead>" +
+  $.get("PopOuts/OpenSourcePackages.csv", function (result) {
+    var packages = Collector.PapaParsed(result);
+    var contributors_html =
+      "<table class='table'>" +
+      "<thead>" +
       "<tr>" +
-        '<th scope="col">Package</th>' +
-        '<th scope="col">Use</th>' +
-        '<th scope="col">Version</th>' +
+      '<th scope="col">Package</th>' +
+      '<th scope="col">Use</th>' +
+      '<th scope="col">Version</th>' +
       "</tr>";
-    "</thead>";
+    ("</thead>");
 
-    packages.forEach(function(row){
-      contributors_html += "<tr>" +
-        "<td>" + row.package + "</td>"+
-        "<td>" + row.use     + "</td>"+
-        "<td>" + row.version + "</td>" +
+    packages.forEach(function (row) {
+      contributors_html +=
+        "<tr>" +
+        "<td>" +
+        row.package +
+        "</td>" +
+        "<td>" +
+        row.use +
+        "</td>" +
+        "<td>" +
+        row.version +
+        "</td>" +
         "</tr>";
     });
     contributors_html += "</table>";
-  $("#packages_div").html(contributors_html);
-});
-
-$.get("PopOuts/hall_of_fame.csv",function(result){
-  var current_contributors = [
-    "Dr. Anthony Haffey",
-    "Dr. Kristian Tempelmans Plat",
-    "Nico Biagi"
-  ];
-
-  var table_data = Papa.parse(result, {
-    header:true,
-    skipEmptyLines:true
+    $("#packages_div").html(contributors_html);
   });
 
-  var table_html = "<table style='width:100%'><tbody>";
-  table_data.data.forEach(function(row){
-    if(current_contributors.indexOf(row.Name) !== -1){
-      tr_class = "class='bg-primary text-white'";
-    } else {
-      tr_class="";
-    }
-    table_html += "<tr " + tr_class + ">" +
-                      "<td><img class='ppimg' style='width:100px; height:100px;' src='../" + row.photo+ "'/></td>"+
-                      "<td>" + row.Name + "</td>" +
-                      "<td>" + row.Blurb + "</td>" +
-                    "</tr>";
+  $.get("PopOuts/hall_of_fame.csv", function (result) {
+    var current_contributors = [
+      "Dr. Anthony Haffey",
+      "Dr. Kristian Tempelmans Plat",
+      "Nico Biagi",
+    ];
 
+    var table_data = Papa.parse(result, {
+      header: true,
+      skipEmptyLines: true,
+    });
+
+    var table_html = "<table style='width:100%'><tbody>";
+    table_data.data.forEach(function (row) {
+      if (current_contributors.indexOf(row.Name) !== -1) {
+        tr_class = "class='bg-primary text-white'";
+      } else {
+        tr_class = "";
+      }
+      table_html +=
+        "<tr " +
+        tr_class +
+        ">" +
+        "<td><img class='ppimg' style='width:100px; height:100px;' src='../" +
+        row.photo +
+        "'/></td>" +
+        "<td>" +
+        row.Name +
+        "</td>" +
+        "<td>" +
+        row.Blurb +
+        "</td>" +
+        "</tr>";
+    });
+    table_html += "</tbody></table>";
+    $("#contributors_div").html(table_html);
   });
-  table_html += "</tbody></table>";
-  $("#contributors_div").html(table_html);
-});
 </script>

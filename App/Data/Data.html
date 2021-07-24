@@ -21,79 +21,100 @@
 -->
 
 <style>
-#data_script_editor{
-	height:500px;
-}
+  #data_script_editor {
+    height: 500px;
+  }
 
-#local_data_btn{
-  display:none;
-}
+  #local_data_btn {
+    display: none;
+  }
 
+  .data_navbar_input,
+  .delete_server_data_btn,
+  .download_server_data_btn,
+  .delete_storage_data_btn,
+  .download_storage_data_btn,
+  .delete_backup_data_btn,
+  .download_backup_data_btn,
+  .delete_data_btn,
+  .download_data_btn {
+    margin: 2px;
+  }
 
-.data_navbar_input,
-.delete_server_data_btn,
-.download_server_data_btn,
-.delete_storage_data_btn,
-.download_storage_data_btn,
-.delete_backup_data_btn,
-.download_backup_data_btn,
-.delete_data_btn,
-.download_data_btn{
-  margin:2px;
-}
-
-.key_textarea{
-  width:500px;
-  height:100px;
-}
-
+  .key_textarea {
+    width: 500px;
+    height: 100px;
+  }
 </style>
-
 
 <script src="libraries/tweetnacl.js"></script>
 <script src="libraries/tweetnacl-utils.js"></script>
 <script src="libraries/crypto-js.min.js"></script>
 
-
 <nav class="navbar navbar-primary bg-white fixed-top fixed-top-2">
-	<table>
-		<tr>
-			<td>
-		    <button class="btn btn-primary data_navbar_input" id="js_decrypt_btn">Decrypt file(s)</button>
-			</td>
-			<td>
-		    <input class="data_navbar_input" type="file" id="fileToLoad" style="display:none" multiple>
-			</td>
-			<td>
-		    <button class="btn btn-primary data_navbar_input" onclick="encrypt_obj.change_password()">Change password</button>
-			</td>
-			<td>
-		    <button class="btn btn-primary data_navbar_input" id="google_script_btn">Google Script</button>
-			</td>
-			<td>
-		    <button class="btn btn-primary data_navbar_input" id="local_data_btn">Local Data</button>
-			</td>
-			<td>
-				<input class="form-control data_navbar_input" id="local_data_folder" readonly onClick="this.select();">
-			</td>
-			<td>
-				<button class="btn btn-primary data_navbar_input" id="change_local_data_btn">Change folder</button>
-			</td>
-		</tr>
-	</table>
-</nav>
-
-
-<br><br><br><br><br>
-<div>
   <table>
     <tr>
       <td>
-        Your Public Key
+        <button class="btn btn-primary data_navbar_input" id="js_decrypt_btn">
+          Decrypt file(s)
+        </button>
       </td>
       <td>
-        Your encrypted private key
+        <input
+          class="data_navbar_input"
+          type="file"
+          id="fileToLoad"
+          style="display: none"
+          multiple
+        />
       </td>
+      <td>
+        <button
+          class="btn btn-primary data_navbar_input"
+          onclick="encrypt_obj.change_password()"
+        >
+          Change password
+        </button>
+      </td>
+      <td>
+        <button
+          class="btn btn-primary data_navbar_input"
+          id="google_script_btn"
+        >
+          Google Script
+        </button>
+      </td>
+      <td>
+        <button class="btn btn-primary data_navbar_input" id="local_data_btn">
+          Local Data
+        </button>
+      </td>
+      <td>
+        <input
+          class="form-control data_navbar_input"
+          id="local_data_folder"
+          readonly
+          onClick="this.select();"
+        />
+      </td>
+      <td>
+        <button
+          class="btn btn-primary data_navbar_input"
+          id="change_local_data_btn"
+        >
+          Change folder
+        </button>
+      </td>
+    </tr>
+  </table>
+</nav>
+
+<br /><br /><br /><br /><br />
+<div>
+  <table>
+    <tr>
+      <td>Your Public Key</td>
+      <td>Your encrypted private key</td>
     </tr>
     <tr>
       <td>
@@ -106,25 +127,25 @@
   </table>
 </div>
 
-
-<hr>
+<hr />
 <div id="data_management_login">
   <div class="form-group row">
     <label for="data_user_email" class="col-sm-2 col-form-label">Email</label>
     <div class="col-sm-10">
-      <input type="email" class="form-control" id="data_user_email">
+      <input type="email" class="form-control" id="data_user_email" />
     </div>
   </div>
   <div class="form-group row">
-    <label for="data_user_password" class="col-sm-2 col-form-label">Password</label>
+    <label for="data_user_password" class="col-sm-2 col-form-label"
+      >Password</label
+    >
     <div class="col-sm-10">
-      <input type="password" class="form-control" id="data_user_password">
+      <input type="password" class="form-control" id="data_user_password" />
     </div>
   </div>
-
 </div>
 <div id="select_server"></div>
-<hr>
+<hr />
 
 <button class="btn btn-primary" id="list_data_btn">Check my data</button>
 <table class="table">
@@ -141,7 +162,7 @@
       <td><span id="used_server_space"></span></td>
       <td><span id="max_server_space"></span></td>
     </tr>
-		<!--
+    <!--
     <tr class="text-success">
       <th scope="row">Storage (long term)</th>
       <td><span id="used_storage_space"></span></td>
@@ -152,11 +173,10 @@
       <td><span id="used_backup_space"></span></td>
       <td><span id="max_backup_space"></span></td>
     </tr>
-		-->
-  </tbody>
+		--></tbody>
 </table>
 
-<hr>
+<hr />
 
 <div id="server_data"></div>
 

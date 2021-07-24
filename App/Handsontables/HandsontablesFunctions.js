@@ -20,346 +20,385 @@
 var this_sheet;
 var this_selection;
 function isPhaseTypeHeader(colHeader) {
-	var isPhaseTypeCol = false;
-  if (colHeader === 'trial type') isPhaseTypeCol = true;
-  if (   colHeader.substr(0, 5).toLowerCase() === 'post '
-		&& colHeader.substr(-11)  === ' trial type'
-	) {
-		postN = colHeader.substr(5, colHeader.length - 16);
-		postN = parseInt(postN);
-		if (!isNaN(postN) && postN != 0) {
-			isPhaseTypeCol = true;
-		}
-	}
-	return isPhaseTypeCol;
+  var isPhaseTypeCol = false;
+  if (colHeader === "trial type") isPhaseTypeCol = true;
+  if (
+    colHeader.substr(0, 5).toLowerCase() === "post " &&
+    colHeader.substr(-11) === " trial type"
+  ) {
+    postN = colHeader.substr(5, colHeader.length - 16);
+    postN = parseInt(postN);
+    if (!isNaN(postN) && postN != 0) {
+      isPhaseTypeCol = true;
+    }
+  }
+  return isPhaseTypeCol;
 }
 function isNumericHeader(colHeader) {
-	var isNum = false;
-	if (colHeader.toLowerCase().substr(-4) === 'item')     isNum = true;
-	if (colHeader.toLowerCase().substr(-8) === 'max time') isNum = true;
-	if (colHeader.toLowerCase().substr(-8) === 'min time') isNum = true;
-	return isNum;
+  var isNum = false;
+  if (colHeader.toLowerCase().substr(-4) === "item") isNum = true;
+  if (colHeader.toLowerCase().substr(-8) === "max time") isNum = true;
+  if (colHeader.toLowerCase().substr(-8) === "min time") isNum = true;
+  return isNum;
 }
 function isShuffleHeader(colHeader) {
-	var isShuffle = false;
-	if (colHeader.toLowerCase().indexOf('shuffle') !== -1) isShuffle = true;
-	return isShuffle;
+  var isShuffle = false;
+  if (colHeader.toLowerCase().indexOf("shuffle") !== -1) isShuffle = true;
+  return isShuffle;
 }
 function firstRowRenderer(instance, td, row, col, prop, value, cellProperties) {
-	Handsontable.renderers.TextRenderer.apply(this, arguments);
-	td.style.fontWeight = 'bold';
-	if (value == '') {
-		$(td).addClass("htInvalid");
-	}
+  Handsontable.renderers.TextRenderer.apply(this, arguments);
+  td.style.fontWeight = "bold";
+  if (value == "") {
+    $(td).addClass("htInvalid");
+  }
 }
 function numericRenderer(instance, td, row, col, prop, value, cellProperties) {
-	Handsontable.renderers.TextRenderer.apply(this, arguments);
-	if (isNaN(value) || value === '') {
-		td.style.background = '#D8F9FF';
-	}
+  Handsontable.renderers.TextRenderer.apply(this, arguments);
+  if (isNaN(value) || value === "") {
+    td.style.background = "#D8F9FF";
+  }
 }
 function shuffleRenderer(instance, td, row, col, prop, value, cellProperties) {
-	Handsontable.renderers.TextRenderer.apply(this, arguments);
-	if (value === '') {
-		td.style.background = '#DDD';
-	} else if (
-		typeof value === 'string'
-	 && (   value.indexOf('#') !== -1
-		 || value.toLowerCase() === 'off'
-		)
-	) {
-		td.style.background = '#DDD';
-	}
+  Handsontable.renderers.TextRenderer.apply(this, arguments);
+  if (value === "") {
+    td.style.background = "#DDD";
+  } else if (
+    typeof value === "string" &&
+    (value.indexOf("#") !== -1 || value.toLowerCase() === "off")
+  ) {
+    td.style.background = "#DDD";
+  }
 }
-function trialTypesRenderer(instance, td, row, col, prop, value, cellProperties) {
-	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-	if (value === 'Nothing' || value === '') {
-		if (instance.getDataAtCell(0,col) === 'trial type') {
-			$(td).addClass("htInvalid");
-		} else {
-			td.style.background = '#DDD';
-		}
-	}
+function trialTypesRenderer(
+  instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties
+) {
+  Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+  if (value === "Nothing" || value === "") {
+    if (instance.getDataAtCell(0, col) === "trial type") {
+      $(td).addClass("htInvalid");
+    } else {
+      td.style.background = "#DDD";
+    }
+  }
 }
 function updateDimensions(hot, addWidth, addHeight) {
-	var addW = addWidth  || 0;
-	var addH = addHeight || 0;
+  var addW = addWidth || 0;
+  var addH = addHeight || 0;
 
-	var container   = hot.container;
+  var container = hot.container;
 
-	var thisSizeBox = $(container).find(".wtHider");
+  var thisSizeBox = $(container).find(".wtHider");
 
-	var thisWidth  = thisSizeBox.width()+22+addW;
-	var thisHeight = thisSizeBox.height()+22+addH;
+  var thisWidth = thisSizeBox.width() + 22 + addW;
+  var thisHeight = thisSizeBox.height() + 22 + addH;
 
-	var thisArea = $(container).closest(".tableArea");
+  var thisArea = $(container).closest(".tableArea");
 
-	thisWidth  = Math.min(thisWidth,  thisArea.width());
-	thisHeight = Math.min(thisHeight, thisArea.height());
+  thisWidth = Math.min(thisWidth, thisArea.width());
+  thisHeight = Math.min(thisHeight, thisArea.height());
 
-	hot.updateSettings({
-		width:  thisWidth,
-		height: thisHeight
-	});
+  hot.updateSettings({
+    width: thisWidth,
+    height: thisHeight,
+  });
 }
 function updateDimensionsDelayed(hot, addWidth, addHeight) {
-	updateDimensions(hot, addWidth, addHeight);
-	setTimeout(function() {
-		updateDimensions(hot);
-	}, 0);
+  updateDimensions(hot, addWidth, addHeight);
+  setTimeout(function () {
+    updateDimensions(hot);
+  }, 0);
 }
 
+function createHoT(container, data, sheet_name) {
+  var table = new Handsontable(container, {
+    data: data,
+    minSpareCols: 1,
+    minSpareRows: 1,
 
-function createHoT(container, data,sheet_name) {
-	var table = new Handsontable(container, {
-		data: data,
-		minSpareCols: 1,
-		minSpareRows: 1,
+    afterChange: function (changes, source) {
+      var middleColEmpty = 0;
+      var middleRowEmpty = 0;
+      var postEmptyCol = 0; //identify if there is a used col after empty one
+      var postEmptyRow = 0; // same for rows
 
-		afterChange: function(changes, source) {
-
-			var middleColEmpty=0;
-			var middleRowEmpty=0;
-			var postEmptyCol=0; //identify if there is a used col after empty one
-			var postEmptyRow=0; // same for rows
-
-			//identify if repetition has occurred and adjusting value
-			var topRow=[];
-			for (var k=0; k<this.countCols()-1; k++){																										// loop through columns (for identical headers)
-				var cellValue = this.getDataAtCell(0,k);																								  // store the current column header
-				topRow[k] = this.getDataAtCell(0,k);																											// add the current column header to topRow array
-				for (l=0; l<k; l++){																																			// loop through all the columns before the current one
-					if (this.getDataAtCell(0,k)==this.getDataAtCell(0,l)){																	// if another column has the same header:
-						if(this.isEmptyCol(k)){																																// check if it's a blank column
-							this.alter("remove_col",k);                                                         // delete the column
-						}	else {                                                                              // otherwise we assume it's matching a previous header
-							this.setDataAtCell(0,k,this.getDataAtCell(0,k)+'*');                                // add a star to the title to avoid identical titles
-							Collector.custom_alert("You have identical headers for two columns '" + 											// let the user know the change has happened
-														this.getDataAtCell(0,k) + "', we have added a * to address this");
-						}
-					}
-				}
-			}
+      //identify if repetition has occurred and adjusting value
+      var topRow = [];
+      for (var k = 0; k < this.countCols() - 1; k++) {
+        // loop through columns (for identical headers)
+        var cellValue = this.getDataAtCell(0, k); // store the current column header
+        topRow[k] = this.getDataAtCell(0, k); // add the current column header to topRow array
+        for (l = 0; l < k; l++) {
+          // loop through all the columns before the current one
+          if (this.getDataAtCell(0, k) == this.getDataAtCell(0, l)) {
+            // if another column has the same header:
+            if (this.isEmptyCol(k)) {
+              // check if it's a blank column
+              this.alter("remove_col", k); // delete the column
+            } else {
+              // otherwise we assume it's matching a previous header
+              this.setDataAtCell(0, k, this.getDataAtCell(0, k) + "*"); // add a star to the title to avoid identical titles
+              Collector.custom_alert(
+                "You have identical headers for two columns '" + // let the user know the change has happened
+                  this.getDataAtCell(0, k) +
+                  "', we have added a * to address this"
+              );
+            }
+          }
+        }
+      }
       // go through each column
-			for (var k=0; k<this.countCols()-1; k++){
+      for (var k = 0; k < this.countCols() - 1; k++) {
         // if the loop has gone past the last column then stop looping through the columns
-        if(k >= this.countCols()){
-					break;
-				}
-				if(this.getDataAtCell(0,k).toLowerCase()=="trial type"){
-					this.setDataAtCell(0,k,"code");
-				}
+        if (k >= this.countCols()) {
+          break;
+        }
+        if (this.getDataAtCell(0, k).toLowerCase() == "trial type") {
+          this.setDataAtCell(0, k, "code");
+        }
         // checking for invalid item number (i.e. one)
-				if(this.getDataAtCell(0,k).toLowerCase()=="item"){
+        if (this.getDataAtCell(0, k).toLowerCase() == "item") {
           // loop through each row
-          for(m = 0; m < this.countRows(); m++){
+          for (m = 0; m < this.countRows(); m++) {
             // if the value in the row is one
-						if(this.getDataAtCell(m,k) == 1){
-							bootbox.alert("Warning: 1 does not refer to any row in the Stimuli sheet! The first row is row 2 (as row 1 is the header). Fix row " + (m+1) + "in your Procedure's Item column.");
-						}
+            if (this.getDataAtCell(m, k) == 1) {
+              bootbox.alert(
+                "Warning: 1 does not refer to any row in the Stimuli sheet! The first row is row 2 (as row 1 is the header). Fix row " +
+                  (m + 1) +
+                  "in your Procedure's Item column."
+              );
+            }
             // if the value is something
-						if(this.getDataAtCell(m,k) !== null){
+            if (this.getDataAtCell(m, k) !== null) {
               // check if the user is using a ":" (deprecated)
-							if(this.getDataAtCell(m,k).indexOf(":") !== -1){
-								this.setDataAtCell(m,k,this.getDataAtCell(m,k).replace(":"," to "));
-							}
-						}
-					}
-				}
+              if (this.getDataAtCell(m, k).indexOf(":") !== -1) {
+                this.setDataAtCell(
+                  m,
+                  k,
+                  this.getDataAtCell(m, k).replace(":", " to ")
+                );
+              }
+            }
+          }
+        }
         // if this is an empty middle column
-				if(this.isEmptyCol(k)){
+        if (this.isEmptyCol(k)) {
           // remove this empty middle column
-					this.alter("remove_col",k);
+          this.alter("remove_col", k);
           // and then check this column number again
-					k--;
-				}
-			}
+          k--;
+        }
+      }
       // go through each row
-			for (var k=0; k<this.countRows()-1; k++){
+      for (var k = 0; k < this.countRows() - 1; k++) {
         // if the loop has gone past the last row then stop looping through the rows
-        if(k >= this.countRows()){
-					break;
-				}
+        if (k >= this.countRows()) {
+          break;
+        }
 
-				if (this.isEmptyRow(k)){																																	// if the row is empty
-					this.alter("remove_row",k); 																													  // delete this empty row
-					k--;																																										// and then check this row number again.
-				}
-			}
+        if (this.isEmptyRow(k)) {
+          // if the row is empty
+          this.alter("remove_row", k); // delete this empty row
+          k--; // and then check this row number again.
+        }
+      }
 
       var project = $("#project_list").val();
-			var this_proj   = master.project_mgmt.projects[project];
+      var this_proj = master.project_mgmt.projects[project];
 
-			if(sheet_name.toLowerCase() == "conditions.csv"){
-				this_proj.conditions = this.getData();
-			} else {
-				if(typeof(this_proj.all_stims[sheet_name]) !== "undefined"){
-					this_proj.all_stims[sheet_name] = Papa.unparse(
-            this.getData()
-          );
-				}	else if(typeof(this_proj.all_procs[sheet_name]) !== "undefined"){
-					this_proj.all_procs[sheet_name] = Papa.unparse(
-            this.getData()
-          );
-				}	else {
-					alert("error - " + sheet_name + " not found in " + project);
-				}
-			}
-		},
-    afterInit: function() {
+      if (sheet_name.toLowerCase() == "conditions.csv") {
+        this_proj.conditions = this.getData();
+      } else {
+        if (typeof this_proj.all_stims[sheet_name] !== "undefined") {
+          this_proj.all_stims[sheet_name] = Papa.unparse(this.getData());
+        } else if (typeof this_proj.all_procs[sheet_name] !== "undefined") {
+          this_proj.all_procs[sheet_name] = Papa.unparse(this.getData());
+        } else {
+          alert("error - " + sheet_name + " not found in " + project);
+        }
+      }
+    },
+    afterInit: function () {
       updateDimensions(this);
     },
-    afterCreateCol: function() {
+    afterCreateCol: function () {
       updateDimensionsDelayed(this, 55, 0);
     },
-    afterCreateRow: function() {
+    afterCreateRow: function () {
       updateDimensionsDelayed(this, 0, 28);
     },
-    afterRemoveCol: function() {
+    afterRemoveCol: function () {
       updateDimensionsDelayed(this);
     },
-    afterRemoveRow: function() {
+    afterRemoveRow: function () {
       updateDimensionsDelayed(this);
     },
-    afterSelectionEnd: function(){
+    afterSelectionEnd: function () {
       thisCellValue = this.getValue();
 
-      var coords        = this.getSelected();
-      var column        = this.getDataAtCell(0,coords[1]);
-      var thisCellValue = this.getDataAtCell(coords[0],coords[1]);
+      var coords = this.getSelected();
+      var column = this.getDataAtCell(0, coords[1]);
+      var thisCellValue = this.getDataAtCell(coords[0], coords[1]);
 
-      thisCellValue = thisCellValue == null ? thisCellValue = "" : thisCellValue;
-      column        = column        == null ? column        = "" : column;
-      window['Current HoT Coordinates'] = coords;
-      helperActivate(column, thisCellValue,sheet_name);
+      thisCellValue =
+        thisCellValue == null ? (thisCellValue = "") : thisCellValue;
+      column = column == null ? (column = "") : column;
+      window["Current HoT Coordinates"] = coords;
+      helperActivate(column, thisCellValue, sheet_name);
     },
-    cells: function(row, col, prop) {
-		var cellProperties = {};
-		if (row === 0) {
-			cellProperties.renderer = firstRowRenderer;
-		} else {
-			var thisHeader = this.instance.getDataAtCell(0,col);
-			if (typeof thisHeader === 'string' && thisHeader != '') {
-				if (isPhaseTypeHeader(thisHeader)) {
-					cellProperties.type = 'dropdown';
-					cellProperties.source = trialTypes;
-					cellProperties.renderer = trialTypesRenderer;
-				} else {
-					cellProperties.type = 'text';
-					if (isNumericHeader(thisHeader)) {
-						cellProperties.renderer = numericRenderer;
-					} else if (isShuffleHeader(thisHeader)) {
-						cellProperties.renderer = shuffleRenderer;
-					} else {
-						cellProperties.renderer = Handsontable.renderers.TextRenderer;
-					}
-				}
-			} else {
-				cellProperties.renderer = Handsontable.renderers.TextRenderer;
-			}
-		}
-		return cellProperties;
-	},
-	cells: function(row, col, prop) {},
-	wordWrap: false,
-	contextMenu: {
-		items: {
-			"about": { // Own custom option
-        name: function () { // `name` can be a string or a function
-          return '<b>Edit cell</b>'; // Name can contain HTML
-        },
-        hidden: function () { // `hidden` can be a boolean or a function
-          // Hide the option when the first column was clicked
-          return this.getSelectedLast()[0] == 0; // `this` === hot3
-        },
-        callback: function(key, selection, clickEvent) { // Callback for specific option
-					this_sheet = this;
-					$('#cell_editor_div').fadeIn();
-					this_selection = selection;
-
-					cell_editor_obj.content_before = this_sheet.getDataAtCell(
-            selection.start.row,
-            selection.start.col
-          );
-
-					cell_editor.setValue(this_sheet.getDataAtCell(selection.start.row,
-																												selection.start.col),-1);
-
-
-
-					//var cell_editor_width = parseFloat($("#cell_editor_div").css("width").replace("px",""));
-
-					if($("#help_content").is(":visible")){
-						var helper_width = parseFloat($("#help_content").css("width").replace("px",""));
-
-						$("#cell_editor_div").animate({
-							"width": window.innerWidth - helper_width
-						}, 500,function(){
-							cell_editor.resize();
-						});
-					} else {
-						$("#cell_editor_div").animate({
-							"width": window.innerWidth
-						}, 500,function(){
-							cell_editor.resize();
-						});
-					}
+    cells: function (row, col, prop) {
+      var cellProperties = {};
+      if (row === 0) {
+        cellProperties.renderer = firstRowRenderer;
+      } else {
+        var thisHeader = this.instance.getDataAtCell(0, col);
+        if (typeof thisHeader === "string" && thisHeader != "") {
+          if (isPhaseTypeHeader(thisHeader)) {
+            cellProperties.type = "dropdown";
+            cellProperties.source = trialTypes;
+            cellProperties.renderer = trialTypesRenderer;
+          } else {
+            cellProperties.type = "text";
+            if (isNumericHeader(thisHeader)) {
+              cellProperties.renderer = numericRenderer;
+            } else if (isShuffleHeader(thisHeader)) {
+              cellProperties.renderer = shuffleRenderer;
+            } else {
+              cellProperties.renderer = Handsontable.renderers.TextRenderer;
+            }
+          }
+        } else {
+          cellProperties.renderer = Handsontable.renderers.TextRenderer;
         }
+      }
+      return cellProperties;
+    },
+    cells: function (row, col, prop) {},
+    wordWrap: false,
+    contextMenu: {
+      items: {
+        about: {
+          // Own custom option
+          name: function () {
+            // `name` can be a string or a function
+            return "<b>Edit cell</b>"; // Name can contain HTML
+          },
+          hidden: function () {
+            // `hidden` can be a boolean or a function
+            // Hide the option when the first column was clicked
+            return this.getSelectedLast()[0] == 0; // `this` === hot3
+          },
+          callback: function (key, selection, clickEvent) {
+            // Callback for specific option
+            this_sheet = this;
+            $("#cell_editor_div").fadeIn();
+            this_selection = selection;
+
+            cell_editor_obj.content_before = this_sheet.getDataAtCell(
+              selection.start.row,
+              selection.start.col
+            );
+
+            cell_editor.setValue(
+              this_sheet.getDataAtCell(
+                selection.start.row,
+                selection.start.col
+              ),
+              -1
+            );
+
+            //var cell_editor_width = parseFloat($("#cell_editor_div").css("width").replace("px",""));
+
+            if ($("#help_content").is(":visible")) {
+              var helper_width = parseFloat(
+                $("#help_content").css("width").replace("px", "")
+              );
+
+              $("#cell_editor_div").animate(
+                {
+                  width: window.innerWidth - helper_width,
+                },
+                500,
+                function () {
+                  cell_editor.resize();
+                }
+              );
+            } else {
+              $("#cell_editor_div").animate(
+                {
+                  width: window.innerWidth,
+                },
+                500,
+                function () {
+                  cell_editor.resize();
+                }
+              );
+            }
+          },
+        },
+        "---------": {
+          name: "---------",
+        },
+        row_above: {
+          name: "Insert row above",
+        },
+        row_below: {
+          name: "Insert row below",
+        },
+        col_left: {
+          name: "Insert column left",
+        },
+        col_right: {
+          name: "Insert column right",
+        },
+        remove_row: {
+          name: "Remove row",
+        },
+        remove_col: {
+          name: "Remove column",
+        },
+        undo: {
+          name: "Undo",
+        },
+        redo: {
+          name: "Redo",
+        },
+        make_read_only: {
+          name: "Read only",
+        },
+        alignment: {
+          name: "Alignment",
+        },
       },
-			"---------": {
-        name: '---------'
-      },
-			"row_above": {
-        name: 'Insert row above'
-      },
-			"row_below": {
-        name: 'Insert row below'
-      },
-			"col_left": {
-        name: 'Insert column left'
-      },
-			"col_right": {
-        name: 'Insert column right'
-      },
-			"remove_row": {
-        name: 'Remove row'
-      },
-			"remove_col": {
-        name: 'Remove column'
-      },
-			"undo": {
-        name: 'Undo'
-      },
-			"redo": {
-        name: 'Redo'
-      },
-			"make_read_only": {
-        name: 'Read only'
-      },
-			"alignment": {
-        name: 'Alignment'
-      },
-		}
-	},
-	rowHeaders: true,
-	});
-	return table;
+    },
+    rowHeaders: true,
+  });
+  return table;
 }
 
 //solution by Jeffrey Harmon at https://stackoverflow.com/questions/1064089/inserting-a-text-where-cursor-is-using-javascript-jquery
 function insertAtCaret(areaId, text) {
-	var txtarea = document.getElementById(areaId);
-	var scrollPos = txtarea.scrollTop;
-	var caretPos = txtarea.selectionStart;
+  var txtarea = document.getElementById(areaId);
+  var scrollPos = txtarea.scrollTop;
+  var caretPos = txtarea.selectionStart;
 
-	var front = (txtarea.value).substring(0, caretPos);
-	var back = (txtarea.value).substring(txtarea.selectionEnd, txtarea.value.length);
-	txtarea.value = front + text + back;
-	caretPos = caretPos + text.length;
-	txtarea.selectionStart = caretPos;
-	txtarea.selectionEnd = caretPos;
-	txtarea.focus();
-	txtarea.scrollTop = scrollPos;
+  var front = txtarea.value.substring(0, caretPos);
+  var back = txtarea.value.substring(
+    txtarea.selectionEnd,
+    txtarea.value.length
+  );
+  txtarea.value = front + text + back;
+  caretPos = caretPos + text.length;
+  txtarea.selectionStart = caretPos;
+  txtarea.selectionEnd = caretPos;
+  txtarea.focus();
+  txtarea.scrollTop = scrollPos;
 }
 /*
 $(window).resize(function() {

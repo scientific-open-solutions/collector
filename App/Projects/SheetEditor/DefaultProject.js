@@ -1,23 +1,17 @@
 default_project = {
-  "all_procs":{
+  all_procs: {
     "procedure_1.csv": [
-      [
-        "item",
-        "code",
-        "max time",
-        "text",
-        "Shuffle 1"
-      ],
+      ["item", "code", "max time", "text", "Shuffle 1"],
       [
         "2",
         "instruct",
         "user",
         "This is the start of a new experiment.",
-        "off"
-      ]
-    ]
+        "off",
+      ],
+    ],
   },
-  "conditions":[
+  conditions: [
     [
       "name",
       "notes",
@@ -29,7 +23,7 @@ default_project = {
       "end_message",
       "start_message",
       "buffer",
-      "scripts"
+      "scripts",
     ],
     [
       "condition_1",
@@ -42,31 +36,22 @@ default_project = {
       "",
       "",
       5,
-      ""
-    ]
+      "",
+    ],
   ],
-  "all_stims":{
-    "stimuli_1.csv":[
-      [
-        "cue",
-        "answer"
-      ],
-      [
-        "A",
-        "Apple"
-      ],
-      [
-        "B",
-        "Banana"
-      ]
-    ]
-  }
-}
+  all_stims: {
+    "stimuli_1.csv": [
+      ["cue", "answer"],
+      ["A", "Apple"],
+      ["B", "Banana"],
+    ],
+  },
+};
 
 default_project.all_procs["procedure_1.csv"] = Papa.unparse(
   default_project.all_procs["procedure_1.csv"]
-)
+);
 
 default_project.all_stims["stimuli_1.csv"] = Papa.unparse(
   default_project.all_stims["stimuli_1.csv"]
-)
+);

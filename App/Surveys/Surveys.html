@@ -19,110 +19,152 @@
 		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
 -->
 <style>
-#spreadsheet_preview_tabs{
-	display:none;
-}
-#survey_interface{
-	padding: 5px;
-}
+  #spreadsheet_preview_tabs {
+    display: none;
+  }
+  #survey_interface {
+    padding: 5px;
+  }
 </style>
 
 <script type="text/javascript" src="Surveys/SurveysFunctions.js"></script>
 
 <script>
-/*
-* To allow development within gitpod
-*/
-if(Collector.detect_context() == "gitpod"){
+  /*
+   * To allow development within gitpod
+   */
+  if (Collector.detect_context() == "gitpod") {
+    var gitpod_surveys = true;
+    document.write('<script src="../../CollectorMap.js"><\/script>');
 
-  var gitpod_surveys = true;
-  document.write('<script src="../../CollectorMap.js"><\/script>');
-
-  function get_map(){
-    if(typeof(isolation_map) !== "undefined"){
-      collector_map = this_map("Surveys.html");
-    } else {
-      setTimeout(function(){
-        get_map();
-        load_default_surveys();
-      },1000);
+    function get_map() {
+      if (typeof isolation_map !== "undefined") {
+        collector_map = this_map("Surveys.html");
+      } else {
+        setTimeout(function () {
+          get_map();
+          load_default_surveys();
+        }, 1000);
+      }
     }
+    get_map();
   }
-  get_map();
-}
-
 </script>
 
 <nav class="navbar navbar-primary bg-white fixed-top fixed-top-2">
-  <table style = "max-width:80%">
+  <table style="max-width: 80%">
     <tr>
       <td>
-        <button class='btn btn-primary' type='button' id="new_survey_button" title="Will create a new survey based on the one you have selected. Please select one of the existing surveys if you haven't already to be able to create a new survey based on it.">New Survey</button>
+        <button
+          class="btn btn-primary"
+          type="button"
+          id="new_survey_button"
+          title="Will create a new survey based on the one you have selected. Please select one of the existing surveys if you haven't already to be able to create a new survey based on it."
+        >
+          New Survey
+        </button>
       </td>
       <td>
-        <select id='survey_select' class="form-select" previousValue="">
+        <select id="survey_select" class="form-select" previousValue="">
           <option disabled selected>Please select a survey</option>
         </select>
       </td>
       <td>
-        <button id='save_survey_btn' class='btn btn-primary'>Save</button>
-        <button id='rename_survey_btn' class='btn btn-primary'>Rename</button>
-        <button id='delete_survey_btn' class='btn btn-primary'>Delete</button>
+        <button id="save_survey_btn" class="btn btn-primary">Save</button>
+        <button id="rename_survey_btn" class="btn btn-primary">Rename</button>
+        <button id="delete_survey_btn" class="btn btn-primary">Delete</button>
       </td>
       <td id="spreadsheet_preview_tabs">
-        <ul  class="nav nav-pills mb-3 bg-secondary" id="pills-tab" role="tablist">
-					<li class="nav-item" >
-					 	<button class="nav-link text-white active" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-spreadsheet" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Spreadsheet</button>
-				 </li>
-					<li class="nav-item" >
-					 	<button class="nav-link text-white" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-preview" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Preview</button>
-				 </li>
+        <ul
+          class="nav nav-pills mb-3 bg-secondary"
+          id="pills-tab"
+          role="tablist"
+        >
+          <li class="nav-item">
+            <button
+              class="nav-link text-white active"
+              id="pills-contact-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-spreadsheet"
+              type="button"
+              role="tab"
+              aria-controls="pills-contact"
+              aria-selected="false"
+            >
+              Spreadsheet
+            </button>
+          </li>
+          <li class="nav-item">
+            <button
+              class="nav-link text-white"
+              id="pills-contact-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-preview"
+              type="button"
+              role="tab"
+              aria-controls="pills-contact"
+              aria-selected="false"
+            >
+              Preview
+            </button>
+          </li>
         </ul>
       </td>
     </tr>
   </table>
 </nav>
-<div class="tab-content" id="pills-tabContent" style="top:100px; position: absolute;">
-  <div class="tab-pane fade show active" id="pills-spreadsheet" role="tabpanel" aria-labelledby="pills-spreadsheet-tab">
-		<br>
+<div
+  class="tab-content"
+  id="pills-tabContent"
+  style="top: 100px; position: absolute"
+>
+  <div
+    class="tab-pane fade show active"
+    id="pills-spreadsheet"
+    role="tabpanel"
+    aria-labelledby="pills-spreadsheet-tab"
+  >
+    <br />
     <div id="survey_HoT"></div>
   </div>
-  <div class="tab-pane fade" id="pills-preview" role="tabpanel" aria-labelledby="pills-preview-tab">
+  <div
+    class="tab-pane fade"
+    id="pills-preview"
+    role="tabpanel"
+    aria-labelledby="pills-preview-tab"
+  >
     <iframe id="survey_preview"></iframe>
   </div>
 </div>
 
-
-
 <script>
-var survey_HoT;
+  var survey_HoT;
 
-/****************
-* Survey object *
-****************/
+  /****************
+   * Survey object *
+   ****************/
 
-survey_obj = {
-	save:function(survey_name,
-								survey_content){
-
-		if(typeof(master.surveys.default_surveys[survey_name]) == "undefined"){
-      var write_response = Collector.electron.fs.write_file(
-            "Surveys",
-            survey_name.toLowerCase()
-                       .replace(".csv","") + ".csv",
-            survey_content
-      )
-      if(write_response !== "success"){
+  survey_obj = {
+    save: function (survey_name, survey_content) {
+      if (typeof master.surveys.default_surveys[survey_name] == "undefined") {
+        var write_response = Collector.electron.fs.write_file(
+          "Surveys",
+          survey_name.toLowerCase().replace(".csv", "") + ".csv",
+          survey_content
+        );
+        if (write_response !== "success") {
           bootbox.alert(response);
+        }
+      } else {
+        Collector.custom_alert(
+          "You were looking at a default survey - no changes made to it"
+        );
       }
-		} else {
-			Collector.custom_alert("You were looking at a default survey - no changes made to it");
-		}
-	}
-}
+    },
+  };
 
-if(typeof(gitpod_surveys) !== "undefined"){
-  list_surveys();
-}
+  if (typeof gitpod_surveys !== "undefined") {
+    list_surveys();
+  }
 </script>
 <script type="text/javascript" src="Surveys/SurveysActions.js"></script>

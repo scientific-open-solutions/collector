@@ -20,30 +20,52 @@
 */
 -->
 <style>
-.user_code{
-  background-color:PaleGreen ;
-}
-.default_code{
-  background-color:LightSkyBlue ;
-}
-#code_preview{
-  width: 100%;
-	height: 100%;
-  margin:30px;
-}
+  .user_code {
+    background-color: PaleGreen;
+  }
+  .default_code {
+    background-color: LightSkyBlue;
+  }
+  #code_preview {
+    width: 100%;
+    height: 100%;
+    margin: 30px;
+  }
 </style>
-<br><br>
+<br /><br />
 
 <div id="Code" class="hide_show_elements">
   <table>
     <tr>
       <td>
-        <ul  class="nav nav-pills bg-secondary" role="tablist">
-          <li class="nav-item" >
-            <button class="nav-link text-white active" id="code_editor-tab" data-bs-toggle="pill" data-bs-target="#code_editor" type="button" role="tab" aria-controls="code_editor" aria-selected="false">Editor</button>
-         </li>
-          <li class="nav-item" >
-            <button class="nav-link text-white" id="code-preview-tab" data-bs-toggle="pill" data-bs-target="#code-preview" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Preview</button>
+        <ul class="nav nav-pills bg-secondary" role="tablist">
+          <li class="nav-item">
+            <button
+              class="nav-link text-white active"
+              id="code_editor-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#code_editor"
+              type="button"
+              role="tab"
+              aria-controls="code_editor"
+              aria-selected="false"
+            >
+              Editor
+            </button>
+          </li>
+          <li class="nav-item">
+            <button
+              class="nav-link text-white"
+              id="code-preview-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#code-preview"
+              type="button"
+              role="tab"
+              aria-controls="pills-contact"
+              aria-selected="false"
+            >
+              Preview
+            </button>
           </li>
         </ul>
       </td>
@@ -56,57 +78,110 @@
         -->
       </td>
       <td>
-        <select id="code_procedure_select" class="form-select"  style="margin:2px; display:none">
+        <select
+          id="code_procedure_select"
+          class="form-select"
+          style="margin: 2px; display: none"
+        >
           <option disabled selected>Procedure sheet (optional)</option>
           <option>None</option>
         </select>
       </td>
       <td>
-        <input class="form-control" type="number" placeholder="row"  style="margin:2px; width:100px; display:none;">
-        <select id="code_stimuli_select" class="form-select"  style="margin:2px; display:none;">
+        <input
+          class="form-control"
+          type="number"
+          placeholder="row"
+          style="margin: 2px; width: 100px; display: none"
+        />
+        <select
+          id="code_stimuli_select"
+          class="form-select"
+          style="margin: 2px; display: none"
+        >
           <option disabled selected>Stimuli sheet (optional)</option>
           <option>None</option>
         </select>
       </td>
       <td>
-        <button id="code_preview_fullscreen" class="btn btn-primary">Fullscreen</button>
+        <button id="code_preview_fullscreen" class="btn btn-primary">
+          Fullscreen
+        </button>
       </td>
     </tr>
     <tr>
       <td colspan="2">
-        <div class="tab-content" id="pills-tabContent" style="top:100px; width:800px; height:800px; position: absolute;">
-          <div class="tab-pane fade show active" id="code_editor" role="tabpanel" aria-labelledby="pills-spreadsheet-tab">
-            <br>
+        <div
+          class="tab-content"
+          id="pills-tabContent"
+          style="top: 100px; width: 800px; height: 800px; position: absolute"
+        >
+          <div
+            class="tab-pane fade show active"
+            id="code_editor"
+            role="tabpanel"
+            aria-labelledby="pills-spreadsheet-tab"
+          >
+            <br />
             <div class="row">
               <!--
               <div class="col-md-1">
             		<button class="btn btn-primary" id="community_code_btn">Community</button>
             	</div>
               -->
-            	<div class="col-md-3">
-            		<select id="code_select" class="form-select" previousValue =""></select>
-            	</div>
-            	<div class="col-md-9">
-                  <button id="new_code_button" 		class="btn btn-primary">New</button>
-              		<button id="rename_code_button" class="btn btn-primary" style="display:none">Rename</button>
-              		<button id="delete_code_button" class="btn btn-primary" style="display:none">Delete</button>
-              		<button id="save_code_button" class="btn btn-primary">Save</button>
-              		<button class="btn btn-outline-primary" id="view_code_btn">Code</button>
-              		<button class="btn btn-outline-primary" id="view_graphic_btn">Graphic</button>
-            	</div>
+              <div class="col-md-3">
+                <select
+                  id="code_select"
+                  class="form-select"
+                  previousValue=""
+                ></select>
+              </div>
+              <div class="col-md-9">
+                <button id="new_code_button" class="btn btn-primary">
+                  New
+                </button>
+                <button
+                  id="rename_code_button"
+                  class="btn btn-primary"
+                  style="display: none"
+                >
+                  Rename
+                </button>
+                <button
+                  id="delete_code_button"
+                  class="btn btn-primary"
+                  style="display: none"
+                >
+                  Delete
+                </button>
+                <button id="save_code_button" class="btn btn-primary">
+                  Save
+                </button>
+                <button class="btn btn-outline-primary" id="view_code_btn">
+                  Code
+                </button>
+                <button class="btn btn-outline-primary" id="view_graphic_btn">
+                  Graphic
+                </button>
+              </div>
             </div>
 
-
             <h6><em>ACE (https://ace.c9.io/)</em> is used for editing code</h6>
-            <div id="graphic_editor" 	style="display:none"></div>
+            <div id="graphic_editor" style="display: none"></div>
             <div id="ace_div">
               <!--
                 This is to allow the ace editor width to change when the helper is shown (or not)
               -->
-              <div id="ACE_editor" 			style="display:none;width:100%"></div>
+              <div id="ACE_editor" style="display: none; width: 100%"></div>
             </div>
           </div>
-          <div class="tab-pane fade" id="code-preview" role="tabpanel" aria-labelledby="code-preview-tab" style="height:100%">
+          <div
+            class="tab-pane fade"
+            id="code-preview"
+            role="tabpanel"
+            aria-labelledby="code-preview-tab"
+            style="height: 100%"
+          >
             <iframe id="code_preview"></iframe>
           </div>
         </div>
@@ -115,48 +190,44 @@
   </table>
 </div>
 
-
-
 <script src="iframe_library.js"></script>
 <script>
-
-$("#code_editor-tab").on("click", function(){
-  $("#code_preview").prop("src","about:blank");
-});
-//https://stackoverflow.com/a/32100295/4490801
-$("#code_preview_fullscreen").on("click", function(){
-
-  // if already full screen; exit
-  // else go fullscreen
-  if (
-    document.fullscreenElement ||
-    document.webkitFullscreenElement ||
-    document.mozFullScreenElement ||
-    document.msFullscreenElement
-  ) {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
+  $("#code_editor-tab").on("click", function () {
+    $("#code_preview").prop("src", "about:blank");
+  });
+  //https://stackoverflow.com/a/32100295/4490801
+  $("#code_preview_fullscreen").on("click", function () {
+    // if already full screen; exit
+    // else go fullscreen
+    if (
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.mozFullScreenElement ||
+      document.msFullscreenElement
+    ) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    } else {
+      element = $("#code_preview").get(0);
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
     }
-  } else {
-    element = $('#code_preview').get(0);
-    if (element.requestFullscreen) {
-      element.requestFullscreen();
-    } else if (element.mozRequestFullScreen) {
-      element.mozRequestFullScreen();
-    } else if (element.webkitRequestFullscreen) {
-      element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-    } else if (element.msRequestFullscreen) {
-      element.msRequestFullscreen();
-    }
-  }
 
-  /*
+    /*
   var this_width = window.innerWidth;
   var this_height = window.innerHeight;
   $("#code_preview").css("height", this_height);
@@ -165,128 +236,128 @@ $("#code_preview_fullscreen").on("click", function(){
   $("#code_preview").css("top",  "0px");
   $("#code_preview").css("left",  "0px");
   */
-});
+  });
 
-$("#graphic_editor").load(collector_map["Graphic.html"]);
+  $("#graphic_editor").load(collector_map["Graphic.html"]);
 
-$("#community_code_btn").on("click",function(){
-	var win = window.open('https://github.com/scientific-open-solutions/collector/discussions/categories/code', '_blank');
-});
+  $("#community_code_btn").on("click", function () {
+    var win = window.open(
+      "https://github.com/scientific-open-solutions/collector/discussions/categories/code",
+      "_blank"
+    );
+  });
 
-$("#code-preview-tab").on("click",function(){
-  /*
-  * try to run the code in the ace editor into the iframe
-  */
-  var iframe_content = editor.getValue();
+  $("#code-preview-tab").on("click", function () {
+    /*
+     * try to run the code in the ace editor into the iframe
+     */
+    var iframe_content = editor.getValue();
 
-  /*
-  * find and replace items for developmental piloting
-  */
-  iframe_variables = eval(
-    iframe_content.split("---development---")[1]
-  );
+    /*
+     * find and replace items for developmental piloting
+     */
+    iframe_variables = eval(iframe_content.split("---development---")[1]);
 
-  /*
-  * use ../User folder
-  */
-  home_dir = Collector
-     .electron
-     .git
-     .locate_repo({
-       org:  $("#select_org").val(),
-       repo: $("#select_repo").val()
+    /*
+     * use ../User folder
+     */
+    home_dir = Collector.electron.git.locate_repo({
+      org: $("#select_org").val(),
+      repo: $("#select_repo").val(),
     });
 
-  iframe_content = iframe_content.replaceAll("../User/",  home_dir + "/User/");
+    iframe_content = iframe_content.replaceAll("../User/", home_dir + "/User/");
 
-  if(typeof(iframe_variables) !== "undefined"){
-    iframe_variables.forEach(function(row){
-      var this_key = Object.keys(row);
-      if(this_key.length > 1){
-        bootbox.alert("Error: You have multiple keys:" + this_key);
-      } else if(this_key.length == 0){
-        bootbox.alert("Error: You don't have any keys!");
-      } else {
-        iframe_content = iframe_content.replaceAll(
-          "{{" + this_key[0] + "}}",
-          row[this_key[0]]
-        );
-      }
-    });
-  }
+    if (typeof iframe_variables !== "undefined") {
+      iframe_variables.forEach(function (row) {
+        var this_key = Object.keys(row);
+        if (this_key.length > 1) {
+          bootbox.alert("Error: You have multiple keys:" + this_key);
+        } else if (this_key.length == 0) {
+          bootbox.alert("Error: You don't have any keys!");
+        } else {
+          iframe_content = iframe_content.replaceAll(
+            "{{" + this_key[0] + "}}",
+            row[this_key[0]]
+          );
+        }
+      });
+    }
 
-  doc = document
-    .getElementById('code_preview')
-    .contentWindow
-    .document;
-	doc.open();
-	doc.write(libraries + iframe_content);
-	doc.close();
-});
+    doc = document.getElementById("code_preview").contentWindow.document;
+    doc.open();
+    doc.write(libraries + iframe_content);
+    doc.close();
+  });
 
-var editor = ace.edit("ACE_editor");
-editor.getSession().setUseWorker(false);
-editor.setTheme("ace/theme/chrome");
-editor.getSession().setMode("ace/mode/html");
-editor.$blockScrolling = Infinity;
+  var editor = ace.edit("ACE_editor");
+  editor.getSession().setUseWorker(false);
+  editor.setTheme("ace/theme/chrome");
+  editor.getSession().setMode("ace/mode/html");
+  editor.$blockScrolling = Infinity;
 
-editor.setOptions({
-	enableBasicAutocompletion: true,
-	enableSnippets: false,
-	enableLiveAutocompletion: true,
-  fontSize: 13,
-	maxLines: 50,
-	minLines: 30,
-	tabSize:2,
-	wrap:true,
-});
-editor.$blockScrolling = Infinity;
+  editor.setOptions({
+    enableBasicAutocompletion: true,
+    enableSnippets: false,
+    enableLiveAutocompletion: true,
+    fontSize: 13,
+    maxLines: 50,
+    minLines: 30,
+    tabSize: 2,
+    wrap: true,
+  });
+  editor.$blockScrolling = Infinity;
 
-editor.on("focus",function(){
-	helperActivate("Code", "","trialtype_code");
-});
+  editor.on("focus", function () {
+    helperActivate("Code", "", "trialtype_code");
+  });
 
-editor.completers.push({
-  getCompletions: function(
-    editor, session, pos, prefix, callback
-  ) {
-		callback(null, [
-			{
-        value: "Phase.add_response()",
-        score: 1000,
-        meta: "add row to responses"
-      },{
-        value: "Phase.submit()",
-        score: 1000,
-        meta: "end trial - C"
-      },{
-        value: "Phase.elapsed()",
-        score: 1000,
-        meta: "since trial start - C"
-      },{
-        value: "Phase.set_timer()",
-        score: 1000,
-        meta: "at trial start - C"
-      },{
-        value: "Phase.set()",
-        score: 1000,
-        meta: "for another trial -C"
-      },{
-        value: "Phase.get()",
-        score: 1000,
-        meta: "from an earlier trial -C"
-      },{
-        value: "Phase.get_proc()",
-        score: 1000,
-        meta: "load a proc sheet -C"
-      },{
-        value: "Phase.get_stim()",
-        score: 1000,
-        meta: "load a stim sheet -C"
-      }
-		]);
-	}
-});
+  editor.completers.push({
+    getCompletions: function (editor, session, pos, prefix, callback) {
+      callback(null, [
+        {
+          value: "Phase.add_response()",
+          score: 1000,
+          meta: "add row to responses",
+        },
+        {
+          value: "Phase.submit()",
+          score: 1000,
+          meta: "end trial - C",
+        },
+        {
+          value: "Phase.elapsed()",
+          score: 1000,
+          meta: "since trial start - C",
+        },
+        {
+          value: "Phase.set_timer()",
+          score: 1000,
+          meta: "at trial start - C",
+        },
+        {
+          value: "Phase.set()",
+          score: 1000,
+          meta: "for another trial -C",
+        },
+        {
+          value: "Phase.get()",
+          score: 1000,
+          meta: "from an earlier trial -C",
+        },
+        {
+          value: "Phase.get_proc()",
+          score: 1000,
+          meta: "load a proc sheet -C",
+        },
+        {
+          value: "Phase.get_stim()",
+          score: 1000,
+          meta: "load a stim sheet -C",
+        },
+      ]);
+    },
+  });
 </script>
 <script type="text/javascript" src="Code/CodeFunctions.js"></script>
 <script type="text/javascript" src="Code/CodeActions.js"></script>

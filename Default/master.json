@@ -1,33 +1,33 @@
 {
-  "code":  {
-    "default"	 : {},
-    "file"     : "",
-    "filetype" : "",
-    "graphic"  : {
-      "files"  : []
+  "code": {
+    "default": {},
+    "file": "",
+    "filetype": "",
+    "graphic": {
+      "files": []
     },
-    "user"		 : {},
-    "version"  : 0
+    "user": {},
+    "version": 0
   },
   "data": {
     "servers": {}
   },
-  "project_mgmt":  {
-    "any_loaded": 	 		false,
-    "authenticated":   	false,
-    "current_manager": 	"",
-    "project":      	"",
-    "projects":     	{},
-    "incomp_process":  	false,
-    "pipe_position": 	 	0,
-    "pipe_direction":  	"",
-    "versions" :		 		[]
+  "project_mgmt": {
+    "any_loaded": false,
+    "authenticated": false,
+    "current_manager": "",
+    "project": "",
+    "projects": {},
+    "incomp_process": false,
+    "pipe_position": 0,
+    "pipe_direction": "",
+    "versions": []
   },
   "github": {
-    "organization"  : "",
-    "repository"    : "",
-    "organizations" : {}
+    "organization": "",
+    "repository": "",
+    "organizations": {}
   },
-  "mods":    {},
-  "surveys" : {}
+  "mods": {},
+  "surveys": {}
 }
