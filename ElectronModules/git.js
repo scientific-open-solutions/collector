@@ -46,6 +46,7 @@ function user(){
 */
 update = {
   files: [
+    "ParticipantCountry.html",
     "Run.html",
     "Run.js",
     "Welcome.html",
@@ -497,7 +498,7 @@ ipc.on('git_push', (event,args) => {
       event.returnValue = "success";
     })
     .catch(function(error){
-      event.returnValue = "error when pushing:" + error;
+      event.returnValue = "error when pushing (are you sure you have permission? You need to accept the invite if you are not the original creator of the repositories organization):" + error;
     });
 });
 

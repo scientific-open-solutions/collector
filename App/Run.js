@@ -673,7 +673,7 @@ function final_trial(){
             setTimeout(function(){
   if(typeof(project_json.this_condition.forward_at_end) !== "undefined" &&
   project_json.this_condition.forward_at_end  !== ""){
-    bootbox.alert("The next phase of your experiment is <a class='btn btn-primary' style='margin:2px' href='"+ project_json.this_condition.forward_at_end +"' target='_blank'>here</a> - please continue there.");
+    bootbox.alert("The researcher would like you to now go to " + project_json.this_condition.forward_at_end + " please copy the link into a new window to proceed there.");
   }
   var download_at_end_html;
   if(project_json.this_condition.download_at_end !== "off"){
