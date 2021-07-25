@@ -29,12 +29,19 @@ const git_token_location = root_dir + "/Private/github_token.txt";
 function user() {
   var user = JSON.parse(fs.readFileSync(root_dir + "/User.json"));
 
-  if (typeof user.current.path == "undefined") {
+  if (typeof user.current.path === "undefined") {
     if (user.current.repo !== "") {
       user.current.path =
         user.repos[user.current.org][user.current.repo].path + "/";
     }
   }
+
+  /*
+  * Create required folders if they don't exist yet
+  */
+  //if(!fs.existsSync)
+
+
   return user;
 }
 
@@ -74,7 +81,7 @@ ipc.on("git_add_repo", (event, args) => {
        */
       var user = JSON.parse(fs.readFileSync(root_dir + "/User.json"));
 
-      if (typeof user.current == "undefined") {
+      if (typeof user.current === "undefined") {
         user.current = {};
       }
 
@@ -82,11 +89,11 @@ ipc.on("git_add_repo", (event, args) => {
       user.current.repo = args.repo;
       user.current.path = result.filePaths[0] + "/" + args.repo;
 
-      if (typeof user.repos == "undefined") {
+      if (typeof user.repos === "undefined") {
         user.current.repos = {};
       }
 
-      if (typeof user.repos[args.org] == "undefined") {
+      if (typeof user.repos[args.org] === "undefined") {
         user.repos[args.org] = {};
       }
       user.repos[args.org][args.repo] = {
@@ -451,7 +458,7 @@ ipc.on("git_push", (event, args) => {
     "auth token time = " + parseFloat(new Date().getTime() - baseline_time)
   );
 
-  if (typeof args.message == "undefined") {
+  if (typeof args.message === "undefined") {
     args.message = "automatic commit";
   }
 
@@ -496,7 +503,7 @@ ipc.on("git_repo_info", (event, args) => {
     .getRemotes(true)
     .then(function (data) {
       console.log(data);
-      url = data.filter((row) => row.name == "origin")[0].refs.fetch.split("/");
+      url = data.filter((row) => row.name === "origin")[0].refs.fetch.split("/");
       var return_obj = {
         organization: url[3],
         repository: url[4],
@@ -521,7 +528,7 @@ ipc.on("git_set_name", (event, args) => {
 ipc.on("git_status", (event, args) => {
   console.log("args");
   console.log(args);
-  if ((args.org == null) | (args.repo == null)) {
+  if ((args.org === null) | (args.repo === null)) {
     event.returnValue = "Incomplete org or repo information";
   } else {
     var git = simpleGit();
@@ -554,7 +561,7 @@ ipc.on("git_undo", (event, args) => {
 
   if (args.path.indexOf("..") !== -1) {
     event.returnValue = "This request looked unsafe, so was ignored";
-  } else if (args.type == "not_added") {
+  } else if (args.type === "not_added") {
     fs.unlinkSync(user().repos[args.org][args.repo].path + "/" + args.path);
     event.returnValue = "success";
   } else {

@@ -495,7 +495,7 @@
   // mod
   ////////
 
-  function load_trialtype_mods() {
+  function load_code_mods() {
     // deal with list of mods here - can be an array in graphics and then this array when compiled adds the mods at the bottom of the script
     var trialtype = master.code.file;
     var this_trialtype = master.code.graphic.files[trialtype];
@@ -598,7 +598,7 @@
             var trialtype = master.code.file;
             var this_trialtype = master.code.graphic.files[trialtype];
             delete this_trialtype.mods[mod];
-            load_trialtype_mods();
+            load_code_mods();
           }
         }
       );

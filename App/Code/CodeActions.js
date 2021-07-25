@@ -20,7 +20,7 @@
 function initiate_actions() {
   function protected_name_check(this_name) {
     protected_names = ["start_experiment"];
-    if (protected_names.indexOf(this_name) == -1) {
+    if (protected_names.indexOf(this_name) === -1) {
       return true;
     } else {
       bootbox.alert(
@@ -62,11 +62,11 @@ function initiate_actions() {
       Object.keys(master.code.default)
     );
     current_code = Array.from(new Set(current_code));
-    if (current_code.indexOf(this_name.toLowerCase()) == -1) {
+    if (current_code.indexOf(this_name.toLowerCase()) === -1) {
       return true;
     } else {
       bootbox.alert(
-        "There is a trialtype with the name <b>" +
+        "There is a code file with the name <b>" +
           this_name +
           "</b> - please choose a unique name"
       );
@@ -76,7 +76,7 @@ function initiate_actions() {
   $("#ACE_editor").on("keyup input", function () {
     var ace_content = editor.getValue();
     var code_file = master.code.file;
-    if (typeof master.code.user[code_file] == "undefined") {
+    if (typeof master.code.user[code_file] === "undefined") {
       master.code.user[code_file] = {
         files: {},
       };
@@ -174,18 +174,18 @@ function initiate_actions() {
   });
 
   $("#rename_code_button").on("click", function () {
-    var trialtype_selected = $("#code_select").val();
+    var code_selected = $("#code_select").val();
 
-    if (typeof master.code.default[trialtype_selected] !== "undefined") {
-      bootbox.alert("You can't rename a default trialtype");
+    if (typeof master.code.default[code_selected] !== "undefined") {
+      bootbox.alert("You can't rename a default code file");
     } else {
       bootbox.prompt(
         "What would you like to rename the Phasetype to?",
         function (new_name) {
-          if (new_name == null) {
+          if (new_name === null) {
             // close the window
           } else if ($("#code_select").text().indexOf(new_name) !== -1) {
-            bootbox.alert("You already have a trialtype with this name");
+            bootbox.alert("You already have a code file with this name");
           } else {
             var original_name = $("#code_select").val();
             master.code.user[new_name] = master.code.user[original_name];
@@ -196,13 +196,13 @@ function initiate_actions() {
             var response = Collector.electron.fs.write_file(
               "Phase",
               new_name.replace(".html", "") + ".html",
-              master.trialtypes.user[new_name]
+              master.code.user[new_name]
             );
-            if (write_response == "success") {
+            if (write_response === "success") {
               Collector.electron.fs.delete_code(
                 original_name,
                 function (response) {
-                  if (response == "success") {
+                  if (response === "success") {
                     list_code(function () {
                       $("#code_select").val(new_name);
                       $("#code_select").change();
@@ -222,13 +222,13 @@ function initiate_actions() {
     if ($("#code_select").val() !== null) {
       var content = editor.getValue();
       var name = $("#code_select").val();
-      if (typeof master.code.default[name] == "undefined") {
+      if (typeof master.code.default[name] === "undefined") {
         code_obj.save(content, name, "old");
       } else {
         Collector.custom_alert(
-          "You cannot overwrite default trialtypes. Would you like to create a new trialtype? Copy the code from <b>" +
+          "You cannot overwrite default code files. Would you like to create a new code file? Copy the code from <b>" +
             name +
-            "</b> to a new trialtype if you want to make changes"
+            "</b> to a new code file if you want to make changes"
         );
       }
     }
@@ -237,7 +237,7 @@ function initiate_actions() {
     var old_code = $(this).attr("previousValue");
     if (
       (old_code !== "") &
-      (Object.keys(master.code.default).indexOf(old_code) == -1)
+      (Object.keys(master.code.default).indexOf(old_code) === -1)
     ) {
       code_obj.save(master.code.user[old_code], old_code, "old");
     }
@@ -255,7 +255,7 @@ function initiate_actions() {
       );
       graphic_editor_obj.clean_canvas();
 
-      load_trialtype_mods();
+      load_code_mods();
 
       $("#view_code_btn").removeClass("btn-outline-primary");
       $("#view_code_btn").addClass("btn-primary");
@@ -273,18 +273,18 @@ function initiate_actions() {
       $("#ACE_editor").show();
       master.code.file = code_file;
 
-      if (typeof master.code.default[code_file] == "undefined") {
+      if (typeof master.code.default[code_file] === "undefined") {
         user_default = "user";
       } else {
         user_default = "default";
       }
 
       $("#code_select").removeClass("user_code");
-      $("#code_select").removeClass("default_trialtype");
-      if (user_default == "user") {
+      $("#code_select").removeClass("default_code_file");
+      if (user_default === "user") {
         $("#code_select").addClass("user_code");
       } else {
-        $("#code_select").addClass("default_trialtype");
+        $("#code_select").addClass("default_code_file");
       }
       code_obj.load_file(user_default);
     }
@@ -303,10 +303,10 @@ function initiate_actions() {
     }
   });
   $("#view_graphic_btn").on("click", function () {
-    var trialtype = master.code.file;
-    if (typeof master.code.graphic.files[trialtype] == "undefined") {
+    var code_file = master.code.file;
+    if (typeof master.code.graphic.files[code_file] === "undefined") {
       bootbox.alert(
-        "This trialtype was not created using the graphic editor, so cannot be edited with it"
+        "This code_file was not created using the graphic editor, so cannot be edited with it"
       );
     } else {
       if ($("#view_graphic_btn").hasClass("btn-primary")) {

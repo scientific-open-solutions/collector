@@ -19,7 +19,7 @@ online_data_obj = {
   },
   save_queue_add: function (save_queue_item) {
     online_data_obj.save_queue.push(save_queue_item);
-    if (online_data_obj.save_queue.length == 1) {
+    if (online_data_obj.save_queue.length === 1) {
       //need to initiate run_save as it stopped before you added this item
       online_data_obj.run_save();
     }
@@ -30,8 +30,8 @@ Project = {
   activate_pipe: function () {
     var this_function = Project.pipeline.shift();
     if (
-      (Project.resume == false) |
-      (Project.start_functions.indexOf(this_function) == -1)
+      (Project.resume === false) |
+      (Project.start_functions.indexOf(this_function) === -1)
     ) {
       if (typeof this_function !== "undefined") {
         window[this_function]();
@@ -82,7 +82,7 @@ Project = {
     if (document.URL.indexOf("localhost") !== -1) {
       if (
         typeof parent.dropbox_developer !== "undefined" &&
-        parent.dropbox_developer == true
+        parent.dropbox_developer === true
       ) {
         return "github";
       } else {
@@ -108,7 +108,7 @@ Project = {
 
     for (var i = 0; i < project_json.inputs.length; i++) {
       if (
-        $("input[name='" + project_json.inputs[i].name + "']:checked").length ==
+        $("input[name='" + project_json.inputs[i].name + "']:checked").length ===
         0
       ) {
         trial_inputs[project_json.inputs[i].name] =
@@ -122,13 +122,13 @@ Project = {
     }
 
     this_proc = project_json.parsed_proc[project_json.trial_no];
-    if (typeof project_json.parsed_stim[this_proc.item] == "undefined") {
+    if (typeof project_json.parsed_stim[this_proc.item] === "undefined") {
       this_stim = {};
     } else {
       this_stim = project_json.parsed_stim[this_proc.item];
     }
 
-    if (this_stim == null) {
+    if (this_stim === null) {
       this_stim = {};
     }
 
@@ -148,7 +148,7 @@ Project = {
     response_data[post_string + "_screen_height"] = screen.height;
     response_data[post_string + "_screen_width"] = screen.width;
 
-    if (window.innerHeight == screen.height) {
+    if (window.innerHeight === screen.height) {
       response_data[post_string + "_fullscreen"] = true;
     } else {
       response_data[post_string + "_fullscreen"] = false;
@@ -180,14 +180,14 @@ Project = {
       $("#trial" + project_json.trial_no)
         .contents()
         .children()
-        .find("iframe").length ==
+        .find("iframe").length ===
       project_json.post_no + 1
     ) {
       $("#trial" + project_json.trial_no).remove();
       project_json.responses.push(project_json.this_trial);
       if (
-        (project_json.trial_no == project_json.parsed_proc.length - 1) &
-        (typeof go_to_info == "undefined")
+        (project_json.trial_no === project_json.parsed_proc.length - 1) &
+        (typeof go_to_info === "undefined")
       ) {
         not_final_trial = false;
         final_trial();
@@ -275,11 +275,11 @@ Project = {
   },
 
   generate_trial: function (trial_no, post_no) {
-    if (typeof project_json.parsed_proc[trial_no] == "undefined") {
+    if (typeof project_json.parsed_proc[trial_no] === "undefined") {
       return false;
     }
 
-    post_no = post_no == 0 ? "" : "post " + post_no + " ";
+    post_no = post_no === 0 ? "" : "post " + post_no + " ";
     this_proc = project_json.parsed_proc[trial_no];
     this_phase = project_json.code[this_proc[post_no + "code"]];
 
@@ -384,7 +384,7 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
   },
 
   go_to: function (new_trial_no, proc_no) {
-    if (typeof proc_no == "undefined") {
+    if (typeof proc_no === "undefined") {
       proc_no = 0;
     }
     Project.finish_phase([new_trial_no - 1, proc_no]);
@@ -401,7 +401,7 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
         write_phase_iframe(index);
       }
     }
-    if (typeof project_json.responses[project_json.trial_no] == "undefined") {
+    if (typeof project_json.responses[project_json.trial_no] === "undefined") {
       project_json.responses[project_json.trial_no] = {};
     }
     project_json.this_trial[
@@ -417,7 +417,7 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
         .children()
         .find("iframe")
         .filter(function (element) {
-          return element == project_json.post_no;
+          return element === project_json.post_no;
         })[0];
       this_post_iframe.style.visibility = "visible";
 
@@ -471,7 +471,7 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
 
       //detect if max time exists and start timer
       var post_val;
-      if (project_json.post_no == 0) {
+      if (project_json.post_no === 0) {
         post_val = "";
       } else {
         post_val = "post " + project_json.post_no + " ";
@@ -480,7 +480,7 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
       if (
         typeof project_json.parsed_proc[project_json.trial_no][
           post_val + "max time"
-        ] == "undefined"
+        ] === "undefined"
       ) {
         max_time = "user";
       } else {
@@ -494,8 +494,8 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
         var this_post_no = project_json.post_no;
         Project.trial_timer = new Collector.timer(function () {
           if (
-            this_trial_no == project_json.trial_no &&
-            this_post_no == project_json.post_no
+            this_trial_no === project_json.trial_no &&
+            this_post_no === project_json.post_no
           ) {
             Project.finish_phase();
           }
@@ -504,7 +504,7 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
       participant_backup();
 
       var this_timeout = project_json.time_outs.filter(function (row) {
-        return row.trial_no == parseFloat(project_json.trial_no);
+        return row.trial_no === parseFloat(project_json.trial_no);
       });
 
       if (this_timeout.length !== 0) {
@@ -552,7 +552,7 @@ function cancelFullscreen() {
 function clean_this_condition(this_cond) {
   this_cond.download = clean_var(this_cond.download, "on");
   this_cond.participant_id = clean_var(this_cond.participant_id, "on");
-  if (typeof this_cond.buffer == "undefined") {
+  if (typeof this_cond.buffer === "undefined") {
     this_cond.buffer = 5;
   }
   return this_cond;
@@ -573,7 +573,7 @@ function clean_code() {
 }
 
 function clean_var(this_variable, default_value) {
-  if (typeof this_variable == "undefined") {
+  if (typeof this_variable === "undefined") {
     this_variable = default_value;
   } else {
     this_variable = this_variable.toLowerCase();
@@ -582,7 +582,7 @@ function clean_var(this_variable, default_value) {
 }
 
 function create_project_json_variables() {
-  if (typeof project_json.trial_no == "undefined") {
+  if (typeof project_json.trial_no === "undefined") {
     project_json.this_trial = {};
     project_json.uninitiated_stims = [];
     project_json.uninitiated_stims_sum = 0;
@@ -592,7 +592,7 @@ function create_project_json_variables() {
     project_json.progress_bar_visible = true; //not doing anything at the moment
     project_json.trial_no = 0;
     project_json.post_no = 0;
-    if (typeof project_json.responses == "undefined") {
+    if (typeof project_json.responses === "undefined") {
       project_json.responses = [];
     }
   }
@@ -687,7 +687,7 @@ function final_trial() {
         );
       });
       var download_at_end = project_json.this_condition.download_at_end;
-      if (download_at_end == undefined) {
+      if (download_at_end === undefined) {
         download_at_end = "on";
       }
       if (
@@ -704,7 +704,7 @@ function final_trial() {
       }
       $("#project_div").append("<div id='download_div'></div>");
 
-      if (download_at_end == "on") {
+      if (download_at_end === "on") {
         $("#download_div").html(
           "<h1 class='text-danger'>" +
             "Please wait while we confirm that all your data has been saved" +
@@ -715,7 +715,7 @@ function final_trial() {
             "</div>" +
             "<h3 class='text-primary'>Please do not close this window until it has been confirmed that the researcher has been e-mailed your data (or you have downloaded the data yourself that you will e-mail the researcher). If you do not get a prompt to do this within 30 seconds, press CTRL-S and you should be able to directly download your data.</h3>"
         );
-      } else if (download_at_end == "off") {
+      } else if (download_at_end === "off") {
         // do nothing
       }
       function online_save_check() {
@@ -795,13 +795,13 @@ function final_trial() {
 
 function full_screen() {
   if (typeof project_json.this_condition.fullscreen !== "undefined") {
-    if (project_json.this_condition.fullscreen == "on") {
+    if (project_json.this_condition.fullscreen === "on") {
       var elem = $(document.body);
 
       if (
         window.fullScreen ||
-        (window.innerWidth == screen.width &&
-          window.innerHeight == screen.height)
+        (window.innerWidth === screen.width &&
+          window.innerHeight === screen.height)
       ) {
         // don't need to ask
       } else {
@@ -832,7 +832,7 @@ function get_gets() {
   }
   var prmstr = window.location.search.substr(1);
   Project.get_vars =
-    prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};
+    prmstr !== null && prmstr !== "" ? transformToAssocArray(prmstr) : {};
 
   // maybe the following is left over from the simulator?
   if (typeof Project.get_vars.name !== "undefined") {
@@ -840,7 +840,7 @@ function get_gets() {
   } else {
     exp_condition = "";
   }
-  if (Project.get_vars.platform == "preview") {
+  if (Project.get_vars.platform === "preview") {
     online_data_obj.finished_and_stored = true;
   }
   Project.activate_pipe();
@@ -923,9 +923,9 @@ function insert_start() {
 
   var this_proc = project_json.parsed_proc;
   if (
-    Project.get_vars.platform == "preview" ||
+    Project.get_vars.platform === "preview" ||
     (typeof project_json.this_condition.skip_quality !== "undefined" &&
-      project_json.this_condition.skip_quality.toLowerCase() == "yes")
+      project_json.this_condition.skip_quality.toLowerCase() === "yes")
   ) {
     this_proc = add_to_start(this_proc, "quality_preview_start");
     load_quality_checks([
@@ -941,7 +941,7 @@ function insert_start() {
 
     if (
       typeof project_json.this_condition.zoom_check !== "undefined" &&
-      project_json.this_condition.zoom_check.toLowerCase() == "no"
+      project_json.this_condition.zoom_check.toLowerCase() === "no"
     ) {
       //skip this
     } else {
@@ -952,7 +952,7 @@ function insert_start() {
 
     if (
       typeof project_json.this_condition.age_check !== "undefined" &&
-      project_json.this_condition.age_check.toLowerCase() == "no"
+      project_json.this_condition.age_check.toLowerCase() === "no"
     ) {
       //skip this
     } else {
@@ -1042,7 +1042,7 @@ function parse_sheets() {
         $.get(proc_url, function (proc_sheet_content) {
           project_json.parsed_proc = Collector.PapaParsed(proc_sheet_content);
           proc_stim_loaded[1] = "procedure";
-          if (proc_stim_loaded.join("-") == "stimuli-procedure") {
+          if (proc_stim_loaded.join("-") === "stimuli-procedure") {
             Project.activate_pipe();
           }
         });
@@ -1056,7 +1056,7 @@ function parse_sheets() {
             Collector.PapaParsed(stim_sheet_content)
           );
           proc_stim_loaded[0] = "stimuli";
-          if (proc_stim_loaded.join("-") == "stimuli-procedure") {
+          if (proc_stim_loaded.join("-") === "stimuli-procedure") {
             Project.activate_pipe();
           }
         });
@@ -1067,14 +1067,14 @@ function parse_sheets() {
       project_json.parsed_proc = Collector.PapaParsed(
         project_json.all_procs[proc_sheet_name]
       );
-      if (proc_stim_loaded.join("-") == "stimuli-procedure") {
+      if (proc_stim_loaded.join("-") === "stimuli-procedure") {
         Project.activate_pipe();
       }
       project_json.parsed_stim = [null, null].concat(
         Collector.PapaParsed(project_json.all_stims[stim_sheet_name])
       );
       proc_stim_loaded[0] = "stimuli";
-      if (proc_stim_loaded.join("-") == "stimuli-procedure") {
+      if (proc_stim_loaded.join("-") === "stimuli-procedure") {
         Project.activate_pipe();
       }
       break;
@@ -1134,13 +1134,13 @@ function parse_current_proc() {
 
     for (var j = 0; j < this_proc.length; j++) {
       var row = this_proc[j];
-      if (row.item.indexOf(" to ") == -1 && row.item.indexOf(",") == -1) {
+      if (row.item.indexOf(" to ") === -1 && row.item.indexOf(",") === -1) {
         filled_proc.push(row);
       } else {
         var items_array = row.item.split(",");
         var complete_items_array = [];
         items_array.forEach(function (item) {
-          if (item.indexOf(" to ") == -1) {
+          if (item.indexOf(" to ") === -1) {
             complete_items_array.push(item);
           } else {
             item_start_end = item.split(" to ");
@@ -1210,20 +1210,20 @@ function post_welcome(participant_code, id_error) {
 }
 
 function post_welcome_data(returned_data) {
-  if (returned_data == "blank") {
+  if (returned_data === "blank") {
     id_error = "skip";
   }
 
-  if ((returned_data == "blank") | (returned_data.indexOf("error") !== -1)) {
-    if (id_error == "skip") {
+  if ((returned_data === "blank") | (returned_data.indexOf("error") !== -1)) {
+    if (id_error === "skip") {
       $("#welcome_div").hide();
       $("#post_welcome").show();
       $("#project_div").show();
       full_screen();
-    } else if (id_error == "random") {
+    } else if (id_error === "random") {
       var this_code = Math.random().toString(36).substr(2, 16);
       post_welcome(this_code, "random");
-    } else if (id_error == false) {
+    } else if (id_error === false) {
       bootbox.confirm(returned_data, function (response) {
         if (response) {
           $("#welcome_div").hide();
@@ -1241,7 +1241,7 @@ function precrypted_data(decrypted_data, message) {
   response_headers = [];
   responses_csv.forEach(function (row) {
     Object.keys(row).forEach(function (item) {
-      if (response_headers.indexOf(item) == -1) {
+      if (response_headers.indexOf(item) === -1) {
         response_headers.push(item);
       }
     });
@@ -1283,22 +1283,22 @@ function process_welcome() {
      * skip participant id? (and thus start_message)
      */
     var pp_id_setting;
-    if (Project.get_vars.platform == "preview") {
+    if (Project.get_vars.platform === "preview") {
       pp_id_setting = "random";
     } else {
       pp_id_setting = project_json.this_condition.participant_id;
     }
 
     // put in a participant ID that is clearly not unique (e.g. "notUnique").
-    if (pp_id_setting == "off") {
+    if (pp_id_setting === "off") {
       $("#participant_code").val("notUnique");
       //"skip" means that it will automatically accept non unique ids
       post_welcome("notUnique", "skip");
-    } else if (pp_id_setting == "random") {
+    } else if (pp_id_setting === "random") {
       var this_code = Math.random().toString(36).substr(2, 16);
       $("#participant_code").val(this_code);
       post_welcome(this_code, "random");
-    } else if (pp_id_setting == "on") {
+    } else if (pp_id_setting === "on") {
       $("#loading_project_json").fadeOut(500);
       $("#researcher_message").fadeIn(2000);
       $("#participant_id_div").show(1000);
@@ -1348,7 +1348,7 @@ function requestFullScreen(element) {
 function select_condition() {
   var conditions = Collector.PapaParsed(project_json.conditions);
   project_json.this_condition = conditions.filter(function (row) {
-    return row.name == Project.get_vars.name;
+    return row.name === Project.get_vars.name;
   })[0];
 
   /*
@@ -1356,7 +1356,7 @@ function select_condition() {
    */
   if (
     typeof project_json.this_condition.mobile !== "undefined" &&
-    project_json.this_condition.mobile.toLowerCase() == "no" &&
+    project_json.this_condition.mobile.toLowerCase() === "no" &&
     window.mobilecheck()
   ) {
     alert(
@@ -1417,7 +1417,7 @@ function shuffle_start_exp() {
 
   shuffle_levels.forEach(function (shuffle_level) {
     for (var i = 0; i < project_json.parsed_proc.length; i++) {
-      if (project_json.parsed_proc[i][shuffle_level] == "") {
+      if (project_json.parsed_proc[i][shuffle_level] === "") {
         project_json.parsed_proc[i][shuffle_level] = "off";
       }
     }
@@ -1432,7 +1432,7 @@ function shuffle_start_exp() {
         if (
           project_json.parsed_proc[i][shuffle_level] !==
             project_json.parsed_proc[i - 1][shuffle_level] ||
-          project_json.parsed_proc[i][shuffle_level] == "off"
+          project_json.parsed_proc[i][shuffle_level] === "off"
         ) {
           shuffle_block_names.push(project_json.parsed_proc[i][shuffle_level]);
           shuffle_block_rows.push([project_json.parsed_proc[i]]);
@@ -1458,7 +1458,7 @@ function shuffle_start_exp() {
       //replace original index with numbers
       unique_shuffle_block_names.forEach(function (this_name, name_no) {
         shuffled_block_names.forEach(function (item, item_no) {
-          if (item == this_name) {
+          if (item === this_name) {
             shuffled_block_names[item_no] = name_no;
           }
         });
@@ -1472,7 +1472,7 @@ function shuffle_start_exp() {
 
       unique_shuffle_block_names.forEach(function (this_name, name_no) {
         shuffled_block_names.forEach(function (item, item_no) {
-          if (item == name_no) {
+          if (item === name_no) {
             shuffled_block_names[item_no] = this_name;
           }
         });
@@ -1503,7 +1503,7 @@ function shuffle_start_exp() {
   shuffle_array = {};
   project_json.parsed_proc.forEach(function (row, index) {
     var this_shuffle = row["shuffle 1"];
-    if (typeof shuffle_array[this_shuffle] == "undefined") {
+    if (typeof shuffle_array[this_shuffle] === "undefined") {
       shuffle_array[this_shuffle] = [index];
     } else {
       shuffle_array[this_shuffle].push(index);
@@ -1520,12 +1520,12 @@ function shuffle_start_exp() {
       var this_pos = shuffle_array[this_shuffle].pop();
       return project_json.parsed_proc[this_pos];
     }
-    if (row["shuffle 1"] == "off") {
+    if (row["shuffle 1"] === "off") {
       return project_json.parsed_proc[original_index];
     }
   });
   project_json.parsed_proc = new_proc;
-  if (typeof project_json.responses == "undefined") {
+  if (typeof project_json.responses === "undefined") {
     project_json.responses = [];
   }
 
@@ -1561,7 +1561,7 @@ function start_restart() {
             var prehashed_code = window.localStorage.getItem("prehashed_code");
             $("#completion_code").val(completion_code);
             $("#prehashed_code").val(prehashed_code);
-            if (participant_code == "") {
+            if (participant_code === "") {
               bootbox.prompt(
                 "What ID did you use?",
                 function (this_participant_code) {
@@ -1606,7 +1606,7 @@ function start_project() {
 
   //detect if resuming
 
-  if (Object.keys(project_json) == 0) {
+  if (Object.keys(project_json).length === 0) {
     switch (Project.get_vars.platform) {
       case "onlinepreview":
       case "localhost":
@@ -1642,7 +1642,7 @@ function start_project() {
            * wrap into function that will automatically keep trying until you have succesfully loaded the experiment!
            */
           function recursive_load_experiment(random_code) {
-            if (typeof random_code == "undefined") {
+            if (typeof random_code === "undefined") {
               random_code = "";
             }
             $.get(
@@ -1692,7 +1692,7 @@ function start_project() {
 }
 
 function write_phase_iframe(index) {
-  if (typeof project_json.parsed_proc[index] == "undefined") {
+  if (typeof project_json.parsed_proc[index] === "undefined") {
     return null;
   }
 
@@ -1784,7 +1784,7 @@ function write_phase_iframe(index) {
       }
     );
 
-    if (typeof stim_interval == "undefined") {
+    if (typeof stim_interval === "undefined") {
       //need code here to deal with "buffering" when there are no images.
       stim_interval = setInterval(function () {
         project_json.initiated_stims = 0;
@@ -1817,11 +1817,11 @@ function write_phase_iframe(index) {
           100 -
           project_json.initiated_stims / project_json.uninitiated_stims_sum;
         $("#stim_listing").css("width", completion + "%");
-        if ((completion == 100) | (project_json.uninitiated_stims_sum == 0)) {
+        if ((completion === 100) | (project_json.uninitiated_stims_sum === 0)) {
           clearInterval(stim_interval);
           $("#loading_div").hide();
           $("#stim_progress").fadeOut(1000);
-          if ($("#calibrate_div").is(":visible") == false) {
+          if ($("#calibrate_div").is(":visible") === false) {
             $("#project_div").fadeIn(500);
           }
           if (project_json.wait_to_proc) {
@@ -1861,7 +1861,7 @@ window.onbeforeunload = function () {
     case "localhost":
       break;
     default:
-      if (online_data_obj.finished_and_stored == false) {
+      if (online_data_obj.finished_and_stored === false) {
         bootbox.confirm(
           "Would you like to leave the experiment early? If you didn't just download your data there's a risk of you losing your progress.",
           function (result) {
@@ -1890,7 +1890,7 @@ String.prototype.replaceAll = function (str1, str2, ignore) {
       str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"),
       ignore ? "gi" : "g"
     ),
-    typeof str2 == "string" ? str2.replace(/\$/g, "$$$$") : str2
+    typeof str2 === "string" ? str2.replace(/\$/g, "$$$$") : str2
   );
 };
 

@@ -54,8 +54,7 @@ function cleanEmptyFoldersRecursively(folder) {
     // we may have parent folder empty now
     files = fs.readdirSync(folder);
   }
-
-  if (files.length == 0) {
+  if (files.length === 0 & folder.indexOf("User/Projects") === -1) {
     console.log("removing: ", folder);
     fs.rmdirSync(folder);
     return;
@@ -65,7 +64,7 @@ function cleanEmptyFoldersRecursively(folder) {
 function user() {
   var user = JSON.parse(fs.readFileSync(root_dir + "/User.json"));
 
-  if (typeof user.current.path == "undefined") {
+  if (typeof user.current.path === "undefined") {
     if (user.current.repo !== "") {
       user.current.path =
         user.repos[user.current.org][user.current.repo].path + "/";
