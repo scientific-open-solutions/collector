@@ -7,8 +7,8 @@
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "test": "jest --watch",
-    "coverage": "jest --coverage"
+    "test": "jest",
+    "coverage": "jest"
   },
   "repository": "https://github.com/scientific-open-solutions/collector",
   "keywords": [
