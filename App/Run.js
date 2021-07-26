@@ -504,8 +504,10 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
       participant_backup();
 
       var this_timeout = project_json.time_outs.filter(function (row) {
-        return row.trial_no === parseFloat(project_json.trial_no);
+        return parseFloat(row.trial_no) === parseFloat(project_json.trial_no);
       });
+      console.log("this_timeout");
+      console.log(this_timeout);
 
       if (this_timeout.length !== 0) {
         //should have  && this_timeout.length == 1 - need to deal with when there are multiple

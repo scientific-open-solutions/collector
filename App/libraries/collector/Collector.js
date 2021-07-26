@@ -354,9 +354,9 @@ Collector = {
   },
   start: function(){
     user = JSON.parse(Collector.electron.fs.load_user());
-    if(typeof(user.current) == "undefined" || typeof(user.current.path) == "undefined"){
+    if(typeof(user.current) === "undefined" || typeof(user.current.path) === "undefined"){
       var github_dialog_exists = setInterval(function(){
-        if($("#github_dialog").length == 1){
+        if($("#github_dialog").length === 1){
           clearInterval(github_dialog_exists);
           $("#github_dialog").show();
           bootbox.alert("It looks like you haven't yet included any github repositories for your projects. You need to have a github account and organisation to create a project. Once you've done that (see our <a href='https://docs.google.com/document/d/1SKYIJF1dAjMDS6EHUIwfZm2KQVOzx17S6LbU_oSGxdE/edit?usp=sharing' target='_blank'>documents</a>) you can use Collector to build your projects.");

@@ -1,1 +1,1 @@
-const run = require('../ElectronModules/git.js');
+const run = require("../ElectronModules/git.js");
