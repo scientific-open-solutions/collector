@@ -275,7 +275,7 @@ ipc.on("git_exists", (event, args) => {
 });
 
 ipc.on("git_locate_repo", (event, args) => {
-  event.returnValue = user().repos[args.org][args.repo].path;
+  event.returnValue = user().repos[args.org][args.repo].path.replaceAll("\\","/");
 });
 
 ipc.on("git_pages", (event, args) => {

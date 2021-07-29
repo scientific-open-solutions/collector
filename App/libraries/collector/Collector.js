@@ -1,7 +1,11 @@
 function correct_master(){
-  master = JSON.parse(
-    Collector.electron.fs.read_file("", "master.json")
-  );
+  master = Collector.electron.fs.read_file("", "master.json");
+  if(master === ""){
+    /* load from default */
+    master = Collector.electron.fs.read_default("", "master.json")
+  }
+  master = JSON.parse(master);
+
   /*
   * missing objects
   */

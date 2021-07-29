@@ -68,6 +68,7 @@
           class="btn btn-outline-info canvas_btn"
           align="left"
           id="new_text_btn"
+          value="Text"
         >
           Text
         </button>
@@ -75,6 +76,7 @@
           class="btn btn-outline-secondary canvas_btn"
           align="left"
           id="new_audio_btn"
+          value="Audio"
         >
           Audio
         </button>
@@ -82,6 +84,7 @@
           class="btn btn-outline-success canvas_btn"
           align="left"
           id="new_image_btn"
+          value="Image"
         >
           Image
         </button>
@@ -89,6 +92,7 @@
           class="btn btn-outline-danger canvas_btn"
           align="left"
           id="new_video_btn"
+          value="Video"
         >
           Video
         </button>
@@ -96,6 +100,7 @@
           class="btn btn-outline-dark canvas_btn"
           align="left"
           id="new_input_btn"
+          value="Input"
         >
           Input
         </button>
@@ -104,6 +109,7 @@
           align="right"
           id="canvas_click_btn"
           style="display: none"
+          value="Click"
         >
           Click
         </button>
@@ -377,7 +383,7 @@
         }
       );
 
-      var element_type = $(".canvas_btn.btn-primary").html();
+      var element_type = $(".canvas_btn.btn-primary").val();
 
       if (typeof element_type !== "undefined" && element_type !== "Click") {
         graphic_editor_obj.create_element(element_type);

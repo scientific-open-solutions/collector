@@ -242,7 +242,7 @@ ipc.on("fs_read_default", (event, args) => {
   } else {
     try {
       content = fs.readFileSync(
-        "Default/Default" + args.user_folder + "/" + args.this_file + "/",
+        "Default/" + args.user_folder + "/" + args.this_file + "/",
         "utf8"
       );
       event.returnValue = content;

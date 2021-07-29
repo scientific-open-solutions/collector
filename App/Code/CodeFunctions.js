@@ -181,7 +181,7 @@ function list_code(to_do_after) {
 
       switch (Collector.detect_context()) {
         case "localhost":
-          var trial_content = Collector.electron.fs.read_default("Code", item);
+          var trial_content = Collector.electron.fs.read_default("DefaultCode", item);
           master.code.default[item.toLowerCase().replace(".html", "")] =
             trial_content;
           get_default(list);

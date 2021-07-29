@@ -33,7 +33,7 @@ function load_default_surveys() {
     case "localhost":
       default_survey_files.forEach(function (default_survey) {
         survey_content = Collector.electron.fs.read_default(
-          "Surveys",
+          "DefaultSurveys",
           default_survey
         );
         master.surveys.default_surveys[default_survey] =
@@ -346,7 +346,7 @@ function preview_survey(this_survey) {
     $("#survey_preview").css("width", window.innerWidth);
   }
 
-  survey_template = Collector.electron.fs.read_default("Code", "survey.html");
+  survey_template = Collector.electron.fs.read_default("DefaultCode", "survey.html");
   survey_template = survey_template.replace(
     '"{{survey}}"',
     JSON.stringify(this_survey)
