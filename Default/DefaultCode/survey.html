@@ -1,7 +1,12 @@
 <!--
+
+  /*
+  * Collector Survey 3.1.0
+  */
+
   Author: Dr. Anthony Haffey
 
-  Collector: Cat/Kitten/Cat release
+  Collector: Cat release
   A program for running experiments on the web
   Copyright 2012-2018 Mikey Garcia & Nate Kornell
 
@@ -480,7 +485,7 @@ $(function() {
       parent.master.surveys.preview
     ) {
       survey_content = survey;
-      survey_obj.mods = parent.master.mods;
+      survey_obj.code = parent.master.phasetypes.user;
     } else {
       survey = survey.toLowerCase().replace(".csv", "") + ".csv";
 
@@ -489,14 +494,14 @@ $(function() {
         typeof parent.parent.project_json.surveys[survey] !== "undefined"
       ) {
         survey_content = parent.parent.project_json.surveys[survey];
-        survey_obj.mods = parent.parent.project_json.mods;
+        survey_obj.code = parent.parent.project_json.code;
       } else if (
         typeof parent.parent.project_json.surveys !== "undefined" &&
         typeof parent.parent.project_json.surveys[survey.replace(".csv", "")]
       ) {
         survey_content =
           parent.parent.project_json.surveys[survey.replace(".csv", "")];
-        survey_obj.mods = parent.parent.project_json.mods;
+        survey_obj.code = parent.parent.project_json.code;
       } else {
         bootbox.alert("Survey " + survey + " doesn't appear to exist");
       }
@@ -596,11 +601,16 @@ $(function() {
       }
 
       if (
-        typeof survey_obj.mods !== "undefined" &&
-        typeof survey_obj.mods[row.type] !== "undefined"
+        typeof survey_obj.code !== "undefined" &&
+        typeof survey_obj.code[row.type] !== "undefined"
       ) {
-        var mod_html = survey_obj.mods[row.type].contents;
-
+        console.log("row.type");
+        console.log(row.type);
+        console.log("survey_obj.code");
+        console.log(survey_obj.code);
+        var mod_html = survey_obj.code[row.type];
+        console.log("mod_html");
+        console.log(mod_html);
         Object.keys(row).forEach(function (attribute) {
           mod_html = mod_html.replaceAll(
             "{{" + attribute + "}}",

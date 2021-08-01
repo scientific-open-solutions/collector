@@ -14,36 +14,63 @@ function correct_master(){
 
   master.surveys.user_surveys = Collector.missing_object(master.surveys.user_surveys);
 
-  master.code               = Collector.missing_object(master.code);
-  master.code.graphic       = Collector.missing_object(master.code.graphic);
-  master.code.graphic.files = Collector.missing_object(master.code.graphic.files);
+  if(typeof(master.phasetypes) !== "undefined"){
+    master.phasetypes = master.phasetypes;
+    delete(master.phasetypes);
+  }
+
+  /*
+  * "trialtype" --> code for master
+  */
+
+  if(typeof(master.trialtypes) !== "undefined"){
+    master.phasetypes         = master.trialtypes;
+    master.phasetypes.default = master.phasetypes.default_trialtypes;
+    master.phasetypes.user    = master.phasetypes.user_codes;
+    delete(master.trialtype);
+    delete(master.trialtypes);
+    delete(master.phasetypes.default_trialtypes);
+    delete(master.phasetypes.user_codes);
+  }
+  master.phasetypes         = Collector.missing_object(master.phasetypes);
+  master.phasetypes.default = Collector
+    .missing_object(master.phasetypes.default);
+  master.phasetypes.user = Collector
+    .missing_object(master.phasetypes.user);
+  master.phasetypes.graphic = Collector
+    .missing_object(master.phasetypes.graphic);
+  master.phasetypes.graphic.files = Collector
+    .missing_object(master.phasetypes.graphic.files);
 
   /*
   * studies --> projects
   */
 
-  if(typeof(master.project_mgmt) == "undefined"){
-    master.project_mgmt = master.exp_mgmt;
-
-    master.project_mgmt = Collector.missing_object(master.project_mgmt);
-
-    if(typeof(master.project_mgmt.experiment) !== "undefined"){
-      master.project_mgmt.project  = master.project_mgmt.experiment;
+  if(typeof(master.projects) === "undefined"){
+    if(typeof(master.exp_mgmt) !== "undefined"){
+      master.projects = master.exp_mgmt;
+    } else {
+      master.projects = master.project_mgmt;
     }
-    master.project_mgmt.projects = master.project_mgmt.experiments;
-    delete(master.project_mgmt.experiment);
-    delete(master.project_mgmt.experiments);
+
+    master.projects = Collector.missing_object(master.projects);
+
+    if(typeof(master.projects.experiment) !== "undefined"){
+      master.projects.project  = master.projects.experiment;
+    }
+    master.projects.projects = master.projects.experiments;
   }
+  delete(master.project_mgmt);
+  delete(master.projects.experiment);
+  delete(master.projects.experiments);
 
-  master.project_mgmt.projects = Collector.missing_object(master.project_mgmt.projects);
-  master.mods = Collector.missing_object(master.mods);
+  master.projects.projects = Collector.missing_object(master.projects.projects);
 
-
-  var projects = Object.keys(master.project_mgmt.projects);
+  var projects = Object.keys(master.projects.projects);
   projects.forEach(function(project){
 
     try{
-      var this_project = master.project_mgmt.projects[project];
+      var this_project = master.projects.projects[project];
 
 
       /*
@@ -51,7 +78,7 @@ function correct_master(){
       */
       var all_procs = Object.keys(this_project.all_procs);
       all_procs.forEach(function(this_proc){
-        if(typeof(this_project.all_procs[this_proc]) == "object"){
+        if(typeof(this_project.all_procs[this_proc]) === "object"){
           this_project.all_procs[this_proc] = Papa.unparse(this_project.all_procs[this_proc]);
         }
         this_project.all_procs[this_proc] = this_project
@@ -70,49 +97,37 @@ function correct_master(){
 
   });
 
-  /*
-  * "trialtype" --> code for master
-  */
-  if(typeof(master.trialtypes) !== "undefined"){
-    master.code         = master.trialtypes;
-    master.code.default = master.code.default_trialtypes;
-    master.code.file    = master.code.file;
-    master.code.user    = master.code.user_codes;
-    delete(master.trialtype);
-    delete(master.trialtypes);
-    delete(master.code.default_trialtypes);
-    delete(master.code.user_codes);
-  }
-  master.code.default = Collector.missing_object(master.code.default);
-  master.code.user = Collector.missing_object(master.code.user);
 
-  if(typeof(master.code.user_trialtypes) !== "undefined"){
-    Object.keys(master.code.user_trialtypes).forEach(function(item){
-      if(typeof(master.code.user[item]) == "undefined"){
-        master.code.user[item] = master.code.user_trialtypes[item];
+
+  if(typeof(master.phasetypes.user_trialtypes) !== "undefined"){
+    Object.keys(master.phasetypes.user_trialtypes).forEach(function(item){
+      if(typeof(master.phasetypes.user[item]) === "undefined"){
+        master.phasetypes.user[item] = master.phasetypes.user_trialtypes[item];
       }
     });
   }
-  master.code.graphic       = Collector.missing_object(master.code.graphic);
-  master.code.graphic.files = Collector.missing_object(master.code.graphic.files);
+  master.phasetypes.graphic = Collector
+    .missing_object(master.phasetypes.graphic);
+  master.phasetypes.graphic.files = Collector
+    .missing_object(master.phasetypes.graphic.files);
 
-  if(typeof(master.code.graphic.files) == "undefined" &
-     typeof(master.code.graphic.trialtypes) !== "undefined"){
-    master.code.graphic.files = master.code.graphic.trialtypes;
+  if(typeof(master.phasetypes.graphic.files) === "undefined" &
+     typeof(master.phasetypes.graphic.trialtypes) !== "undefined"){
+    master.phasetypes.graphic.files = master.phasetypes.graphic.trialtypes;
   }
 
 
   /*
   * remove any duplicates of default code fiels in the user
   */
-  var default_code_files = Object.keys(master.code.default);
+  var default_code_files = Object.keys(master.phasetypes.default);
   default_code_files.forEach(function(default_file){
-    delete(master.code.user[default_file]);
+    delete(master.phasetypes.user[default_file]);
   });
 }
 
 function correct_user(){
-  if(typeof(user.data_folder) == "undefined" || user.data_folder == ""){
+  if(typeof(user.data_folder) === "undefined" || user.data_folder === ""){
     bootbox.confirm("You don't (yet) have a folder where we'll put your data <b>when you test participants <u>on this device</u></b>. You're about to be asked where you would like this data to go. Please think carefully about this to make sure that your participant data is secure.", function(result){
       if(result){
         var data_folder = Collector.electron.find_path()[0];
@@ -129,6 +144,40 @@ function correct_user(){
 }
 
 Collector = {
+  clean_string: function(this_string){
+    return this_string
+    .replaceAll(" ", "_")
+    .replaceAll(" ", "_")
+    .replaceAll("-", "_")
+    .replaceAll("@", "_at_")
+    .replaceAll(".", "_dot_")
+    .replaceAll("/", "_forward_slash_")
+    .replaceAll("\\", "_back_slash")
+    .replaceAll("'", "_single_quote_")
+    .replaceAll('"', "_double_quote_")
+    .replaceAll("|", "_pipe_")
+    .replaceAll("?", "_question_")
+    .replaceAll("#", "_hash_")
+    .replaceAll(",", "_comma_")
+    .replaceAll("[", "_square_open_")
+    .replaceAll("]", "_square_close_")
+    .replaceAll("(", "_bracket_open_")
+    .replaceAll(")", "_bracket_close_")
+    .replaceAll("*", "__")
+    .replaceAll("^", "__")
+    .replaceAll(":", "__")
+    .replaceAll(";", "__")
+    .replaceAll("%", "__")
+    .replaceAll("$", "__")
+    .replaceAll("£", "__")
+    .replaceAll("!", "__")
+    .replaceAll("`", "__")
+    .replaceAll("+", "__")
+    .replaceAll("=", "__")
+    .replaceAll("<", "__")
+    .replaceAll(">", "__")
+    .replaceAll("~", "__");
+  },
   clean_obj_keys: function(this_obj){
     Object.keys(this_obj).forEach(function(this_key){
       clean_key = this_key.toLowerCase().replace(".csv","");
@@ -144,14 +193,14 @@ Collector = {
     for(var i = 0; i < this_csv.length ; i++) {
       csv_row = this_csv[i];
       Object.keys(csv_row).forEach(function(header){
-        if(response_headers.indexOf(header) == -1){
+        if(response_headers.indexOf(header) === -1){
           response_headers.push(header);
         }
       });
     }
     for(var i =0; i < this_csv.length; i++){
       response_headers.forEach(function(this_header){
-        if(typeof(this_csv[i][this_header]) == "undefined"){
+        if(typeof(this_csv[i][this_header]) === "undefined"){
           this_csv[i][this_header] = "";
         }
       });
@@ -160,7 +209,7 @@ Collector = {
   },
   custom_alert: function(msg, duration) {
 
-    if(typeof(duration) == "undefined"){
+    if(typeof(duration) === "undefined"){
       duration = 3000;
     }
 
@@ -215,7 +264,7 @@ Collector = {
     this_alert.click(function(){
       console.log("animation_active");
       console.log(animation_active);
-      if(animation_active == true){
+      if(animation_active === true){
         animation_active = false;
         this_alert.stop();
       } else {
@@ -243,7 +292,7 @@ Collector = {
   detect_context: function(){
     //turn to false to make use of eel and python
     if(typeof(parent.dropbox_developer) !== "undefined"){
-      if(parent.dropbox_developer  ==  true){
+      if(parent.dropbox_developer  ===  true){
         return "github";
       } else {
         return "localhost";
@@ -295,7 +344,7 @@ Collector = {
     return result;
   },
   missing_object: function(this_obj){
-    if(typeof(this_obj) == "undefined"){
+    if(typeof(this_obj) === "undefined"){
       return {};
     } else {
       return this_obj;
@@ -303,7 +352,7 @@ Collector = {
   },
   PapaParsed: function(content){
     //check if parsed stylesheet
-    if(typeof(content) == "object"){
+    if(typeof(content) === "object"){
       post_parsed = Papa.parse(Papa.unparse(content),{
         beforeFirstChunk: function(chunk) {
           var rows = chunk.split( /\r\n|\r|\n/ );

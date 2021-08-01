@@ -1,13 +1,13 @@
 var navbar_names = [
   "Projects",
-  "Code",
+  "PhaseTypes",
   "Surveys",
   //"Pathway",
   "Data",
 ];
 var pages = [
   "Projects/Projects.html",
-  "Code/Code.html",
+  "PhaseTypes/PhaseTypes.html",
   "Surveys/Surveys.html",
   //"Pathways/Pathways.html",
   "Data/Data.html",

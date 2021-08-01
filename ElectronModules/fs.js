@@ -54,7 +54,7 @@ function cleanEmptyFoldersRecursively(folder) {
     // we may have parent folder empty now
     files = fs.readdirSync(folder);
   }
-  if (files.length === 0 & folder.indexOf("User/Projects") === -1) {
+  if ((files.length === 0) & (folder.indexOf("User/Projects") === -1)) {
     console.log("removing: ", folder);
     fs.rmdirSync(folder);
     return;

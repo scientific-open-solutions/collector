@@ -58,8 +58,8 @@ var isolation_map = {
   Surveys: {
     "Surveys.html": "file",
   },
-  Code: {
-    "Code.html": "file",
+  PhaseTypes: {
+    "PhaseTypes.html": "file",
     "Graphic.html": "file",
   },
   "CollectorMap.js": "file",
@@ -93,7 +93,7 @@ function this_map(this_item) {
       return item.indexOf(".") !== -1;
     });
     current_level_folders = current_level_contents.filter(function (item) {
-      return item.indexOf(".") == -1;
+      return item.indexOf(".") === -1;
     });
 
     current_level_files.forEach(function (this_file) {

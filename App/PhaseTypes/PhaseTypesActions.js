@@ -58,8 +58,8 @@ function initiate_actions() {
       return false;
     }
 
-    var current_code = Object.keys(master.code.user).concat(
-      Object.keys(master.code.default)
+    var current_code = Object.keys(master.phasetypes.user).concat(
+      Object.keys(master.phasetypes.default)
     );
     current_code = Array.from(new Set(current_code));
     if (current_code.indexOf(this_name.toLowerCase()) === -1) {
@@ -75,14 +75,14 @@ function initiate_actions() {
   }
   $("#ACE_editor").on("keyup input", function () {
     var ace_content = editor.getValue();
-    var code_file = master.code.file;
-    if (typeof master.code.user[code_file] === "undefined") {
-      master.code.user[code_file] = {
+    var code_file = master.phasetypes.file;
+    if (typeof master.phasetypes.user[code_file] === "undefined") {
+      master.phasetypes.user[code_file] = {
         files: {},
       };
     }
-    master.code.user[code_file].updated = true;
-    master.code.user[code_file] = ace_content;
+    master.phasetypes.user[code_file].updated = true;
+    master.phasetypes.user[code_file] = ace_content;
   });
 
   $("#delete_code_button").on("click", function () {
@@ -112,8 +112,8 @@ function initiate_actions() {
               if (protected_name_check(new_name)) {
                 if (valid_new_name(new_name)) {
                   var content = "";
-                  master.code.user[new_name] = content;
-                  master.code.file = new_name;
+                  master.phasetypes.user[new_name] = content;
+                  master.phasetypes.file = new_name;
                   code_obj.save(content, new_name, "new", "code");
                   editor.textInput.getElement().onkeydown = "";
                 }
@@ -128,26 +128,26 @@ function initiate_actions() {
               if (protected_name_check(new_name)) {
                 if (valid_new_name(new_name)) {
                   content = "";
-                  master.code.user[new_name] = content;
-                  master.code.file = new_name;
+                  master.phasetypes.user[new_name] = content;
+                  master.phasetypes.file = new_name;
                   code_obj.save(content, new_name, "new", "graphic");
                   $("#graphic_editor").show();
                   editor.setOption("readOnly", true);
                   editor.textInput.getElement().onkeydown =
                     graphic_editor_obj.graphic_warning;
-                  master.code.graphic.files[new_name] = {
+                  master.phasetypes.graphic.files[new_name] = {
                     elements: {},
                   };
-                  master.code.graphic.files[new_name].width = "600";
-                  master.code.graphic.files[new_name].height = "600";
-                  master.code.graphic.files[new_name]["background-color"] =
+                  master.phasetypes.graphic.files[new_name].width = "600";
+                  master.phasetypes.graphic.files[new_name].height = "600";
+                  master.phasetypes.graphic.files[new_name]["background-color"] =
                     "white";
-                  master.code.graphic.files[new_name].mouse_visible = true;
-                  master.code.graphic.files[new_name].keyboard = {
+                  master.phasetypes.graphic.files[new_name].mouse_visible = true;
+                  master.phasetypes.graphic.files[new_name].keyboard = {
                     valid_keys: "",
                     end_press: true,
                   };
-                  master.code.file = new_name;
+                  master.phasetypes.file = new_name;
                   graphic_editor_obj.update_main_settings();
                   graphic_editor_obj.clean_canvas();
 
@@ -176,7 +176,7 @@ function initiate_actions() {
   $("#rename_code_button").on("click", function () {
     var code_selected = $("#code_select").val();
 
-    if (typeof master.code.default[code_selected] !== "undefined") {
+    if (typeof master.phasetypes.default[code_selected] !== "undefined") {
       bootbox.alert("You can't rename a default code file");
     } else {
       bootbox.prompt(
@@ -188,15 +188,15 @@ function initiate_actions() {
             bootbox.alert("You already have a code file with this name");
           } else {
             var original_name = $("#code_select").val();
-            master.code.user[new_name] = master.code.user[original_name];
-            delete master.code.user[original_name];
+            master.phasetypes.user[new_name] = master.phasetypes.user[original_name];
+            delete master.phasetypes.user[original_name];
 
             $("#code_select").attr("previousvalue", "");
 
             var response = Collector.electron.fs.write_file(
               "Phase",
               new_name.replace(".html", "") + ".html",
-              master.code.user[new_name]
+              master.phasetypes.user[new_name]
             );
             if (write_response === "success") {
               Collector.electron.fs.delete_code(
@@ -222,7 +222,7 @@ function initiate_actions() {
     if ($("#code_select").val() !== null) {
       var content = editor.getValue();
       var name = $("#code_select").val();
-      if (typeof master.code.default[name] === "undefined") {
+      if (typeof master.phasetypes.default[name] === "undefined") {
         code_obj.save(content, name, "old");
       } else {
         Collector.custom_alert(
@@ -237,21 +237,21 @@ function initiate_actions() {
     var old_code = $(this).attr("previousValue");
     if (
       (old_code !== "") &
-      (Object.keys(master.code.default).indexOf(old_code) === -1)
+      (Object.keys(master.phasetypes.default).indexOf(old_code) === -1)
     ) {
-      code_obj.save(master.code.user[old_code], old_code, "old");
+      code_obj.save(master.phasetypes.user[old_code], old_code, "old");
     }
     $(this).attr("previousValue", this.value);
     var code_file = this.value;
 
-    if (typeof master.code.graphic.files[code_file] !== "undefined") {
-      master.code.file = code_file;
+    if (typeof master.phasetypes.graphic.files[code_file] !== "undefined") {
+      master.phasetypes.file = code_file;
       editor.textInput.getElement().onkeydown =
         graphic_editor_obj.graphic_warning;
 
       //clear canvas
       graphic_editor_obj.load_canvas(
-        master.code.graphic.files[code_file].elements
+        master.phasetypes.graphic.files[code_file].elements
       );
       graphic_editor_obj.clean_canvas();
 
@@ -271,9 +271,9 @@ function initiate_actions() {
 
       editor.textInput.getElement().onkeydown = "";
       $("#ACE_editor").show();
-      master.code.file = code_file;
+      master.phasetypes.file = code_file;
 
-      if (typeof master.code.default[code_file] === "undefined") {
+      if (typeof master.phasetypes.default[code_file] === "undefined") {
         user_default = "user";
       } else {
         user_default = "default";
@@ -303,8 +303,8 @@ function initiate_actions() {
     }
   });
   $("#view_graphic_btn").on("click", function () {
-    var code_file = master.code.file;
-    if (typeof master.code.graphic.files[code_file] === "undefined") {
+    var code_file = master.phasetypes.file;
+    if (typeof master.phasetypes.graphic.files[code_file] === "undefined") {
       bootbox.alert(
         "This code_file was not created using the graphic editor, so cannot be edited with it"
       );

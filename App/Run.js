@@ -6,9 +6,6 @@ project_json = {};
 
 online_data_obj = {
   finished_and_stored: false,
-  saves_started: 0,
-  saves_ended: 0,
-  save_queue: [],
   run_save: function () {
     var this_save = online_data_obj.save_queue.pop();
     this_save();
@@ -17,6 +14,9 @@ online_data_obj = {
       online_data_obj.run_save();
     }
   },
+  saves_started: 0,
+  saves_ended: 0,
+  save_queue: [],
   save_queue_add: function (save_queue_item) {
     online_data_obj.save_queue.push(save_queue_item);
     if (online_data_obj.save_queue.length === 1) {
@@ -108,8 +108,8 @@ Project = {
 
     for (var i = 0; i < project_json.inputs.length; i++) {
       if (
-        $("input[name='" + project_json.inputs[i].name + "']:checked").length ===
-        0
+        $("input[name='" + project_json.inputs[i].name + "']:checked")
+          .length === 0
       ) {
         trial_inputs[project_json.inputs[i].name] =
           project_json.inputs[i].value;
@@ -281,6 +281,7 @@ Project = {
 
     post_no = post_no === 0 ? "" : "post " + post_no + " ";
     this_proc = project_json.parsed_proc[trial_no];
+    var code_location = project_json.code[this_proc[post_no + "code"]];
     this_phase = project_json.code[this_proc[post_no + "code"]];
 
     //look through all variables and replace with the value
@@ -835,6 +836,17 @@ function get_gets() {
   var prmstr = window.location.search.substr(1);
   Project.get_vars =
     prmstr !== null && prmstr !== "" ? transformToAssocArray(prmstr) : {};
+
+  /*
+  * retrieve the phase code
+  */
+  if (this_phase.indexOf("[[[LOCATION]]]") === 0) {
+    var code_location = this_phase.replace("[[[LOCATION]]]", "");
+
+    //RESUME HERE
+
+
+  }
 
   // maybe the following is left over from the simulator?
   if (typeof Project.get_vars.name !== "undefined") {

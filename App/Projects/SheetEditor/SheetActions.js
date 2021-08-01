@@ -25,7 +25,7 @@ $("#default_projects_select").on("change", function () {
 
 $("#delete_proj_btn").on("click", function () {
   var proj_name = $("#project_list").val();
-  if (proj_name == null) {
+  if (proj_name === null) {
     bootbox.alert("You need to select a study to delete it");
   } else {
     bootbox.confirm(
@@ -33,7 +33,7 @@ $("#delete_proj_btn").on("click", function () {
       function (result) {
         if (result) {
           //delete from master
-          delete master.project_mgmt.projects[proj_name];
+          delete master.projects.projects[proj_name];
 
           $("#project_list option:contains(" + proj_name + ")")[0].remove();
           $("#project_list").val(
@@ -43,7 +43,7 @@ $("#delete_proj_btn").on("click", function () {
           update_handsontables();
 
           //delete the local file if this is
-          if (Collector.detect_context() == "localhost") {
+          if (Collector.detect_context() === "localhost") {
             Collector.electron.fs.delete_experiment(
               proj_name,
               function (response) {
@@ -76,10 +76,10 @@ $("#delete_proc_button").on("click", function () {
            */
           var project = $("#project_list").val();
           var proc_file = $("#proc_select").val();
-          delete master.project_mgmt.projects[project].all_procs[proc_file];
-          delete master.project_mgmt.projects[project].parsed_procs[proc_file];
+          delete master.projects.projects[project].all_procs[proc_file];
+          delete master.projects.projects[project].parsed_procs[proc_file];
 
-          delete master.project_mgmt.projects[project].procs_csv[proc_file];
+          delete master.projects.projects[project].procs_csv[proc_file];
 
           // update the lists
           update_handsontables();
@@ -88,7 +88,7 @@ $("#delete_proc_button").on("click", function () {
            * Delete the file locally if in electron
            */
           var file_path = "Projects" + "/" + experiment + "/" + proc_file;
-          if (Collector.detect_context() == "localhost") {
+          if (Collector.detect_context() === "localhost") {
             var this_response = Collector.electron.fs.delete_file(file_path);
             if (this_response !== "success") {
               bootbox.alert(this_response);
@@ -119,9 +119,9 @@ $("#delete_stim_button").on("click", function () {
            */
           var project = $("#project_list").val();
           var stim_file = $("#stim_select").val();
-          delete master.project_mgmt.projects[project].all_stims[stim_file];
+          delete master.projects.projects[project].all_stims[stim_file];
 
-          delete master.project_mgmt.projects[project].stims_csv[stim_file];
+          delete master.projects.projects[project].stims_csv[stim_file];
 
           // update the lists
           update_handsontables();
@@ -130,7 +130,7 @@ $("#delete_stim_button").on("click", function () {
            * Delete the file locally if in electron
            */
           var file_path = "Projects" + "/" + project + "/" + stim_file;
-          if (Collector.detect_context() == "localhost") {
+          if (Collector.detect_context() === "localhost") {
             var this_response = Collector.electron.fs.delete_file(file_path);
             if (this_response !== "success") {
               bootbox.alert(this_response);
@@ -146,7 +146,7 @@ $("#delete_stim_button").on("click", function () {
 
 $("#download_project_button").on("click", function () {
   var project = $("#project_list").val();
-  var project_json = master.project_mgmt.projects[project];
+  var project_json = master.projects.projects[project];
   var default_filename = project + ".json";
   bootbox.prompt({
     title: "What do you want to save this file as?",
@@ -170,7 +170,7 @@ $("#new_proc_button").on("click", function () {
     function (new_proc_name) {
       if (new_proc_name) {
         var project = $("#project_list").val();
-        var this_proj = master.project_mgmt.projects[project];
+        var this_proj = master.projects.projects[project];
         var current_procs = Object.keys(this_proj.all_procs);
         if (current_procs.indexOf(new_proc_name) !== -1) {
           bootbox.alert("You already have a procedure sheet with that name");
@@ -200,40 +200,7 @@ $("#new_project_button").on("click", function () {
     function (result) {
       if (result !== null) {
         result = result.toLowerCase();
-        result = result
-          .replaceAll(" ", "_")
-          .replaceAll(" ", "_")
-          .replaceAll(" ", "_")
-          .replaceAll("-", "_")
-          .replaceAll("@", "_")
-          .replaceAll(".", "_")
-          .replaceAll("/", "_")
-          .replaceAll("\\", "_")
-          .replaceAll("'", "_")
-          .replaceAll('"', "_")
-          .replaceAll("|", "_")
-          .replaceAll("?", "_")
-          .replaceAll("#", "_")
-          .replaceAll(",", "_")
-          .replaceAll("[", "_")
-          .replaceAll("]", "_")
-          .replaceAll("(", "_")
-          .replaceAll(")", "_")
-          .replaceAll("*", "_")
-          .replaceAll("^", "_")
-          .replaceAll(":", "_")
-          .replaceAll(";", "_")
-          .replaceAll("%", "_")
-          .replaceAll("$", "_")
-          .replaceAll("£", "_")
-          .replaceAll("!", "_")
-          .replaceAll("`", "_")
-          .replaceAll("+", "_")
-          .replaceAll("=", "_")
-          .replaceAll("<", "_")
-          .replaceAll(">", "_")
-          .replaceAll("~", "_");
-
+        result = Collector.clean_string(result);
         if ($("#project_list").text().indexOf(result) !== -1) {
           bootbox.alert("You already have an experiment with this name");
         } else {
@@ -252,7 +219,7 @@ $("#new_stim_button").on("click", function () {
     function (new_sheet_name) {
       if (new_sheet_name) {
         var project = $("#project_list").val();
-        var this_proj = master.project_mgmt.projects[project];
+        var this_proj = master.projects.projects[project];
         var current_stims = Object.keys(this_proj.all_stims);
         if (current_stims.indexOf(new_sheet_name) !== -1) {
           bootbox.alert(
@@ -273,11 +240,6 @@ $("#new_stim_button").on("click", function () {
             "stimuli",
             new_sheet_name
           );
-
-          /*
-        alert("hardy");
-
-        */
         }
       }
     }
@@ -292,7 +254,7 @@ $("#open_proj_folder").on("click", function () {
 });
 
 $("#project_list").on("change", function () {
-  project_json = master.project_mgmt.projects[this.value];
+  project_json = master.projects.projects[this.value];
   clean_conditions();
   $("#project_inputs").show();
   update_handsontables();
@@ -302,7 +264,7 @@ $("#project_list").on("change", function () {
 
 $("#proc_select").on("change", function () {
   var project = $("#project_list").val();
-  var this_proj = master.project_mgmt.projects[project];
+  var this_proj = master.projects.projects[project];
   createExpEditorHoT(this_proj.all_procs[this.value], "procedure", this.value);
 });
 
@@ -316,19 +278,19 @@ $("#rename_proj_btn").on("click", function () {
         } else {
           //proceed
           var original_name = $("#project_list").val();
-          master.project_mgmt.projects[new_name] =
-            master.project_mgmt.projects[original_name];
-          delete master.project_mgmt.projects[original_name];
+          master.projects.projects[new_name] =
+            master.projects.projects[original_name];
+          delete master.projects.projects[original_name];
 
           Collector.electron.fs.write_project(
             new_name,
-            JSON.stringify(master.project_mgmt.projects[new_name], null, 2),
+            JSON.stringify(master.projects.projects[new_name], null, 2),
             function (response) {
-              if (response == "success") {
+              if (response === "success") {
                 Collector.electron.fs.delete_experiment(
                   original_name,
                   function (response) {
-                    if (response == "success") {
+                    if (response === "success") {
                       list_projects();
                       $("#project_list").val(new_name);
                       $("#project_list").change();
@@ -355,7 +317,7 @@ $("#rename_proc_button").on("click", function () {
       if (new_proc_name) {
         new_proc_name = new_proc_name.toLowerCase();
         var project = $("#project_list").val();
-        var this_proj = master.project_mgmt.projects[project];
+        var this_proj = master.projects.projects[project];
         var current_procs = Object.keys(this_proj.all_procs);
         var current_proc = $("#proc_select").val();
         current_procs.splice(current_procs.indexOf(current_proc), 1);
@@ -365,10 +327,10 @@ $("#rename_proc_button").on("click", function () {
           bootbox.alert("You already have a procedure sheet with that name");
         } else {
           new_proc_name = new_proc_name.replace(".csv", "") + ".csv";
-          master.project_mgmt.projects[project].all_procs[new_proc_name] =
+          master.projects.projects[project].all_procs[new_proc_name] =
             current_proc_sheet;
 
-          delete master.project_mgmt.projects[project].all_procs[current_proc];
+          delete master.projects.projects[project].all_procs[current_proc];
           $("#proc_select").append(
             $("<option>", {
               text: new_proc_name,
@@ -394,7 +356,7 @@ $("#rename_stim_button").on("click", function () {
       if (new_sheet_name) {
         new_sheet_name = new_sheet_name.toLowerCase();
         var project = $("#project_list").val();
-        var this_proj = master.project_mgmt.projects[project];
+        var this_proj = master.projects.projects[project];
 
         var current_stims = Object.keys(this_proj.all_stims);
         var current_stim = $("#stim_select").val();
@@ -409,10 +371,10 @@ $("#rename_stim_button").on("click", function () {
         } else {
           new_sheet_name = new_sheet_name.replace(".csv", "") + ".csv";
 
-          master.project_mgmt.projects[project].all_stims[new_sheet_name] =
+          master.projects.projects[project].all_stims[new_sheet_name] =
             current_stim_sheet;
 
-          delete master.project_mgmt.projects[project].all_stims[current_stim];
+          delete master.projects.projects[project].all_stims[current_stim];
 
           $("#stim_select").append(
             $("<option>", {
@@ -436,10 +398,10 @@ $("#rename_stim_button").on("click", function () {
 
 $("#run_btn").on("click", function () {
   var project = $("#project_list").val();
-  var project_json = master.project_mgmt.projects[project];
+  var project_json = master.projects.projects[project];
   var select_html = '<select id="select_condition" class="form-select">';
   var conditions = Collector.PapaParsed(project_json.conditions);
-  if (typeof conditions == "undefined") {
+  if (typeof conditions === "undefined") {
     conditions = conditions.filter(function (condition) {
       return condition.name !== "";
     });
@@ -450,9 +412,9 @@ $("#run_btn").on("click", function () {
   select_html += "</select>";
 
   if (
-    typeof master.data.save_script == "undefined" ||
+    typeof master.data.save_script === "undefined" ||
     //test here for whether there is a github repository linked
-    master.data.save_script == ""
+    master.data.save_script === ""
   ) {
     /* might reinstate this later if it becomes helpful
     bootbox.prompt("You currently have no link that saves your data. Please follow the instructions in the tutorial (to be completed), and then copy the link to confirm where to save your data below:",function(this_url){
@@ -580,7 +542,7 @@ $("#save_btn").on("click", function () {
       });
       this_proc = cleaned_parsed_proc.map(function (row, row_index) {
         var cleaned_row = Collector.clean_obj_keys(row);
-        if (code_files.indexOf(cleaned_row.code) == -1) {
+        if (code_files.indexOf(cleaned_row.code) === -1) {
           code_files.push(cleaned_row.code.toLowerCase());
         }
         cleaned_row.code = cleaned_row.code.toLowerCase();
@@ -593,20 +555,30 @@ $("#save_btn").on("click", function () {
               "</b>. Please fix this before trying to run your experiment."
           );
         }
-        if (cleaned_row.item == 0) {
+        if (cleaned_row.item === 0) {
           var this_code;
-          if (typeof master.code.user[cleaned_row.code] !== "undefined") {
-            this_code = master.code.user[cleaned_row.code];
-          } else if (
-            typeof master.code.default[cleaned_row.code] !== "undefined"
+          if (
+            typeof master.phasetypes.user[cleaned_row.code] === "undefined" &&
+            typeof master.phasetypes.default[cleaned_row.code] === "undefined"
           ) {
-            this_code = master.code.default[cleaned_row.code];
+            bootbox.alert(
+              "The code file <b>" +
+                cleaned_row.code +
+                "</b> doesn't appear to exist"
+            );
+          } else {
+            if (typeof master.phasetypes.user[cleaned_row.code] !== "undefined") {
+              this_code = master.phasetypes.user[cleaned_row.code];
+            } else if (
+              typeof master.phasetypes.default[cleaned_row.code] !== "undefined"
+            ) {
+              this_code = master.phasetypes.default[cleaned_row.code];
+            }
 
             these_variables = Collector.list_variables(this_code);
-
             these_variables.forEach(function (this_variable) {
               if (
-                Object.keys(cleaned_row).indexOf(this_variable) == -1 &&
+                Object.keys(cleaned_row).indexOf(this_variable) === -1 &&
                 this_variable !== "survey" &&
                 cleaned_row.code !== "survey"
               ) {
@@ -623,12 +595,6 @@ $("#save_btn").on("click", function () {
                 );
               }
             });
-          } else {
-            bootbox.alert(
-              "The trialtype <b>" +
-                cleaned_row.code +
-                "</b> doesn't appear to exist"
-            );
           }
 
           //need to take into account the code might be referring to a header in the procedure sheet
@@ -638,23 +604,33 @@ $("#save_btn").on("click", function () {
       this_proj.all_procs[proc_name] = Papa.unparse(this_proc);
     });
     code_files = code_files.filter(Boolean); //remove blanks
-    if (typeof this_proj.code == "undefined") {
+    if (typeof this_proj.code === "undefined") {
       this_proj.trialtypes = {};
     }
 
     /*
      * First loop is to make sure the experiment has all the code_files
      */
+    this_proj.code = {};
     code_files.forEach(function (code_file) {
-      if (typeof this_proj.code == "undefined") {
-        this_proj.code = {};
-      }
-      if (typeof master.code.user[code_file] == "undefined") {
-        this_proj.code[code_file] = master.code.default[code_file];
+      console.log("code_file");
+      console.log(code_file);
+      if (typeof master.phasetypes.user[code_file] === "undefined") {
+        this_proj.code[code_file] =
+          "[[[LOCATION]]]../Default/DefaultCode/" +
+          code_file.replace(".html", "") +
+          ".html";
+        //this_proj.code[code_file] = master.phasetypes.default[code_file];
       } else {
-        this_proj.code[code_file] = master.code.user[code_file];
+        this_proj.code[code_file] =
+          "[[[LOCATION]]]../User/Code/" +
+          code_file.replace(".html", "") +
+          ".html";
+        //this_proj.code[code_file] = master.phasetypes.user[code_file];
       }
     });
+    console.log("this_proj.code");
+    console.log(this_proj.code);
     return this_proj;
   }
   function process_conditions(this_proj) {
@@ -668,38 +644,7 @@ $("#save_btn").on("click", function () {
     } finally {
       var parsed_conditions = Collector.PapaParsed(this_proj.conditions);
       parsed_conditions.map(function (row) {
-        row.name = row.name.replaceAll(" ", "_");
-        row.name = row.name.replaceAll(" ", "_");
-        row.name = row.name.replaceAll("-", "_");
-        row.name = row.name.replaceAll("@", "_at_");
-        row.name = row.name.replaceAll(".", "_dot_");
-        row.name = row.name.replaceAll("/", "_forward_slash_");
-        row.name = row.name.replaceAll("\\", "_back_slash");
-        row.name = row.name.replaceAll("'", "_single_quote_");
-        row.name = row.name.replaceAll('"', "_double_quote_");
-        row.name = row.name.replaceAll("|", "_pipe_");
-        row.name = row.name.replaceAll("?", "_question_");
-        row.name = row.name.replaceAll("#", "_hash_");
-        row.name = row.name.replaceAll(",", "_comma_");
-        row.name = row.name.replaceAll("[", "_square_open_");
-        row.name = row.name.replaceAll("]", "_square_close_");
-        row.name = row.name.replaceAll("(", "_bracket_open_");
-        row.name = row.name.replaceAll(")", "_bracket_close_");
-        row.name = row.name.replaceAll("*", "__");
-        row.name = row.name.replaceAll("^", "__");
-        row.name = row.name.replaceAll(":", "__");
-        row.name = row.name.replaceAll(";", "__");
-        row.name = row.name.replaceAll("%", "__");
-        row.name = row.name.replaceAll("$", "__");
-        row.name = row.name.replaceAll("£", "__");
-        row.name = row.name.replaceAll("!", "__");
-        row.name = row.name.replaceAll("`", "__");
-        row.name = row.name.replaceAll("+", "__");
-        row.name = row.name.replaceAll("=", "__");
-        row.name = row.name.replaceAll("<", "__");
-        row.name = row.name.replaceAll(">", "__");
-        row.name = row.name.replaceAll("~", "__");
-
+        row.name = Collector.clean_string(row.name);
         return row;
       });
       this_proj.conditions = Papa.unparse(parsed_conditions);
@@ -716,16 +661,12 @@ $("#save_btn").on("click", function () {
         if (typeof proc_row.survey !== "undefined" && proc_row.survey !== "") {
           var this_survey = proc_row.survey.toLowerCase();
           if (typeof master.surveys.user_surveys[this_survey] !== "undefined") {
-            if (typeof this_proj.surveys == "undefined") {
+            if (typeof this_proj.surveys === "undefined") {
               this_proj.surveys = {};
             }
             this_proj.surveys[this_survey] =
               master.surveys.user_surveys[this_survey];
 
-            //check for mods
-            if (typeof this_proj.mods == "undefined") {
-              this_proj.mods = {};
-            }
             keyed_survey = Papa.parse(
               Papa.unparse(master.surveys.user_surveys[this_survey]),
               {
@@ -736,11 +677,11 @@ $("#save_btn").on("click", function () {
               clean_key_row = Collector.clean_obj_keys(key_row);
               if (typeof clean_key_row.type !== "undefined") {
                 var survey_mod_type = clean_key_row.type.toLowerCase();
-                if (typeof master.mods[survey_mod_type] !== "undefined") {
-                  this_proj.mods[survey_mod_type] = {
-                    location: "",
-                    contents: master.mods[survey_mod_type].contents,
-                  };
+                console.log("survey_mod_type");
+                console.log(survey_mod_type);
+                if (typeof master.phasetypes.user[survey_mod_type] !== "undefined") {
+                  this_proj.code[survey_mod_type] =
+                    master.phasetypes[survey_mod_type];
                 }
               }
             });
@@ -769,8 +710,8 @@ $("#save_btn").on("click", function () {
   $("#save_pathway_btn").click();
 
   if (
-    typeof master.keys == "undefined" ||
-    typeof master.keys.public_key == "undefined"
+    typeof master.keys === "undefined" ||
+    typeof master.keys.public_key === "undefined"
   ) {
     encrypt_obj.generate_keys();
   }
@@ -785,7 +726,7 @@ $("#save_btn").on("click", function () {
      * add the org and repo to the project_json
      */
 
-    var this_proj = master.project_mgmt.projects[project];
+    var this_proj = master.projects.projects[project];
 
     this_proj.location =
       $("#select_org").val() + "/" + $("#select_repo").val() + "/" + project;
@@ -795,11 +736,9 @@ $("#save_btn").on("click", function () {
      */
     delete this_proj.conditions_csv;
     delete this_proj.cond_array;
-
     delete this_proj.parsed_procs;
     delete this_proj.procedure;
     delete this_proj.procs_csv;
-
     delete this_proj.stimuli;
     delete this_proj.stims_csv;
 
@@ -825,7 +764,7 @@ $("#save_btn").on("click", function () {
       });
 
       //add surveys to experiment
-      if (typeof this_proj.surveys == "undefined") {
+      if (typeof this_proj.surveys === "undefined") {
         this_proj.surveys = {};
       }
 
@@ -884,13 +823,13 @@ $("#save_btn").on("click", function () {
 
 $("#stim_select").on("change", function () {
   var project = $("#project_list").val();
-  var this_proj = master.project_mgmt.projects[project];
+  var this_proj = master.projects.projects[project];
   createExpEditorHoT(this_proj.all_stims[this.value], "stimuli", this.value);
 });
 
 $("#code_project_select").on("change", function () {
   console.log(this.value);
-  var this_proj = master.project_mgmt.projects[this.value];
+  var this_proj = master.projects.projects[this.value];
   var procs = Object.keys(this_proj.all_procs);
   var stims = Object.keys(this_proj.all_stims);
 

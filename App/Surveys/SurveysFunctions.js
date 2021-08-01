@@ -346,7 +346,10 @@ function preview_survey(this_survey) {
     $("#survey_preview").css("width", window.innerWidth);
   }
 
-  survey_template = Collector.electron.fs.read_default("DefaultCode", "survey.html");
+  survey_template = Collector.electron.fs.read_default(
+    "DefaultCode",
+    "survey.html"
+  );
   survey_template = survey_template.replace(
     '"{{survey}}"',
     JSON.stringify(this_survey)

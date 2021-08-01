@@ -12,7 +12,7 @@
   "data": {
     "servers": {}
   },
-  "project_mgmt": {
+  "projects": {
     "any_loaded": false,
     "authenticated": false,
     "current_manager": "",

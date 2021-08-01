@@ -194,7 +194,7 @@
     );
     var conditions_array = [];
     var conditions_list = Collector.PapaParsed(
-      master.project_mgmt.projects[$("#add_project_pathway_select").val()]
+      master.projects.projects[$("#add_project_pathway_select").val()]
         .conditions
     ).map((row) => row.name);
     conditions_list.forEach(function (item) {

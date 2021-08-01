@@ -22,21 +22,21 @@ $.ajaxSetup({ cache: false }); // prevents caching, which disrupts $.get calls
 code_obj = {
   delete_code: function () {
     var deleted_code = $("#code_select").val();
-    master.code.file = $("#code_select").val();
-    var this_loc = "/code/" + master.code.file;
+    master.phasetypes.file = $("#code_select").val();
+    var this_loc = "/code/" + master.phasetypes.file;
     bootbox.confirm(
       "Are you sure you want to delete this " + this_loc + "?",
       function (result) {
         if (result == true) {
           if (
-            typeof master.code.graphic.files[master.code.file] !== "undefined"
+            typeof master.phasetypes.graphic.files[master.phasetypes.file] !== "undefined"
           ) {
-            delete master.code.graphic.files[master.code.file];
+            delete master.phasetypes.graphic.files[master.phasetypes.file];
           }
-          delete master.code.user[master.code.file];
+          delete master.phasetypes.user[master.phasetypes.file];
           $("#code_select").attr("previousvalue", "");
           $("#code_select option:selected").remove();
-          master.code.file = $("#code_select").val();
+          master.phasetypes.file = $("#code_select").val();
           code_obj.load_file("default");
           Collector.custom_alert("Successfully deleted " + this_loc);
           Collector.electron.fs.delete_code(deleted_code, function (response) {
@@ -59,7 +59,7 @@ code_obj = {
       $("#delete_code_button").show();
     }
 
-    var this_file = master.code.file;
+    var this_file = master.phasetypes.file;
 
     //python load if localhost
     switch (Collector.detect_context()) {
@@ -67,13 +67,13 @@ code_obj = {
         cleaned_code = this_file.toLowerCase().replace(".html", "") + ".html";
         this_content = Collector.electron.fs.read_file("Code", cleaned_code);
         if (this_content == "") {
-          editor.setValue(master.code[user_default][this_file]);
+          editor.setValue(master.phasetypes[user_default][this_file]);
         } else {
           editor.setValue(this_content);
         }
         break;
       default:
-        var content = master.code[user_default][this_file];
+        var content = master.phasetypes[user_default][this_file];
         editor.setValue(content);
         break;
     }
@@ -131,8 +131,8 @@ function list_code(to_do_after) {
     files = JSON.parse(files);
     files = files.map((item) => item.replaceAll(".html", ""));
     files.forEach(function (file) {
-      if (Object.keys(master.code.user).indexOf(file) == -1) {
-        master.code.user[file] = Collector.electron.fs.read_file(
+      if (Object.keys(master.phasetypes.user).indexOf(file) == -1) {
+        master.phasetypes.user[file] = Collector.electron.fs.read_file(
           "Code",
           file + ".html"
         );
@@ -146,9 +146,9 @@ function list_code(to_do_after) {
     $("#code_select").val("Select a file");
 
     var default_code = JSON.parse(returned_data);
-    var user = master.code.user;
+    var user = master.phasetypes.user;
 
-    master.code.default = default_code;
+    master.phasetypes.default = default_code;
     default_keys = Object.keys(default_code).sort((a, b) =>
       a.localeCompare(b, undefined, { sensitivity: "base" })
     );
@@ -162,7 +162,7 @@ function list_code(to_do_after) {
         "<option class='default_code'>" + element + "</option>"
       );
     });
-    master.code.user = user;
+    master.phasetypes.user = user;
 
     user_keys.forEach(function (element) {
       $("#code_select").append(
@@ -181,21 +181,24 @@ function list_code(to_do_after) {
 
       switch (Collector.detect_context()) {
         case "localhost":
-          var trial_content = Collector.electron.fs.read_default("DefaultCode", item);
-          master.code.default[item.toLowerCase().replace(".html", "")] =
+          var trial_content = Collector.electron.fs.read_default(
+            "DefaultCode",
+            item
+          );
+          master.phasetypes.default[item.toLowerCase().replace(".html", "")] =
             trial_content;
           get_default(list);
           break;
         default:
           $.get(collector_map[item], function (trial_content) {
-            master.code.default[item.toLowerCase().replace(".html", "")] =
+            master.phasetypes.default[item.toLowerCase().replace(".html", "")] =
               trial_content;
             get_default(list);
           });
           break;
       }
     } else {
-      process_returned(JSON.stringify(master.code.default));
+      process_returned(JSON.stringify(master.phasetypes.default));
     }
   }
   var default_list = Object.keys(isolation_map[".."]["Default"]["DefaultCode"]);

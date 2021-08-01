@@ -283,7 +283,7 @@
         // if all good
         var register_url = $(this).find("span")[0].innerHTML;
         var project = $("#project_list").val();
-        var this_proj = master.project_mgmt.projects[project];
+        var this_proj = master.projects.projects[project];
         $.post(
           register_url,
           {
@@ -338,7 +338,7 @@
             }
           });
           var project = $("#project_list").val();
-          var this_proj = master.project_mgmt.projects[project];
+          var this_proj = master.projects.projects[project];
 
           if (typeof this_proj.storage_scripts == "undefined") {
             this_proj.storage_scripts = {};
@@ -368,7 +368,7 @@
       } else {
         var register_url = $(this).find("span")[0].innerHTML;
         var project = $("#project_list").val();
-        var this_proj = master.project_mgmt.projects[project];
+        var this_proj = master.projects.projects[project];
 
         /*
 				Identify the project location

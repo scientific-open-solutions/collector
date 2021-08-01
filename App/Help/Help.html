@@ -143,7 +143,7 @@
     if (help_type == "trialtype_code") {
       $("#help_subtitle").html("General tips");
       $("#help_text").html(
-        "Whilst Collector is written to try to make the trialtypes as generalisable as possible (in case you want to use them on another platform), there are a few functions that are specific to Collector: <br><br>" +
+        "Whilst Collector is written to try to make the phase types as generalisable as possible (in case you want to use them on another platform), there are a few functions that are specific to Collector: <br><br>" +
           "<b>Phase.set_timer(this_function,timeout)</b>: should be used if you want to set a timer from the beginning of a trial. This is because trials are buffered, and so <b>setTimeout</b> would be triggered from when the trial is buffered, not when the participant has started the trial. <br>Phase.set_timer requires two inputs, a function and then the time until it should be triggered. For example <br><br>" +
           "<em>Phase.set_timer(function(){ <br> alert('hi') <br>},5000)</em> <br><br>" +
           "<b>Phase.submit())</b>: ends the current trial. <br><br>" +

@@ -37,10 +37,9 @@ function user() {
   }
 
   /*
-  * Create required folders if they don't exist yet
-  */
+   * Create required folders if they don't exist yet
+   */
   //if(!fs.existsSync)
-
 
   return user;
 }
@@ -275,7 +274,10 @@ ipc.on("git_exists", (event, args) => {
 });
 
 ipc.on("git_locate_repo", (event, args) => {
-  event.returnValue = user().repos[args.org][args.repo].path.replaceAll("\\","/");
+  event.returnValue = user().repos[args.org][args.repo].path.replaceAll(
+    "\\",
+    "/"
+  );
 });
 
 ipc.on("git_pages", (event, args) => {
@@ -503,7 +505,9 @@ ipc.on("git_repo_info", (event, args) => {
     .getRemotes(true)
     .then(function (data) {
       console.log(data);
-      url = data.filter((row) => row.name === "origin")[0].refs.fetch.split("/");
+      url = data
+        .filter((row) => row.name === "origin")[0]
+        .refs.fetch.split("/");
       var return_obj = {
         organization: url[3],
         repository: url[4],

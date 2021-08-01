@@ -286,8 +286,8 @@
 
   $(".keyboard_setting").on("input change", function () {
     //only for valid keys at the moment though.
-    var trialtype = master.code.file;
-    var this_trialtype = master.code.graphic.files[trialtype];
+    var trialtype = master.phasetypes.file;
+    var this_trialtype = master.phasetypes.graphic.files[trialtype];
     var keyboard_prop = this.id.replace("keyboard_", "");
     this_trialtype.keyboard[keyboard_prop] = this.value;
     graphic_editor_obj.compile_graphics();
@@ -299,8 +299,8 @@
   $("#add_mod_btn").on("click", function () {
     bootbox.prompt("What would you like to call this mod?", function (mod) {
       // add mod to the trialtype in graphic part
-      var trialtype = master.code.file;
-      var this_trialtype = master.code.graphic.files[trialtype];
+      var trialtype = master.phasetypes.file;
+      var this_trialtype = master.phasetypes.graphic.files[trialtype];
       if (typeof this_trialtype.mods == "undefined") {
         this_trialtype.mods = {};
       }
@@ -390,11 +390,11 @@
         $("#canvas_click_btn").click();
       } else {
         if (
-          typeof master.code.graphic.hovered_element !== "undefined" &&
-          master.code.graphic.hovered_element !== ""
+          typeof master.phasetypes.graphic.hovered_element !== "undefined" &&
+          master.phasetypes.graphic.hovered_element !== ""
         ) {
-          var element_id = master.code.graphic.hovered_element;
-          var trialtype = master.code.file;
+          var element_id = master.phasetypes.graphic.hovered_element;
+          var trialtype = master.phasetypes.file;
 
           $("#graphic_canvas")
             .contents()
@@ -409,7 +409,7 @@
             .find("#" + element_id)
             .removeClass("hovered_element");
 
-          master.code.graphic.element_id = element_id;
+          master.phasetypes.graphic.element_id = element_id;
           graphic_editor_obj.update_settings(element_id);
           //click on the timeline button with the relevant value
 
@@ -442,8 +442,8 @@
       graphic_editor_obj._mouseY = event.clientY;
     });
   $("#keyboard_end_press").on("change input", function () {
-    var trialtype = master.code.file;
-    var this_trialtype = master.code.graphic.files[trialtype];
+    var trialtype = master.phasetypes.file;
+    var this_trialtype = master.phasetypes.graphic.files[trialtype];
     var keyboard_element = $("#keyboard_variable").val();
     this_trialtype.keyboard.end_press = $(this)[0].checked;
     graphic_editor_obj.compile_graphics();
@@ -457,8 +457,8 @@
       function (new_name) {
         if (new_name) {
           //i.e. not cancel
-          var trialtype = master.code.file;
-          var this_trialtype = master.code.graphic.files[trialtype];
+          var trialtype = master.phasetypes.file;
+          var this_trialtype = master.phasetypes.graphic.files[trialtype];
           var old_name = $("#keyboard_variable").val();
           if (typeof this_trialtype.keyboard[new_name] == "undefined") {
             this_trialtype.keyboard[new_name] =
@@ -472,8 +472,8 @@
     );
   });
   $("#mouse_visible").on("change", function () {
-    var trialtype = master.code.file;
-    master.code.graphic.files[trialtype]["mouse_visible"] = $(this)[0].checked;
+    var trialtype = master.phasetypes.file;
+    master.phasetypes.graphic.files[trialtype]["mouse_visible"] = $(this)[0].checked;
     graphic_editor_obj.compile_graphics();
   });
   $("#trial_background_color").on("input change", function () {
@@ -481,20 +481,20 @@
       .contents()
       .find("body")
       .css("background-color", $(this).val());
-    var trialtype = master.code.file;
-    master.code.graphic.files[trialtype]["background-color"] = $(this).val();
+    var trialtype = master.phasetypes.file;
+    master.phasetypes.graphic.files[trialtype]["background-color"] = $(this).val();
     graphic_editor_obj.compile_graphics();
   });
   $("#trial_height").on("input change", function () {
     $("#graphic_canvas").css("height", $(this).val());
-    var trialtype = master.code.file;
-    master.code.graphic.files[trialtype].height = $(this).val();
+    var trialtype = master.phasetypes.file;
+    master.phasetypes.graphic.files[trialtype].height = $(this).val();
     graphic_editor_obj.compile_graphics();
   });
   $("#trial_width").on("input change", function () {
     $("#graphic_canvas").css("width", $(this).val());
-    var trialtype = master.code.file;
-    master.code.graphic.files[trialtype].width = $(this).val();
+    var trialtype = master.phasetypes.file;
+    master.phasetypes.graphic.files[trialtype].width = $(this).val();
     graphic_editor_obj.compile_graphics();
   });
 
@@ -503,8 +503,8 @@
 
   function load_code_mods() {
     // deal with list of mods here - can be an array in graphics and then this array when compiled adds the mods at the bottom of the script
-    var trialtype = master.code.file;
-    var this_trialtype = master.code.graphic.files[trialtype];
+    var trialtype = master.phasetypes.file;
+    var this_trialtype = master.phasetypes.graphic.files[trialtype];
     if (typeof this_trialtype.mods == "undefined") {
       this_trialtype.mods = {};
     }
@@ -601,8 +601,8 @@
           "</b> for this trialtype?",
         function (response) {
           if (response) {
-            var trialtype = master.code.file;
-            var this_trialtype = master.code.graphic.files[trialtype];
+            var trialtype = master.phasetypes.file;
+            var this_trialtype = master.phasetypes.graphic.files[trialtype];
             delete this_trialtype.mods[mod];
             load_code_mods();
           }
@@ -633,8 +633,8 @@
       );
       mod_settings_html = "";
 
-      var trialtype = master.code.file;
-      var this_trialtype = master.code.graphic.files[trialtype];
+      var trialtype = master.phasetypes.file;
+      var this_trialtype = master.phasetypes.graphic.files[trialtype];
 
       var mod = this.id.replace("mod_select_", "");
 
@@ -677,14 +677,14 @@
   }
 
   function list_graphics() {
-    if (typeof master.code.graphic == "undefined") {
-      master.code.graphic = {
+    if (typeof master.phasetypes.graphic == "undefined") {
+      master.phasetypes.graphic = {
         trialtype: "",
         trialtypes: {},
         hovered_element: "",
       };
     }
-    master.code.graphic.relevant_styles = [
+    master.phasetypes.graphic.relevant_styles = [
       "background-color",
       "border-color",
       "border-radius",
@@ -711,12 +711,12 @@
           function (result) {
             if (result) {
               var element_id = $("#element_name").val();
-              var trialtype = master.code.file;
+              var trialtype = master.phasetypes.file;
               $("#graphic_canvas")
                 .contents()
                 .find("#" + element_id)
                 .remove();
-              delete master.code.graphic.files[trialtype].elements[element_id];
+              delete master.phasetypes.graphic.files[trialtype].elements[element_id];
               $("#graphic_settings").html("");
               $("#graphic_general_settings").show();
             }
@@ -733,25 +733,25 @@
         .find(".graphic_element")
         .hover(
           function () {
-            master.code.graphic.hovered_element = this.id;
-            if (this.id !== master.code.graphic.element_id) {
+            master.phasetypes.graphic.hovered_element = this.id;
+            if (this.id !== master.phasetypes.graphic.element_id) {
               $(this).addClass("hovered_element");
             }
           },
           function () {
             $(this).removeClass("hovered_element");
-            master.code.graphic.hovered_element = "";
+            master.phasetypes.graphic.hovered_element = "";
           }
         );
 
       // update relevant styles
       /////////////////////////
 
-      var relevant_styles = master.code.graphic.relevant_styles;
+      var relevant_styles = master.phasetypes.graphic.relevant_styles;
       relevant_styles.forEach(function (relevant_style) {
         $("#setting_" + relevant_style).on("input change", function () {
           //input
-          var element_id = master.code.graphic.element_id;
+          var element_id = master.phasetypes.graphic.element_id;
           $("#graphic_canvas")
             .contents()
             .find("#" + element_id)
@@ -774,7 +774,7 @@
       ////////////////////////
 
       $("#setting_controls").on("change", function () {
-        var element_id = master.code.graphic.element_id;
+        var element_id = master.phasetypes.graphic.element_id;
         graphic_editor_obj.update_trialtype_element(
           element_id,
           "controls",
@@ -787,7 +787,7 @@
       });
 
       $("#setting_end_click").on("click", function () {
-        var element_id = master.code.graphic.element_id;
+        var element_id = master.phasetypes.graphic.element_id;
         graphic_editor_obj.update_trialtype_element(
           element_id,
           "end_click",
@@ -795,21 +795,21 @@
         );
       });
       $("#setting_html").on("input change", function () {
-        var element_id = master.code.graphic.element_id;
+        var element_id = master.phasetypes.graphic.element_id;
         $("#graphic_canvas")
           .contents()
           .find("#" + element_id)
           .html($(this).val());
       });
       $("#setting_placeholder").on("input change", function () {
-        var element_id = master.code.graphic.element_id;
+        var element_id = master.phasetypes.graphic.element_id;
         $("#graphic_canvas")
           .contents()
           .find("#" + element_id)
           .attr("placeholder", $(this).val());
       });
       $("#setting_value").on("input change", function () {
-        var element_id = master.code.graphic.element_id;
+        var element_id = master.phasetypes.graphic.element_id;
         $("#graphic_canvas")
           .contents()
           .find("#" + element_id)
@@ -828,7 +828,7 @@
       ];
       setting_update_values.forEach(function (update_value) {
         $("#setting_" + update_value).on("input change", function () {
-          var element_id = master.code.graphic.element_id;
+          var element_id = master.phasetypes.graphic.element_id;
           graphic_editor_obj.update_trialtype_element(
             element_id,
             update_value,
@@ -861,8 +861,8 @@
       });
     },
     compile_graphics: function () {
-      var trialtype = master.code.file;
-      var this_trialtype = master.code.graphic.files[trialtype];
+      var trialtype = master.phasetypes.file;
+      var this_trialtype = master.phasetypes.graphic.files[trialtype];
       var elements = this_trialtype.elements;
 
       // css
@@ -896,7 +896,7 @@
       }
       this_code += "}\n";
 
-      var relevant_styles = master.code.graphic.relevant_styles;
+      var relevant_styles = master.phasetypes.graphic.relevant_styles;
       Object.keys(elements).forEach(function (element) {
         this_code += "#" + element + "{\n";
         this_code += "  position:absolute;\n";
@@ -1129,15 +1129,15 @@
       // add code to Ace editor and update the user_code
       ///////////////////////////////////////////////////////
       editor.setValue(this_code);
-      master.code.user[trialtype] = this_code;
+      master.phasetypes.user[trialtype] = this_code;
     },
     create_element: function (element_type) {
       var x_coord = this._mouseX;
       var y_coord = this._mouseY;
 
-      var trialtype = master.code.file;
+      var trialtype = master.phasetypes.file;
       var element_no = Object.keys(
-        master.code.graphic.files[trialtype].elements
+        master.phasetypes.graphic.files[trialtype].elements
       ).length;
 
       var element_id = "canvas_element_" + element_no;
@@ -1199,7 +1199,7 @@
             type: "checkbox",
             value: false,
           };
-          master.code.graphic.files[trialtype].elements[element_id] =
+          master.phasetypes.graphic.files[trialtype].elements[element_id] =
             element_props;
           this.update_timeline();
           this.draw_audio(element_props, element_id);
@@ -1232,7 +1232,7 @@
             value: false,
           };
 
-          master.code.graphic.files[trialtype].elements[element_id] =
+          master.phasetypes.graphic.files[trialtype].elements[element_id] =
             element_props;
           this.update_timeline();
           this.draw_image(element_props, element_id);
@@ -1312,7 +1312,7 @@
                       type: "checkbox",
                       value: false,
                     };
-                    master.code.graphic.files[trialtype].elements[element_id] =
+                    master.phasetypes.graphic.files[trialtype].elements[element_id] =
                       element_props;
                     graphic_editor_obj.update_timeline();
                     graphic_editor_obj.draw_input(element_props, element_id);
@@ -1345,7 +1345,7 @@
                       type: "text",
                       value: "12px",
                     };
-                    master.code.graphic.files[trialtype].elements[element_id] =
+                    master.phasetypes.graphic.files[trialtype].elements[element_id] =
                       element_props;
                     graphic_editor_obj.update_timeline();
                     graphic_editor_obj.draw_input(element_props, element_id);
@@ -1409,7 +1409,7 @@
             type: "text",
             value: "",
           };
-          master.code.graphic.files[trialtype].elements[element_id] =
+          master.phasetypes.graphic.files[trialtype].elements[element_id] =
             element_props;
           this.update_timeline();
           this.draw_text(element_props, element_id);
@@ -1448,7 +1448,7 @@
             type: "checkbox",
             value: false,
           };
-          master.code.graphic.files[trialtype].elements[element_id] =
+          master.phasetypes.graphic.files[trialtype].elements[element_id] =
             element_props;
           this.update_timeline();
           this.draw_video(element_props, element_id);
@@ -1489,8 +1489,8 @@
           .contents()
           .find("#" + element_id)
           .addClass("selected_element");
-        var trialtype = master.code.file;
-        master.code.graphic.element_id = element_id;
+        var trialtype = master.phasetypes.file;
+        master.phasetypes.graphic.element_id = element_id;
         graphic_editor_obj.update_settings(element_id);
       });
     },
@@ -1528,8 +1528,8 @@
           .contents()
           .find("#" + element_id)
           .addClass("selected_element");
-        var trialtype = master.code.file;
-        master.code.graphic.element_id = element_id;
+        var trialtype = master.phasetypes.file;
+        master.phasetypes.graphic.element_id = element_id;
         graphic_editor_obj.update_settings(element_id);
       });
     },
@@ -1579,8 +1579,8 @@
           .contents()
           .find("#" + element_id)
           .addClass("selected_element");
-        var trialtype = master.code.file;
-        master.code.graphic.element_id = element_id;
+        var trialtype = master.phasetypes.file;
+        master.phasetypes.graphic.element_id = element_id;
         graphic_editor_obj.update_settings(element_id);
       });
     },
@@ -1630,8 +1630,8 @@
           .contents()
           .find("#" + element_id)
           .addClass("selected_element");
-        var trialtype = master.code.file;
-        master.code.graphic.element_id = element_id;
+        var trialtype = master.phasetypes.file;
+        master.phasetypes.graphic.element_id = element_id;
         graphic_editor_obj.update_settings(element_id);
       });
     },
@@ -1669,8 +1669,8 @@
           .contents()
           .find("#" + element_id)
           .addClass("selected_element");
-        var trialtype = master.code.file;
-        master.code.graphic.element_id = element_id;
+        var trialtype = master.phasetypes.file;
+        master.phasetypes.graphic.element_id = element_id;
         graphic_editor_obj.update_settings(element_id);
       });
     },
@@ -1701,8 +1701,8 @@
         graphic_editor_obj.update_timeline();
         graphic_editor_obj.update_main_settings();
 
-        var trialtype = master.code.file;
-        var this_trialtype = master.code.graphic.files[trialtype];
+        var trialtype = master.phasetypes.file;
+        var this_trialtype = master.phasetypes.graphic.files[trialtype];
         console.dir(this_trialtype);
       });
     },
@@ -1942,15 +1942,15 @@
                 " </b> is a protected element name - please come up with another one"
             );
           } else if (new_name !== null) {
-            var trialtype = master.code.file;
-            var elements = master.code.graphic.files[trialtype].elements;
+            var trialtype = master.phasetypes.file;
+            var elements = master.phasetypes.graphic.files[trialtype].elements;
             if (typeof elements[new_name] == "undefined") {
-              var old_element_name = master.code.graphic.element_id;
+              var old_element_name = master.phasetypes.graphic.element_id;
               elements[new_name] = JSON.parse(
                 JSON.stringify(elements[old_element_name])
               );
               delete elements[old_element_name];
-              master.code.graphic.element_id = new_name;
+              master.phasetypes.graphic.element_id = new_name;
               $("#element_name").val(new_name);
               $("#graphic_canvas")
                 .contents()
@@ -1983,8 +1983,8 @@
       );
     },
     update_main_settings: function () {
-      var trialtype = master.code.file;
-      var this_trialtype = master.code.graphic.files[trialtype];
+      var trialtype = master.phasetypes.file;
+      var this_trialtype = master.phasetypes.graphic.files[trialtype];
       $("#trial_width").val(parseFloat(this_trialtype.width));
       $("#trial_height").val(this_trialtype.height);
       $("#trial_background_color").val(this_trialtype["background-color"]);
@@ -1993,9 +1993,9 @@
       $("#mouse_visible")[0].checked = this_trialtype.mouse_visible;
     },
     update_settings: function (element_id) {
-      var trialtype = master.code.file;
+      var trialtype = master.phasetypes.file;
       var this_settings = this.order_settings(
-        master.code.graphic.files[trialtype].elements[element_id]
+        master.phasetypes.graphic.files[trialtype].elements[element_id]
       );
       $("#graphic_general_settings").hide();
       $("#graphic_settings").html("");
@@ -2172,8 +2172,8 @@
       graphic_editor_obj.compile_graphics();
     },
     update_timeline: function () {
-      var trialtype = master.code.file;
-      var this_trialtype = master.code.graphic.files[trialtype];
+      var trialtype = master.phasetypes.file;
+      var this_trialtype = master.phasetypes.graphic.files[trialtype];
       var these_elements = this_trialtype.elements;
       var element_timeline_html = "<table style='width:100%'>";
 
@@ -2355,8 +2355,8 @@
       });
     },
     update_trialtype_element: function (element_id, prop, value) {
-      var trialtype = master.code.file;
-      master.code.graphic.files[trialtype].elements[element_id][prop].value =
+      var trialtype = master.phasetypes.file;
+      master.phasetypes.graphic.files[trialtype].elements[element_id][prop].value =
         value;
       graphic_editor_obj.update_timeline();
       graphic_editor_obj.compile_graphics();
