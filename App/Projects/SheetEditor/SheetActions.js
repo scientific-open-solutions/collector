@@ -531,7 +531,7 @@ $("#save_btn").attr("previousValue", "");
 
 $("#save_btn").on("click", function () {
   function process_code(this_proj) {
-    var code_files = [];
+    var phasetype_files = [];
     Object.keys(this_proj.all_procs).forEach(function (proc_name) {
       var this_proc = Collector.PapaParsed(this_proj.all_procs[proc_name]);
       var cleaned_parsed_proc = [];
@@ -542,11 +542,13 @@ $("#save_btn").on("click", function () {
       });
       this_proc = cleaned_parsed_proc.map(function (row, row_index) {
         var cleaned_row = Collector.clean_obj_keys(row);
-        if (code_files.indexOf(cleaned_row.code) === -1) {
-          code_files.push(cleaned_row.code.toLowerCase());
+        console.log("row");
+        console.log(row);
+        if (phasetype_files.indexOf(cleaned_row.phasetype) === -1) {
+          phasetype_files.push(cleaned_row.phasetype.toLowerCase());
         }
-        cleaned_row.code = cleaned_row.code.toLowerCase();
-        if (cleaned_row.code.indexOf(" ") !== -1) {
+        cleaned_row.phasetype = cleaned_row.phasetype.toLowerCase();
+        if (cleaned_row.phasetype.indexOf(" ") !== -1) {
           bootbox.alert(
             "You have a space in row <b>" +
               (row_index + 2) +
@@ -558,21 +560,21 @@ $("#save_btn").on("click", function () {
         if (cleaned_row.item === 0) {
           var this_code;
           if (
-            typeof master.phasetypes.user[cleaned_row.code] === "undefined" &&
-            typeof master.phasetypes.default[cleaned_row.code] === "undefined"
+            typeof master.phasetypes.user[cleaned_row.phasetype] === "undefined" &&
+            typeof master.phasetypes.default[cleaned_row.phasetype] === "undefined"
           ) {
             bootbox.alert(
               "The code file <b>" +
-                cleaned_row.code +
+                cleaned_row.phasetypes +
                 "</b> doesn't appear to exist"
             );
           } else {
-            if (typeof master.phasetypes.user[cleaned_row.code] !== "undefined") {
-              this_code = master.phasetypes.user[cleaned_row.code];
+            if (typeof master.phasetypes.user[cleaned_row.phasetype] !== "undefined") {
+              this_code = master.phasetypes.user[cleaned_row.phasetype];
             } else if (
-              typeof master.phasetypes.default[cleaned_row.code] !== "undefined"
+              typeof master.phasetypes.default[cleaned_row.phasetype] !== "undefined"
             ) {
-              this_code = master.phasetypes.default[cleaned_row.code];
+              this_code = master.phasetypes.default[cleaned_row.phasetype];
             }
 
             these_variables = Collector.list_variables(this_code);
@@ -580,14 +582,14 @@ $("#save_btn").on("click", function () {
               if (
                 Object.keys(cleaned_row).indexOf(this_variable) === -1 &&
                 this_variable !== "survey" &&
-                cleaned_row.code !== "survey"
+                cleaned_row.phasetypes !== "survey"
               ) {
                 //i.e. this variable is not part of this procedure
                 Collector.custom_alert(
                   "Error: You have your item set to <b>0</b> in row <b>" +
                     (row_index + 2) +
                     "</b>. However, it seems like the trialtype <b>" +
-                    cleaned_row.code +
+                    cleaned_row.phasetypes +
                     "</b> will be looking for a variable <b>" +
                     this_variable +
                     "</b> in your" +
@@ -603,34 +605,34 @@ $("#save_btn").on("click", function () {
       });
       this_proj.all_procs[proc_name] = Papa.unparse(this_proc);
     });
-    code_files = code_files.filter(Boolean); //remove blanks
-    if (typeof this_proj.code === "undefined") {
+    phasetype_files = phasetype_files.filter(Boolean); //remove blanks
+    if (typeof this_proj.phasetypes === "undefined") {
       this_proj.trialtypes = {};
     }
 
     /*
-     * First loop is to make sure the experiment has all the code_files
+     * First loop is to make sure the experiment has all the phasetype_files
      */
-    this_proj.code = {};
-    code_files.forEach(function (code_file) {
+    this_proj.phasetypes = {};
+    phasetype_files.forEach(function (code_file) {
       console.log("code_file");
       console.log(code_file);
       if (typeof master.phasetypes.user[code_file] === "undefined") {
-        this_proj.code[code_file] =
+        this_proj.phasetypes[code_file] =
           "[[[LOCATION]]]../Default/DefaultCode/" +
           code_file.replace(".html", "") +
           ".html";
-        //this_proj.code[code_file] = master.phasetypes.default[code_file];
+        //this_proj.phasetypes[code_file] = master.phasetypes.default[code_file];
       } else {
-        this_proj.code[code_file] =
+        this_proj.phasetypes[code_file] =
           "[[[LOCATION]]]../User/Code/" +
           code_file.replace(".html", "") +
           ".html";
-        //this_proj.code[code_file] = master.phasetypes.user[code_file];
+        //this_proj.phasetypes[code_file] = master.phasetypes.user[code_file];
       }
     });
-    console.log("this_proj.code");
-    console.log(this_proj.code);
+    console.log("this_proj.phasetypes");
+    console.log(this_proj.phasetypes);
     return this_proj;
   }
   function process_conditions(this_proj) {
@@ -652,12 +654,15 @@ $("#save_btn").on("click", function () {
     }
   }
   function process_procs(this_proj) {
+    if(typeof(this_proj.phasetypes) === "undefined"){
+      this_proj.phasetypes = {};
+    }
     Object.keys(this_proj.all_procs).forEach(function (proc_name) {
       this_proc = Collector.PapaParsed(this_proj.all_procs[proc_name]);
       this_proc.forEach(function (proc_row) {
         proc_row = Collector.clean_obj_keys(proc_row);
-        // survey check
-        ////////////////
+
+        /* survey check */
         if (typeof proc_row.survey !== "undefined" && proc_row.survey !== "") {
           var this_survey = proc_row.survey.toLowerCase();
           if (typeof master.surveys.user_surveys[this_survey] !== "undefined") {
@@ -680,7 +685,7 @@ $("#save_btn").on("click", function () {
                 console.log("survey_mod_type");
                 console.log(survey_mod_type);
                 if (typeof master.phasetypes.user[survey_mod_type] !== "undefined") {
-                  this_proj.code[survey_mod_type] =
+                  this_proj.phasetypes[survey_mod_type] =
                     master.phasetypes[survey_mod_type];
                 }
               }

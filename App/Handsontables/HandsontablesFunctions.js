@@ -21,7 +21,7 @@ var this_sheet;
 var this_selection;
 function isPhaseTypeHeader(colHeader) {
   var isPhaseTypeCol = false;
-  if (colHeader === "trial type") isPhaseTypeCol = true;
+  if (colHeader === "phasetype") isPhaseTypeCol = true;
   if (
     colHeader.substr(0, 5).toLowerCase() === "post " &&
     colHeader.substr(-11) === " trial type"
@@ -159,15 +159,18 @@ function createHoT(container, data, sheet_name) {
         if (k >= this.countCols()) {
           break;
         }
-        if (this.getDataAtCell(0, k).toLowerCase() == "trial type") {
-          this.setDataAtCell(0, k, "code");
+        if (this.getDataAtCell(0, k).toLowerCase() === "trial type") {
+          this.setDataAtCell(0, k, "phasetype");
+        }
+        if (this.getDataAtCell(0, k).toLowerCase() === "code") {
+          this.setDataAtCell(0, k, "phasetype");
         }
         // checking for invalid item number (i.e. one)
-        if (this.getDataAtCell(0, k).toLowerCase() == "item") {
+        if (this.getDataAtCell(0, k).toLowerCase() === "item") {
           // loop through each row
           for (m = 0; m < this.countRows(); m++) {
             // if the value in the row is one
-            if (this.getDataAtCell(m, k) == 1) {
+            if (this.getDataAtCell(m, k) === 1) {
               bootbox.alert(
                 "Warning: 1 does not refer to any row in the Stimuli sheet! The first row is row 2 (as row 1 is the header). Fix row " +
                   (m + 1) +
@@ -212,7 +215,7 @@ function createHoT(container, data, sheet_name) {
       var project = $("#project_list").val();
       var this_proj = master.projects.projects[project];
 
-      if (sheet_name.toLowerCase() == "conditions.csv") {
+      if (sheet_name.toLowerCase() === "conditions.csv") {
         this_proj.conditions = this.getData();
       } else {
         if (typeof this_proj.all_stims[sheet_name] !== "undefined") {
@@ -257,8 +260,12 @@ function createHoT(container, data, sheet_name) {
       if (row === 0) {
         cellProperties.renderer = firstRowRenderer;
       } else {
-        var thisHeader = this.instance.getDataAtCell(0, col);
-        if (typeof thisHeader === "string" && thisHeader != "") {
+        var thisHeader = this.instance.getDataAtCell(0, col).toLowerCase();
+        if (typeof thisHeader === "string" && thisHeader !== "") {
+          if(thisHeader === "code" | thisHeader === "trialtype"){
+            thisHeader = "phasetype";
+            this.instance.setDataAtCell(0, col, thisHeader);
+          }
           if (isPhaseTypeHeader(thisHeader)) {
             cellProperties.type = "dropdown";
             cellProperties.source = trialTypes;
@@ -292,7 +299,7 @@ function createHoT(container, data, sheet_name) {
           hidden: function () {
             // `hidden` can be a boolean or a function
             // Hide the option when the first column was clicked
-            return this.getSelectedLast()[0] == 0; // `this` === hot3
+            return this.getSelectedLast()[0] === 0; // `this` === hot3
           },
           callback: function (key, selection, clickEvent) {
             // Callback for specific option
