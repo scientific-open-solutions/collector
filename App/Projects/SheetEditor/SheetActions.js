@@ -560,8 +560,10 @@ $("#save_btn").on("click", function () {
         if (cleaned_row.item === 0) {
           var this_code;
           if (
-            typeof master.phasetypes.user[cleaned_row.phasetype] === "undefined" &&
-            typeof master.phasetypes.default[cleaned_row.phasetype] === "undefined"
+            typeof master.phasetypes.user[cleaned_row.phasetype] ===
+              "undefined" &&
+            typeof master.phasetypes.default[cleaned_row.phasetype] ===
+              "undefined"
           ) {
             bootbox.alert(
               "The code file <b>" +
@@ -569,10 +571,14 @@ $("#save_btn").on("click", function () {
                 "</b> doesn't appear to exist"
             );
           } else {
-            if (typeof master.phasetypes.user[cleaned_row.phasetype] !== "undefined") {
+            if (
+              typeof master.phasetypes.user[cleaned_row.phasetype] !==
+              "undefined"
+            ) {
               this_code = master.phasetypes.user[cleaned_row.phasetype];
             } else if (
-              typeof master.phasetypes.default[cleaned_row.phasetype] !== "undefined"
+              typeof master.phasetypes.default[cleaned_row.phasetype] !==
+              "undefined"
             ) {
               this_code = master.phasetypes.default[cleaned_row.phasetype];
             }
@@ -654,7 +660,7 @@ $("#save_btn").on("click", function () {
     }
   }
   function process_procs(this_proj) {
-    if(typeof(this_proj.phasetypes) === "undefined"){
+    if (typeof this_proj.phasetypes === "undefined") {
       this_proj.phasetypes = {};
     }
     Object.keys(this_proj.all_procs).forEach(function (proc_name) {
@@ -684,7 +690,9 @@ $("#save_btn").on("click", function () {
                 var survey_mod_type = clean_key_row.type.toLowerCase();
                 console.log("survey_mod_type");
                 console.log(survey_mod_type);
-                if (typeof master.phasetypes.user[survey_mod_type] !== "undefined") {
+                if (
+                  typeof master.phasetypes.user[survey_mod_type] !== "undefined"
+                ) {
                   this_proj.phasetypes[survey_mod_type] =
                     master.phasetypes[survey_mod_type];
                 }

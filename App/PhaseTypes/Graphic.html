@@ -473,7 +473,8 @@
   });
   $("#mouse_visible").on("change", function () {
     var trialtype = master.phasetypes.file;
-    master.phasetypes.graphic.files[trialtype]["mouse_visible"] = $(this)[0].checked;
+    master.phasetypes.graphic.files[trialtype]["mouse_visible"] =
+      $(this)[0].checked;
     graphic_editor_obj.compile_graphics();
   });
   $("#trial_background_color").on("input change", function () {
@@ -482,7 +483,8 @@
       .find("body")
       .css("background-color", $(this).val());
     var trialtype = master.phasetypes.file;
-    master.phasetypes.graphic.files[trialtype]["background-color"] = $(this).val();
+    master.phasetypes.graphic.files[trialtype]["background-color"] =
+      $(this).val();
     graphic_editor_obj.compile_graphics();
   });
   $("#trial_height").on("input change", function () {
@@ -716,7 +718,9 @@
                 .contents()
                 .find("#" + element_id)
                 .remove();
-              delete master.phasetypes.graphic.files[trialtype].elements[element_id];
+              delete master.phasetypes.graphic.files[trialtype].elements[
+                element_id
+              ];
               $("#graphic_settings").html("");
               $("#graphic_general_settings").show();
             }
@@ -1312,8 +1316,9 @@
                       type: "checkbox",
                       value: false,
                     };
-                    master.phasetypes.graphic.files[trialtype].elements[element_id] =
-                      element_props;
+                    master.phasetypes.graphic.files[trialtype].elements[
+                      element_id
+                    ] = element_props;
                     graphic_editor_obj.update_timeline();
                     graphic_editor_obj.draw_input(element_props, element_id);
 
@@ -1345,8 +1350,9 @@
                       type: "text",
                       value: "12px",
                     };
-                    master.phasetypes.graphic.files[trialtype].elements[element_id] =
-                      element_props;
+                    master.phasetypes.graphic.files[trialtype].elements[
+                      element_id
+                    ] = element_props;
                     graphic_editor_obj.update_timeline();
                     graphic_editor_obj.draw_input(element_props, element_id);
                     break;
@@ -2356,8 +2362,9 @@
     },
     update_trialtype_element: function (element_id, prop, value) {
       var trialtype = master.phasetypes.file;
-      master.phasetypes.graphic.files[trialtype].elements[element_id][prop].value =
-        value;
+      master.phasetypes.graphic.files[trialtype].elements[element_id][
+        prop
+      ].value = value;
       graphic_editor_obj.update_timeline();
       graphic_editor_obj.compile_graphics();
     },

@@ -88,7 +88,7 @@ function correct_master(){
 
       });
       if(typeof(this_project.trialtypes) !== "undefined"){
-        this_project.code = this_project.trialtypes;
+        this_project.phasetypes = this_project.trialtypes;
         delete(this_project.trialtypes);
       }
     } catch(error){

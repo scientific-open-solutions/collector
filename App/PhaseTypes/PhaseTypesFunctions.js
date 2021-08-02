@@ -29,7 +29,8 @@ code_obj = {
       function (result) {
         if (result == true) {
           if (
-            typeof master.phasetypes.graphic.files[master.phasetypes.file] !== "undefined"
+            typeof master.phasetypes.graphic.files[master.phasetypes.file] !==
+            "undefined"
           ) {
             delete master.phasetypes.graphic.files[master.phasetypes.file];
           }

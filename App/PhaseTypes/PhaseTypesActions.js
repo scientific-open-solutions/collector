@@ -140,9 +140,12 @@ function initiate_actions() {
                   };
                   master.phasetypes.graphic.files[new_name].width = "600";
                   master.phasetypes.graphic.files[new_name].height = "600";
-                  master.phasetypes.graphic.files[new_name]["background-color"] =
-                    "white";
-                  master.phasetypes.graphic.files[new_name].mouse_visible = true;
+                  master.phasetypes.graphic.files[new_name][
+                    "background-color"
+                  ] = "white";
+                  master.phasetypes.graphic.files[
+                    new_name
+                  ].mouse_visible = true;
                   master.phasetypes.graphic.files[new_name].keyboard = {
                     valid_keys: "",
                     end_press: true,
@@ -188,7 +191,8 @@ function initiate_actions() {
             bootbox.alert("You already have a code file with this name");
           } else {
             var original_name = $("#code_select").val();
-            master.phasetypes.user[new_name] = master.phasetypes.user[original_name];
+            master.phasetypes.user[new_name] =
+              master.phasetypes.user[original_name];
             delete master.phasetypes.user[original_name];
 
             $("#code_select").attr("previousvalue", "");

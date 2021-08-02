@@ -262,7 +262,7 @@ function createHoT(container, data, sheet_name) {
       } else {
         var thisHeader = this.instance.getDataAtCell(0, col).toLowerCase();
         if (typeof thisHeader === "string" && thisHeader !== "") {
-          if(thisHeader === "code" | thisHeader === "trialtype"){
+          if ((thisHeader === "code") | (thisHeader === "trialtype")) {
             thisHeader = "phasetype";
             this.instance.setDataAtCell(0, col, thisHeader);
           }

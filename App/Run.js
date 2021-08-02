@@ -48,12 +48,13 @@ Project = {
     "get_gets",
     "start_restart",
     "start_project",
+    "load_phases",
     "select_condition",
     "full_screen",
     "create_project_json_variables",
     "parse_sheets",
     "parse_current_proc",
-    "clean_code",
+    "clean_phasetypes",
     "insert_start",
     "insert_end_checks",
     "shuffle_start_exp",
@@ -68,7 +69,7 @@ Project = {
     "create_project_json_variables",
     "parse_sheets",
     "parse_current_proc",
-    "clean_code",
+    "clean_phasetypes",
     "insert_start",
     "insert_end_checks",
     "shuffle_start_exp",
@@ -98,11 +99,11 @@ Project = {
     }
   },
   finish_phase: function (go_to_info) {
-    trial_end_ms = new Date().getTime();
-    trial_inputs = {};
+    phase_end_ms = new Date().getTime();
+    phase_inputs = {};
     $("#experiment_progress").css(
       "width",
-      (100 * project_json.trial_no) / (project_json.parsed_proc.length - 1) +
+      (100 * project_json.phase_no) / (project_json.parsed_proc.length - 1) +
         "%"
     );
 
@@ -111,17 +112,17 @@ Project = {
         $("input[name='" + project_json.inputs[i].name + "']:checked")
           .length === 0
       ) {
-        trial_inputs[project_json.inputs[i].name] =
+        phase_inputs[project_json.inputs[i].name] =
           project_json.inputs[i].value;
       } else {
         if (project_json.inputs[i].checked) {
-          trial_inputs[project_json.inputs[i].name] =
+          phase_inputs[project_json.inputs[i].name] =
             project_json.inputs[i].value;
         }
       }
     }
 
-    this_proc = project_json.parsed_proc[project_json.trial_no];
+    this_proc = project_json.parsed_proc[project_json.phase_no];
     if (typeof project_json.parsed_stim[this_proc.item] === "undefined") {
       this_stim = {};
     } else {
@@ -132,7 +133,7 @@ Project = {
       this_stim = {};
     }
 
-    var objs = [project_json.this_trial, trial_inputs, this_proc, this_stim],
+    var objs = [project_json.this_phase, phase_inputs, this_proc, this_stim],
       response_data = objs.reduce(function (r, o) {
         Object.keys(o).forEach(function (k) {
           r[k] = o[k];
@@ -156,11 +157,11 @@ Project = {
 
     response_data[post_string + "_window_inner_width"] = window.innerWidth;
     response_data[post_string + "_window_inner_height"] = window.innerHeight;
-    response_data[post_string + "_trial_end_ms"] = trial_end_ms;
+    response_data[post_string + "_phase_end_ms"] = phase_end_ms;
     response_data[post_string + "_rt_ms"] =
-      trial_end_ms - response_data[post_string + "_trial_start_ms"];
-    response_data[post_string + "_trial_end_date"] = new Date(
-      parseInt(trial_end_ms, 10)
+      phase_end_ms - response_data[post_string + "_phase_start_ms"];
+    response_data[post_string + "_phase_end_date"] = new Date(
+      parseInt(phase_end_ms, 10)
     ).toString("MM/dd/yy HH:mm:ss");
     response_data.platform = window.navigator.platform;
     response_data.username = $("#participant_code").val();
@@ -170,34 +171,34 @@ Project = {
         project_json.this_condition[condition_item];
     });
 
-    project_json.this_trial = response_data;
+    project_json.this_phase = response_data;
     response_data.participant_browser = participant_browser;
-    response_data.trial_number = project_json.trial_no;
+    response_data.phase_number = project_json.phase_no;
 
-    var not_final_trial = true;
+    var not_final_phase = true;
 
     if (
-      $("#trial" + project_json.trial_no)
+      $("#phase" + project_json.phase_no)
         .contents()
         .children()
         .find("iframe").length ===
       project_json.post_no + 1
     ) {
-      $("#trial" + project_json.trial_no).remove();
-      project_json.responses.push(project_json.this_trial);
+      $("#phase" + project_json.phase_no).remove();
+      project_json.responses.push(project_json.this_phase);
       if (
-        (project_json.trial_no === project_json.parsed_proc.length - 1) &
+        (project_json.phase_no === project_json.parsed_proc.length - 1) &
         (typeof go_to_info === "undefined")
       ) {
-        not_final_trial = false;
-        final_trial();
+        not_final_phase = false;
+        final_phase();
       } else {
-        project_json.this_trial = {};
-        project_json.trial_no = parseFloat(project_json.trial_no) + 1;
+        project_json.this_phase = {};
+        project_json.phase_no = parseFloat(project_json.phase_no) + 1;
         project_json.post_no = 0;
         setTimeout(function () {
           var this_index =
-            parseFloat(project_json.trial_no) +
+            parseFloat(project_json.phase_no) +
             parseFloat(project_json.this_condition.buffer) -
             1;
           write_phase_iframe(this_index);
@@ -207,14 +208,14 @@ Project = {
     } else {
       project_json.post_no++;
       var start_time = new Date().getTime();
-      project_json.this_trial[
-        "post_" + project_json.post_no + "_trial_start_ms"
+      project_json.this_phase[
+        "post_" + project_json.post_no + "_phase_start_ms"
       ] = new Date().getTime();
-      project_json.this_trial[
-        "post_" + project_json.post_no + "_trial_start_date"
+      project_json.this_phase[
+        "post_" + project_json.post_no + "_phase_start_date"
       ] = new Date(parseInt(start_time, 10)).toString("MM/dd/yy HH:mm:ss");
 
-      $("#trial" + project_json.trial_no)
+      $("#phase" + project_json.phase_no)
         .contents()
         .children()
         .find("iframe")
@@ -245,7 +246,7 @@ Project = {
       case "github":
       case "onlinepreview":
       case "server":
-        if (not_final_trial) {
+        if (not_final_phase) {
           online_data_obj.save_queue_add(function () {
             online_save(
               Project.get_vars.location,
@@ -262,7 +263,7 @@ Project = {
               ), //data
               project_json.storage_scripts,
               function () {},
-              "trial",
+              "phase",
               project_json.responses.length - 1
             );
           });
@@ -273,16 +274,17 @@ Project = {
         break;
     }
   },
-
-  generate_trial: function (trial_no, post_no) {
-    if (typeof project_json.parsed_proc[trial_no] === "undefined") {
+  generate_phase: function (phase_no, post_no) {
+    if (typeof project_json.parsed_proc[phase_no] === "undefined") {
       return false;
     }
 
     post_no = post_no === 0 ? "" : "post " + post_no + " ";
-    this_proc = project_json.parsed_proc[trial_no];
-    var code_location = project_json.code[this_proc[post_no + "code"]];
-    this_phase = project_json.code[this_proc[post_no + "code"]];
+    this_proc = project_json.parsed_proc[phase_no];
+    var code_location =
+      project_json.phasetypes[this_proc[post_no + "phasetype"]];
+    this_phase = project_json.phasetypes[this_proc[post_no + "phasetype"]];
+
 
     //look through all variables and replace with the value
 
@@ -299,15 +301,15 @@ Project = {
       )[0].outerHTML;
 
     /*
-project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new Date()).getTime();
+project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new Date()).getTime();
 */
 
     //baseline_time
 
     this_phase =
       "<scr" +
-      "ipt> Phase = {}; Phase.trial_no = '" +
-      trial_no +
+      "ipt> Phase = {}; Phase.phase_no = '" +
+      phase_no +
       "'; Phase.post_no ='" +
       post_no +
       "' </scr" +
@@ -315,9 +317,9 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
       "<scr" +
       "ipt src = 'PhaseFunctions.js' ></scr" +
       "ipt>" +
-      this_phase; //; trial_script +
+      this_phase; //; phase_script +
 
-    this_phase = this_phase.replace("[trial_no]", trial_no);
+    this_phase = this_phase.replace("[phase_no]", phase_no);
     this_phase = this_phase.replace("[post_no]", post_no);
 
     if (this_proc.item.toString() !== "0") {
@@ -329,8 +331,8 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
     variable_list = variable_list.filter(String);
 
     //list everything between {{ and }} and transform them into lowercase
-    split_trialtype = this_phase.split("{{");
-    split_trialtype = split_trialtype.map(function (split_part) {
+    split_phasetype = this_phase.split("{{");
+    split_phasetype = split_phasetype.map(function (split_part) {
       if (split_part.indexOf("}}") !== -1) {
         more_split_part = split_part.split("}}");
         more_split_part[0] = more_split_part[0].toLowerCase();
@@ -338,7 +340,7 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
       }
       return split_part;
     });
-    this_phase = split_trialtype.join("{{");
+    this_phase = split_phasetype.join("{{");
 
     variable_list.forEach(function (variable, this_index) {
       if (typeof this_proc[variable] !== "undefined") {
@@ -384,36 +386,38 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
     return this_phase;
   },
 
-  go_to: function (new_trial_no, proc_no) {
+  go_to: function (new_phase_no, proc_no) {
     if (typeof proc_no === "undefined") {
       proc_no = 0;
     }
-    Project.finish_phase([new_trial_no - 1, proc_no]);
+    Project.finish_phase([new_phase_no - 1, proc_no]);
   },
 
   start_post: function (go_to_info) {
+
     if (typeof go_to_info !== "undefined") {
-      project_json.trial_no = go_to_info[0];
+      project_json.phase_no = go_to_info[0];
       project_json.post_no = go_to_info[1];
       $(".phase_iframe").remove();
       var this_buffer = project_json.this_condition.buffer;
-      var trial_no = project_json.trial_no;
-      for (var index = trial_no; index < trial_no + this_buffer; index++) {
+      var phase_no = project_json.phase_no;
+      for (var index = phase_no; index < phase_no + this_buffer; index++) {
         write_phase_iframe(index);
       }
     }
-    if (typeof project_json.responses[project_json.trial_no] === "undefined") {
-      project_json.responses[project_json.trial_no] = {};
+    if (typeof project_json.responses[project_json.phase_no] === "undefined") {
+      project_json.responses[project_json.phase_no] = {};
     }
-    project_json.this_trial[
-      "post_" + project_json.post_no + "_trial_start_ms"
+    project_json.this_phase[
+      "post_" + project_json.post_no + "_phase_start_ms"
     ] = new Date().getTime();
     if (
-      $("#trial" + project_json.trial_no)
+      $("#phase" + project_json.phase_no)
         .contents()
         .children().length > 0
     ) {
-      var this_post_iframe = $("#trial" + project_json.trial_no)
+      console.log("I'm here " + project_json.phase_no);
+      var this_post_iframe = $("#phase" + (project_json.phase_no))
         .contents()
         .children()
         .find("iframe")
@@ -426,10 +430,10 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
        * apply zoom
        */
       var these_iframes = document
-        .getElementById("trial" + project_json.trial_no)
+        .getElementById("phase" + project_json.phase_no)
         .contentWindow.document.getElementsByClassName("post_iframe");
 
-      $("#trial" + project_json.trial_no)
+      $("#phase" + project_json.phase_no)
         .contents()
         .find(".post_iframe")
         .contents()
@@ -459,11 +463,11 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
         //lazy fix for now
       }
 
-      $("#trial" + project_json.trial_no).css("display", "inline-block");
-      $("#trial" + project_json.trial_no).css("width", "100%");
-      $("#trial" + project_json.trial_no).css("height", "100%");
-      $("#trial" + project_json.trial_no).css("visibility", "visible");
-      $("#trial" + project_json.trial_no)
+      $("#phase" + project_json.phase_no).css("display", "inline-block");
+      $("#phase" + project_json.phase_no).css("width", "100%");
+      $("#phase" + project_json.phase_no).css("height", "100%");
+      $("#phase" + project_json.phase_no).css("visibility", "visible");
+      $("#phase" + project_json.phase_no)
         .contents()
         .find("#post" + project_json.post_no)
         .contents()
@@ -479,23 +483,23 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
       }
       var max_time;
       if (
-        typeof project_json.parsed_proc[project_json.trial_no][
+        typeof project_json.parsed_proc[project_json.phase_no][
           post_val + "max time"
         ] === "undefined"
       ) {
         max_time = "user";
       } else {
         max_time =
-          project_json.parsed_proc[project_json.trial_no][
+          project_json.parsed_proc[project_json.phase_no][
             post_val + "max time"
           ];
       }
       if ((max_time !== "") & (max_time.toLowerCase() !== "user")) {
-        var this_trial_no = project_json.trial_no;
+        var this_phase_no = project_json.phase_no;
         var this_post_no = project_json.post_no;
-        Project.trial_timer = new Collector.timer(function () {
+        Project.phase_timer = new Collector.timer(function () {
           if (
-            this_trial_no === project_json.trial_no &&
+            this_phase_no === project_json.phase_no &&
             this_post_no === project_json.post_no
           ) {
             Project.finish_phase();
@@ -505,7 +509,7 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
       participant_backup();
 
       var this_timeout = project_json.time_outs.filter(function (row) {
-        return parseFloat(row.trial_no) === parseFloat(project_json.trial_no);
+        return parseFloat(row.phase_no) === parseFloat(project_json.phase_no);
       });
       console.log("this_timeout");
       console.log(this_timeout);
@@ -518,7 +522,7 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
           }, spec_timeout.duration);
         });
       } else {
-        //no timers on this trial?
+        //no timers on this phase?
       }
     }
   },
@@ -530,11 +534,11 @@ project_json.this_trial["post_"+project_json.post_no+"_trial_start_ms"] = (new D
 
 function buffer_phases() {
   var this_buffer = project_json.this_condition.buffer;
-  var trial_no = project_json.trial_no;
-  for (var index = trial_no; index < trial_no + this_buffer; index++) {
+  var phase_no = project_json.phase_no;
+  for (var index = phase_no; index < phase_no + this_buffer; index++) {
     write_phase_iframe(index);
   }
-  if (trial_no >= project_json.parsed_proc.length) {
+  if (phase_no >= project_json.parsed_proc.length) {
     $("#project_div").html(
       "<h1>You have already completed this experiment</h1>"
     );
@@ -561,17 +565,25 @@ function clean_this_condition(this_cond) {
   return this_cond;
 }
 
-function clean_code() {
+
+function clean_phasetypes() {
+  project_json.parsed_proc = project_json.parsed_proc.map(function(row){
+    row.phasetype = row.phasetype.toLowerCase();
+    return row;
+  });
+
+  /*
   project_json.parsed_proc.forEach(function (row, row_index) {
     //identify code columns
     var tt_cols = Object.keys(row).filter(
-      (this_key) => this_key.indexOf("code") !== -1
+      (this_key) => this_key.indexOf("phasetype") !== -1
     );
     tt_cols.forEach(function (tt_col) {
       project_json.parsed_proc[row_index][tt_col] =
         project_json.parsed_proc[row_index][tt_col].toLowerCase();
     });
   });
+  */
   Project.activate_pipe();
 }
 
@@ -585,15 +597,15 @@ function clean_var(this_variable, default_value) {
 }
 
 function create_project_json_variables() {
-  if (typeof project_json.trial_no === "undefined") {
-    project_json.this_trial = {};
+  if (typeof project_json.phase_no === "undefined") {
+    project_json.this_phase = {};
     project_json.uninitiated_stims = [];
     project_json.uninitiated_stims_sum = 0;
     project_json.initiated_stims = 0;
     project_json.time_outs = [];
     project_json.inputs = [];
     project_json.progress_bar_visible = true; //not doing anything at the moment
-    project_json.trial_no = 0;
+    project_json.phase_no = 0;
     project_json.post_no = 0;
     if (typeof project_json.responses === "undefined") {
       project_json.responses = [];
@@ -612,7 +624,7 @@ function detect_exe() {
   });
 }
 
-function final_trial() {
+function final_phase() {
   switch (Project.get_vars.platform) {
     case "github":
     case "onlinepreview":
@@ -643,7 +655,7 @@ function final_trial() {
                   "</b>, we'll try again every 10 seconds, but in case it fails, please download and e-mail this file. What do you want to save this file as? (you will get this message each time we fail to e-mail your data to the researcher)"
               );
               setTimeout(function () {
-                final_trial();
+                final_phase();
               }, 10000);
             } else {
               $("#participant_country").show();
@@ -837,17 +849,6 @@ function get_gets() {
   Project.get_vars =
     prmstr !== null && prmstr !== "" ? transformToAssocArray(prmstr) : {};
 
-  /*
-  * retrieve the phase code
-  */
-  if (this_phase.indexOf("[[[LOCATION]]]") === 0) {
-    var code_location = this_phase.replace("[[[LOCATION]]]", "");
-
-    //RESUME HERE
-
-
-  }
-
   // maybe the following is left over from the simulator?
   if (typeof Project.get_vars.name !== "undefined") {
     exp_condition = Project.get_vars.name;
@@ -869,7 +870,7 @@ function get_htmls() {
   ];
 
   /*
-  project_json.code should loop through trialtypes and get them from the Code folder. This location will depend on whether this is on the researcher's computer or not...
+  project_json.code should loop through phasetypes and get them from the Code folder. This location will depend on whether this is on the researcher's computer or not...
   */
 
   function loop_htmls(html_list) {
@@ -906,12 +907,12 @@ function insert_end_checks() {
 }
 
 function insert_start() {
-  function add_to_start(current_procedure, code) {
+  function add_to_start(current_procedure, phasetype) {
     var this_phase_info = {
       item: 0,
       max_time: "",
       text: "",
-      code: code,
+      phasetype: phasetype,
     };
     var shuffle_levels = Object.keys(project_json.parsed_proc[0]).filter(
       (item) => item.indexOf("shuffle") !== -1
@@ -926,7 +927,7 @@ function insert_start() {
   function load_quality_checks(quality_list) {
     var this_check = quality_list.pop();
     $.get(this_check.url, function (this_check_html) {
-      project_json.code[this_check.name] = this_check_html;
+      project_json.phasetypes[this_check.name] = this_check_html;
       if (quality_list.length > 0) {
         load_quality_checks(quality_list);
       } else {
@@ -1005,6 +1006,31 @@ function insert_start() {
 
     load_quality_checks(quality_checks);
   }
+}
+
+function load_phases() {
+  var loaded_phases = 0;
+  var phases = Object.keys(project_json.phasetypes).length;
+  Object.keys(project_json.phasetypes).forEach(function (phasetype) {
+    var this_phase = project_json.phasetypes[phasetype];
+    if (this_phase.indexOf("[[[LOCATION]]]") === 0) {
+      var code_location = this_phase.replace("[[[LOCATION]]]", "");
+      $.get(code_location, function (phase_code) {
+        project_json.phasetypes[phasetype] = phase_code;
+        loaded_phases++;
+        console.log(loaded_phases + "_" + phases);
+        if (loaded_phases === phases) {
+          Project.activate_pipe();
+        }
+      });
+    } else {
+      loaded_phases++;
+      console.log(loaded_phases + "_" + phases);
+      if (loaded_phases === phases) {
+        Project.activate_pipe();
+      }
+    }
+  });
 }
 
 function parse_sheets() {
@@ -1713,16 +1739,19 @@ function write_phase_iframe(index) {
   var phase_iframe = $("<iframe>")
     .addClass("phase_iframe")
     .attr("frameBorder", "0")
-    .attr("id", "trial" + index)
+    .attr("id", "phase" + index)
     .attr("scrolling", "no");
 
   $("#project_div").append(phase_iframe);
 
   this_proc = project_json.parsed_proc[index];
 
+
   var post_code = Object.keys(this_proc).filter(function (key) {
-    return /code/.test(key);
+    return /phasetype/.test(key);
   });
+
+
   phase_events = post_code.filter(function (post_phase) {
     return this_proc[post_phase] !== "";
   });
@@ -1740,23 +1769,23 @@ function write_phase_iframe(index) {
       phase_iframe_code += post_iframe[0].outerHTML;
     }
   }
-  doc = document.getElementById("trial" + index).contentWindow.document;
+  doc = document.getElementById("phase" + index).contentWindow.document;
   doc.open();
   try {
     doc.write(phase_iframe_code);
   } catch (error) {
-    alert("failed to write the trial_code");
+    alert("failed to write the phase_code");
     alert(error);
   }
   doc.close();
 
   for (let i = 0; i < phase_events.length; i++) {
-    var phase_content = Project.generate_trial(index, i);
+    var phase_content = Project.generate_phase(index, i);
     phase_content +=
       "<button style='opacity:0; filter: alpha(opacity=0)' id='zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'></button>";
 
     doc = document
-      .getElementById("trial" + index)
+      .getElementById("phase" + index)
       .contentWindow.document.getElementById("post" + i).contentWindow;
     doc.document.open();
 
@@ -1777,8 +1806,8 @@ function write_phase_iframe(index) {
         this_proc.timer_style !== ""
       ) {
         timer_code = timer_code.replace(
-          "#collector_trial_timer{",
-          "#collector_trial_timer{" + this_proc.timer_style + ";"
+          "#collector_phase_timer{",
+          "#collector_phase_timer{" + this_proc.timer_style + ";"
         );
       }
     } else {
@@ -1787,7 +1816,7 @@ function write_phase_iframe(index) {
     doc.document.write(libraries + phase_content + timer_code + img_check_code);
     doc.document.close();
 
-    //autoscroll to top of iframe (in case the trial runs over)
+    //autoscroll to top of iframe (in case the phase runs over)
     doc.scrollTo(0, 0);
 
     var no_images = (phase_content.match(/<img/g) || []).length;
@@ -1803,12 +1832,12 @@ function write_phase_iframe(index) {
       stim_interval = setInterval(function () {
         project_json.initiated_stims = 0;
         for (
-          var j = project_json.trial_no;
-          j < project_json.trial_no + project_json.this_condition.buffer;
+          var j = project_json.phase_no;
+          j < project_json.phase_no + project_json.this_condition.buffer;
           j++
         ) {
           if (
-            $("#trial" + j)
+            $("#phase" + j)
               .contents()
               .children()
               .find("iframe")
@@ -1817,8 +1846,8 @@ function write_phase_iframe(index) {
               .find("img")
               .prop("complete")
           ) {
-            //if($("#trial"+j).contents().find('img').prop('complete') == true){
-            project_json.initiated_stims += $("#trial" + j)
+            //if($("#phase"+j).contents().find('img').prop('complete') == true){
+            project_json.initiated_stims += $("#phase" + j)
               .contents()
               .children()
               .find("iframe")
