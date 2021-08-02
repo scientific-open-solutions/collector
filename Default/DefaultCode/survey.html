@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--
 
   /*
@@ -475,6 +476,8 @@ $(function() {
   }
 
   function load_survey(survey) {
+    console.log("survey");
+    console.log(survey);
     /*
      * are we in preview?
      */
@@ -485,7 +488,7 @@ $(function() {
       parent.master.surveys.preview
     ) {
       survey_content = survey;
-      survey_obj.code = parent.master.phasetypes.user;
+      survey_obj.phasetypes = parent.master.phasetypes.user;
     } else {
       survey = survey.toLowerCase().replace(".csv", "") + ".csv";
 
@@ -494,14 +497,14 @@ $(function() {
         typeof parent.parent.project_json.surveys[survey] !== "undefined"
       ) {
         survey_content = parent.parent.project_json.surveys[survey];
-        survey_obj.code = parent.parent.project_json.code;
+        survey_obj.phasetypes = parent.parent.project_json.phasetypes;
       } else if (
         typeof parent.parent.project_json.surveys !== "undefined" &&
         typeof parent.parent.project_json.surveys[survey.replace(".csv", "")]
       ) {
         survey_content =
           parent.parent.project_json.surveys[survey.replace(".csv", "")];
-        survey_obj.code = parent.parent.project_json.code;
+        survey_obj.phasetypes = parent.parent.project_json.phasetypes;
       } else {
         bootbox.alert("Survey " + survey + " doesn't appear to exist");
       }
@@ -601,16 +604,10 @@ $(function() {
       }
 
       if (
-        typeof survey_obj.code !== "undefined" &&
-        typeof survey_obj.code[row.type] !== "undefined"
+        typeof survey_obj.phasetypes !== "undefined" &&
+        typeof survey_obj.phasetypes[row.type] !== "undefined"
       ) {
-        console.log("row.type");
-        console.log(row.type);
-        console.log("survey_obj.code");
-        console.log(survey_obj.code);
-        var mod_html = survey_obj.code[row.type];
-        console.log("mod_html");
-        console.log(mod_html);
+        var mod_html = survey_obj.phasetypes[row.type];
         Object.keys(row).forEach(function (attribute) {
           mod_html = mod_html.replaceAll(
             "{{" + attribute + "}}",
@@ -1624,9 +1621,12 @@ $(function() {
   }
 
   /*
-   * Load survey
-   */
+  * Load survey
+  */
+
   current_survey = "{{survey}}";
+  console.log("current_survey");
+  console.log(current_survey);
   if (typeof Phase !== "undefined") {
     Phase.set_timer(function () {
       load_survey(current_survey);

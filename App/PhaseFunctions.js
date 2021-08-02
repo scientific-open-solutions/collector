@@ -88,7 +88,7 @@ if (typeof Phase !== "undefined") {
   Phase.setTimeout = function (this_function, duration) {};
   Phase.set_timer = function (this_function, duration) {
     parent.parent.project_json.time_outs.push({
-      trial_no: Phase.trial_no,
+      phase_no: Phase.phase_no,
       post_no: Phase.post_no,
       duration: duration,
       this_func: this_function,
