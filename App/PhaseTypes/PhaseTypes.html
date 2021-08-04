@@ -34,7 +34,7 @@
 </style>
 <br /><br />
 
-<div id="Code" class="hide_show_elements">
+<div id="PhaseType" class="hide_show_elements">
   <table>
     <tr>
       <td>
@@ -148,17 +148,17 @@
                   Rename
                 </button>
                 <button
-                  id="delete_code_button"
+                  id="delete_phasetypes_button"
                   class="btn btn-primary"
                   style="display: none"
                 >
                   Delete
                 </button>
-                <button id="save_code_button" class="btn btn-primary">
+                <button id="save_phasetype_btn" class="btn btn-primary">
                   Save
                 </button>
                 <button class="btn btn-outline-primary" id="view_code_btn">
-                  Code
+                  PhaseType
                 </button>
                 <button class="btn btn-outline-primary" id="view_graphic_btn">
                   Graphic
@@ -309,7 +309,7 @@
   editor.$blockScrolling = Infinity;
 
   editor.on("focus", function () {
-    helperActivate("Code", "", "trialtype_code");
+    helperActivate("PhaseType", "", "trialtype_code");
   });
 
   editor.completers.push({

@@ -85,8 +85,8 @@ function initiate_actions() {
     master.phasetypes.user[code_file] = ace_content;
   });
 
-  $("#delete_code_button").on("click", function () {
-    code_obj.delete_code();
+  $("#delete_phasetypes_button").on("click", function () {
+    code_obj.delete_phasetypes();
   });
 
   $("#new_code_button").on("click", function () {
@@ -203,11 +203,11 @@ function initiate_actions() {
               master.phasetypes.user[new_name]
             );
             if (write_response === "success") {
-              Collector.electron.fs.delete_code(
+              Collector.electron.fs.delete_phasetypes(
                 original_name,
                 function (response) {
                   if (response === "success") {
-                    list_code(function () {
+                    list_phasetypes(function () {
                       $("#code_select").val(new_name);
                       $("#code_select").change();
                     });
@@ -222,7 +222,7 @@ function initiate_actions() {
       );
     }
   });
-  $("#save_code_button").on("click", function () {
+  $("#save_phasetype_btn").on("click", function () {
     if ($("#code_select").val() !== null) {
       var content = editor.getValue();
       var name = $("#code_select").val();

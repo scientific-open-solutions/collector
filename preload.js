@@ -34,21 +34,21 @@ window.onload = function () {
           survey_name: survey_name,
         });
       },
-      delete_code: function (proj_name, file_action) {
-        delete_response = ipc.sendSync("fs_delete_code", {
-          code_filename: proj_name,
+      delete_phasetypes: function (phasetype, file_action) {
+        delete_response = ipc.sendSync("fs_delete_phasetypes", {
+          phasetype: phasetype,
         });
         file_action(delete_response);
       },
       home_dir: function () {
         return ipc.sendSync("fs_home_dir");
       },
-      list_code: function () {
-        return ipc.sendSync("fs_list_code");
+      list_phasetypes: function () {
+        return ipc.sendSync("fs_list_phasetypes");
       },
       list_projects: function () {
         var projects = JSON.parse(ipc.sendSync("fs_list_projects"));
-        projects = projects.filter((item) => item.indexOf(".json") == -1);
+        projects = projects.filter((item) => item.indexOf(".json") === -1);
         return projects;
       },
       list_surveys: function () {

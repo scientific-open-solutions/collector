@@ -1621,12 +1621,10 @@ $(function() {
   }
 
   /*
-  * Load survey
-  */
+   * Load survey
+   */
 
   current_survey = "{{survey}}";
-  console.log("current_survey");
-  console.log(current_survey);
   if (typeof Phase !== "undefined") {
     Phase.set_timer(function () {
       load_survey(current_survey);

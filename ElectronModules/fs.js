@@ -77,16 +77,16 @@ function user() {
  * fs functions in alphabetical order
  */
 
-ipc.on("fs_delete_code", (event, args) => {
+ipc.on("fs_delete_phasetypes", (event, args) => {
   /*
    * Security checks - should probably have more
    */
-  if (args.code_filename.indexOf("..") !== -1) {
+  if (args.phasetype.indexOf("..") !== -1) {
     event.returnValue = "This request could be insecure, and was blocked";
   } else {
     try {
       var content = fs.unlinkSync(
-        user().current.path + "/User/Code/" + args.code_filename + ".html"
+        user().current.path + "/User/PhaseTypes/" + args.phasetype + ".html"
       );
       event.returnValue = "success";
     } catch (error) {
@@ -158,15 +158,15 @@ ipc.on("fs_home_dir", (event, args) => {
   event.returnValue = root_dir;
 });
 
-ipc.on("fs_list_code", (event, args) => {
+ipc.on("fs_list_phasetypes", (event, args) => {
   if (!fs.existsSync(user().current.path + "/User")) {
     fs.mkdirSync(user().current.path + "/User");
   }
-  if (!fs.existsSync(user().current.path + "/User/Code")) {
-    fs.mkdirSync(user().current.path + "/User/Code");
+  if (!fs.existsSync(user().current.path + "/User/PhaseTypes")) {
+    fs.mkdirSync(user().current.path + "/User/PhaseTypes");
   }
   event.returnValue = JSON.stringify(
-    fs.readdirSync(user().current.path + "/User/Code")
+    fs.readdirSync(user().current.path + "/User/PhaseTypes")
   );
 });
 

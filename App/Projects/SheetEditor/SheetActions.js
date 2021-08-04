@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-    Kitten/Cat release (2019-2020) author: Dr. Anthony Haffey (team@someopen.solutions)
+    Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
 */
 $("#default_projects_select").on("change", function () {
   if ($("#default_projects_select").val() !== "Select an experiment") {
@@ -542,8 +542,6 @@ $("#save_btn").on("click", function () {
       });
       this_proc = cleaned_parsed_proc.map(function (row, row_index) {
         var cleaned_row = Collector.clean_obj_keys(row);
-        console.log("row");
-        console.log(row);
         if (phasetype_files.indexOf(cleaned_row.phasetype) === -1) {
           phasetype_files.push(cleaned_row.phasetype.toLowerCase());
         }
@@ -554,7 +552,7 @@ $("#save_btn").on("click", function () {
               (row_index + 2) +
               "</b> of your procedure <b>" +
               proc_name +
-              "</b>. Please fix this before trying to run your experiment."
+              "</b>. Please fix this before trying to run your project."
           );
         }
         if (cleaned_row.item === 0) {
@@ -621,24 +619,18 @@ $("#save_btn").on("click", function () {
      */
     this_proj.phasetypes = {};
     phasetype_files.forEach(function (code_file) {
-      console.log("code_file");
-      console.log(code_file);
       if (typeof master.phasetypes.user[code_file] === "undefined") {
         this_proj.phasetypes[code_file] =
-          "[[[LOCATION]]]../Default/DefaultCode/" +
+          "[[[LOCATION]]]../Default/DefaultPhaseTypes/" +
           code_file.replace(".html", "") +
           ".html";
-        //this_proj.phasetypes[code_file] = master.phasetypes.default[code_file];
       } else {
         this_proj.phasetypes[code_file] =
-          "[[[LOCATION]]]../User/Code/" +
+          "[[[LOCATION]]]../User/PhaseTypes/" +
           code_file.replace(".html", "") +
           ".html";
-        //this_proj.phasetypes[code_file] = master.phasetypes.user[code_file];
       }
     });
-    console.log("this_proj.phasetypes");
-    console.log(this_proj.phasetypes);
     return this_proj;
   }
   function process_conditions(this_proj) {
@@ -688,8 +680,6 @@ $("#save_btn").on("click", function () {
               clean_key_row = Collector.clean_obj_keys(key_row);
               if (typeof clean_key_row.type !== "undefined") {
                 var survey_mod_type = clean_key_row.type.toLowerCase();
-                console.log("survey_mod_type");
-                console.log(survey_mod_type);
                 if (
                   typeof master.phasetypes.user[survey_mod_type] !== "undefined"
                 ) {
@@ -716,8 +706,7 @@ $("#save_btn").on("click", function () {
     return this_proj;
   }
 
-  // try{
-  $("#save_code_button").click();
+  $("#save_phasetype_btn").click();
   $("#save_survey_btn").click();
   $("#save_snip_btn").click();
   $("#save_pathway_btn").click();
@@ -841,7 +830,6 @@ $("#stim_select").on("change", function () {
 });
 
 $("#code_project_select").on("change", function () {
-  console.log(this.value);
   var this_proj = master.projects.projects[this.value];
   var procs = Object.keys(this_proj.all_procs);
   var stims = Object.keys(this_proj.all_stims);

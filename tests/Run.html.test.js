@@ -7,7 +7,7 @@ const run_html = fs.readFileSync(
   "utf8"
 );
 const run_js = require("../App/Run.js");
-//const survey_html = require('../Default/DefaultCode/survey.html');
+//const survey_html = require('../Default/DefaultPhaseTypes/survey.html');
 
 const survey_html = fs.readFileSync(
   path.resolve(__dirname, "../testFiles/survey.html"),

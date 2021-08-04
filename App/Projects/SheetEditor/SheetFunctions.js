@@ -389,7 +389,7 @@ function upload_exp_contents(these_contents, this_filename) {
           );
         } else {
           master.phasetypes.user[suggested_name] = trialtype_content;
-          list_code();
+          list_phasetypes();
         }
       }
 

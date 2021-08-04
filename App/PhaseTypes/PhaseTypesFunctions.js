@@ -20,7 +20,7 @@
 $.ajaxSetup({ cache: false }); // prevents caching, which disrupts $.get calls
 
 code_obj = {
-  delete_code: function () {
+  delete_phasetypes: function () {
     var deleted_code = $("#code_select").val();
     master.phasetypes.file = $("#code_select").val();
     var this_loc = "/code/" + master.phasetypes.file;
@@ -40,11 +40,14 @@ code_obj = {
           master.phasetypes.file = $("#code_select").val();
           code_obj.load_file("default");
           Collector.custom_alert("Successfully deleted " + this_loc);
-          Collector.electron.fs.delete_code(deleted_code, function (response) {
-            if (response !== "success") {
-              bootbox.alert(response);
+          Collector.electron.fs.delete_phasetypes(
+            deleted_code,
+            function (response) {
+              if (response !== "success") {
+                bootbox.alert(response);
+              }
             }
-          });
+          );
         }
       }
     );
@@ -54,10 +57,10 @@ code_obj = {
     $("#new_code_button").show();
     $("#rename_code_button").show();
     if (user_default == "default") {
-      $("#delete_code_button").hide();
+      $("#delete_phasetypes_button").hide();
       $("#code_select").removeClass("user_code").addClass("default_code");
     } else {
-      $("#delete_code_button").show();
+      $("#delete_phasetypes_button").show();
     }
 
     var this_file = master.phasetypes.file;
@@ -66,7 +69,7 @@ code_obj = {
     switch (Collector.detect_context()) {
       case "localhost":
         cleaned_code = this_file.toLowerCase().replace(".html", "") + ".html";
-        this_content = Collector.electron.fs.read_file("Code", cleaned_code);
+        this_content = Collector.electron.fs.read_file("PhaseTypes", cleaned_code);
         if (this_content == "") {
           editor.setValue(master.phasetypes[user_default][this_file]);
         } else {
@@ -114,7 +117,7 @@ code_obj = {
     }
     if (typeof Collector.electron !== "undefined") {
       var write_response = Collector.electron.fs.write_file(
-        "Code",
+        "PhaseTypes",
         name.toLowerCase().replace(".html", "") + ".html",
         content
       );
@@ -125,16 +128,16 @@ code_obj = {
   },
 };
 
-function list_code(to_do_after) {
+function list_phasetypes(to_do_after) {
   //try{
   if (typeof Collector.electron !== "undefined") {
-    var files = Collector.electron.fs.list_code();
+    var files = Collector.electron.fs.list_phasetypes();
     files = JSON.parse(files);
     files = files.map((item) => item.replaceAll(".html", ""));
     files.forEach(function (file) {
       if (Object.keys(master.phasetypes.user).indexOf(file) == -1) {
         master.phasetypes.user[file] = Collector.electron.fs.read_file(
-          "Code",
+          "PhaseTypes",
           file + ".html"
         );
       }
@@ -183,7 +186,7 @@ function list_code(to_do_after) {
       switch (Collector.detect_context()) {
         case "localhost":
           var trial_content = Collector.electron.fs.read_default(
-            "DefaultCode",
+            "DefaultPhaseTypes",
             item
           );
           master.phasetypes.default[item.toLowerCase().replace(".html", "")] =
@@ -202,7 +205,7 @@ function list_code(to_do_after) {
       process_returned(JSON.stringify(master.phasetypes.default));
     }
   }
-  var default_list = Object.keys(isolation_map[".."]["Default"]["DefaultCode"]);
+  var default_list = Object.keys(isolation_map[".."]["Default"]["DefaultPhaseTypes"]);
 
   get_default(default_list);
 

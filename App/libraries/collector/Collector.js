@@ -421,7 +421,7 @@ Collector = {
       list_repos();
       list_projects();
       list_graphics();
-      list_code();
+      list_phasetypes();
       initiate_actions();
       list_keys();
       list_data_servers();

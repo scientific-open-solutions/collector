@@ -1,4 +1,5 @@
 project_json = {};
+var home_dir;
 
 /*
  * Objects
@@ -285,7 +286,6 @@ Project = {
       project_json.phasetypes[this_proc[post_no + "phasetype"]];
     this_phase = project_json.phasetypes[this_proc[post_no + "phasetype"]];
 
-
     //look through all variables and replace with the value
 
     /*
@@ -365,22 +365,12 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
      * Need to detect whether localhost and on mac
      */
 
-    var home_dir;
-    var org_repo = project_json.location.split("/");
     if (
       typeof Collector.electron !== "undefined" &&
       window.navigator.platform.toLowerCase().indexOf("mac") !== -1
     ) {
-      home_dir = Collector.electron.git.locate_repo({
-        org: org_repo[0],
-        repo: org_repo[1],
-      });
       this_phase = this_phase.replaceAll("../User/", home_dir + "/User/");
     } else if (Project.is_exe) {
-      home_dir = Collector.electron.git.locate_repo({
-        org: org_repo[0],
-        repo: org_repo[1],
-      });
       this_phase = this_phase.replaceAll("../User/", home_dir + "/User/");
     }
     return this_phase;
@@ -394,7 +384,6 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
   },
 
   start_post: function (go_to_info) {
-
     if (typeof go_to_info !== "undefined") {
       project_json.phase_no = go_to_info[0];
       project_json.post_no = go_to_info[1];
@@ -416,8 +405,7 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
         .contents()
         .children().length > 0
     ) {
-      console.log("I'm here " + project_json.phase_no);
-      var this_post_iframe = $("#phase" + (project_json.phase_no))
+      var this_post_iframe = $("#phase" + project_json.phase_no)
         .contents()
         .children()
         .find("iframe")
@@ -511,8 +499,6 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
       var this_timeout = project_json.time_outs.filter(function (row) {
         return parseFloat(row.phase_no) === parseFloat(project_json.phase_no);
       });
-      console.log("this_timeout");
-      console.log(this_timeout);
 
       if (this_timeout.length !== 0) {
         //should have  && this_timeout.length == 1 - need to deal with when there are multiple
@@ -565,9 +551,8 @@ function clean_this_condition(this_cond) {
   return this_cond;
 }
 
-
 function clean_phasetypes() {
-  project_json.parsed_proc = project_json.parsed_proc.map(function(row){
+  project_json.parsed_proc = project_json.parsed_proc.map(function (row) {
     row.phasetype = row.phasetype.toLowerCase();
     return row;
   });
@@ -870,7 +855,7 @@ function get_htmls() {
   ];
 
   /*
-  project_json.code should loop through phasetypes and get them from the Code folder. This location will depend on whether this is on the researcher's computer or not...
+  project_json.code should loop through phasetypes and get them from the PhaseTypes folder. This location will depend on whether this is on the researcher's computer or not...
   */
 
   function loop_htmls(html_list) {
@@ -1009,23 +994,36 @@ function insert_start() {
 }
 
 function load_phases() {
+  var org_repo = project_json.location.split("/");
+  home_dir = Collector.electron.git.locate_repo({
+    org: org_repo[0],
+    repo: org_repo[1],
+  });
+
   var loaded_phases = 0;
   var phases = Object.keys(project_json.phasetypes).length;
   Object.keys(project_json.phasetypes).forEach(function (phasetype) {
     var this_phase = project_json.phasetypes[phasetype];
-    if (this_phase.indexOf("[[[LOCATION]]]") === 0) {
+    if (this_phase.indexOf("[[[LOCATION]]]../Default") === 0) {
       var code_location = this_phase.replace("[[[LOCATION]]]", "");
       $.get(code_location, function (phase_code) {
         project_json.phasetypes[phasetype] = phase_code;
         loaded_phases++;
-        console.log(loaded_phases + "_" + phases);
+        if (loaded_phases === phases) {
+          Project.activate_pipe();
+        }
+      });
+    } else if (this_phase.indexOf("[[[LOCATION]]]../User") === 0) {
+      var code_location = this_phase.replace("[[[LOCATION]]]..", home_dir);
+      $.get(code_location, function (phase_code) {
+        project_json.phasetypes[phasetype] = phase_code;
+        loaded_phases++;
         if (loaded_phases === phases) {
           Project.activate_pipe();
         }
       });
     } else {
       loaded_phases++;
-      console.log(loaded_phases + "_" + phases);
       if (loaded_phases === phases) {
         Project.activate_pipe();
       }
@@ -1660,6 +1658,15 @@ function start_project() {
                 Project.get_vars.location + ".json"
               )
             );
+
+            /*
+             * load conditions sheet
+             */
+            project_json.conditions = Collector.electron.fs.read_file(
+              "Projects/" + Project.get_vars.location,
+              "conditions.csv"
+            );
+
             Project.activate_pipe();
           }
         }, 100);
@@ -1746,11 +1753,9 @@ function write_phase_iframe(index) {
 
   this_proc = project_json.parsed_proc[index];
 
-
   var post_code = Object.keys(this_proc).filter(function (key) {
     return /phasetype/.test(key);
   });
-
 
   phase_events = post_code.filter(function (post_phase) {
     return this_proc[post_phase] !== "";

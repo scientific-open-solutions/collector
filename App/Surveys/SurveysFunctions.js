@@ -347,7 +347,7 @@ function preview_survey(this_survey) {
   }
 
   survey_template = Collector.electron.fs.read_default(
-    "DefaultCode",
+    "DefaultPhaseTypes",
     "survey.html"
   );
   survey_template = survey_template.replace(
