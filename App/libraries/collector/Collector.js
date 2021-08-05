@@ -262,8 +262,6 @@ Collector = {
 
     var animation_active = true;
     this_alert.click(function(){
-      console.log("animation_active");
-      console.log(animation_active);
       if(animation_active === true){
         animation_active = false;
         this_alert.stop();
@@ -427,7 +425,7 @@ Collector = {
       list_data_servers();
       list_servers();
       list_surveys();
-      list_pathways();
+      //list_pathways();
     }
   },
   //https://stackoverflow.com/a/20745721/4490801

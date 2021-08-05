@@ -245,7 +245,7 @@ Project = {
         }
         break;
       case "github":
-      case "onlinepreview":
+      case "simulateonline":
       case "server":
         if (not_final_phase) {
           online_data_obj.save_queue_add(function () {
@@ -271,6 +271,7 @@ Project = {
         }
         break;
       case "preview":
+      case "onlinepreview":
         //do nothing - you are not meant to be saving;
         break;
     }
@@ -612,7 +613,7 @@ function detect_exe() {
 function final_phase() {
   switch (Project.get_vars.platform) {
     case "github":
-    case "onlinepreview":
+    case "simulateonline":
     case "server":
       online_data_obj.save_queue_add(function () {
         online_save(
@@ -772,6 +773,7 @@ function final_phase() {
       break;
     case "localhost":
     case "preview":
+    case "onlinepreview":
       online_data_obj.finished_and_stored = true;
       if (project_json.this_condition.download_at_end !== "off") {
         download_message =
@@ -995,10 +997,16 @@ function insert_start() {
 
 function load_phases() {
   var org_repo = project_json.location.split("/");
-  home_dir = Collector.electron.git.locate_repo({
-    org: org_repo[0],
-    repo: org_repo[1],
-  });
+  switch (Project.get_vars.platform) {
+    case "simulateonline":
+    case "localhost":
+    case "preview":
+      home_dir = Collector.electron.git.locate_repo({
+        org: org_repo[0],
+        repo: org_repo[1],
+      });
+      break;
+  };
 
   var loaded_phases = 0;
   var phases = Object.keys(project_json.phasetypes).length;
@@ -1042,7 +1050,7 @@ function parse_sheets() {
 
   switch (Project.get_vars.platform) {
     case "localhost":
-    case "onlinepreview":
+    case "simulateonline":
     case "preview":
       var folder = "Projects/" + Project.get_vars.location;
       var proc_sheet_content = Collector.electron.fs.read_file(
@@ -1060,45 +1068,27 @@ function parse_sheets() {
       Project.activate_pipe();
       break;
     case "github":
-      if (
-        typeof Project.get_vars.dropbox !== "undefined" &&
-        Project.get_vars.dropbox
-      ) {
-        project_json.parsed_proc = Collector.PapaParsed(
-          project_json.all_procs[proc_sheet_name]
-        );
+    case "onlinepreview":
+      var proc_url =
+        "../User/Projects/" + Project.get_vars.location + "/" + proc_sheet_name;
+      $.get(proc_url, function (proc_sheet_content) {
+        project_json.parsed_proc = Collector.PapaParsed(proc_sheet_content);
+        proc_stim_loaded[1] = "procedure";
+        if (proc_stim_loaded.join("-") === "stimuli-procedure") {
+          Project.activate_pipe();
+        }
+      });
+      var stim_url =
+        "../User/Projects/" + Project.get_vars.location + "/" + stim_sheet_name;
+      $.get(stim_url, function (stim_sheet_content) {
         project_json.parsed_stim = [null, null].concat(
-          Collector.PapaParsed(project_json.all_stims[stim_sheet_name])
+          Collector.PapaParsed(stim_sheet_content)
         );
-        Project.activate_pipe();
-      } else {
-        var proc_url =
-          "../User/Projects/" +
-          Project.get_vars.location +
-          "/" +
-          proc_sheet_name;
-        $.get(proc_url, function (proc_sheet_content) {
-          project_json.parsed_proc = Collector.PapaParsed(proc_sheet_content);
-          proc_stim_loaded[1] = "procedure";
-          if (proc_stim_loaded.join("-") === "stimuli-procedure") {
-            Project.activate_pipe();
-          }
-        });
-        var stim_url =
-          "../User/Projects/" +
-          Project.get_vars.location +
-          "/" +
-          stim_sheet_name;
-        $.get(stim_url, function (stim_sheet_content) {
-          project_json.parsed_stim = [null, null].concat(
-            Collector.PapaParsed(stim_sheet_content)
-          );
-          proc_stim_loaded[0] = "stimuli";
-          if (proc_stim_loaded.join("-") === "stimuli-procedure") {
-            Project.activate_pipe();
-          }
-        });
-      }
+        proc_stim_loaded[0] = "stimuli";
+        if (proc_stim_loaded.join("-") === "stimuli-procedure") {
+          Project.activate_pipe();
+        }
+      });
       break;
     case "server":
       proc_stim_loaded[1] = "procedure";
@@ -1236,11 +1226,12 @@ function post_welcome(participant_code, id_error) {
   window.localStorage.setItem("prehashed_code", prehashed_code);
   $("#prehashed_code").val(prehashed_code);
   switch (Project.get_vars.platform) {
-    case "server":
     case "github":
-    case "onlinepreview":
     case "localhost":
+    case "onlinepreview":
     case "preview":
+    case "server":
+    case "simulateonline":
       id_error = "skip";
       post_welcome_data("blank");
       break;
@@ -1384,8 +1375,7 @@ function requestFullScreen(element) {
 }
 
 function select_condition() {
-  var conditions = Collector.PapaParsed(project_json.conditions);
-  project_json.this_condition = conditions.filter(function (row) {
+  project_json.this_condition = project_json.conditions.filter(function (row) {
     return row.name === Project.get_vars.name;
   })[0];
 
@@ -1646,7 +1636,7 @@ function start_project() {
 
   if (Object.keys(project_json).length === 0) {
     switch (Project.get_vars.platform) {
-      case "onlinepreview":
+      case "simulateonline":
       case "localhost":
       case "preview":
         electron_wait = setInterval(function () {
@@ -1662,9 +1652,11 @@ function start_project() {
             /*
              * load conditions sheet
              */
-            project_json.conditions = Collector.electron.fs.read_file(
-              "Projects/" + Project.get_vars.location,
-              "conditions.csv"
+            project_json.conditions = Collector.PapaParsed(
+              Collector.electron.fs.read_file(
+                "Projects/" + Project.get_vars.location,
+                "conditions.csv"
+              )
             );
 
             Project.activate_pipe();
@@ -1673,6 +1665,7 @@ function start_project() {
         break;
 
       case "github":
+      case "onlinepreview":
         if (
           typeof Project.get_vars.dropbox !== "undefined" &&
           Project.get_vars.dropbox
@@ -1905,7 +1898,7 @@ $(window).bind("keydown", function (event) {
 //prevent closing without warning
 window.onbeforeunload = function () {
   switch (Project.get_vars.platform) {
-    case "onlinepreview":
+    case "simulateonline":
     case "localhost":
       break;
     default:

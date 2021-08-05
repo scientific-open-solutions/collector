@@ -27,7 +27,7 @@ code_obj = {
     bootbox.confirm(
       "Are you sure you want to delete this " + this_loc + "?",
       function (result) {
-        if (result == true) {
+        if (result === true) {
           if (
             typeof master.phasetypes.graphic.files[master.phasetypes.file] !==
             "undefined"
@@ -56,7 +56,7 @@ code_obj = {
     $("#ACE_editor").show();
     $("#new_code_button").show();
     $("#rename_code_button").show();
-    if (user_default == "default") {
+    if (user_default === "default") {
       $("#delete_phasetypes_button").hide();
       $("#code_select").removeClass("user_code").addClass("default_code");
     } else {
@@ -69,8 +69,11 @@ code_obj = {
     switch (Collector.detect_context()) {
       case "localhost":
         cleaned_code = this_file.toLowerCase().replace(".html", "") + ".html";
-        this_content = Collector.electron.fs.read_file("PhaseTypes", cleaned_code);
-        if (this_content == "") {
+        this_content = Collector.electron.fs.read_file(
+          "PhaseTypes",
+          cleaned_code
+        );
+        if (this_content === "") {
           editor.setValue(master.phasetypes[user_default][this_file]);
         } else {
           editor.setValue(this_content);
@@ -83,14 +86,14 @@ code_obj = {
     }
   },
   save: function (content, name, new_old, graphic_code) {
-    if (new_old == "new") {
+    if (new_old === "new") {
       graphic_editor_obj.clean_canvas();
       editor.setValue("");
     }
     if (
       $("#code_select option").filter(function () {
-        return $(this).val() == name;
-      }).length == 0
+        return $(this).val() === name;
+      }).length === 0
     ) {
       $("#code_select").append(
         $("<option>", {
@@ -105,9 +108,9 @@ code_obj = {
         "user_"
       );
 
-      if (graphic_code == "code") {
+      if (graphic_code === "code") {
         $("#ACE_editor").show();
-      } else if (graphic_code == "graphic") {
+      } else if (graphic_code === "graphic") {
         $("#graphic_editor").show();
       }
       $("#trial_type_file_select").show();
@@ -135,7 +138,7 @@ function list_phasetypes(to_do_after) {
     files = JSON.parse(files);
     files = files.map((item) => item.replaceAll(".html", ""));
     files.forEach(function (file) {
-      if (Object.keys(master.phasetypes.user).indexOf(file) == -1) {
+      if (Object.keys(master.phasetypes.user).indexOf(file) === -1) {
         master.phasetypes.user[file] = Collector.electron.fs.read_file(
           "PhaseTypes",
           file + ".html"
@@ -205,7 +208,9 @@ function list_phasetypes(to_do_after) {
       process_returned(JSON.stringify(master.phasetypes.default));
     }
   }
-  var default_list = Object.keys(isolation_map[".."]["Default"]["DefaultPhaseTypes"]);
+  var default_list = Object.keys(
+    isolation_map[".."]["Default"]["DefaultPhaseTypes"]
+  );
 
   get_default(default_list);
 

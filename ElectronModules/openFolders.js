@@ -13,7 +13,7 @@ String.prototype.replaceAll = function (str1, str2, ignore) {
       str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"),
       ignore ? "gi" : "g"
     ),
-    typeof str2 == "string" ? str2.replace(/\$/g, "$$$$") : str2
+    typeof str2 === "string" ? str2.replace(/\$/g, "$$$$") : str2
   );
 };
 
@@ -36,7 +36,7 @@ if (!fs.existsSync(root_dir + "user.json")) {
 
 var user = JSON.parse(fs.readFileSync(root_dir + "user.json"));
 
-if (typeof user.current.path == "undefined") {
+if (typeof user.current.path === "undefined") {
   if (user.current.repo !== "") {
     user.current.path =
       user.repos[user.current.org][user.current.repo].path + "/";
@@ -47,8 +47,6 @@ ipc.on("open_folder", (event, args) => {
   switch (args.location) {
     case "home":
       var this_dir = root_dir + args.folder;
-      console.log("this_dir");
-      console.log(this_dir);
       shell.openPath(this_dir.replaceAll("/", "\\"));
       event.returnValue = "done";
       break;
@@ -57,8 +55,6 @@ ipc.on("open_folder", (event, args) => {
       event.returnValue = "done";
       break;
     case "repo":
-      console.log("user.current.path");
-      console.log(user.current.path);
       shell.openPath(
         user.current.path.replaceAll("/", "\\") + "\\" + args.folder
       );
@@ -93,8 +89,6 @@ ipc.on("find_path", (event, args) => {
       properties: ["openDirectory"], //'openFile',
     })
     .then((result) => {
-      console.log(result.canceled);
-      console.log(result.filePaths);
       event.returnValue = result.filePaths;
     })
     .catch((err) => {
@@ -106,7 +100,6 @@ ipc.on("find_path", (event, args) => {
   dialog.showOpenDialog({
     properties: ["openDirectory"] //,"openFile"
   },function (folder_dir) {
-    console.log(folder_dir);
     event.returnValue = folder_dir;
   });
   */

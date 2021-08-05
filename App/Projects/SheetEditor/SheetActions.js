@@ -449,8 +449,11 @@ $("#run_btn").on("click", function () {
     message:
       "Which condition would you like to run? <br><br>" +
       select_html +
-      "<br><br>Copy the following into a browser:<br>(make sure you've pushed the latest changes and waited 5+ minutes) <input class='form-control' value='" +
+      "To run the study copy the following into a browser:<br>(make sure you've pushed the latest changes and waited 5+ minutes) <input class='form-control' value='" +
       github_url +
+      "' onfocus='this.select();' id='experiment_url_input'>" +
+      "To <b>Preview</b> a project copy the following into a browser: <input class='form-control' value='" +
+      github_url.replace("platform=github", "platform=onlinepreview") +
       "' onfocus='this.select();' id='experiment_url_input'>",
     buttons: {
       local: {
@@ -488,7 +491,7 @@ $("#run_btn").on("click", function () {
         className: "btn-info",
         callback: function () {
           window.open(
-            "Run.html?platform=onlinepreview&" +
+            "Run.html?platform=simulateonline&" +
               "location=" +
               $("#project_list").val() +
               "&" +

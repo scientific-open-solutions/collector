@@ -19,7 +19,7 @@ encrypt_obj = {
             if (user_password) {
               //set up a function that can be called recursively, working through each archived keypair until there are none.
               function combine_password_key(keys_list, user_password) {
-                if (keys_list.length == 0) {
+                if (keys_list.length === 0) {
                   bootbox.alert(
                     "This password isn't working. Are you sure it's the right password, and that you're decrypting the data with the correct installation of Collector? (i.e. do you have multiple versions of Collector you are conducting research with?"
                   );
@@ -126,7 +126,7 @@ encrypt_obj = {
                 for (var i = 0; i < this_decrypted_message.length; i++) {
                   decrypted_data = this_decrypted_message[i];
                   Object.keys(decrypted_data).forEach(function (header) {
-                    if (response_headers.indexOf(header) == -1) {
+                    if (response_headers.indexOf(header) === -1) {
                       response_headers.push(header);
                     }
                   });
@@ -135,7 +135,7 @@ encrypt_obj = {
                 for (var i = 0; i < this_decrypted_message.length; i++) {
                   response_headers.forEach(function (this_header) {
                     if (
-                      typeof this_decrypted_message[i][this_header] ==
+                      typeof this_decrypted_message[i][this_header] ===
                       "undefined"
                     ) {
                       this_decrypted_message[i][this_header] = "";
@@ -146,7 +146,7 @@ encrypt_obj = {
                 for (var i = 0; i < this_decrypted_message.length; i++) {
                   delete this_decrypted_message[i][""]; // Delete blank column if present
                   if (
-                    filenames.indexOf(this_decrypted_message[i].filename) == -1
+                    filenames.indexOf(this_decrypted_message[i].filename) === -1
                   ) {
                     filenames.push(this_decrypted_message[i].filename);
                   }
@@ -202,7 +202,7 @@ encrypt_obj = {
                               var username = filenames.pop();
                               this_participant_message =
                                 this_decrypted_message.filter(
-                                  (row) => row.filename == username
+                                  (row) => row.filename === username
                                 );
 
                               console.dir("this_participant_message");
@@ -243,7 +243,7 @@ encrypt_obj = {
                 } else {
                   default_filename = filenames[0];
 
-                  if (this_decrypted_message.length == 0) {
+                  if (this_decrypted_message.length === 0) {
                     bootbox.alert(
                       "None of the data was succesfully decrypted - perhaps you used an invalid password?"
                     );
@@ -274,7 +274,7 @@ encrypt_obj = {
                   }
                 }
               }
-              if (typeof master.keys.archived == "undefined") {
+              if (typeof master.keys.archived === "undefined") {
                 master.keys.archived = [];
               }
               var all_private_keys = [];
@@ -400,7 +400,7 @@ encrypt_obj = {
     receiverPublicKey = nacl.util.encodeBase64(keypair.publicKey);
     receiverSecretKey = nacl.util.encodeBase64(keypair.secretKey);
 
-    if (typeof master.keys == "undefined") {
+    if (typeof master.keys === "undefined") {
       master.keys = {
         archived: [],
       };
@@ -416,7 +416,7 @@ encrypt_obj = {
           bootbox.prompt(
             "Let's type in the password one more time, just to be sure",
             function (result_2) {
-              if (result == result_2) {
+              if (result === result_2) {
                 var encryptedAES = CryptoJS.AES.encrypt(
                   receiverSecretKey,
                   result_2
@@ -428,7 +428,7 @@ encrypt_obj = {
                 );
                 var plaintext = decrypted.toString(CryptoJS.enc.Utf8);
 
-                if (plaintext == receiverSecretKey) {
+                if (plaintext === receiverSecretKey) {
                   master.keys.encrypted_private_key = encryptedAES_string;
                   encrypt_obj.confirm_keys();
                   list_keys();
@@ -483,7 +483,7 @@ function list_keys() {
 function loadFileAsText() {
   encrypt_obj.current_batch = [];
   function batch_no_batch(batch_no) {
-    if (batch_no == -1) {
+    if (batch_no === -1) {
       batch_no = 0;
     }
     if (document.getElementById("fileToLoad").files.length > batch_no + 1) {
@@ -526,15 +526,13 @@ var projects;
 function populate_data_div(data_div_id, data_obj, bootstrap_class) {
   // summarise projects
   projects = data_obj.reduce(function (a, b) {
-    if (typeof a[b.project_id] == "undefined") {
+    if (typeof a[b.project_id] === "undefined") {
       a[b.project_id] = [b];
     } else {
       a[b.project_id].push(b);
     }
     return a;
   }, {});
-  console.dir("projects");
-  console.dir(projects);
 
   var this_list = $("<div>")
     .addClass("row")
@@ -557,7 +555,6 @@ function populate_data_div(data_div_id, data_obj, bootstrap_class) {
   $("#" + data_div_id).html(this_list);
 
   Object.keys(projects).forEach(function (project_id) {
-    console.log(project_id);
     $("#project_column").append(
       $("<div>")
         .addClass("list-group-item")
@@ -587,13 +584,11 @@ function populate_data_div(data_div_id, data_obj, bootstrap_class) {
     );
 
     projects[project_id].forEach(function (this_pp) {
-      console.log("project_id");
-      console.log(project_id);
-      if (this_pp.server_status == "f") {
+      if (this_pp.server_status === "f") {
         var file_info = "complete";
-      } else if (this_pp.server_status == "e") {
+      } else if (this_pp.server_status === "e") {
         var file_info = "error occurred";
-      } else if (this_pp.server_status == "p") {
+      } else if (this_pp.server_status === "p") {
         var file_info = "incomplete";
       } else {
         var file_info = "unexplained error occurred, please contact your admin";
@@ -711,7 +706,6 @@ function request_data_list() {
     function (result) {
       timed_out = false;
       //try{
-      console.log(result);
       var data_obj = JSON.parse(result);
 
       mega_data_obj.server_data_obj = data_obj.participants.filter(
@@ -821,7 +815,7 @@ function request_data_list() {
             this_folder: this_folder,
           },
           function (result) {
-            if (result == "verification of user and password failed") {
+            if (result === "verification of user and password failed") {
               bootbox.alert("verification of user and password failed");
             } else {
               var encrypted_data = JSON.parse(result);
@@ -832,7 +826,7 @@ function request_data_list() {
               encrypt_obj.current_batch = [];
               //var textFromFileLoaded = listed_data.pop();
               for (var i = 0; i < listed_data.length; i++) {
-                if (i == listed_data.length - 1) {
+                if (i === listed_data.length - 1) {
                   encrypt_obj._decrypt_request(
                     JSON.stringify(listed_data[i]), //file_content
                     this_folder.split("_____")[1],

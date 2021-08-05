@@ -111,7 +111,6 @@
         email: user_email,
       },
       function (server_info) {
-        console.log(server_info);
         try {
           master.data.servers[$("#server_input").val()] =
             JSON.parse(server_info);
@@ -402,8 +401,6 @@
 
     Object.keys(master.data.servers).forEach(function (this_server) {
       var server_row = master.data.servers[this_server];
-      console.log("server_row");
-      console.log(server_row);
 
       if (
         (server_row.registration_url == "") |

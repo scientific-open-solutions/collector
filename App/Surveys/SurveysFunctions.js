@@ -75,7 +75,7 @@ function create_survey_HoT(this_survey) {
           hidden: function () {
             // `hidden` can be a boolean or a function
             // Hide the option when the first column was clicked
-            return this.getSelectedLast()[0] == 0; // `this` === hot3
+            return this.getSelectedLast()[0] === 0; // `this` === hot3
           },
           callback: function (key, selection, clickEvent) {
             // Callback for specific option
@@ -165,8 +165,8 @@ function create_survey_HoT(this_survey) {
       var column = this.getDataAtCell(0, coords[1]);
       var thisCellValue = this.getDataAtCell(coords[0], coords[1]);
       thisCellValue =
-        thisCellValue == null ? (thisCellValue = "") : thisCellValue;
-      column = column == null ? (column = "") : column;
+        thisCellValue === null ? (thisCellValue = "") : thisCellValue;
+      column = column === null ? (column = "") : column;
 
       helperActivate(column, thisCellValue, "survey");
     },
@@ -193,25 +193,23 @@ function create_survey_HoT(this_survey) {
       for (var k = 0; k < this.countCols() - 1; k++) {
         var col_header = this.getDataAtCell(0, k).toLowerCase();
 
-        if (col_header == "shuffle") {
+        if (col_header === "shuffle") {
           this.setDataAtCell(0, k, "shuffle_question");
         }
         if (
           col_header.indexOf("score") !== -1 &&
           col_header.indexOf(" ") !== -1
         ) {
-          console.log(col_header);
-          console.log(col_header.indexOf("score"));
           this.setDataAtCell(0, k, col_header.replaceAll(" ", ""));
         }
 
         //Removing Empty middle columns
         if (this.isEmptyCol(k)) {
-          if (middleColEmpty == 0) {
+          if (middleColEmpty === 0) {
             middleColEmpty = 1;
           }
         }
-        if (!this.isEmptyCol(k) & (middleColEmpty == 1)) {
+        if (!this.isEmptyCol(k) & (middleColEmpty === 1)) {
           postEmptyCol = 1;
           //delete column that is empty
           this.alter("remove_col", k - 1);
@@ -222,22 +220,22 @@ function create_survey_HoT(this_survey) {
       //Same thing for rows
       for (var k = 0; k < this.countRows() - 1; k++) {
         if (this.isEmptyRow(k)) {
-          if (middleRowEmpty == 0) {
+          if (middleRowEmpty === 0) {
             middleRowEmpty = 1;
           }
         }
-        if (!this.isEmptyRow(k) & (middleRowEmpty == 1)) {
+        if (!this.isEmptyRow(k) & (middleRowEmpty === 1)) {
           postEmptyRow = 1;
           this.alter("remove_row", k - 1);
           middleRowEmpty = 0;
         }
       }
-      if (postEmptyCol != 1) {
+      if (postEmptyCol !== 1) {
         while (this.countEmptyCols() > 1) {
           this.alter("remove_col", this.countCols);
         }
       }
-      if (postEmptyRow != 1) {
+      if (postEmptyRow !== 1) {
         while (this.countEmptyRows() > 1) {
           this.alter("remove_row", this.countRows);
         }
@@ -254,19 +252,20 @@ function list_surveys() {
     $("#survey_select").val("Select a survey");
 
     if (
-      typeof master.surveys == "undefined" ||
-      typeof master.surveys.user_surveys == "undefined"
+      typeof master.surveys === "undefined" ||
+      typeof master.surveys.user_surveys === "undefined"
     ) {
       master.surveys = {
         preview: false,
         user_surveys: {},
       };
     }
-    master.surveys = typeof master.surveys == "undefined" ? {} : master.surveys;
+    master.surveys =
+      typeof master.surveys === "undefined" ? {} : master.surveys;
     master.surveys.default_surveys = {};
 
     master.surveys.user_surveys =
-      typeof master.surveys.user_surveys == "undefined"
+      typeof master.surveys.user_surveys === "undefined"
         ? {}
         : master.surveys.user_surveys;
     master.surveys.default_surveys = Collector.clean_obj_keys(
@@ -274,9 +273,6 @@ function list_surveys() {
     );
 
     var survey_files = JSON.parse(Collector.electron.fs.list_surveys());
-
-    console.log("survey_files");
-    console.log(survey_files);
 
     survey_files.forEach(function (survey_file) {
       var survey_csv = Papa.parse(

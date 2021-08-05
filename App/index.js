@@ -174,7 +174,6 @@ $("#github_logo").on("click", function () {
 
   try {
     git_status = JSON.parse(git_status);
-    console.log(git_status);
 
     if (git_status.ahead > 0) {
       $("#git_ahead").addClass("bg-danger");

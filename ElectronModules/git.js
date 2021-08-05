@@ -121,7 +121,6 @@ ipc.on("git_add_repo", (event, args) => {
         })
         .then(function (result) {
           console.log("result of whether repository exists online:");
-          console.log(result);
 
           /*
            * Then clone the repository
@@ -182,7 +181,6 @@ ipc.on("git_add_repo", (event, args) => {
                     /*
                      * User folder!?!
                      */
-                    console.log("successfully copied, right?");
                     event.returnValue = "success";
                   } catch (error) {
                     console.log("error");
@@ -194,13 +192,6 @@ ipc.on("git_add_repo", (event, args) => {
                 .catch(function (error) {
                   event.returnValue = "error" + error;
                 });
-
-              console.log("now cloning Collector into the folder - right?");
-              /*
-               * Create repository locally
-               */
-              console.log("args:");
-              console.log(args);
             })
             .catch(function (error) {
               console.log("failed to clone Collector into repository, right?");
@@ -218,7 +209,6 @@ ipc.on("git_add_token", (event, args) => {
   if (!fs.existsSync(root_dir + "/Private")) {
     fs.mkdirSync(root_dir + "/Private");
   }
-  console.log("ho");
 
   try {
     fs.writeFileSync(git_token_location, args.auth_token, "utf8");
@@ -238,17 +228,13 @@ ipc.on("git_exists", (event, args) => {
     git
       .listConfig()
       .then(function (result) {
-        //console.log(result);
-
         /*
          * Check all configs for the relevant values
          */
         var user_email_valid = "false";
         var user_name_valid = "false";
 
-        console.log(result);
         Object.keys(result.values).forEach(function (item) {
-          console.log(result[item]);
           if (
             typeof result.values[item]["user.email"] !== "undefined" &&
             result.values[item]["user.email"] !== ""
@@ -395,8 +381,6 @@ ipc.on("git_pull", (event, args) => {
     const git                = simpleGit();
     */
 
-    console.log("remote = " + remote);
-
     git
       .cwd(user().current.path)
       .pull(remote, "master")
@@ -427,7 +411,6 @@ ipc.on("git_push", (event, args) => {
      * update folders
      */
     update.folders.forEach(function (this_folder) {
-      console.log(this_folder);
       fs.copySync(
         "App/" + this_folder,
         user().current.path + "/" + "App" + "/" + this_folder,
@@ -504,7 +487,6 @@ ipc.on("git_repo_info", (event, args) => {
     .cwd(args.path)
     .getRemotes(true)
     .then(function (data) {
-      console.log(data);
       url = data
         .filter((row) => row.name === "origin")[0]
         .refs.fetch.split("/");
@@ -523,15 +505,12 @@ ipc.on("git_set_email", (event, args) => {
 });
 
 ipc.on("git_set_name", (event, args) => {
-  console.log(args.name);
   var git = simpleGit();
   git.addConfig("user.name", args.name);
   event.returnValue = "success";
 });
 
 ipc.on("git_status", (event, args) => {
-  console.log("args");
-  console.log(args);
   if ((args.org === null) | (args.repo === null)) {
     event.returnValue = "Incomplete org or repo information";
   } else {
@@ -550,8 +529,6 @@ ipc.on("git_status", (event, args) => {
 });
 
 ipc.on("git_token_exists", (event, args) => {
-  console.log("root_dir + git_token_location");
-  console.log(git_token_location);
   if (fs.existsSync(git_token_location)) {
     event.returnValue = "success";
   } else {

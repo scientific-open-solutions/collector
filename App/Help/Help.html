@@ -215,35 +215,6 @@
         });
         item_type_html += "<div id='mod_help'></div>";
         $("#help_text").html(item_type_html);
-
-        if (Object.keys(master.mods).length > 0) {
-          var mod_help_text = "";
-          if (typeof master.mods._help == "undefined") {
-            master.mods._help = {};
-          }
-          var mod_names = Object.keys(master.mods).filter(
-            (mod_name) => mod_name !== "_help"
-          );
-          mod_names.forEach(function (mod_name) {
-            if (typeof master.mods._help[mod_name] !== "undefined") {
-              var mod_content = master.mods._help[mod_name];
-              if (mod_content.indexOf("/*-----help-----") == -1) {
-                mod_help_text +=
-                  "<h6>" +
-                  mod_name +
-                  "</h6>" +
-                  "The author of this snippet hasn't (yet) given any advice how to use it. If you are the author, you can add help by writing <br> /*-----help----- <br> then your advice, and then <br>----help-----*/";
-              }
-              mod_help_text += snippet_content.split("-----help-----")[1];
-              mod_help_text.mods._help[mod_name] = mod_help_text;
-            } else {
-              mod_help_text += master.mods._help[mod_name];
-            }
-          });
-          $("#mod_help").html(
-            "<br><h5 class='text-primary'>Mods</h5>" + mod_help_text
-          );
-        }
       } else {
         if (typeof help_obj.surv[help_title] !== "undefined") {
           $("#help_subtitle").html(help_obj.surv[help_title].subtitle);

@@ -55,7 +55,6 @@ function cleanEmptyFoldersRecursively(folder) {
     files = fs.readdirSync(folder);
   }
   if ((files.length === 0) & (folder.indexOf("User/Projects") === -1)) {
-    console.log("removing: ", folder);
     fs.rmdirSync(folder);
     return;
   }
@@ -221,8 +220,6 @@ ipc.on("fs_list_surveys", (event, args) => {
   var user_surveys = JSON.stringify(
     fs.readdirSync(user().current.path + "/User/Surveys")
   );
-  console.log("user_surveys");
-  console.log(user_surveys);
   event.returnValue = user_surveys;
 });
 
@@ -377,10 +374,8 @@ ipc.on("fs_write_data", (event, args) => {
         args.file_content,
         "utf8"
       );
-      console.log("saved this data");
       event.returnValue = "success";
     } catch (error) {
-      console.log("failed to save this data");
       //to trigger an attempt to load a trialtype from the master
       event.returnValue = error;
     }
@@ -401,13 +396,9 @@ ipc.on("fs_write_file", (event, args) => {
       if (!fs.existsSync(user().current.path + "/User")) {
         fs.mkdirSync(user().current.path + "/User");
       }
-      console.log(JSON.stringify(args));
-      console.log("this_folder");
-      console.log(args.user_folder);
       if (!fs.existsSync(user().current.path + "/User/" + args.user_folder)) {
         fs.mkdirSync(user().current.path + "/User/" + args.user_folder);
       }
-      console.log("howdy");
 
       content = fs.writeFileSync(
         user().current.path +
