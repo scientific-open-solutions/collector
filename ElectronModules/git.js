@@ -56,8 +56,8 @@ update = {
     "PhaseFunctions.js",
     "iframe_library.js",
   ],
-  folders: ["libraries", "Quality"],
-  excesses: ["libraries/ace-master"],
+  folders:  ["App/libraries", "App/Quality", "Default"],
+  excesses: ["App/libraries/ace-master"],
 };
 
 /*
@@ -411,9 +411,13 @@ ipc.on("git_push", (event, args) => {
      * update folders
      */
     update.folders.forEach(function (this_folder) {
+      console.log("this_folder");
+      console.log(this_folder);
+      console.log("user().current.path + this_folder");
+      console.log(user().current.path + this_folder);
       fs.copySync(
-        "App/" + this_folder,
-        user().current.path + "/" + "App" + "/" + this_folder,
+        this_folder,
+        user().current.path + "/" + this_folder,
         {
           recursive: true,
         }
@@ -424,7 +428,7 @@ ipc.on("git_push", (event, args) => {
      * remove excess
      */
     update.excesses.forEach(function (this_excess) {
-      fs.rmdirSync(user().current.path + "/" + "App" + "/" + this_excess, {
+      fs.rmdirSync(user().current.path + this_excess, {
         recursive: true,
       });
     });
