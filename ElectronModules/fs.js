@@ -7,7 +7,6 @@ var root_dir = require("os").homedir() + "/.collector/";
 
 root_dir = root_dir.replaceAll("\\", "/");
 
-
 //make sure there is a Collector folder in documents
 if (!fs.existsSync(root_dir)) {
   fs.mkdirSync(root_dir);

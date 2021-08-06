@@ -56,7 +56,7 @@ update = {
     "PhaseFunctions.js",
     "iframe_library.js",
   ],
-  folders:  ["App/libraries", "App/Quality", "Default"],
+  folders: ["App/libraries", "App/Quality", "Default"],
   excesses: ["App/libraries/ace-master"],
 };
 
@@ -415,13 +415,9 @@ ipc.on("git_push", (event, args) => {
       console.log(this_folder);
       console.log("user().current.path + this_folder");
       console.log(user().current.path + this_folder);
-      fs.copySync(
-        this_folder,
-        user().current.path + "/" + this_folder,
-        {
-          recursive: true,
-        }
-      );
+      fs.copySync(this_folder, user().current.path + "/" + this_folder, {
+        recursive: true,
+      });
     });
 
     /*

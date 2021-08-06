@@ -1006,7 +1006,7 @@ function load_phases() {
         repo: org_repo[1],
       });
       break;
-  };
+  }
 
   var loaded_phases = 0;
   var phases = Object.keys(project_json.phasetypes).length;
