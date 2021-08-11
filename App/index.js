@@ -29,7 +29,7 @@ navbar_names.forEach(function (this_name, index) {
   );
   $("#collapse_" + this_name).load(pages[index]);
 });
-
+Collector.electron.fs.list_projects();
 navbar_html = "";
 navbar_names.forEach(function (name, index) {
   var this_icon = icons[index];

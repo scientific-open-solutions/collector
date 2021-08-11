@@ -1,3 +1,4 @@
+
 function correct_master(){
   master = Collector.electron.fs.read_file("", "master.json");
   if(master === ""){
@@ -142,7 +143,8 @@ function correct_user(){
     $("#local_data_folder").val(user.data_folder);
   }
 }
-
+a = "i exist";
+alert("hi");
 Collector = {
   clean_string: function(this_string){
     return this_string
@@ -460,3 +462,4 @@ Collector = {
 
   version: "cat"
 };
+alert(JSON.stringify(Collector));

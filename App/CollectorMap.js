@@ -22,9 +22,6 @@ window.Handsontable ||
       '</script><script type="text/javascript" charset="utf-8" src="Handsontables/HandsontablesFunctions.js"></script>'
   );
 
-window.Collector ||
-  document.write('<script src="libraries/collector/Collector.js"></script>');
-
 var isolation_map = {
   "..": {
     Default: {
