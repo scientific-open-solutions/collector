@@ -29,28 +29,6 @@
 
 <script type="text/javascript" src="Surveys/SurveysFunctions.js"></script>
 
-<script>
-  /*
-   * To allow development within gitpod
-   */
-  if (Collector.detect_context() == "gitpod") {
-    var gitpod_surveys = true;
-    document.write('<script src="../../CollectorMap.js"><\/script>');
-
-    function get_map() {
-      if (typeof isolation_map !== "undefined") {
-        collector_map = this_map("Surveys.html");
-      } else {
-        setTimeout(function () {
-          get_map();
-          load_default_surveys();
-        }, 1000);
-      }
-    }
-    get_map();
-  }
-</script>
-
 <nav class="navbar navbar-primary bg-white fixed-top fixed-top-2">
   <table style="max-width: 80%">
     <tr>

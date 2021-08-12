@@ -98,6 +98,10 @@ function correct_master(){
 
   });
 
+  if(typeof(master.code) !== "undefined"){
+    master.phasetypes = master.code;
+    delete(master.code);
+  }
 
 
   if(typeof(master.phasetypes.user_trialtypes) !== "undefined"){
@@ -143,8 +147,6 @@ function correct_user(){
     $("#local_data_folder").val(user.data_folder);
   }
 }
-a = "i exist";
-alert("hi");
 Collector = {
   clean_string: function(this_string){
     return this_string
@@ -462,4 +464,3 @@ Collector = {
 
   version: "cat"
 };
-alert(JSON.stringify(Collector));
