@@ -1022,7 +1022,18 @@ function load_phases() {
         }
       });
     } else if (this_phase.indexOf("[[[LOCATION]]]../User") === 0) {
-      var code_location = this_phase.replace("[[[LOCATION]]]..", home_dir);
+      switch (Project.get_vars.platform) {
+        case "onlinepreview":
+        case "github":
+          var code_location = this_phase.replace("[[[LOCATION]]]..", "..");
+          break;
+        case "localhost":
+        case "onlinepreview":
+        case "preview":
+        case "simulateonline":
+          var code_location = this_phase.replace("[[[LOCATION]]]..", home_dir);
+          break;
+      }
       $.get(code_location, function (phase_code) {
         project_json.phasetypes[phasetype] = phase_code;
         loaded_phases++;
@@ -1666,48 +1677,46 @@ function start_project() {
 
       case "github":
       case "onlinepreview":
-        if (
-          typeof Project.get_vars.dropbox !== "undefined" &&
-          Project.get_vars.dropbox
-        ) {
+        /*
+         * wrap into function that will automatically keep trying until you have succesfully loaded the experiment!
+         */
+        function recursive_load_experiment(random_code) {
+          if (typeof random_code === "undefined") {
+            random_code = "";
+          }
           $.get(
-            Project.get_vars.dropbox.replace("www.", "dl."),
+            "../User/Projects/" +
+              Project.get_vars.location +
+              ".json?randomcode=" +
+              random_code,
             function (result) {
-              project_json = JSON.parse(result);
-              Project.activate_pipe();
-            }
-          );
-        } else {
-          /*
-           * wrap into function that will automatically keep trying until you have succesfully loaded the experiment!
-           */
-          function recursive_load_experiment(random_code) {
-            if (typeof random_code === "undefined") {
-              random_code = "";
-            }
-            $.get(
-              "../User/Projects/" +
-                Project.get_vars.location +
-                ".json?randomcode=" +
-                random_code,
-              function (result) {
-                project_json = result;
-                Project.activate_pipe();
-              }
-            ).catch(function (error) {
-              bootbox.confirm(
-                "It looks like the experiment you're trying to load isn't there (yet) - click OK if you'd like to try to load the experiment again (clicking OK can be quicker than constantly refreshing the page)?",
-                function (result) {
-                  if (result) {
-                    recursive_load_experiment(Collector.makeid(5));
-                  }
+              project_json = result;
+
+              $.get(
+                "../User/Projects/" +
+                  Project.get_vars.location +
+                  "/conditions.csv",
+                function (conditions_sheet) {
+                  project_json.conditions =
+                    Collector.PapaParsed(conditions_sheet);
+                  Project.activate_pipe();
                 }
               );
-              console.dir(error);
-            });
-          }
-          recursive_load_experiment();
+            }
+          ).catch(function (error) {
+            bootbox.confirm(
+              "It looks like the experiment you're trying to load isn't there (yet) - click OK if you'd like to try to load the experiment again (clicking OK can be quicker than constantly refreshing the page)?",
+              function (result) {
+                if (result) {
+                  recursive_load_experiment(Collector.makeid(5));
+                }
+              }
+            );
+            console.dir(error);
+          });
         }
+        recursive_load_experiment();
+
         break;
       default:
         if (

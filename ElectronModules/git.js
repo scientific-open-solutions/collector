@@ -56,7 +56,7 @@ update = {
     "PhaseFunctions.js",
     "iframe_library.js",
   ],
-  folders: ["App/libraries", "App/Quality", "Default"],
+  folders: ["App/libraries", "App/Quality", "Default", "logos"],
   excesses: ["App/libraries/ace-master"],
 };
 
