@@ -1,4 +1,6 @@
-require("./App/libraries/collector/Collector.js");
+const path = require("path");
+require(path.join(__dirname, "./App/libraries/collector/Collector.js"));
+//require("./App/libraries/collector/Collector.js");
 
 /*
  * by qwerty at
@@ -15,6 +17,10 @@ String.prototype.replaceAll = function (str1, str2, ignore) {
 };
 //window.onload = function () {
 const ipc = require("electron").ipcRenderer;
+
+if (typeof Collector == "undefined") {
+  Collector = {};
+}
 
 Collector.electron = {
   fs: {

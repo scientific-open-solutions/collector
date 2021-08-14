@@ -45,17 +45,11 @@
       ]
     },
     "extraFiles": [
-      "Default",
-      "App/libraries",
-      "App/Run.html",
-      "App/Run.js",
-      "App/Welcome.html"
+      "extra",
+      "Default"
     ],
     "files": [
-      "**/*",
-      "!Repositories/*",
-      "!User/**",
-      "!App/libraries/ace-master"
+      "**/*"
     ],
     "linux": {
       "target": [
@@ -71,7 +65,7 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "build/icon.ico"
+      "icon": "logos/collector.ico"
     }
   },
   "dependencies": {

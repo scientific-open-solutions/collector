@@ -48,7 +48,7 @@ function createWindow() {
   mainWindow.loadFile(__dirname + "/App/index_local.html");
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools();
 }
 app.on("ready", () => {
   createWindow();

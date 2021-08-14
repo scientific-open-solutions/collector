@@ -161,6 +161,36 @@ ipc.on("git_add_repo", (event, args) => {
                    * Default folder
                    */
 
+                  update.files.forEach(function (this_file) {
+                    fs.copySync(
+                      "extra/App/" + this_file,
+                      user.current.path + "/" + "App" + "/" + this_file
+                    );
+                  });
+
+                  /*
+                   * update folders
+                   */
+                  update.folders.forEach(function (this_folder) {
+                    fs.copySync(
+                      "extra/" + this_folder,
+                      user.current.path + "/" + this_folder,
+                      {
+                        recursive: true,
+                      }
+                    );
+                  });
+
+                  /*
+                   * remove excess
+                   */
+                  update.excesses.forEach(function (this_excess) {
+                    fs.rmdirSync(user.current.path + this_excess, {
+                      recursive: true,
+                    });
+                  });
+
+                  /*
                   if (!fs.existsSync(user.current.path)) {
                     fs.mkdirSync(user.current.path);
                   }
@@ -170,6 +200,8 @@ ipc.on("git_add_repo", (event, args) => {
                   if (!fs.existsSync(user.current.path + "/Default")) {
                     fs.mkdirSync(user.current.path + "/Default");
                   }
+                  */
+                  /*
                   try {
                     fs.copySync("App", user.current.path + "/App", {
                       recursive: true,
@@ -178,15 +210,14 @@ ipc.on("git_add_repo", (event, args) => {
                       recursive: true,
                     });
 
-                    /*
-                     * User folder!?!
-                     */
+
                     event.returnValue = "success";
                   } catch (error) {
                     console.log("error");
                     console.log(error);
                     event.returnValue = error;
                   }
+                  */
                   event.returnValue = "success";
                 })
                 .catch(function (error) {
@@ -405,17 +436,17 @@ ipc.on("git_push", (event, args) => {
         "App/" + this_file,
         user().current.path + "/" + "App" + "/" + this_file
       );
+      fs.copySync("App/" + this_file, "extra/App/" + this_file);
     });
 
     /*
      * update folders
      */
     update.folders.forEach(function (this_folder) {
-      console.log("this_folder");
-      console.log(this_folder);
-      console.log("user().current.path + this_folder");
-      console.log(user().current.path + this_folder);
       fs.copySync(this_folder, user().current.path + "/" + this_folder, {
+        recursive: true,
+      });
+      fs.copySync(this_folder, "extra/" + this_folder, {
         recursive: true,
       });
     });
@@ -425,6 +456,9 @@ ipc.on("git_push", (event, args) => {
      */
     update.excesses.forEach(function (this_excess) {
       fs.rmdirSync(user().current.path + this_excess, {
+        recursive: true,
+      });
+      fs.rmdirSync("extra/" + this_excess, {
         recursive: true,
       });
     });
