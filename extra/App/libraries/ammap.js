@@ -7727,15 +7727,13 @@
               a.distances[D] = H;
             }
             q = x.path(h).attr(B);
-            l = x
-              .path(h)
-              .attr({
-                "fill-opacity": 0,
-                stroke: l,
-                "stroke-width": 5 / n,
-                "stroke-opacity": 0.001,
-                fill: "none",
-              });
+            l = x.path(h).attr({
+              "fill-opacity": 0,
+              stroke: l,
+              "stroke-width": 5 / n,
+              "stroke-opacity": 0.001,
+              fill: "none",
+            });
           }
           d.setCN(c, q, "map-line");
           void 0 != a.id && d.setCN(c, q, "map-line-" + a.id);
