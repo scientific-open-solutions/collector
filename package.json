@@ -46,7 +46,7 @@
     },
     "extraFiles": [
       "extra",
-      "Default"
+      "Default/master.json"
     ],
     "files": [
       "**/*"
