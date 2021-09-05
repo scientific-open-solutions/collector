@@ -12,13 +12,13 @@ String.prototype.replaceAll = function (str1, str2, ignore) {
       str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"),
       ignore ? "gi" : "g"
     ),
-    typeof str2 == "string" ? str2.replace(/\$/g, "$$$$") : str2
+    typeof str2 === "string" ? str2.replace(/\$/g, "$$$$") : str2
   );
 };
 //window.onload = function () {
 const ipc = require("electron").ipcRenderer;
 
-if (typeof Collector == "undefined") {
+if (typeof Collector === "undefined") {
   Collector = {};
 }
 

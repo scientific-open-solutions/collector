@@ -1,19 +1,39 @@
+/**
+ * @jest-environment jsdom
+ */
+
 global.window = window;
 global.$ = require("../App/libraries/jquery.min.js");
+//eval("../App/libraries/bootbox.min.js");
 const fs = require("fs");
 const path = require("path");
+Papa = require("../App/libraries/papaparse.min.js");
+const Collector = require("../App/libraries/collector/Collector.js");
 const run_html = fs.readFileSync(
   path.resolve(__dirname, "../App/Run.html"),
   "utf8"
 );
 const run_js = require("../App/Run.js");
-//const survey_html = require('../Default/DefaultPhaseTypes/survey.html');
+const survey_js = require("../Default/DefaultPhaseTypes/survey.js");
 
-const survey_html = fs.readFileSync(
-  path.resolve(__dirname, "../testFiles/survey.html"),
+String.prototype.replaceAll = function (str1, str2, ignore) {
+  return this.replace(
+    new RegExp(
+      str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"),
+      ignore ? "gi" : "g"
+    ),
+    typeof str2 === "string" ? str2.replace(/\$/g, "$$$$") : str2
+  );
+};
+
+
+var survey_html = fs.readFileSync(
+  path.resolve(
+    __dirname,
+    "../Default/DefaultPhaseTypes/survey.html"
+  ),
   "utf8"
 );
-const survey_js = require("../testFiles/survey.js");
 
 /*
 test('the data is peanut butter', done => {
@@ -77,9 +97,69 @@ describe("Running projects", function () {
   });
 
   it("Checking aq scoring", function () {
-    document.body.innerHTML = survey_html;
+    // global.window = window;
 
-    expect(howdy_value).toStrictEqual("brap");
+    var aq_survey = fs.readFileSync(
+      path.resolve(
+        __dirname,
+        "../Default/DefaultSurveys/autism_quotient.csv"
+      ),
+      "utf8"
+    );
+
+    aq_survey = Papa.parse(aq_survey,{
+      beforeFirstChunk: function(chunk) {
+        var rows = chunk.split( /\r\n|\r|\n/ );
+        var headings = rows[0].toLowerCase();
+        rows[0] = headings;
+        return rows.join("\r\n");
+      },
+      header:true,
+      skipEmptyLines:true
+    }).data;
+
+    document.body.innerHTML = survey_html;
+    $("#survey_outline").html("hi");
+
+    survey_js.load_survey(aq_survey, "survey_outline");
+
+    var test_value = $('#likert_1_0').val();
+    expect(test_value).toStrictEqual("0");
+
+    /*
+    * click on a range of AQ responses and then check the expected score with the actual score
+    */
+
+    
+
+
+
+        /*
+        var survey_js = fs.readFileSync(
+          path.resolve(
+            __dirname,
+            "../Default/DefaultPhaseTypes/survey.js"
+          ),
+          "utf8"
+        )
+
+          .replace("{{survey}}", Collector.PapaParsed(aq_survey))
+          .replaceAll("bootbox.alert", "console.log");
+        */
+
+
+        //survey_js.load_survey(aq_survey);
+
+    /*
+    * load AQ specifically
+    */
+
+    /*
+    * Click on a series of responses
+    */
+
+
+
     /*
       var test_value = $('#proc_button').val();
       expect(test_value).toStrictEqual("Understood");

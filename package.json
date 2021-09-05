@@ -3,6 +3,12 @@
   "version": "3.1.0",
   "description": "An open-source package for creating interactive websites",
   "main": "main.js",
+  "jest": {
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ]
+  },
   "scripts": {
     "start": "electron . & npx prettier --write .",
     "pack": "electron-builder --dir",
