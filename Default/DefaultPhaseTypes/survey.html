@@ -44,8 +44,17 @@
     width: 95%;
   }
   #proceed_button {
+    position: fixed;
     display: none;
-    float: right;
+    bottom: 0px;
+    left: 50%;
+    overflow: auto;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    min-width: 100px;
+    max-width: 100px;
+    border-radius: 5px;
+    border-width: 3px;
   }
   #survey_outline {
     position: fixed;
@@ -134,6 +143,17 @@
 </style>
 <div id="everything">
   <div id="survey_outline"></div>
+  <button id="proceed_button" class="btn bg-white btn-outline-primary">Proceed</button>
+
 </div>
 <span id="scales_span"></span>
-<script></script>
+<script>
+/*
+ * Load survey
+ */
+current_survey = "{{survey}}";
+
+console.log("current_survey");
+console.log(current_survey);
+</script>
+<script src="../Default/DefaultPhaseTypes/survey.js"></script>
