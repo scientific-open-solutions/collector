@@ -21,76 +21,98 @@
 -->
 <form id="content" method="POST" action="javascript:submit_form()"></form>
 
-<input type="hidden" name="Duration"                 id="Duration"                 form="content">
-<input type="hidden" name="Focus"                    id="Focus"                    form="content">
-<input type="hidden" name="First_Input_Time"         id="First_Input_Time"         form="content">
-<input type="hidden" name="Last_Input_Time"          id="Last_Input_Time"          form="content">
-<input type="hidden" name="Start_Time_Date"          id="Start_Time_Date"          form="content">
-<input type="hidden" name="End_Time_Date"            id="End_Time_Date"            form="content">
-<input type="hidden" name="Start_Time_Date_Numeric"  id="Start_Time_Date_Numeric"  form="content">
-<input type="hidden" name="End_Time_Date_Numeric"    id="End_Time_Date_Numeric"    form="content">
-
+<input type="hidden" name="Duration" id="Duration" form="content" />
+<input type="hidden" name="Focus" id="Focus" form="content" />
+<input
+  type="hidden"
+  name="First_Input_Time"
+  id="First_Input_Time"
+  form="content"
+/>
+<input
+  type="hidden"
+  name="Last_Input_Time"
+  id="Last_Input_Time"
+  form="content"
+/>
+<input
+  type="hidden"
+  name="Start_Time_Date"
+  id="Start_Time_Date"
+  form="content"
+/>
+<input type="hidden" name="End_Time_Date" id="End_Time_Date" form="content" />
+<input
+  type="hidden"
+  name="Start_Time_Date_Numeric"
+  id="Start_Time_Date_Numeric"
+  form="content"
+/>
+<input
+  type="hidden"
+  name="End_Time_Date_Numeric"
+  id="End_Time_Date_Numeric"
+  form="content"
+/>
 
 <script>
+  $("#Start_Time_Date").val(Date());
+  $("#Start_Time_Date_Numeric").val(new Date().getTime());
+  function submit_form() {
+    var all_timers = window.Phase.all_timers;
 
-$("#Start_Time_Date").val(Date());
-$("#Start_Time_Date_Numeric").val((new Date()).getTime());
-function submit_form() {
-	var all_timers = window.Phase.all_timers;
+    for (var i = 0; i < all_timers.length; ++i) {
+      all_timers[i].stop();
+    }
 
-	for (var i=0; i<all_timers.length; ++i) {
-		all_timers[i].stop();
-	}
+    //console.dir ("timers stopped: " + i);
 
-	//console.dir ("timers stopped: " + i);
+    var serialized_data = $("#content").serialize();
+    var data = Phase.unserialize(serialized_data);
+    var scored_data = Phase.scoring(data);
 
-	var serialized_data = $("#content").serialize();
-	var data = Phase.unserialize(serialized_data);
-	var scored_data = Phase.scoring(data);
+    Collector_Experiment.end_trial(
+      scored_data,
+      Phase.raw_inputs,
+      Phase.global_data
+    );
+  }
+  Collector_Experiment = parent.Collector_Experiment;
+  trial_data = Collector_Experiment.get_trial_data();
+  console.dir("trial_data");
+  console.dir(trial_data);
+  Phase.raw_inputs = trial_data.inputs;
 
-	Collector_Experiment.end_trial(
-		scored_data,
-		Phase.raw_inputs,
-		Phase.global_data
-	);
-}
-Collector_Experiment = parent.Collector_Experiment;
-trial_data = Collector_Experiment.get_trial_data();
-console.dir("trial_data");
-console.dir(trial_data);
-Phase.raw_inputs = trial_data.inputs;
+  //if(parent.sql_toggle == true){
 
-//if(parent.sql_toggle == true){
+  var trialtype = trial_data.inputs.procedure["trial type"].toLowerCase();
+  var this_trialtype = parent.this_proj.trialtypes[trialtype];
 
-var trialtype = trial_data.inputs.procedure["trial type"].toLowerCase();
-var this_trialtype = parent.this_proj.trialtypes[trialtype];
+  file_object = {
+    "template.html": "",
+    "prepareInputs.js": "",
+    "scoring.js": "",
+  };
 
-file_object = {
-	"template.html":'',
-	"prepareInputs.js":'',
-	"scoring.js":'',
-};
+  var files = this_trialtype;
 
+  template =
+    files["template.html"] !== "undefined" ? files["template.html"] : "";
+  scoring = files["scoring.js"] !== "undefined" ? files["scoring.js"] : "";
+  prepare_inputs =
+    files["prepareInputs.js"] !== "undefined" ? files["prepareInputs.js"] : "";
 
+  trial_data.type = {
+    template: template,
+    prepare_inputs: prepare_inputs,
+    scoring: scoring,
+  };
 
-var files = this_trialtype;
+  console.dir("trial_data.type");
+  console.dir(trial_data.type);
 
-template = files["template.html"] !== "undefined" ? files["template.html"] : '';
-scoring  = files["scoring.js"]    !== "undefined" ? files["scoring.js"]    : '';
-prepare_inputs = files["prepareInputs.js"] !== "undefined" ? files["prepareInputs.js"] : '';
-
-trial_data.type = {
-	template 		: template,
-	prepare_inputs	: prepare_inputs,
-	scoring			: scoring,
-}
-
-console.dir("trial_data.type");
-console.dir(trial_data.type);
-
-Phase.load_inputs(trial_data.inputs);
-Phase.load_trial_type(trial_data.type);
-Phase.load_globals(trial_data.globals);
-Phase.run();
-
+  Phase.load_inputs(trial_data.inputs);
+  Phase.load_trial_type(trial_data.type);
+  Phase.load_globals(trial_data.globals);
+  Phase.run();
 </script>

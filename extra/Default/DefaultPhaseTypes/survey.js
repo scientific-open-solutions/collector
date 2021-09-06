@@ -6,15 +6,15 @@
  * detect if testing or not
  */
 if (typeof module !== "undefined") {
-   // give message to developer during testing
-   function appropriate_message(this_message){
-     console.log(appropriate_message);
-   }
- } else {
-   // give message to participant
-   function appropriate_message(this_message){
-     bootbox.alert(this_message);
-   }
+  // give message to developer during testing
+  function appropriate_message(this_message) {
+    console.log(appropriate_message);
+  }
+} else {
+  // give message to participant
+  function appropriate_message(this_message) {
+    bootbox.alert(this_message);
+  }
 }
 
 /*
@@ -31,7 +31,6 @@ if (typeof settings !== "undefined") {
 } else {
   settings = {};
 }
-
 
 /*
  * vertical vs. horizontal tabs
@@ -241,7 +240,9 @@ $("#proceed_button").on("click", function () {
     $("#tab_" + current_tab + "_button").addClass("btn-outline-dark");
     $("#tab_" + current_tab + "_button").click();
   } else if (proceed == false) {
-    appropriate_message("You're missing some responses. Please fill in all the answers for the questions in red above.");
+    appropriate_message(
+      "You're missing some responses. Please fill in all the answers for the questions in red above."
+    );
   } else if (current_tab > survey_obj.tabs) {
     appropriate_message(
       "Error - please contact Scientific Open Solutions about this problem, error 'Survey_001'."
@@ -266,7 +267,8 @@ String.prototype.replaceAll = function (str1, str2, ignore) {
 
 function clean_item(this_item) {
   if ((this_item.indexOf("'") !== -1) | (this_item.indexOf('"') !== -1)) {
-    appropriate_message("Please avoid apostraphes or quote marks in the responses the participant can give. These cause problems with smooth running of surveys. This occurs when you wrote:<br><br>" +
+    appropriate_message(
+      "Please avoid apostraphes or quote marks in the responses the participant can give. These cause problems with smooth running of surveys. This occurs when you wrote:<br><br>" +
         this_item
     );
   }
@@ -291,9 +293,7 @@ function generate_feedback_string(
     } else {
       return $("<div>")
         .addClass(
-          "feedback_span_single " +
-            row["item_name"].toLowerCase() +
-            "_feedback"
+          "feedback_span_single " + row["item_name"].toLowerCase() + "_feedback"
         )
         .css("color", feedback_color[this_index])
         .html(feedback_array[this_index])[0].outerHTML;
@@ -327,7 +327,7 @@ function isJSON(str) {
   }
 }
 
-survey_js.likert_update = function(this_element) {
+survey_js.likert_update = function (this_element) {
   [row_no, item_name] = retrieve_row_no_item_name(this_element);
   $(".row_" + row_no)
     .removeClass("active")
@@ -338,14 +338,13 @@ survey_js.likert_update = function(this_element) {
   $("#survey_" + item_name + "_value").val(this_element.value);
 
   response_check(this_element);
-}
+};
 
 function load_survey(survey, survey_outline) {
-
   /*
    * are we in preview?
    */
-  if(typeof(survey) === "object"){
+  if (typeof survey === "object") {
     survey_content = survey;
   } else if (typeof parent.collector_survey_preview !== "undefined") {
     survey_content = survey;
@@ -475,10 +474,7 @@ function process_question(row, row_no) {
     ) {
       var mod_html = survey_obj.phasetypes[row.type];
       Object.keys(row).forEach(function (attribute) {
-        mod_html = mod_html.replaceAll(
-          "{{" + attribute + "}}",
-          row[attribute]
-        );
+        mod_html = mod_html.replaceAll("{{" + attribute + "}}", row[attribute]);
       });
       question_td += mod_html;
     } else {
@@ -636,10 +632,7 @@ function process_question(row, row_no) {
           .on("click", function () {
             reveal_answers(this);
           })
-          .prop(
-            "id",
-            "reveal_" + row["item_name"].toLowerCase() + "_feedback"
-          )
+          .prop("id", "reveal_" + row["item_name"].toLowerCase() + "_feedback")
       );
     }
   }
@@ -870,10 +863,7 @@ function reveal_answers(this_element) {
   ).val();
   response_present = this_response == "" ? false : true;
 
-  if (
-    settings.feedback_before_response == false &&
-    response_present == false
-  ) {
+  if (settings.feedback_before_response == false && response_present == false) {
     appropriate_message("Please respond before trying reveal the feedback.");
   } else {
     if ($("#" + this_element.id).hasClass("btn-outline-info")) {
@@ -1024,10 +1014,7 @@ function update_score() {
         .removeClass("text-success")
         .addClass("bg-danger")
         .addClass("text-light")
-        .prop(
-          "title",
-          "At least one relevant questions has NOT been answered"
-        );
+        .prop("title", "At least one relevant questions has NOT been answered");
     }
     $(".score_" + scale).val(this_score);
   });
@@ -1466,10 +1453,6 @@ function write_survey(this_survey, this_id) {
 
   $("#" + this_id).html(survey_html);
 
-
-
-
-
   $(".response").on("change", function () {
     response_check(this);
   });
@@ -1488,7 +1471,6 @@ function write_survey(this_survey, this_id) {
     }
   });
 }
-
 
 /*
  * exports for testing

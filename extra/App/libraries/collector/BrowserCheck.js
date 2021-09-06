@@ -19,50 +19,66 @@
 */
 
 // Opera 8.0+
-var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+var isOpera =
+  (!!window.opr && !!opr.addons) ||
+  !!window.opera ||
+  navigator.userAgent.indexOf(" OPR/") >= 0;
 
 // Firefox 1.0+
-var isFirefox = typeof InstallTrigger !== 'undefined';
+var isFirefox = typeof InstallTrigger !== "undefined";
 
 /* old code for detecting safari
 // Safari 3.0+ "[object HTMLElementConstructor]"
 var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 */
-var isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
-               navigator.userAgent &&
-               navigator.userAgent.indexOf('CriOS') == -1 &&
-               navigator.userAgent.indexOf('FxiOS') == -1;
-
+var isSafari =
+  navigator.vendor &&
+  navigator.vendor.indexOf("Apple") > -1 &&
+  navigator.userAgent &&
+  navigator.userAgent.indexOf("CriOS") == -1 &&
+  navigator.userAgent.indexOf("FxiOS") == -1;
 
 // Internet Explorer 6-11
-var isIE = /*@cc_on!@*/false || !!document.documentMode;
+var isIE = /*@cc_on!@*/ false || !!document.documentMode;
 
 // Edge 20+
 var isEdge = !isIE && !!window.StyleMedia;
 
 // Chrome 1+
-var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-
+var isChrome =
+  !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
 
 // Blink engine detection
 var isBlink = (isChrome || isOpera) && !!window.CSS;
 
-if(isIE){
-  alert("This website does not work reliably on Internet Explorer - Please use another browser, preferably Google Chrome.");
+if (isIE) {
+  alert(
+    "This website does not work reliably on Internet Explorer - Please use another browser, preferably Google Chrome."
+  );
 }
 
-if(isFirefox){
+if (isFirefox) {
   //alert("The zooming works m")
 }
 
-if(isSafari){
-  alert("This website does not work reliably on Safari - please use another browser, preferably Google Chrome.");
+if (isSafari) {
+  alert(
+    "This website does not work reliably on Safari - please use another browser, preferably Google Chrome."
+  );
 }
 
-participant_browser = isOpera   ? "opera"
-                    : isFirefox ? "firefox"
-                    : isSafari  ? "safari"
-                    : isIE      ? "internet_explorer"
-                    : isEdge    ? "edge"
-                    : isChrome  ? "chrome"
-                    : isBlink   ? "blink" : "unknown";
+participant_browser = isOpera
+  ? "opera"
+  : isFirefox
+  ? "firefox"
+  : isSafari
+  ? "safari"
+  : isIE
+  ? "internet_explorer"
+  : isEdge
+  ? "edge"
+  : isChrome
+  ? "chrome"
+  : isBlink
+  ? "blink"
+  : "unknown";

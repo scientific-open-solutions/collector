@@ -5,6 +5,8 @@ function correct_master(){
     /* load from default */
     master = Collector.electron.fs.read_default("", "master.json")
   }
+  console.log("master");
+  console.log(master);
   master = JSON.parse(master);
 
   /*

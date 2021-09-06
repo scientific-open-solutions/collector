@@ -25,12 +25,8 @@ String.prototype.replaceAll = function (str1, str2, ignore) {
   );
 };
 
-
 var survey_html = fs.readFileSync(
-  path.resolve(
-    __dirname,
-    "../Default/DefaultPhaseTypes/survey.html"
-  ),
+  path.resolve(__dirname, "../Default/DefaultPhaseTypes/survey.html"),
   "utf8"
 );
 
@@ -48,22 +44,19 @@ describe("Running projects", function () {
     // global.window = window;
 
     var aq_survey = fs.readFileSync(
-      path.resolve(
-        __dirname,
-        "../Default/DefaultSurveys/autism_quotient.csv"
-      ),
+      path.resolve(__dirname, "../Default/DefaultSurveys/autism_quotient.csv"),
       "utf8"
     );
 
-    aq_survey = Papa.parse(aq_survey,{
-      beforeFirstChunk: function(chunk) {
-        var rows = chunk.split( /\r\n|\r|\n/ );
+    aq_survey = Papa.parse(aq_survey, {
+      beforeFirstChunk: function (chunk) {
+        var rows = chunk.split(/\r\n|\r|\n/);
         var headings = rows[0].toLowerCase();
         rows[0] = headings;
         return rows.join("\r\n");
       },
-      header:true,
-      skipEmptyLines:true
+      header: true,
+      skipEmptyLines: true,
     }).data;
 
     document.body.innerHTML = survey_html;
@@ -71,10 +64,9 @@ describe("Running projects", function () {
 
     survey_js.load_survey(aq_survey, "survey_outline");
 
-
     /*
-    * click on a range of AQ responses and then check the expected score with the actual score
-    */
+     * click on a range of AQ responses and then check the expected score with the actual score
+     */
 
     $("#likert_1_0").click();
     $("#likert_2_3").click();
