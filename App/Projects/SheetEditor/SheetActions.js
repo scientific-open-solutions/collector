@@ -196,7 +196,7 @@ $("#new_proc_button").on("click", function () {
 
 $("#new_project_button").on("click", function () {
   bootbox.prompt(
-    "What would you like to name the new experiment?",
+    "What would you like to name the new project?",
     function (result) {
       if (result !== null) {
         result = result.toLowerCase();
