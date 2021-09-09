@@ -16,8 +16,10 @@ $("#delete_survey_btn").on("click", function () {
         delete master.surveys.user_surveys[survey_name];
 
         //need to use electron to delete here
-        var response = Collector.electron.fs.delete_survey(survey_name);
-        if (response == "success") {
+        var response = Collector.electron.fs.delete_file(
+          "Surveys/" + survey_name.replace(".csv", "") + ".csv"
+        );
+        if (response === "success") {
           Collector.custom_alert(
             "Succesfully deleted <b>" + survey_name + "</b>"
           );
@@ -36,7 +38,7 @@ $("#delete_survey_btn").on("click", function () {
 });
 
 $("#new_survey_button").on("click", function () {
-  if ($("#survey_select").val() == null) {
+  if ($("#survey_select").val() === null) {
     bootbox.alert(
       "Please select a survey that already exists to base the new survey on. To do this, click on the dropdown list that has 'Please select a survey' written in it."
     );
@@ -53,7 +55,7 @@ $("#new_survey_button").on("click", function () {
                   survey_name.toLowerCase().replaceAll(".csv", "") + ".csv";
                 if (
                   typeof (
-                    master.surveys.user_surveys[survey_name] == "undefined"
+                    master.surveys.user_surveys[survey_name] === "undefined"
                   )
                 ) {
                   var survey_content = survey_HoT.getData();
@@ -92,7 +94,7 @@ $("#pills-preview-tab").on("click", function () {
 
 $("#rename_survey_btn").on("click", function () {
   var old_survey_name = $("#survey_select").val().split("|")[1];
-  if ($("#survey_select").val() == null) {
+  if ($("#survey_select").val() === null) {
     bootbox.alert("You haven't selected a survey to rename");
   } else if (
     typeof master.surveys.default_surveys[old_survey_name] !== "undefined"
@@ -120,11 +122,12 @@ $("#rename_survey_btn").on("click", function () {
             new_survey_name,
             master.surveys.user_surveys[old_survey_name]
           );
-          if (write_response == "success") {
+          if (write_response === "success") {
             master.surveys.user_surveys[new_survey_name] =
               master.surveys.user_surveys[old_survey_name];
-            var delete_response =
-              Collector.electron.fs.delete_survey(old_survey_name);
+            var delete_response = Collector.electron.fs.delete_file(
+              "Surveys/" + old_survey_name.replace(".csv", "") + ".csv"
+            );
 
             if (delete_response !== "success") {
               bootbox.alert(delete_response);
@@ -165,7 +168,7 @@ $("#save_survey_btn").on("click", function () {
        * Check there are no repeated item_names within the survey
        */
       var this_item_name = survey_data[i][item_name_index];
-      if (item_names.indexOf(this_item_name) == -1) {
+      if (item_names.indexOf(this_item_name) === -1) {
         item_names.push(this_item_name);
       } else {
         bootbox.alert(
@@ -206,11 +209,11 @@ $("#survey_select").on("change", function () {
    */
   var old_survey = $(this).attr("previousValue");
 
-  if (old_survey == "") {
+  if (old_survey === "") {
     // not the first selected
     // do nothing
   } else if (
-    Object.keys(master.surveys.default_surveys).indexOf(old_survey) == -1
+    Object.keys(master.surveys.default_surveys).indexOf(old_survey) === -1
   ) {
     // not a default trialtype
     old_survey = old_survey.split("|")[1].replace(".csv", "") + ".csv";
@@ -222,14 +225,14 @@ $("#survey_select").on("change", function () {
   $(this).attr("previousValue", this.value);
 
   var this_survey = $("#survey_select").val().split("|");
-  if (this_survey[0] == "default") {
+  if (this_survey[0] === "default") {
     $("#survey_select").removeClass("bg-light");
     $("#survey_select").addClass("bg-info");
     $("#survey_select").addClass("text-white");
 
     create_survey_HoT(master.surveys.default_surveys[this_survey[1]]);
     $("#spreadsheet_preview_tabs").show();
-  } else if (this_survey[0] == "user") {
+  } else if (this_survey[0] === "user") {
     $("#survey_select").removeClass("bg-info");
     $("#survey_select").removeClass("text-white");
     $("#survey_select").addClass("bg-light");

@@ -203,8 +203,8 @@ function initiate_actions() {
               master.phasetypes.user[new_name]
             );
             if (write_response === "success") {
-              Collector.electron.fs.delete_phasetypes(
-                original_name,
+              Collector.electron.fs.delete_file(
+                "PhaseTypes/" + original_name,
                 function (response) {
                   if (response === "success") {
                     list_phasetypes(function () {

@@ -24,7 +24,7 @@ if (typeof Collector === "undefined") {
 
 Collector.electron = {
   fs: {
-    delete_experiment: function (proj_name, file_action) {
+    delete_project: function (proj_name, file_action) {
       delete_response = ipc.sendSync("fs_delete_project", {
         proj_name: proj_name,
       });
@@ -34,17 +34,6 @@ Collector.electron = {
       return ipc.sendSync("fs_delete_file", {
         file_path: file_path,
       });
-    },
-    delete_survey: function (survey_name, file_action) {
-      return ipc.sendSync("fs_delete_survey", {
-        survey_name: survey_name,
-      });
-    },
-    delete_phasetypes: function (phasetype, file_action) {
-      delete_response = ipc.sendSync("fs_delete_phasetypes", {
-        phasetype: phasetype,
-      });
-      file_action(delete_response);
     },
     home_dir: function () {
       return ipc.sendSync("fs_home_dir");

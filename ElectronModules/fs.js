@@ -120,7 +120,7 @@ ipc.on("fs_delete_project", (event, args) => {
 });
 
 ipc.on("fs_delete_file", (event, args) => {
-  if (args.file_path.indexOf("../") !== -1) {
+  if (args.file_path.indexOf("..") !== -1) {
     event.returnValue =
       "This attempt to delete a file looked dangerous, so hasn't been completed";
   } else if (!fs.existsSync(user().current.path + "/User/" + args.file_path)) {
@@ -129,27 +129,6 @@ ipc.on("fs_delete_file", (event, args) => {
   } else {
     fs.unlink(user().current.path + "/User/" + args.file_path);
     event.returnValue = "success";
-  }
-});
-
-ipc.on("fs_delete_survey", (event, args) => {
-  /*
-   * Security checks - should probably have more
-   */
-  if (args.survey_name.indexOf("..") !== -1) {
-    event.returnValue = "This request could be insecure, and was blocked";
-  } else {
-    try {
-      var content = fs.unlinkSync(
-        user().current.path +
-          "/User/Surveys/" +
-          args.survey_name.replace(".csv", "") +
-          ".csv"
-      );
-      event.returnValue = "success";
-    } catch (error) {
-      event.returnValue = "failed to delete the survey: " + error;
-    }
   }
 });
 
@@ -237,7 +216,8 @@ ipc.on("fs_read_default", (event, args) => {
   } else if (args.this_file.indexOf("../") !== -1) {
     content = "This request could be insecure, and was blocked";
   } else {
-    var this_path = user().current.path +
+    var this_path =
+      user().current.path +
       "/Default/" +
       args.user_folder +
       "/" +

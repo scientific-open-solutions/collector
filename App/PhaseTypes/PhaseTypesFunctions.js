@@ -40,8 +40,8 @@ code_obj = {
           master.phasetypes.file = $("#code_select").val();
           code_obj.load_file("default");
           Collector.custom_alert("Successfully deleted " + this_loc);
-          Collector.electron.fs.delete_phasetypes(
-            deleted_code,
+          Collector.electron.fs.delete_file(
+            "PhaseTypes/" + deleted_code,
             function (response) {
               if (response !== "success") {
                 bootbox.alert(response);

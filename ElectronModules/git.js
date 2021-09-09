@@ -75,7 +75,7 @@ ipc.on("git_add_repo", (event, args) => {
       properties: ["openDirectory"], //'openFile',
     })
     .then((result) => {
-      if(result.canceled === false){
+      if (result.canceled === false) {
         /*
          * update user().current.path
          */
@@ -197,12 +197,15 @@ ipc.on("git_add_repo", (event, args) => {
                   });
               })
               .catch(function (error) {
-                console.log("failed to clone Collector into repository, right?");
+                console.log(
+                  "failed to clone Collector into repository, right?"
+                );
                 event.return = "error - failed to create online repo:" + error;
               });
           });
       } else {
-        event.returnValue = "error - You didn't select where to put your repository";
+        event.returnValue =
+          "error - You didn't select where to put your repository";
       }
     });
 });

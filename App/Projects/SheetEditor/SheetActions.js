@@ -44,7 +44,7 @@ $("#delete_proj_btn").on("click", function () {
 
           //delete the local file if this is
           if (Collector.detect_context() === "localhost") {
-            Collector.electron.fs.delete_experiment(
+            Collector.electron.fs.delete_project(
               proj_name,
               function (response) {
                 if (response !== "success") {
@@ -287,7 +287,7 @@ $("#rename_proj_btn").on("click", function () {
             JSON.stringify(master.projects.projects[new_name], null, 2),
             function (response) {
               if (response === "success") {
-                Collector.electron.fs.delete_experiment(
+                Collector.electron.fs.delete_project(
                   original_name,
                   function (response) {
                     if (response === "success") {
