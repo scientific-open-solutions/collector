@@ -290,6 +290,9 @@ $("#pull_repo_btn").on("click", function () {
                 bootbox.alert(pull_response);
                 return false;
               } else {
+                location.reload();
+
+                /*
                 //refresh the page
                 bootbox.confirm(
                   "Do you want to restart Collector so that you can see the changes you've just pulled? (Strongly recommended)",
@@ -299,6 +302,7 @@ $("#pull_repo_btn").on("click", function () {
                     }
                   }
                 );
+                */
                 return true;
               }
             },

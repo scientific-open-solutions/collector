@@ -75,160 +75,135 @@ ipc.on("git_add_repo", (event, args) => {
       properties: ["openDirectory"], //'openFile',
     })
     .then((result) => {
-      /*
-       * update user().current.path
-       */
-      var user = JSON.parse(fs.readFileSync(root_dir + "/User.json"));
+      if(result.canceled === false){
+        /*
+         * update user().current.path
+         */
+        var user = JSON.parse(fs.readFileSync(root_dir + "/User.json"));
 
-      if (typeof user.current === "undefined") {
-        user.current = {};
-      }
+        if (typeof user.current === "undefined") {
+          user.current = {};
+        }
 
-      user.current.org = args.org;
-      user.current.repo = args.repo;
-      user.current.path = result.filePaths[0] + "/" + args.repo;
+        user.current.org = args.org;
+        user.current.repo = args.repo;
+        user.current.path = result.filePaths[0] + "/" + args.repo;
 
-      if (typeof user.repos === "undefined") {
-        user.current.repos = {};
-      }
+        if (typeof user.repos === "undefined") {
+          user.current.repos = {};
+        }
 
-      if (typeof user.repos[args.org] === "undefined") {
-        user.repos[args.org] = {};
-      }
-      user.repos[args.org][args.repo] = {
-        path: user.current.path,
-      };
+        if (typeof user.repos[args.org] === "undefined") {
+          user.repos[args.org] = {};
+        }
+        user.repos[args.org][args.repo] = {
+          path: user.current.path,
+        };
 
-      fs.writeFileSync(
-        root_dir + "/User.json",
-        JSON.stringify(user, null, 2),
-        "utf-8"
-      );
+        fs.writeFileSync(
+          root_dir + "/User.json",
+          JSON.stringify(user, null, 2),
+          "utf-8"
+        );
 
-      /*
-       * Check if the repository exists online
-       */
-      const octokit = new Octokit({
-        auth: auth_token,
-      });
-
-      var git = simpleGit();
-
-      octokit.repos
-        .get({
-          owner: args.org,
-          repo: args.repo,
-        })
-        .then(function (result) {
-          console.log("result of whether repository exists online:");
-
-          /*
-           * Then clone the repository
-           */
-          git
-            .clone(
-              "https://github.com" + "/" + args.org + "/" + args.repo,
-              user.current.path
-            )
-            .then(function (result) {
-              event.returnValue = "success";
-            })
-            .catch(function (error) {
-              event.returnValue = "error" + error;
-            });
-        })
-        .catch(function (error) {
-          console.log("result of repository not existing online:");
-          console.log(error);
-          /*
-           * Create repository online
-           */
-          octokit.repos
-            .createInOrg({
-              org: args.org,
-              name: args.repo,
-            })
-            .then(function (result) {
-              git
-                .clone(
-                  "https://github.com" + "/" + args.org + "/" + args.repo,
-                  user.current.path
-                )
-                .then(function (result) {
-                  /*
-                   * Copy the relevant default files into the new repo
-                   * App folder
-                   * Default folder
-                   */
-
-                  update.files.forEach(function (this_file) {
-                    fs.copySync(
-                      "extra/App/" + this_file,
-                      user.current.path + "/" + "App" + "/" + this_file
-                    );
-                  });
-
-                  /*
-                   * update folders
-                   */
-                  update.folders.forEach(function (this_folder) {
-                    fs.copySync(
-                      "extra/" + this_folder,
-                      user.current.path + "/" + this_folder,
-                      {
-                        recursive: true,
-                      }
-                    );
-                  });
-
-                  /*
-                   * remove excess
-                   */
-                  update.excesses.forEach(function (this_excess) {
-                    fs.rmdirSync(user.current.path + this_excess, {
-                      recursive: true,
-                    });
-                  });
-
-                  /*
-                  if (!fs.existsSync(user.current.path)) {
-                    fs.mkdirSync(user.current.path);
-                  }
-                  if (!fs.existsSync(user.current.path + "/App")) {
-                    fs.mkdirSync(user.current.path + "/App");
-                  }
-                  if (!fs.existsSync(user.current.path + "/Default")) {
-                    fs.mkdirSync(user.current.path + "/Default");
-                  }
-                  */
-                  /*
-                  try {
-                    fs.copySync("App", user.current.path + "/App", {
-                      recursive: true,
-                    });
-                    fs.copySync("Default", user.current.path + "/Default", {
-                      recursive: true,
-                    });
-
-
-                    event.returnValue = "success";
-                  } catch (error) {
-                    console.log("error");
-                    console.log(error);
-                    event.returnValue = error;
-                  }
-                  */
-                  event.returnValue = "success";
-                })
-                .catch(function (error) {
-                  event.returnValue = "error" + error;
-                });
-            })
-            .catch(function (error) {
-              console.log("failed to clone Collector into repository, right?");
-              event.return = "error - failed to create online repo:" + error;
-            });
+        /*
+         * Check if the repository exists online
+         */
+        const octokit = new Octokit({
+          auth: auth_token,
         });
+
+        var git = simpleGit();
+
+        octokit.repos
+          .get({
+            owner: args.org,
+            repo: args.repo,
+          })
+          .then(function (result) {
+            console.log("result of whether repository exists online:");
+
+            /*
+             * Then clone the repository
+             */
+            git
+              .clone(
+                "https://github.com" + "/" + args.org + "/" + args.repo,
+                user.current.path
+              )
+              .then(function (result) {
+                event.returnValue = "success";
+              })
+              .catch(function (error) {
+                event.returnValue = "error" + error;
+              });
+          })
+          .catch(function (error) {
+            console.log("result of repository not existing online:");
+            console.log(error);
+            /*
+             * Create repository online
+             */
+            octokit.repos
+              .createInOrg({
+                org: args.org,
+                name: args.repo,
+              })
+              .then(function (result) {
+                git
+                  .clone(
+                    "https://github.com" + "/" + args.org + "/" + args.repo,
+                    user.current.path
+                  )
+                  .then(function (result) {
+                    /*
+                     * Copy the relevant default files into the new repo
+                     * App folder
+                     * Default folder
+                     */
+
+                    update.files.forEach(function (this_file) {
+                      fs.copySync(
+                        "extra/App/" + this_file,
+                        user.current.path + "/" + "App" + "/" + this_file
+                      );
+                    });
+
+                    /*
+                     * update folders
+                     */
+                    update.folders.forEach(function (this_folder) {
+                      fs.copySync(
+                        "extra/" + this_folder,
+                        user.current.path + "/" + this_folder,
+                        {
+                          recursive: true,
+                        }
+                      );
+                    });
+
+                    /*
+                     * remove excess
+                     */
+                    update.excesses.forEach(function (this_excess) {
+                      fs.rmdirSync(user.current.path + this_excess, {
+                        recursive: true,
+                      });
+                    });
+                    event.returnValue = "success";
+                  })
+                  .catch(function (error) {
+                    event.returnValue = "error" + error;
+                  });
+              })
+              .catch(function (error) {
+                console.log("failed to clone Collector into repository, right?");
+                event.return = "error - failed to create online repo:" + error;
+              });
+          });
+      } else {
+        event.returnValue = "error - You didn't select where to put your repository";
+      }
     });
 });
 

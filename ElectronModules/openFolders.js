@@ -55,6 +55,7 @@ ipc.on("open_folder", (event, args) => {
       event.returnValue = "done";
       break;
     case "repo":
+      console.log("opening a folder now");
       shell.openPath(
         user.current.path.replaceAll("/", "\\") + "\\" + args.folder
       );

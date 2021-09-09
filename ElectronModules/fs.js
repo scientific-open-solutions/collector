@@ -237,17 +237,14 @@ ipc.on("fs_read_default", (event, args) => {
   } else if (args.this_file.indexOf("../") !== -1) {
     content = "This request could be insecure, and was blocked";
   } else {
-      var this_path = user().current.path +
-        "/Default/" +
-        args.user_folder +
-        "/" +
-        args.this_file;
-      //console.log(this_path);
+    var this_path = user().current.path +
+      "/Default/" +
+      args.user_folder +
+      "/" +
+      args.this_file;
+    //console.log(this_path);
     try {
-      content = fs.readFileSync(
-        this_path,
-        "utf8"
-      );
+      content = fs.readFileSync(this_path, "utf8");
       event.returnValue = content;
     } catch (error) {
       //to trigger an attempt to load a trialtype from the master
@@ -511,7 +508,7 @@ ipc.on("fs_write_user", (event, args) => {
   try {
     var content = fs.writeFileSync(
       root_dir + "/User.json",
-      args.file_content,
+      JSON.stringify(JSON.parse(args.file_content), null, 2),
       "utf8"
     );
     event.returnValue = "success";
