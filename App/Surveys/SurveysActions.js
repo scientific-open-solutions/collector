@@ -104,40 +104,40 @@ $("#rename_survey_btn").on("click", function () {
     bootbox.prompt(
       "What would you like to call this survey instead?",
       function (new_survey_name) {
-        new_survey_name =
+        if (new_survey_name) {
+          new_survey_name =
           new_survey_name.toLowerCase().replace(".csv", "") + ".csv";
-        if (!new_survey_name) {
-          // do nothing
-        } else if (
-          typeof master.surveys.default_surveys[new_survey_name] !== "undefined"
-        ) {
-          bootbox.alert("This name clashes with an already existing survey");
-        } else if (
-          typeof master.surveys.user_surveys[new_survey_name] !== "undefined"
-        ) {
-          bootbox.alert("This name clashes with an already existing survey");
-        } else {
-          var write_response = Collector.electron.fs.write_file(
-            "Surveys",
-            new_survey_name,
-            master.surveys.user_surveys[old_survey_name]
-          );
-          if (write_response === "success") {
-            master.surveys.user_surveys[new_survey_name] =
-              master.surveys.user_surveys[old_survey_name];
-            var delete_response = Collector.electron.fs.delete_file(
-              "Surveys/" + old_survey_name.replace(".csv", "") + ".csv"
-            );
-
-            if (delete_response !== "success") {
-              bootbox.alert(delete_response);
-            } else {
-              delete master.surveys.user_surveys[old_survey_name];
-              list_surveys();
-              $("#survey_select").val("user|" + new_survey_name);
-            }
+          if (
+            typeof master.surveys.default_surveys[new_survey_name] !== "undefined"
+          ) {
+            bootbox.alert("This name clashes with an already existing survey");
+          } else if (
+            typeof master.surveys.user_surveys[new_survey_name] !== "undefined"
+          ) {
+            bootbox.alert("This name clashes with an already existing survey");
           } else {
-            bootbox.alert(write_response);
+            var write_response = Collector.electron.fs.write_file(
+              "Surveys",
+              new_survey_name,
+              Papa.unparse(master.surveys.user_surveys[old_survey_name])
+            );
+            if (write_response === "success") {
+              master.surveys.user_surveys[new_survey_name] =
+                master.surveys.user_surveys[old_survey_name];
+              var delete_response = Collector.electron.fs.delete_file(
+                "Surveys/" + old_survey_name.replace(".csv", "") + ".csv"
+              );
+
+              if (delete_response !== "success") {
+                bootbox.alert(delete_response);
+              } else {
+                delete master.surveys.user_surveys[old_survey_name];
+                list_surveys();
+                $("#survey_select").val("user|" + new_survey_name);
+              }
+            } else {
+              bootbox.alert(write_response);
+            }
           }
         }
       }

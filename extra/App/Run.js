@@ -385,6 +385,8 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
   },
 
   start_post: function (go_to_info) {
+    console.log("go_to_info");
+    console.log(go_to_info);
     if (typeof go_to_info !== "undefined") {
       project_json.phase_no = go_to_info[0];
       project_json.post_no = go_to_info[1];

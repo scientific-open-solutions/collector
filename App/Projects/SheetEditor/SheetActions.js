@@ -29,7 +29,7 @@ $("#delete_proj_btn").on("click", function () {
     bootbox.alert("You need to select a study to delete it");
   } else {
     bootbox.confirm(
-      "Are you sure you want to delete your experiment?",
+      "Are you sure you want to delete your project?",
       function (result) {
         if (result) {
           //delete from master

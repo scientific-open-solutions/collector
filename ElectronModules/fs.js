@@ -395,7 +395,7 @@ ipc.on("fs_write_file", (event, args) => {
       event.returnValue = "success";
     } catch (error) {
       //to trigger an attempt to load a trialtype from the master
-      event.returnValue = "failed to save";
+      event.returnValue = "failed to save: " + error;
     }
   }
 });

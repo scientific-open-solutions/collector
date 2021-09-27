@@ -75,13 +75,6 @@ Collector.electron = {
       });
       return write_response;
     },
-    write_project: function (this_project, file_content, file_action) {
-      write_response = ipc.sendSync("fs_write_project", {
-        this_project: this_project,
-        file_content: file_content,
-      });
-      file_action(write_response);
-    },
     write_file: function (user_folder, this_file, file_content) {
       write_response = ipc.sendSync("fs_write_file", {
         user_folder: user_folder,
@@ -90,6 +83,13 @@ Collector.electron = {
       });
       return write_response;
     },
+    write_project: function (this_project, file_content, file_action) {
+      write_response = ipc.sendSync("fs_write_project", {
+        this_project: this_project,
+        file_content: file_content,
+      });
+      file_action(write_response);
+    },    
     write_user: function (file_content) {
       write_response = ipc.sendSync("fs_write_user", {
         file_content: file_content,
