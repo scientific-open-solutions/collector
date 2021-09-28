@@ -132,7 +132,7 @@ ipc.on("git_add_repo", (event, args) => {
                 user.current.path
               )
               .then(function (result) {
-                event.returnValue = "success";
+                event.returnValue = "you have cloned an existing repository";
               })
               .catch(function (error) {
                 event.returnValue = "error" + error;
