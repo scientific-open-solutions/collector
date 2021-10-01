@@ -120,7 +120,7 @@ $("#add_repository_btn").on("click", function () {
                 org: org,
                 repo: repo,
               });
-              if (this_response == "you have cloned an existing repository"){
+              if (this_response == "you have cloned an existing repository") {
                 location.reload();
               } else if (this_response !== "success") {
                 bootbox.alert(this_response);

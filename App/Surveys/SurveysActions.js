@@ -106,9 +106,10 @@ $("#rename_survey_btn").on("click", function () {
       function (new_survey_name) {
         if (new_survey_name) {
           new_survey_name =
-          new_survey_name.toLowerCase().replace(".csv", "") + ".csv";
+            new_survey_name.toLowerCase().replace(".csv", "") + ".csv";
           if (
-            typeof master.surveys.default_surveys[new_survey_name] !== "undefined"
+            typeof master.surveys.default_surveys[new_survey_name] !==
+            "undefined"
           ) {
             bootbox.alert("This name clashes with an already existing survey");
           } else if (

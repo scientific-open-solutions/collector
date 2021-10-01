@@ -10,7 +10,8 @@
     ]
   },
   "scripts": {
-    "start": "electron . & npx prettier --write .",
+    "__start_unused__": " & npx prettier --write .",
+    "start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "test": "jest",

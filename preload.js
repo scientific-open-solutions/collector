@@ -89,7 +89,7 @@ Collector.electron = {
         file_content: file_content,
       });
       file_action(write_response);
-    },    
+    },
     write_user: function (file_content) {
       write_response = ipc.sendSync("fs_write_user", {
         file_content: file_content,
