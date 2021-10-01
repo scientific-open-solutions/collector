@@ -20,9 +20,9 @@ String.prototype.replaceAll = function (str1, str2, ignore) {
 var root_dir = require("os").homedir() + "/.collector/";
 
 //make sure there is a Collector folder in documents
-if (!fs.existsSync(root_dir + "user.json")) {
+if (!fs.existsSync(root_dir + "User.json")) {
   fs.writeFileSync(
-    root_dir + "user.json",
+    root_dir + "User.json",
     JSON.stringify({
       current: {
         repo: "",
@@ -34,7 +34,7 @@ if (!fs.existsSync(root_dir + "user.json")) {
   );
 }
 
-var user = JSON.parse(fs.readFileSync(root_dir + "user.json"));
+var user = JSON.parse(fs.readFileSync(root_dir + "User.json"));
 
 if (typeof user.current.path === "undefined") {
   if (user.current.repo !== "") {

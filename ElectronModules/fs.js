@@ -203,7 +203,7 @@ ipc.on("fs_list_surveys", (event, args) => {
 });
 
 ipc.on("fs_load_user", (event, args) => {
-  event.returnValue = fs.readFileSync(root_dir + "user.json", "utf8");
+  event.returnValue = fs.readFileSync(root_dir + "User.json", "utf8");
 });
 
 ipc.on("fs_read_default", (event, args) => {
