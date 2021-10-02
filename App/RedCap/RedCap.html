@@ -1,0 +1,117 @@
+<style>
+  #redcap_interface{
+    position: absolute;
+    top: 60px;
+    width: 100%;
+  }
+</style>
+
+<div id="redcap_interface">
+
+
+  <div class="custom-file">
+    <input
+      type="file"
+      class="custom-file-input"
+      id="upload_data_csv"
+      aria-describedby="upload_data_csv_addon"
+      multiple
+    />
+    <label class="custom-file-label" for="upload_data_csv"
+      >Upload Project</label
+    >
+  </div>
+  <button id="download_redcap_dictionary">download</button>
+
+</div>
+
+
+
+<script>
+
+var redcap_array = [];
+
+$("#download_redcap_dictionary").on("click", function(){
+
+  Collector.save_data(
+    "dictionary.csv",
+    Papa.unparse(redcap_array, {
+      quotes: false, //or array of booleans
+      quoteChar: '"',
+      escapeChar: '"',
+      delimiter: ",",
+      header: true,
+      newline: "\r\n",
+      skipEmptyLines: true, //or 'greedy',
+      columns: null, //or array of strings
+    })
+  );
+
+
+});
+
+$("#upload_data_csv").on("change", function () {
+  if (this.files && this.files[0]) {
+
+    for(var i = 0; i < this.files.length; i++){
+      var myFile = this.files[i];
+      var reader = new FileReader();
+      var this_filename = this.files[i].name;
+      reader.addEventListener("load", function (e) {
+
+        var this_csv = Collector.PapaParsed(e.target.result);
+        console.log("this_csv");
+        console.log(this_csv);
+
+        var this_location = this_csv[this_csv.length-1].location;
+
+        var these_headers = Object.keys(this_csv[0]);
+
+
+        /*
+         * prevent adding an identical row
+         */
+
+        if(redcap_array.filter(function(row){
+          return row["Variable / Field Name"] == "record_id"
+        }).length == 0){
+          redcap_array.push({
+            "Variable / Field Name": "record_id",
+            "Form Name": this_location,
+            "Field Type": "text"
+          });
+        }
+
+
+
+        these_headers.forEach(function(this_header){
+          if(redcap_array.filter(function(row){
+            return row["Variable / Field Name"] == this_location + "_" + this_header &
+            row["Form Name"] == this_location &
+            row["Field Type"] == "text"
+          }).length == 0 & this_header !== ""){
+            redcap_array.push({
+              "Variable / Field Name": this_location + "_" + this_header,
+              "Form Name": this_location,
+              "Field Type": "text"
+            });
+
+          }
+        });
+
+        /*
+
+        */
+
+
+        //papaparse
+
+
+
+        //upload_exp_contents(e.target.result, this_filename);
+      });
+      reader.readAsBinaryString(myFile);
+    }
+  }
+});
+</script>

@@ -144,6 +144,7 @@ Project = {
 
     var post_string = "post_" + project_json.post_no;
 
+    response_data["location"] = Project.get_vars.location;
     /*
      * detect if the user is in fullscreen or not
      */

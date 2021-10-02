@@ -30,7 +30,7 @@ if (typeof Phase !== "undefined") {
     }
     return (
       new Date().getTime() -
-      parent.parent.project_json.this_trial[
+      parent.parent.project_json.this_phase[
         "post_" + Phase.post_no + "_phase_start_ms"
       ]
     );

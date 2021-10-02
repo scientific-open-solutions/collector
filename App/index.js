@@ -4,6 +4,7 @@ var navbar_names = [
   "Surveys",
   //"Pathway",
   "Data",
+  "RedCap"
 ];
 var pages = [
   "Projects/Projects.html",
@@ -11,6 +12,7 @@ var pages = [
   "Surveys/Surveys.html",
   //"Pathways/Pathways.html",
   "Data/Data.html",
+  "RedCap/RedCap.html"
 ];
 var icons = [
   "folder",
@@ -18,6 +20,7 @@ var icons = [
   "card-checklist",
   //"arrow-up-right",
   "table",
+  "arrow-up-right"
 ];
 navbar_names.forEach(function (this_name, index) {
   $("#content_area").append(

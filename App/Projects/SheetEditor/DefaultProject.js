@@ -1,7 +1,7 @@
 default_project = {
   all_procs: {
     "procedure_1.csv": [
-      ["item", "code", "max time", "text", "Shuffle 1"],
+      ["item", "code", "max_time", "text", "Shuffle 1"],
       [
         "2",
         "instruct",
