@@ -51,7 +51,7 @@
   "cond_loc": "https://dl.dropbox.com/s/tmg3e80od7avxxl/Conditions.csv?dl=0",
   "all_procs": {
     "Procedure.csv": [
-      ["Item", "trial type", "Max Time", "Text", "Shuffle 1", "delays", null],
+      ["Item", "trial type", "max_time", "Text", "shuffle_1", "delays", null],
       [
         "0",
         "temporal_discounting",
@@ -113,18 +113,18 @@
         "delays": "3 Weeks|3 Months|9 Months|18 Months|3 Years",
         "": "",
         "item": "0",
-        "max time": "user",
+        "max_time": "user",
         "text": "Thank you for participating in this experiment. The task will begin during the next trial.",
-        "shuffle 1": "off"
+        "shuffle_1": "off"
       },
       {
         "trial type": "",
         "delays": "",
         "": "",
         "item": "",
-        "max time": "",
+        "max_time": "",
         "text": "",
-        "shuffle 1": ""
+        "shuffle_1": ""
       }
     ]
   },
@@ -180,9 +180,9 @@
     {
       "item": "0",
       "trial type": "temporal_discounting",
-      "max time": "user",
+      "max_time": "user",
       "text": "Thank you for participating in this experiment. The task will begin during the next trial.",
-      "shuffle 1": "off",
+      "shuffle_1": "off",
       "delays": "3 Weeks|3 Months|9 Months|18 Months|3 Years",
       "": "",
       "repeat": ""

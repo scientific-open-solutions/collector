@@ -1,7 +1,7 @@
 {
   "all_procs": {
     "Procedure_1": [
-      ["Item", "Phase Type", "Max Time", "Text", "Shuffle 1", null],
+      ["Item", "Phase Type", "max_time", "Text", "Shuffle_1", null],
       ["0", "instruct", null, "Your instructions here", null, null],
       [
         "2 to 21",
@@ -88,17 +88,17 @@
         "": "",
         "item": "0",
         "trial type": "instruct",
-        "max time": "",
+        "max_time": "",
         "text": "Your instructions here",
-        "shuffle 1": ""
+        "shuffle_1": ""
       },
       {
         "": "",
         "item": "2 to 21",
         "trial type": "anagram",
-        "max time": "user",
+        "max_time": "user",
         "text": "Click on the letters to put them in the correct order",
-        "shuffle 1": "off"
+        "shuffle_1": "off"
       }
     ]
   },
@@ -123,7 +123,7 @@
     }
   ],
   "python_procs": {
-    "Procedure_1": "Item,Phase Type,Max Time,Text,Shuffle 1,\r\n0,instruct,,Your instructions here,,\r\n2 to 21,anagram,user,Click on the letters to put them in the correct order,off,\r\n,,,,,"
+    "Procedure_1": "Item,Phase Type,max_time,Text,shuffle_1,\r\n0,instruct,,Your instructions here,,\r\n2 to 21,anagram,user,Click on the letters to put them in the correct order,off,\r\n,,,,,"
   },
   "python_conditions": "Name,Notes,Stimuli,Procedure,fullscreen,welcome,participant_id,end_message,start_message,buffer,\r\ncondition_1,You can put more detailed notes in this field,Stimuli_1,Procedure_1,off,,random,,,5,\r\n,,,,,,,,,,",
   "python_stims": {

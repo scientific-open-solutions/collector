@@ -1,7 +1,7 @@
 {
   "all_procs": {
     "Procedure_1": [
-      ["Item", "Phase Type", "Max Time", "Text", "Shuffle 1", ""],
+      ["Item", "Phase Type", "max_time", "Text", "Shuffle_1", ""],
       ["0", "instruct", "user", "First instructions", "off", ""],
       [
         "2 to 11",
@@ -96,33 +96,33 @@
         "": "",
         "item": "0",
         "trial type": "instruct",
-        "max time": "user",
+        "max_time": "user",
         "text": "First instructions",
-        "shuffle 1": "off"
+        "shuffle_1": "off"
       },
       {
         "": "",
         "item": "2 to 11",
         "trial type": "anagram_speedy",
-        "max time": "user",
+        "max_time": "user",
         "text": "Click on the letters to put them in the correct order",
-        "shuffle 1": "trials"
+        "shuffle_1": "trials"
       },
       {
         "": "",
         "item": "0",
         "trial type": "instruct",
-        "max time": "user",
+        "max_time": "user",
         "text": "Please take a break",
-        "shuffle 1": "off"
+        "shuffle_1": "off"
       },
       {
         "": "",
         "item": "12 to 21",
         "trial type": "anagram_speedy",
-        "max time": "user",
+        "max_time": "user",
         "text": "Click on the letters to put them in the correct order",
-        "shuffle 1": "trials"
+        "shuffle_1": "trials"
       }
     ]
   },
@@ -149,7 +149,7 @@
   ],
   "save_script": "https://script.google.com/macros/s/AKfycbwA7lPve359Pakbz_0nxkC3hlowtwFPGlUUuXqbzMstrL0o21pY/exec",
   "python_procs": {
-    "Procedure_1": "Item,Phase Type,Max Time,Text,Shuffle 1,\r\n0,instruct,user,First instructions,off,\r\n2 to 11,anagram_speedy,user,Click on the letters to put them in the correct order,trials,\r\n0,instruct,user,Please take a break,off,\r\n12 to 21,anagram_speedy,user,Click on the letters to put them in the correct order,trials,\r\n,,,,,"
+    "Procedure_1": "Item,Phase Type,max_time,Text,Shuffle_1,\r\n0,instruct,user,First instructions,off,\r\n2 to 11,anagram_speedy,user,Click on the letters to put them in the correct order,trials,\r\n0,instruct,user,Please take a break,off,\r\n12 to 21,anagram_speedy,user,Click on the letters to put them in the correct order,trials,\r\n,,,,,"
   },
   "python_conditions": "Name,Notes,Stimuli,Procedure,fullscreen,welcome,participant_id,end_message,start_message,buffer,\r\ncondition_1,You can put more detailed notes in this field,stimuli_1.csv,procedure_1.csv,off,,random,,,5,\r\n,,,,,,,,,,",
   "python_stims": {

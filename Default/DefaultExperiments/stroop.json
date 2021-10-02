@@ -1,7 +1,7 @@
 {
   "all_procs": {
     "Procedure.csv": [
-      ["Item", "Phase Type", "Max Time", "Text", "Shuffle 1", "weight", null],
+      ["Item", "Phase Type", "max_time", "Text", "shuffle_1", "weight", null],
       [
         "2",
         "instruct",
@@ -418,36 +418,36 @@
         "": "",
         "item": "2",
         "trial type": "instruct",
-        "max time": "user",
+        "max_time": "user",
         "text": "In this task you will be required to identify what color the letters of the word presented are. <br><br> To do this you'll need to respond with the following keys: <br><br>Press <b>{{key_1}}</b> if the letters are <b style=\"color:{{color_1}}\">{{color_1}}</b> with your <b>{{finger_1}}</b> finger<br><br>Press <b>{{key_2}}</b> if the letters are <b style=\"color:{{color_2}}\">{{color_2}}</b> with your <b>{{finger_2}}</b> finger <br><br>Press <b>{{key_3}}</b> if the letters are <b style=\"color:{{color_3}}\">{{color_3}}</b> with your <b>{{finger_3}}</b> finger <br><br>Press <b>{{key_4}}</b> if the letters are <b style=\"color:{{color_4}}\">{{color_4}}</b> with your <b>{{finger_4}}</b> finger. <br><br> Please put your fingers in the correct places and get ready for some practice trials.",
-        "shuffle 1": "off"
+        "shuffle_1": "off"
       },
       {
         "weight": "5",
         "": "",
         "item": "2 to 9",
         "trial type": "stroop",
-        "max time": "user",
+        "max_time": "user",
         "text": "",
-        "shuffle 1": "trials"
+        "shuffle_1": "trials"
       },
       {
         "weight": "",
         "": "",
         "item": "2",
         "trial type": "instruct",
-        "max time": "user",
+        "max_time": "user",
         "text": "In this task you will be required to identify what color the letters of the word presented are. <br><br> To do this you'll need to respond with the following keys: <br><br>Press <b>{{key_1}}</b> if the letters are <b style=\"color:{{color_1}}\">{{color_1}}</b> with your <b>{{finger_1}}</b> finger<br><br>Press <b>{{key_2}}</b> if the letters are <b style=\"color:{{color_2}}\">{{color_2}}</b> with your <b>{{finger_2}}</b> finger <br><br>Press <b>{{key_3}}</b> if the letters are <b style=\"color:{{color_3}}\">{{color_3}}</b> with your <b>{{finger_3}}</b> finger <br><br>Press <b>{{key_4}}</b> if the letters are <b style=\"color:{{color_4}}\">{{color_4}}</b> with your <b>{{finger_4}}</b> finger. <br><br> Please put your fingers in the correct places and get ready for some practice trials.",
-        "shuffle 1": "off"
+        "shuffle_1": "off"
       },
       {
         "weight": "5",
         "": "",
         "item": "10 to 17",
         "trial type": "stroop",
-        "max time": "user",
+        "max_time": "user",
         "text": "",
-        "shuffle 1": "trials"
+        "shuffle_1": "trials"
       }
     ]
   },
@@ -472,7 +472,7 @@
     }
   ],
   "python_procs": {
-    "Procedure.csv": "Item,Phase Type,Max Time,Text,Shuffle 1,weight,\r\n2,instruct,user,\"In this task you will be required to identify what color the letters of the word presented are. <br><br> To do this you'll need to respond with the following keys: <br><br>Press <b>{{key_1}}</b> if the letters are <b style=\"\"color:{{color_1}}\"\">{{color_1}}</b> with your <b>{{finger_1}}</b> finger<br><br>Press <b>{{key_2}}</b> if the letters are <b style=\"\"color:{{color_2}}\"\">{{color_2}}</b> with your <b>{{finger_2}}</b> finger <br><br>Press <b>{{key_3}}</b> if the letters are <b style=\"\"color:{{color_3}}\"\">{{color_3}}</b> with your <b>{{finger_3}}</b> finger <br><br>Press <b>{{key_4}}</b> if the letters are <b style=\"\"color:{{color_4}}\"\">{{color_4}}</b> with your <b>{{finger_4}}</b> finger. <br><br> Please put your fingers in the correct places and get ready for some practice trials.\",off,,\r\n2 to 9,stroop,user,,trials,5,\r\n2,instruct,user,\"In this task you will be required to identify what color the letters of the word presented are. <br><br> To do this you'll need to respond with the following keys: <br><br>Press <b>{{key_1}}</b> if the letters are <b style=\"\"color:{{color_1}}\"\">{{color_1}}</b> with your <b>{{finger_1}}</b> finger<br><br>Press <b>{{key_2}}</b> if the letters are <b style=\"\"color:{{color_2}}\"\">{{color_2}}</b> with your <b>{{finger_2}}</b> finger <br><br>Press <b>{{key_3}}</b> if the letters are <b style=\"\"color:{{color_3}}\"\">{{color_3}}</b> with your <b>{{finger_3}}</b> finger <br><br>Press <b>{{key_4}}</b> if the letters are <b style=\"\"color:{{color_4}}\"\">{{color_4}}</b> with your <b>{{finger_4}}</b> finger. <br><br> Please put your fingers in the correct places and get ready for some practice trials.\",off,,\r\n10 to 17,stroop,user,,trials,5,\r\n,,,,,,"
+    "Procedure.csv": "Item,Phase Type,max_time,Text,shuffle_1,weight,\r\n2,instruct,user,\"In this task you will be required to identify what color the letters of the word presented are. <br><br> To do this you'll need to respond with the following keys: <br><br>Press <b>{{key_1}}</b> if the letters are <b style=\"\"color:{{color_1}}\"\">{{color_1}}</b> with your <b>{{finger_1}}</b> finger<br><br>Press <b>{{key_2}}</b> if the letters are <b style=\"\"color:{{color_2}}\"\">{{color_2}}</b> with your <b>{{finger_2}}</b> finger <br><br>Press <b>{{key_3}}</b> if the letters are <b style=\"\"color:{{color_3}}\"\">{{color_3}}</b> with your <b>{{finger_3}}</b> finger <br><br>Press <b>{{key_4}}</b> if the letters are <b style=\"\"color:{{color_4}}\"\">{{color_4}}</b> with your <b>{{finger_4}}</b> finger. <br><br> Please put your fingers in the correct places and get ready for some practice trials.\",off,,\r\n2 to 9,stroop,user,,trials,5,\r\n2,instruct,user,\"In this task you will be required to identify what color the letters of the word presented are. <br><br> To do this you'll need to respond with the following keys: <br><br>Press <b>{{key_1}}</b> if the letters are <b style=\"\"color:{{color_1}}\"\">{{color_1}}</b> with your <b>{{finger_1}}</b> finger<br><br>Press <b>{{key_2}}</b> if the letters are <b style=\"\"color:{{color_2}}\"\">{{color_2}}</b> with your <b>{{finger_2}}</b> finger <br><br>Press <b>{{key_3}}</b> if the letters are <b style=\"\"color:{{color_3}}\"\">{{color_3}}</b> with your <b>{{finger_3}}</b> finger <br><br>Press <b>{{key_4}}</b> if the letters are <b style=\"\"color:{{color_4}}\"\">{{color_4}}</b> with your <b>{{finger_4}}</b> finger. <br><br> Please put your fingers in the correct places and get ready for some practice trials.\",off,,\r\n10 to 17,stroop,user,,trials,5,\r\n,,,,,,"
   },
   "python_conditions": "Name,Notes,Stimuli,Procedure,fullscreen,welcome,participant_id,end_message,start_message,buffer,\r\ncondition_1,You can put more detailed notes in this field,Stimuli.csv,Procedure.csv,off,,random,,,5,\r\n,,,,,,,,,,",
   "python_stims": {

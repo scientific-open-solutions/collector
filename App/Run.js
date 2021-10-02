@@ -466,7 +466,7 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
         .find("#zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
         .focus(); //or anything that no-one would accidentally create.
 
-      //detect if max time exists and start timer
+      //detect if max_time exists and start timer
       var post_val;
       if (project_json.post_no === 0) {
         post_val = "";
@@ -476,14 +476,14 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
       var max_time;
       if (
         typeof project_json.parsed_proc[project_json.phase_no][
-          post_val + "max time"
+          post_val + "max_time"
         ] === "undefined"
       ) {
         max_time = "user";
       } else {
         max_time =
           project_json.parsed_proc[project_json.phase_no][
-            post_val + "max time"
+            post_val + "max_time"
           ];
       }
       if ((max_time !== "") & (max_time.toLowerCase() !== "user")) {
@@ -1449,8 +1449,8 @@ function removeItemAll(arr, value) {
 }
 
 function shuffle_start_exp() {
-  //perhaps also have "shuffle" works as shuffle 1
-  //perhaps also have "block shuffle 1" as shuffle 2, etc.
+  //perhaps also have "shuffle" works as shuffle_1
+  //perhaps also have "block shuffle_1" as shuffle_2, etc.
 
   var shuffle_levels = Object.keys(project_json.parsed_proc[0]).filter(
     (item) => item.indexOf("shuffle") !== -1
@@ -1464,7 +1464,7 @@ function shuffle_start_exp() {
       }
     }
 
-    if (shuffle_level !== "shuffle 1") {
+    if (shuffle_level !== "shuffle_1") {
       //split project_json.parsed_proc into chunks based on this_level
       //off rows don't change their order
       var shuffle_block_names = [project_json.parsed_proc[0][shuffle_level]];
@@ -1544,7 +1544,7 @@ function shuffle_start_exp() {
 
   shuffle_array = {};
   project_json.parsed_proc.forEach(function (row, index) {
-    var this_shuffle = row["shuffle 1"];
+    var this_shuffle = row["shuffle_1"];
     if (typeof shuffle_array[this_shuffle] === "undefined") {
       shuffle_array[this_shuffle] = [index];
     } else {
@@ -1557,12 +1557,12 @@ function shuffle_start_exp() {
   });
   //apply shuffle to project_json.parsed_proc
   new_proc = project_json.parsed_proc.map(function (row, original_index) {
-    if ((row["shuffle 1"] !== "off") & (row["shuffle 1"] !== "")) {
-      this_shuffle = row["shuffle 1"];
+    if ((row["shuffle_1"] !== "off") & (row["shuffle_1"] !== "")) {
+      this_shuffle = row["shuffle_1"];
       var this_pos = shuffle_array[this_shuffle].pop();
       return project_json.parsed_proc[this_pos];
     }
-    if (row["shuffle 1"] === "off") {
+    if (row["shuffle_1"] === "off") {
       return project_json.parsed_proc[original_index];
     }
   });
@@ -1806,9 +1806,9 @@ function write_phase_iframe(index) {
       "<scr" + 'ipt src="libraries/collector/StimuliChecks.js"></scr' + "ipt>";
     var timer_code;
     if (
-      typeof this_proc["max time"] !== "undefined" &&
-      this_proc["max time"] !== "user" &&
-      this_proc["max time"] !== ""
+      typeof this_proc["max_time"] !== "undefined" &&
+      this_proc["max_time"] !== "user" &&
+      this_proc["max_time"] !== ""
     ) {
       timer_code = Project.html_code.Timer;
       if (

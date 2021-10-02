@@ -37,7 +37,7 @@ function isPhaseTypeHeader(colHeader) {
 function isNumericHeader(colHeader) {
   var isNum = false;
   if (colHeader.toLowerCase().substr(-4) === "item") isNum = true;
-  if (colHeader.toLowerCase().substr(-8) === "max time") isNum = true;
+  if (colHeader.toLowerCase().substr(-8) === "max_time") isNum = true;
   if (colHeader.toLowerCase().substr(-8) === "min time") isNum = true;
   return isNum;
 }
@@ -159,10 +159,18 @@ function createHoT(container, data, sheet_name) {
         if (k >= this.countCols()) {
           break;
         }
-        if (this.getDataAtCell(0, k).toLowerCase() === "trial type") {
-          this.setDataAtCell(0, k, "phasetype");
+
+        if (this.getDataAtCell(0, k).toLowerCase().indexOf("shuffle ") !== -1 ) {
+          this.setDataAtCell(0, k, this.getDataAtCell(0, k).toLowerCase().replace("shuffle ", "shuffle_"));
+        }
+
+        if (this.getDataAtCell(0, k).toLowerCase() === "max time") {
+          this.setDataAtCell(0, k, "max_time");
         }
         if (this.getDataAtCell(0, k).toLowerCase() === "code") {
+          this.setDataAtCell(0, k, "phasetype");
+        }
+        if (this.getDataAtCell(0, k).toLowerCase() === "trial type") {
           this.setDataAtCell(0, k, "phasetype");
         }
         // checking for invalid item number (i.e. one)
