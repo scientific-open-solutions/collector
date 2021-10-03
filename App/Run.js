@@ -225,6 +225,97 @@ Project = {
       Project.start_post(go_to_info);
     }
 
+    /*
+    * save to redcap (if appropriate)
+    */
+    console.log("project_json.this_condition.redcap_url");
+    console.log(project_json.this_condition.redcap_url);
+    if(typeof(project_json.this_condition.redcap_url) !== "undefined"){
+      console.log("hi, we;re here");
+
+      var phase_responses = project_json.responses[project_json.responses.length-1];
+
+      console.log("phase_responses");
+      console.log(phase_responses);
+
+      var this_location = phase_responses.location;
+      /*
+      * update all the keys to have the "location_" before them
+      */
+
+      var clean_phase_responses = {};
+
+      Object.keys(phase_responses).forEach(function(old_key){
+
+        //if(phase_responses[old_key].toLowerCase() !== "condition_redcap_url" & phase_responses[old_key] !== ""){
+
+
+          clean_phase_responses[this_location + "_" + old_key] =
+          phase_responses[old_key]
+        //}
+      });
+      delete(clean_phase_responses[
+        this_location + "_condition_redcap_url"
+      ]);
+      delete(clean_phase_responses[
+        this_location + "_"
+      ]);
+
+      console.log("clean_phase_responses");
+      console.log(clean_phase_responses);
+      clean_phase_responses.record_id = phase_responses.username;
+
+
+      clean_phase_responses['redcap_repeat_instance'] = project_json.phase_no;
+      clean_phase_responses['redcap_repeat_instrument'] = phase_responses['location'];
+
+
+      /*
+      Object.keys(phase_responses).forEach(function(old_key){
+
+        Object.defineProperty(
+          phase_responses,
+          this_location + "_" + old_key,
+          Object.getOwnPropertyDescriptor(
+            phase_responses,
+            old_key
+          )
+        );
+        delete phase_responses[old_key];
+      });
+      */
+
+
+      console.log("just before the ajax");
+      $.ajax({
+        type: "POST",
+        url: project_json.this_condition.redcap_url,
+        crossDomain: true,
+        data: clean_phase_responses
+
+        /*
+        {
+          "record_id": parent.parent.$("#prehashed_code").val(),
+          "participant_code": $("#participant_code").val(),
+          "trial_no" : parent.parent.project_json.trial_no,
+          //"participant_confirm": parent.parent.$("#prehashed_code").val(),
+          "shape_response_time": this_rt,
+          "color_response": $("#color_response").val(),
+          "shape_response_complete": 2
+        }
+        */,
+        success: function(result){
+          console.log("result");
+          console.log(result);
+          //Phase.submit();
+        }
+      });
+
+
+
+
+    }
+
     switch (Project.get_vars.platform) {
       case "localhost":
         var data_response = Collector.electron.fs.write_data(

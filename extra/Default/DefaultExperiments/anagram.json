@@ -1,7 +1,7 @@
 {
   "all_procs": {
     "Procedure_1": [
-      ["Item", "Phase Type", "max_time", "Text", "shuffle_1", null],
+      ["Item", "Phase Type", "max_time", "Text", "Shuffle_1", null],
       ["0", "instruct", null, "Your instructions here", null, null],
       [
         "2 to 21",

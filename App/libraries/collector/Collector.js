@@ -410,8 +410,6 @@ Collector.save_user = function(){
 };
 Collector.start = function(){
   user = JSON.parse(Collector.electron.fs.load_user());
-  console.log("user");
-  console.log(JSON.stringify(user));
   if(typeof(user.current) === "undefined" || typeof(user.current.path) === "undefined"){
     var github_dialog_exists = setInterval(function(){
       if($("#github_dialog").length === 1){

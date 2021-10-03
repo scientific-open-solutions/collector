@@ -60,9 +60,7 @@ $("#upload_data_csv").on("change", function () {
       reader.addEventListener("load", function (e) {
 
         var this_csv = Collector.PapaParsed(e.target.result);
-        console.log("this_csv");
-        console.log(this_csv);
-
+        
         var this_location = this_csv[this_csv.length-1].location;
 
         var these_headers = Object.keys(this_csv[0]);
@@ -76,9 +74,23 @@ $("#upload_data_csv").on("change", function () {
           return row["Variable / Field Name"] == "record_id"
         }).length == 0){
           redcap_array.push({
+
             "Variable / Field Name": "record_id",
             "Form Name": this_location,
-            "Field Type": "text"
+            "Section Header": "",
+            "Field Type": "text",
+            "Field Label": "Record ID",
+            "Choices, Calculations, OR Slider Labels": "",
+            "Field Note": "",
+            "Text Validation Type OR Show Slider Number": "",
+            "Text Validation Min": "",
+            "Text Validation Max": "",
+            "Identifier?": "",
+            "Branching Logic (Show field only if...)": "",
+            "Required Field?": "",
+            "Custom Alignment": "",
+            "Question Number (surveys only)": "",
+            "Matrix Group Name": ""
           });
         }
 
@@ -93,20 +105,24 @@ $("#upload_data_csv").on("change", function () {
             redcap_array.push({
               "Variable / Field Name": this_location + "_" + this_header,
               "Form Name": this_location,
-              "Field Type": "text"
+              "Section Header": "",
+              "Field Type": "text",
+              "Field Label": this_location + "_" + this_header,
+              "Choices, Calculations, OR Slider Labels": "",
+              "Field Note": "",
+              "Text Validation Type OR Show Slider Number": "",
+              "Text Validation Min": "",
+              "Text Validation Max": "",
+              "Identifier?": "",
+              "Branching Logic (Show field only if...)": "",
+              "Required Field?": "",
+              "Custom Alignment": "",
+              "Question Number (surveys only)": "",
+              "Matrix Group Name": ""
             });
 
           }
         });
-
-        /*
-
-        */
-
-
-        //papaparse
-
-
 
         //upload_exp_contents(e.target.result, this_filename);
       });
