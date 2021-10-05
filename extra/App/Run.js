@@ -1963,7 +1963,6 @@ function write_phase_iframe(index) {
         $("#stim_listing").css("width", completion + "%");
         if ((completion === 100) | (project_json.uninitiated_stims_sum === 0)) {
           clearInterval(stim_interval);
-          $("#loading_div").hide();
           $("#stim_progress").fadeOut(1000);
           if ($("#calibrate_div").is(":visible") === false) {
             $("#project_div").fadeIn(500);
