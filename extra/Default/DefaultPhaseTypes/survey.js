@@ -20,19 +20,21 @@ if (typeof module !== "undefined") {
 var home_dir = "";
 
 var org_repo;
-switch (parent.parent.Project.get_vars.platform) {
-  case "simulateonline":
-  case "localhost":
-  case "preview":
-    org_repo = parent.parent.project_json.location.split("/");
-    home_dir = parent.parent.Collector.electron.git.locate_repo({
-      org: org_repo[0],
-      repo: org_repo[1],
-    });
-    break;
-  default:
-    home_dir = "..";
-    break;
+if(typeof(parent.parent.Project) !== "undefined"){
+  switch (parent.parent.Project.get_vars.platform) {
+    case "simulateonline":
+    case "localhost":
+    case "preview":
+      org_repo = parent.parent.project_json.location.split("/");
+      home_dir = parent.parent.Collector.electron.git.locate_repo({
+        org: org_repo[0],
+        repo: org_repo[1],
+      });
+      break;
+    default:
+      home_dir = "..";
+      break;
+  }
 }
 
 /*
