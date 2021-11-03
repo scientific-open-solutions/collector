@@ -254,6 +254,7 @@ $("#open_proj_folder").on("click", function () {
 });
 
 $("#project_list").on("change", function () {
+  $("#exp_data_table").show();
   project_json = master.projects.projects[this.value];
   clean_conditions();
   $("#project_inputs").show();

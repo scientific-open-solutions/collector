@@ -334,6 +334,11 @@ $("#power_btn").on("click", function () {
     },
   });
 });
+
+$("#reset_collector_btn").on("click", function(){
+  bootbox.alert("If you want to reset Collector, you just need to remove the <b>.collector</b> folder that is in your user folder. You may want to copy your Private/github_token.txt file to avoid needing to create a new authorization token.");
+});
+
 $("#show_citations").on("click", function () {
   $.get("PopOuts/Citations.csv", function (result) {
     var table_html = '<h3 class="text-primary">Citations</h3>' + "<p>";
