@@ -204,6 +204,7 @@ $("#new_project_button").on("click", function () {
         if ($("#project_list").text().indexOf(result) !== -1) {
           bootbox.alert("You already have an experiment with this name");
         } else {
+          $("#exp_data_table").show();
           new_project(result);
           $("#save_btn").click();
         }
