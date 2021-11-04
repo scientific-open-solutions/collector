@@ -408,7 +408,8 @@ $("#view_repo_btn").on("click", function () {
 });
 
 function list_repos() {
-  Object.keys(user.repos).forEach(function (org) {
+  var these_orgs = Object.keys(user.repos).sort();
+  these_orgs.forEach(function (org) {
     $("#select_org").append(
       $("<option>", {
         value: org,
@@ -418,7 +419,10 @@ function list_repos() {
   });
   if (user.current.org !== "") {
     $("#select_org").val(user.current.org);
-    Object.keys(user.repos[user.current.org]).forEach(function (repo) {
+    var these_repos = Object.keys(
+      user.repos[user.current.org]
+    ).sort();
+    these_repos.forEach(function (repo) {
       $("#select_repo").append(
         $("<option>", {
           value: repo,
