@@ -1,4 +1,3 @@
-
 function correct_master(){
   master = Collector.electron.fs.read_file("", "master.json");
   if(master === ""){
@@ -15,13 +14,9 @@ function correct_master(){
 
   master.surveys.user_surveys = Collector.missing_object(master.surveys.user_surveys);
 
-  if(typeof(master.phasetypes) !== "undefined"){
-    master.phasetypes = master.phasetypes;
-    delete(master.phasetypes);
-  }
 
   /*
-  * "trialtype" --> code for master
+  * "trialtype" --> code --> phasetype for master
   */
 
   if(typeof(master.trialtypes) !== "undefined"){
@@ -33,6 +28,7 @@ function correct_master(){
     delete(master.phasetypes.default_trialtypes);
     delete(master.phasetypes.user_codes);
   }
+
   master.phasetypes         = Collector.missing_object(master.phasetypes);
   master.phasetypes.default = Collector
     .missing_object(master.phasetypes.default);

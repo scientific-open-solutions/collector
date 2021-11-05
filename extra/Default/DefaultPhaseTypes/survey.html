@@ -37,8 +37,8 @@
   }
 
   /*
-*	elements by id
-*/
+  *	elements by id
+  */
 
   #content {
     width: 95%;
@@ -60,7 +60,7 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    height: 90%;
+    height: 100px;
     overflow: auto;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
@@ -112,7 +112,7 @@
   }
   .table_break {
     width: 100%;
-    height: 300px;
+    height: 0px;
     overflow: auto;
   }
 
@@ -149,12 +149,9 @@
 </div>
 <span id="scales_span"></span>
 <script>
-  /*
-   * Load survey
-   */
-  current_survey = "{{survey}}";
-
-  console.log("current_survey");
-  console.log(current_survey);
+/*
+ * Load survey
+ */
+current_survey = "{{survey}}";
 </script>
 <script src="../Default/DefaultPhaseTypes/survey.js"></script>
