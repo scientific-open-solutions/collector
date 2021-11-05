@@ -269,7 +269,7 @@ $("#proceed_button").on("click", function () {
         }
       } else {
         $(".table_break").hide();
-        $(".table_break#table" + next_table_no).show();
+        $(".table_break#table" + next_table_no).show(0);
       }
     } else {
       $("#" + survey_outline).append(
@@ -848,8 +848,9 @@ function process_returned_questionnaire(data, survey_outline) {
         {
           scrollTop: $("#" + survey_outline).offset().top,
         },
-        1000
+        0
       );
+
     }
   }
   load_phasetypes(phasetypes);
@@ -1449,7 +1450,6 @@ function write(type, row) {
       );
       break;
   }
-
   return this_html;
 }
 
@@ -1514,6 +1514,7 @@ function write_survey(this_survey, this_id) {
     }
   }
 
+
   qs_in_order = this_survey_object.content_new_order.join("</tr><tr>");
   qs_in_order += "</tr>";
 
@@ -1526,7 +1527,13 @@ function write_survey(this_survey, this_id) {
     response_check(this);
   });
 
-  $("#" + this_id).show(1000); //scroll to top
+  $("#" + this_id).show(0); //scroll to top
+  $("#" + this_id).animate({
+    "height": "90%"
+  });
+
+
+  //show("slide", {direction: "down" }, "slow");
 
   $(".show_tab").on("click", function () {
     if (this.className.indexOf("disabled") === -1) {

@@ -29,9 +29,6 @@ function correct_master(){
     delete(master.phasetypes.user_codes);
   }
 
-  console.log("JSON.stringify(master.phasetypes.graphic) start");
-  console.log(JSON.stringify(master.phasetypes.graphic));
-
   master.phasetypes         = Collector.missing_object(master.phasetypes);
   master.phasetypes.default = Collector
     .missing_object(master.phasetypes.default);
@@ -41,10 +38,6 @@ function correct_master(){
     .missing_object(master.phasetypes.graphic);
   master.phasetypes.graphic.files = Collector
     .missing_object(master.phasetypes.graphic.files);
-
-  console.log("JSON.stringify(master.phasetypes.graphic) end");
-  console.log(JSON.stringify(master.phasetypes.graphic));
-
 
   /*
   * studies --> projects

@@ -224,41 +224,43 @@ $("#find_repo_btn").on("click", function () {
 $("#local_repo_btn").on("click", function () {
   var path = Collector.electron.find_path()[0];
 
-  /*
-   * get info about repo
-   */
+  if(typeof(path) !== "undefined"){
+    /*
+     * get info about repo
+     */
 
-  var repo_info = JSON.parse(Collector.electron.git.repo_info(path));
-  var org = repo_info.organization;
-  var repo = repo_info.repository;
-  /*
-   * create organization if it doesn't exist
-   */
-  if (typeof user.repos[org] == "undefined") {
-    user.repos[org] = {};
-  }
+    var repo_info = JSON.parse(Collector.electron.git.repo_info(path));
+    var org = repo_info.organization;
+    var repo = repo_info.repository;
+    /*
+     * create organization if it doesn't exist
+     */
+    if (typeof user.repos[org] === "undefined") {
+      user.repos[org] = {};
+    }
 
-  if (typeof user.repos[org][repo] == "undefined") {
-    user.repos[org][repo] = {
-      path: path,
-    };
-    user.current.path = path;
-    user.current.org = org;
-    user.current.repo = repo;
+    if (typeof user.repos[org][repo] === "undefined") {
+      user.repos[org][repo] = {
+        path: path,
+      };
+      user.current.path = path;
+      user.current.org = org;
+      user.current.repo = repo;
 
-    Collector.save_user();
-    list_repos();
-    $("#select_org").val(user.current.org);
-    $("#select_repo").val(user.current.repo);
-    setTimeout(function () {
-      /*
-       * Let user briefly see the org and repo
-       */
-      location.reload();
-    }, 1000);
-  } else {
-    var this_repo = user.repos[org][repo];
-    bootbox.alert("You already have this repository in: " + this_repo.path);
+      Collector.save_user();
+      list_repos();
+      $("#select_org").val(user.current.org);
+      $("#select_repo").val(user.current.repo);
+      setTimeout(function () {
+        /*
+         * Let user briefly see the org and repo
+         */
+        location.reload();
+      }, 1000);
+    } else {
+      var this_repo = user.repos[org][repo];
+      bootbox.alert("You already have this repository in: " + this_repo.path);
+    }
   }
 });
 
@@ -408,7 +410,8 @@ $("#view_repo_btn").on("click", function () {
 });
 
 function list_repos() {
-  Object.keys(user.repos).forEach(function (org) {
+  var these_orgs = Object.keys(user.repos).sort();
+  these_orgs.forEach(function (org) {
     $("#select_org").append(
       $("<option>", {
         value: org,
@@ -418,7 +421,10 @@ function list_repos() {
   });
   if (user.current.org !== "") {
     $("#select_org").val(user.current.org);
-    Object.keys(user.repos[user.current.org]).forEach(function (repo) {
+    var these_repos = Object.keys(
+      user.repos[user.current.org]
+    ).sort();
+    these_repos.forEach(function (repo) {
       $("#select_repo").append(
         $("<option>", {
           value: repo,
