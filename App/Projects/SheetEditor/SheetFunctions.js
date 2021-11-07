@@ -80,13 +80,13 @@ function clean_conditions() {
 function createExpEditorHoT(sheet, selected_handsonTable, sheet_name) {
   var area;
   var table_name;
-  if (selected_handsonTable.toLowerCase() == "conditions") {
+  if (selected_handsonTable.toLowerCase() === "conditions") {
     area = $("#conditionsArea");
     table_name = "handsOnTable_Conditions";
-  } else if (selected_handsonTable.toLowerCase() == "stimuli") {
+  } else if (selected_handsonTable.toLowerCase() === "stimuli") {
     area = $("#stimsArea");
     table_name = "handsOnTable_Stimuli";
-  } else if (selected_handsonTable.toLowerCase() == "procedure") {
+  } else if (selected_handsonTable.toLowerCase() === "procedure") {
     area = $("#procsArea");
     table_name = "handsOnTable_Procedure";
   } else {

@@ -102,7 +102,7 @@ function this_map(this_item) {
     });
   }
   populate_map("", this_item);
-  if (this_item == "") {
+  if (this_item === "") {
     var dots_before = "";
   } else {
     var dots_before = "../".repeat(item_level);
@@ -116,7 +116,7 @@ function this_map(this_item) {
 
 // Below code is to enable isolated development of surveys code
 
-if (typeof master == "undefined") {
+if (typeof master === "undefined") {
   master = {
     surveys: {
       default_surveys: {},
