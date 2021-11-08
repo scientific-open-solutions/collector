@@ -175,13 +175,7 @@ $("#save_survey_btn").on("click", function () {
       } else {
         repetition_alert = this_item_name;
       }
-      if(repetition_alert){
-        bootbox.alert(
-          "<b>" +
-            repetition_alert +
-            "</b> appears multiple times in your <b>item_name</b> column. This will result in loss of data unless you fix this"
-        );
-      }
+
 
       /*
        * Turn values in the "type" column to lower case
@@ -192,6 +186,13 @@ $("#save_survey_btn").on("click", function () {
       ) {
         survey_data[i][type_index] = survey_data[i][type_index].toLowerCase();
       }
+    }
+    if(repetition_alert){
+      bootbox.alert(
+        "<b>" +
+          repetition_alert +
+          "</b> appears multiple times in your <b>item_name</b> column. This will result in loss of data unless you fix this"
+      );
     }
 
     create_survey_HoT(survey_data);
