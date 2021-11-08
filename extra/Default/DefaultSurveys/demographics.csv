@@ -1,5 +1,5 @@
 item_name,text,Type,Answers,Optional,Values,side_by_side,btn_width
-Gender,Gender,likert,Male|Female|Other,No,,yes,100px
+Gender,Gender,likert,Female|Male|Other,No,,yes,100px
 Age,Age,Number,,No,,,
 Education,"Education (which level are you currently in, or is the highest you've completed)",Dropdown,"Some high school| High school graduate| Some college, no degree| Associate's degree| Bachelor's degree|Graduate degree (Master's, Doctorate, etc.)",No,,,
 English_Fluency,Do you speak English fluently?,likert,Yes|No,No,,yes,200px
