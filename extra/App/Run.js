@@ -1906,9 +1906,66 @@ function write_phase_iframe(index) {
         typeof this_proc.timer_style !== "undefined" &&
         this_proc.timer_style !== ""
       ) {
-        timer_code = timer_code.replace(
+        if(this_proc.timer_style.toLowerCase() === "progress"){
+          timer_code = timer_code
+          .replace(
+            "[[TIMER_HERE]]",
+            '<div class="progress" id="progress_parent">' +
+              '<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progress_bar"></div>' +
+            '</div>'
+          )
+          /*
+          .replace(
+            "#collector_phase_timer{",
+            "#collector_phase_timer{" +
+            "position: absolute;"+
+            "right: 0px;"+
+            "padding: 5px;"+
+            "border-radius: 50px;"+
+            "border-width: 5px;"+
+            //"border-color: #006688;"+
+            "border-style: solid;"+
+            "opacity: 0;"+
+            "width : 100px;" +
+            "height : 100px;" +
+            "color: #006688;"
+          )
+          */
+          .replace(
+            "var time_format;",
+            "var time_format = 'progress'"
+          )
+        } else {
+          timer_code = timer_code
+          .replace(
+            "#collector_phase_timer{",
+            "#collector_phase_timer{" + this_proc.timer_style + ";"
+          );
+        }
+      } else {
+        timer_code = timer_code
+        timer_code = timer_code
+        .replace(
+          "[[TIMER_HERE]]",
+          '<h1 id="collector_phase_timer" class="bg-white"></h1>'
+        )
+        .replace(
           "#collector_phase_timer{",
-          "#collector_phase_timer{" + this_proc.timer_style + ";"
+          "#collector_phase_timer{" +
+          "position: absolute;"+
+          "right: 0px;"+
+          "padding: 5px;"+
+          "border-radius: 10px;"+
+          "border-width: 5px;"+
+          "border-color: #006688;"+
+          "border-style: solid;"+
+          "width : 125px;" +
+          "opacity: 0;"
+
+        )
+        .replace(
+          "var time_format;",
+          "var time_format = 'numbers'"
         );
       }
     } else {

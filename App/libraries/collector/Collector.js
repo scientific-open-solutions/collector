@@ -213,7 +213,7 @@ Collector.complete_csv= function(this_csv){
 Collector.custom_alert= function(msg, duration) {
 
   if(typeof(duration) === "undefined"){
-    duration = 3000;
+    duration = 2000;
   }
 
   var top_padding = parseFloat(

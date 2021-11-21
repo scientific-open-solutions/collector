@@ -1155,8 +1155,11 @@ function write(type, row) {
         feedback_color,
         row
       );
-      var this_div = $("<div>");
-      this_div.addClass("custom-control").addClass("custom-checkbox");
+      var this_div = $("<div>")
+        .addClass("custom-control")
+        .addClass("custom-checkbox")
+        .addClass("form-inline")
+        .css("margin", "20px");
       var this_checkbox = $("<input>");
       this_checkbox[0].id = row["item_name"] + i;
       this_checkbox[0].value = options[i];
@@ -1168,7 +1171,8 @@ function write(type, row) {
         .addClass("custom-control")
         .addClass("custom-checkbox")
         .addClass("response")
-        .addClass(row["item_name"] + "_item_row");
+        .addClass(row["item_name"] + "_item_row")
+        .css("margin", "5px");
       var this_label = $("<label>");
       this_label[0].htmlFor = row["item_name"] + i;
       this_label[0].innerHTML = options[i];

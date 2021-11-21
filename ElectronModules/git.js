@@ -8,6 +8,8 @@ if (!fs.existsSync(root_dir)) {
   fs.mkdirSync(root_dir);
 }
 
+
+
 // make User folder if it doesn't exist yet
 if (!fs.existsSync(root_dir + "/User")) {
   fs.mkdirSync(root_dir + "/User");
@@ -19,6 +21,16 @@ if (!fs.existsSync(root_dir + "/User")) {
 const ipc = require("electron").ipcMain;
 const { Octokit } = require("@octokit/rest");
 const simpleGit = require("simple-git");
+
+/*
+ * trying to help migration to "main" rather than "master" as default branch
+
+ // clearly not working
+
+var git = simpleGit();
+    git.addConfig("init.defaultBranch", "main", append = false, scope = 'local');
+    */
+
 
 /*
 var git = simpleGit(); has to be called in individual functions to make sure it's fresh rather than has carrying over information from previous calls
@@ -303,7 +315,7 @@ ipc.on("git_pages", (event, args) => {
             owner: args.org,
             repo: args.repo,
             source: {
-              branch: "master",
+              branch: "main",
               path: "/",
             },
           })
@@ -392,14 +404,22 @@ ipc.on("git_pull", (event, args) => {
 
     git
       .cwd(user().current.path)
-      .pull(remote, "master")
+      .pull(remote, "main")
       .then(function (result) {
         event.returnValue = "success";
       })
       .catch(function (error) {
-        console.log("error");
-        console.log(error);
-        event.returnValue = "error: " + error;
+        git
+          .cwd(user().current.path)
+          .pull(remote, "main") //in case their version of the repository hasn't transitioned to "main" yet
+          .then(function (result) {
+            event.returnValue = "success";
+          })
+          .catch(function (error) {
+            console.log("error");
+            console.log(error);
+            event.returnValue = "error: " + error;
+          });
       });
   }
 });
@@ -470,12 +490,45 @@ ipc.on("git_push", (event, args) => {
     args.repo +
     ".git";
 
+
+  /*
+  var auth_token = fs.readFileSync(git_token_location, "utf8");
+  const octokit = new Octokit({
+    auth: auth_token,
+  });
+
+  octokit.rest.repos.renameBranch({
+    owner: args.org,
+    repo: args.repo,
+    branch: "master",
+    new_name: "main",
+  });
+  */
+
   var git = simpleGit();
+  /*
+   * update master to main branch here
+   */
+   if(fs.existsSync(user().current.path + "/.git/refs/heads/master")){
+     console.log(user().current.path + "/.git/refs/heads/master exists");
+     //
+
+     fs.copySync(
+       user().current.path + "/.git/refs/heads/master",
+       user().current.path + "/.git/refs/heads/main"
+     )
+     fs.unlinkSync(
+       user().current.path + "/.git/refs/heads/master"
+     );
+   } else {
+     console.log(user().current.path + "/.git/refs/heads/master does not exist");
+   }
+
   git
     .cwd(user().current.path)
     .add("./*")
     .commit(args.message)
-    .push(remote, "master")
+    .push(remote, "main")
     .then(function (new_err) {
       /*
        *
@@ -577,7 +630,6 @@ ipc.on("git_valid_org", (event, args) => {
   const octokit = new Octokit({
     auth: auth_token,
   });
-
   octokit.orgs
     .get({
       org: args.org,
@@ -586,6 +638,6 @@ ipc.on("git_valid_org", (event, args) => {
       event.returnValue = "success";
     })
     .catch(function (error) {
-      event.returnValue = "error: " + error;
+      event.returnValue = "error: " + error + " valid org check failed";
     });
 });
