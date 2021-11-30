@@ -86,6 +86,9 @@ $("#upload_data_csv").on("change", function () {
 
         var this_location = this_csv[this_csv.length-1].location;
 
+        var this_org = this_csv[this_csv.length-1].organization;
+        var this_repo = this_csv[this_csv.length-1].repository;
+
         var these_headers = Object.keys(this_csv[0]);
 
 
@@ -93,13 +96,14 @@ $("#upload_data_csv").on("change", function () {
          * prevent adding an identical row
          */
 
+
         if(redcap_array.filter(function(row){
           return row["Variable / Field Name"] == "record_id"
         }).length == 0){
           redcap_array.push({
 
             "Variable / Field Name": "record_id",
-            "Form Name": this_location,
+            "Form Name": this_org + "_" + this_repo,
             "Section Header": "",
             "Field Type": "text",
             "Field Label": "Record ID",
@@ -126,11 +130,11 @@ $("#upload_data_csv").on("change", function () {
             row["Field Type"] == "text"
           }).length == 0 & this_header !== ""){
             redcap_array.push({
-              "Variable / Field Name": this_location + "_" + this_header,
-              "Form Name": this_location,
+              "Variable / Field Name": this_org + "_" + this_repo + "_" + this_header,
+              "Form Name": this_org + "_" + this_repo,
               "Section Header": "",
               "Field Type": "text",
-              "Field Label": this_location + "_" + this_header,
+              "Field Label": this_org + "_" + this_repo + "_" + this_header,
               "Choices, Calculations, OR Slider Labels": "",
               "Field Note": "",
               "Text Validation Type OR Show Slider Number": "",
