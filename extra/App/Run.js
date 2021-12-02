@@ -145,6 +145,12 @@ Project = {
     var post_string = "post_" + project_json.post_no;
 
     response_data["location"] = Project.get_vars.location;
+
+    var org_repo_proj = project_json.location.split("/");
+
+    response_data["organization"] = org_repo_proj[0];
+    response_data["repository"] = org_repo_proj[1];
+
     /*
      * detect if the user is in fullscreen or not
      */
@@ -236,9 +242,8 @@ Project = {
       var phase_responses = project_json.responses[project_json.responses.length-1];
 
       console.log("phase_responses");
-      console.log(phase_responses);
-
-      var this_location = phase_responses.location;
+      var this_location = project_json.location.split("/")[0].replaceAll("-","") + "_" + project_json.location.split("/")[1].replaceAll("-","");
+      //phase_responses.location;
       /*
       * update all the keys to have the "location_" before them
       */
@@ -267,7 +272,7 @@ Project = {
 
 
       clean_phase_responses['redcap_repeat_instance'] = project_json.phase_no;
-      clean_phase_responses['redcap_repeat_instrument'] = phase_responses['location'];
+      clean_phase_responses['redcap_repeat_instrument'] = this_location;
 
 
       /*

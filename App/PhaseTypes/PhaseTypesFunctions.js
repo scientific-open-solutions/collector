@@ -23,20 +23,22 @@ code_obj = {
   delete_phasetypes: function () {
     var deleted_code = $("#code_select").val();
     master.phasetypes.file = $("#code_select").val();
+    var this_file = master.phasetypes.file;
     var this_loc = "/code/" + master.phasetypes.file;
     bootbox.confirm(
       "Are you sure you want to delete this " + this_loc + "?",
       function (result) {
         if (result === true) {
           if (
-            typeof master.phasetypes.graphic.files[master.phasetypes.file] !==
+            typeof master.phasetypes.graphic.files[this_file] !==
             "undefined"
           ) {
-            delete master.phasetypes.graphic.files[master.phasetypes.file];
+            delete master.phasetypes.graphic.files[this_file];
           }
-          delete master.phasetypes.user[master.phasetypes.file];
+          delete master.phasetypes.user[this_file];
           $("#code_select").attr("previousvalue", "");
           $("#code_select option:selected").remove();
+          $("#graphic_editor").hide();
           master.phasetypes.file = $("#code_select").val();
           code_obj.load_file("default");
           Collector.custom_alert("Successfully deleted " + this_loc);
@@ -58,7 +60,9 @@ code_obj = {
     $("#rename_code_button").show();
     if (user_default === "default") {
       $("#delete_phasetypes_button").hide();
-      $("#code_select").removeClass("user_code").addClass("default_code");
+      $("#code_select")
+        .removeClass("user_code")
+        .addClass("default_code");
     } else {
       $("#delete_phasetypes_button").show();
     }
