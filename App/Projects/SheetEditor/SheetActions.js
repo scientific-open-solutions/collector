@@ -575,15 +575,15 @@ $("#save_btn").on("click", function () {
             );
           } else {
             if (
-              typeof master.phasetypes.user[cleaned_row.phasetype] !==
-              "undefined"
-            ) {
-              this_code = master.phasetypes.user[cleaned_row.phasetype];
-            } else if (
               typeof master.phasetypes.default[cleaned_row.phasetype] !==
               "undefined"
             ) {
               this_code = master.phasetypes.default[cleaned_row.phasetype];
+            } else if (
+              typeof master.phasetypes.user[cleaned_row.phasetype] !==
+              "undefined"
+            ) {
+              this_code = master.phasetypes.user[cleaned_row.phasetype];
             }
 
             these_variables = Collector.list_variables(this_code);

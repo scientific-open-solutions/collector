@@ -1358,7 +1358,7 @@ function post_welcome_data(returned_data) {
       $("#welcome_div").hide();
       $("#post_welcome").show();
       $("#project_div").show();
-      full_screen();
+      //full_screen();
     } else if (id_error === "random") {
       var this_code = Math.random().toString(36).substr(2, 16);
       post_welcome(this_code, "random");
@@ -1368,7 +1368,7 @@ function post_welcome_data(returned_data) {
           $("#welcome_div").hide();
           $("#post_welcome").show();
           $("#project_div").show();
-          // full_screen(); commented out to stop 'Full Screen' request message appearing twice. Can be reinstated if other functionality is impacted.
+          //full_screen();
         }
       });
     }
@@ -1919,23 +1919,6 @@ function write_phase_iframe(index) {
               '<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progress_bar"></div>' +
             '</div>'
           )
-          /*
-          .replace(
-            "#collector_phase_timer{",
-            "#collector_phase_timer{" +
-            "position: absolute;"+
-            "right: 0px;"+
-            "padding: 5px;"+
-            "border-radius: 50px;"+
-            "border-width: 5px;"+
-            //"border-color: #006688;"+
-            "border-style: solid;"+
-            "opacity: 0;"+
-            "width : 100px;" +
-            "height : 100px;" +
-            "color: #006688;"
-          )
-          */
           .replace(
             "var time_format;",
             "var time_format = 'progress'"
@@ -1943,12 +1926,15 @@ function write_phase_iframe(index) {
         } else {
           timer_code = timer_code
           .replace(
+            "[[TIMER_HERE]]",
+            '<h1 id="collector_phase_timer" class="bg-white"></h1>'
+          )
+          .replace(
             "#collector_phase_timer{",
             "#collector_phase_timer{" + this_proc.timer_style + ";"
           );
         }
       } else {
-        timer_code = timer_code
         timer_code = timer_code
         .replace(
           "[[TIMER_HERE]]",
