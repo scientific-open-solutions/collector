@@ -71,7 +71,7 @@ function correct_master(){
 
 
       /*
-      * "trial type" --> "code" for each project
+      * "phase type" --> "code" for each project
       */
       var all_procs = Object.keys(this_project.all_procs);
       all_procs.forEach(function(this_proc){
@@ -213,7 +213,7 @@ Collector.complete_csv= function(this_csv){
 Collector.custom_alert= function(msg, duration) {
 
   if(typeof(duration) === "undefined"){
-    duration = 3000;
+    duration = 2000;
   }
 
   var top_padding = parseFloat(
@@ -287,7 +287,6 @@ Collector.custom_alert= function(msg, duration) {
     }
   },duration);
 }
-
 Collector.detect_context= function(){
   //turn to false to make use of eel and python
   if(typeof(parent.dropbox_developer) !== "undefined"){

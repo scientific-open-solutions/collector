@@ -500,3 +500,4 @@ function valid_repository_name(repo) {
   repo = repo.replaceAll(" ", "");
   return repo;
 }
+loading_scripts("github.js");

@@ -163,6 +163,7 @@ function initiate_actions() {
                   $("#view_code_btn").removeClass("btn-outline-primary");
                   $("#view_code_btn").addClass("btn-primary");
                   $("#ACE_editor").show();
+                  $("#delete_phasetypes_button").show();
                 }
               }
             },
@@ -267,6 +268,8 @@ function initiate_actions() {
       $("#view_graphic_btn").removeClass("btn-outline-primary");
       $("#view_graphic_btn").addClass("btn-primary");
       $("#graphic_editor").show();
+      $("#delete_phasetypes_button").show();
+
     } else {
       editor.setOption("readOnly", false);
       $("#graphic_editor").hide();

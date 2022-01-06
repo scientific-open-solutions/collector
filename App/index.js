@@ -106,7 +106,7 @@ $(".top_icon").hover(
 );
 
 $("#github_logo").on("click", function () {
-  if (typeof user.repos == "undefined") {
+  if (typeof user.repos === "undefined") {
     var git_exists = Collector.electron.git.exists();
     if (git_exists !== "true-true") {
       git_exists = git_exists.split("-");
@@ -429,25 +429,29 @@ $("#data_storage_logo").on("click", function () {
  * when you've loaded all the relevant js files
  */
 function loading_scripts(script_url) {
+  /*
   let script = document.createElement("script");
   script.setAttribute("src", "github.js");
   document.body.appendChild(script);
 
   // now wait for it to load...
   script.onload = () => {
-    loaded_scripts[script_url] = true;
-    if (
-      Object.keys(loaded_scripts).filter((row) => loaded_scripts[row] == false)
-        .length == 0
-    ) {
-      Collector.start();
-    }
+  */
+  loaded_scripts[script_url] = true;
+  if (
+    Object.keys(loaded_scripts).filter((row) => loaded_scripts[row] === false)
+      .length === 0
+  ) {
+    Collector.start();
+  }
     // script has loaded, you can now use it safely
     //alert('thank me later')
     // ... do something with the newly loaded script
-  };
+  //};
 }
 
 var loaded_scripts = {
   "github.js": false,
+  "SheetFunctions.js": false, //for projects
+  "Graphic.js": false,        //for phasetypes
 };

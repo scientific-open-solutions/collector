@@ -11,26 +11,26 @@ Reading RG6 6AL</div>
     <td><b>Telephone:</b></td>
   </tr>
   <tr>
-    <td>Investigator 1</td>
-    <td>Investigator1@reading.ac.uk</td>
-    <td>-phone_number-</td>
+    <td><span style='color:red'>Investigator 1</span></td>
+    <td><span style='color:red'>Investigator1@reading.ac.uk</span></td>
+    <td><span style='color:red'>-phone_number-</span></td>
   </tr>
   <tr>
-    <td>Investigator 2</td>
-    <td>Investigator2@reading.ac.uk</td>
-    <td>-phone_number-</td>
+    <td><span style='color:red'>Investigator 2</span></td>
+    <td><span style='color:red'>Investigator2@reading.ac.uk</span></td>
+    <td><span style='color:red'>-phone_number-</span></td>
   </tr>
   <tr>
     <td><b>Researcher(s):</b></td>
   </tr>
   <tr>
-    <td>Researcher 1</td>
-    <td>Researcher1@reading.ac.uk</td>
+    <td><span style='color:red'>Researcher 1</span></td>
+    <td><span style='color:red'>Researcher1@reading.ac.uk</span></td>
     <td></td>
   </tr>
   <tr>
-    <td>Researcher 2</td>
-    <td>Researcher2@reading.ac.uk</td>
+    <td><span style='color:red'>Researcher 2</span></td>
+    <td><span style='color:red'>Researcher2@reading.ac.uk</span></td>
     <td></td>
   </tr>
 </table>

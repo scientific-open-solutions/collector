@@ -145,6 +145,12 @@ Project = {
     var post_string = "post_" + project_json.post_no;
 
     response_data["location"] = Project.get_vars.location;
+
+    var org_repo_proj = project_json.location.split("/");
+
+    response_data["organization"] = org_repo_proj[0];
+    response_data["repository"] = org_repo_proj[1];
+
     /*
      * detect if the user is in fullscreen or not
      */
@@ -236,9 +242,8 @@ Project = {
       var phase_responses = project_json.responses[project_json.responses.length-1];
 
       console.log("phase_responses");
-      console.log(phase_responses);
-
-      var this_location = phase_responses.location;
+      var this_location = project_json.location.split("/")[0].replaceAll("-","") + "_" + project_json.location.split("/")[1].replaceAll("-","");
+      //phase_responses.location;
       /*
       * update all the keys to have the "location_" before them
       */
@@ -267,7 +272,7 @@ Project = {
 
 
       clean_phase_responses['redcap_repeat_instance'] = project_json.phase_no;
-      clean_phase_responses['redcap_repeat_instrument'] = phase_responses['location'];
+      clean_phase_responses['redcap_repeat_instrument'] = this_location;
 
 
       /*
@@ -1906,9 +1911,66 @@ function write_phase_iframe(index) {
         typeof this_proc.timer_style !== "undefined" &&
         this_proc.timer_style !== ""
       ) {
-        timer_code = timer_code.replace(
+        if(this_proc.timer_style.toLowerCase() === "progress"){
+          timer_code = timer_code
+          .replace(
+            "[[TIMER_HERE]]",
+            '<div class="progress" id="progress_parent">' +
+              '<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progress_bar"></div>' +
+            '</div>'
+          )
+          /*
+          .replace(
+            "#collector_phase_timer{",
+            "#collector_phase_timer{" +
+            "position: absolute;"+
+            "right: 0px;"+
+            "padding: 5px;"+
+            "border-radius: 50px;"+
+            "border-width: 5px;"+
+            //"border-color: #006688;"+
+            "border-style: solid;"+
+            "opacity: 0;"+
+            "width : 100px;" +
+            "height : 100px;" +
+            "color: #006688;"
+          )
+          */
+          .replace(
+            "var time_format;",
+            "var time_format = 'progress'"
+          )
+        } else {
+          timer_code = timer_code
+          .replace(
+            "#collector_phase_timer{",
+            "#collector_phase_timer{" + this_proc.timer_style + ";"
+          );
+        }
+      } else {
+        timer_code = timer_code
+        timer_code = timer_code
+        .replace(
+          "[[TIMER_HERE]]",
+          '<h1 id="collector_phase_timer" class="bg-white"></h1>'
+        )
+        .replace(
           "#collector_phase_timer{",
-          "#collector_phase_timer{" + this_proc.timer_style + ";"
+          "#collector_phase_timer{" +
+          "position: absolute;"+
+          "right: 0px;"+
+          "padding: 5px;"+
+          "border-radius: 10px;"+
+          "border-width: 5px;"+
+          "border-color: #006688;"+
+          "border-style: solid;"+
+          "width : 125px;" +
+          "opacity: 0;"
+
+        )
+        .replace(
+          "var time_format;",
+          "var time_format = 'numbers'"
         );
       }
     } else {

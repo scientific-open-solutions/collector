@@ -145,7 +145,7 @@
       $("#help_text").html(
         "Whilst Collector is written to try to make the phase types as generalisable as possible (in case you want to use them on another platform), there are a few functions that are specific to Collector: <br><br>" +
           "<b>Phase.set_timer(this_function,timeout)</b>: should be used if you want to set a timer from the beginning of a trial. This is because trials are buffered, and so <b>setTimeout</b> would be triggered from when the trial is buffered, not when the participant has started the trial. <br>Phase.set_timer requires two inputs, a function and then the time until it should be triggered. For example <br><br>" +
-          "<pre><em>Phase.set_timer(function(){ <br> alert('hi') <br>},5000);</em></pre> <br><br>" +
+          "<pre style='background-color:lightgrey; padding:10px; border-radius:5px;'>Phase.set_timer(function(){ <br> alert('hi') <br>},5000);</pre> <br><br>" +
           "<b>Phase.submit()</b>: ends the current Phase. <br><br>" +
           "<b>Phase.elapsed()</b>: will return the time since the trial began. This is necessary due to buffering, as normal efforts to get the time since the trial began (e.g. using <em>(new Date()).getTime()</em>) may be distorted by the buffering of trials."
       );
