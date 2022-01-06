@@ -1363,7 +1363,7 @@ function post_welcome_data(returned_data) {
           $("#welcome_div").hide();
           $("#post_welcome").show();
           $("#project_div").show();
-          full_screen();
+          // full_screen(); commented out to stop 'Full Screen' request message appearing twice. Can be reinstated if other functionality is impacted.
         }
       });
     }
