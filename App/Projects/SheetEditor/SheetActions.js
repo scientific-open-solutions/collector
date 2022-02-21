@@ -547,6 +547,8 @@ $("#save_btn").on("click", function () {
       });
       this_proc = cleaned_parsed_proc.map(function (row, row_index) {
         var cleaned_row = Collector.clean_obj_keys(row);
+        console.log("cleaned_row");
+        console.log(cleaned_row);
         if (phasetype_files.indexOf(cleaned_row.phasetype) === -1) {
           phasetype_files.push(cleaned_row.phasetype.toLowerCase());
         }
