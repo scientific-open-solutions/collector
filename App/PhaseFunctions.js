@@ -26,12 +26,12 @@ if (typeof Phase !== "undefined") {
     /*
      * Submit response if there's an online data thing.
      */
-   if(typeof(project_json.this_condition.redcap_url) !== "undefined"){
+   if(typeof(parent.parent.project_json.this_condition.redcap_url) !== "undefined"){
 
        var phase_responses = response_obj;
 
        console.log("phase_responses");
-       var this_location = project_json.location.split("/")[0].replaceAll("-","") + "_" + project_json.location.split("/")[1].replaceAll("-","");
+       var this_location = parent.parent.project_json.location.split("/")[0].replaceAll("-","") + "_" + parent.parent.project_json.location.split("/")[1].replaceAll("-","");
        //phase_responses.location;
        /*
        * update all the keys to have the "location_" before them
@@ -60,7 +60,7 @@ if (typeof Phase !== "undefined") {
        clean_phase_responses.record_id = phase_responses.username;
 
 
-       clean_phase_responses['redcap_repeat_instance'] = project_json.phase_no;
+       clean_phase_responses['redcap_repeat_instance'] = parent.parent.project_json.phase_no;
        clean_phase_responses['redcap_repeat_instrument'] = this_location;
 
 
@@ -83,7 +83,7 @@ if (typeof Phase !== "undefined") {
        console.log("just before the ajax");
        $.ajax({
          type: "POST",
-         url: project_json.this_condition.redcap_url,
+         url: parent.parent.project_json.this_condition.redcap_url,
          crossDomain: true,
          data: clean_phase_responses
 
