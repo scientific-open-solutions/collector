@@ -29,9 +29,9 @@
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "coffee-script": "~1.6.3",
-    "electron": "^13.6.0",
-    "electron-builder": "^22.9.1",
-    "jest": "^27.0.6",
+    "electron": "^13.6.9",
+    "electron-builder": "^22.14.13",
+    "jest": "^27.5.1",
     "png-to-ico": "^2.1.2",
     "prettier": "2.3.2"
   },
@@ -77,20 +77,20 @@
   },
   "dependencies": {
     "@octokit/auth": "^2.0.1",
-    "@octokit/auth-token": "^2.4.5",
-    "@octokit/rest": "^18.9.0",
+    "@octokit/auth-token": "^2.5.0",
+    "@octokit/rest": "^18.12.0",
     "command-exists": "^1.2.9",
-    "electron-context-menu": "^3.1.1",
+    "electron-context-menu": "^3.1.2",
     "eval": "^0.1.6",
     "fs": "0.0.1-security",
     "fs-extra": "^10.0.0",
     "git-clone": "^0.1.0",
-    "got": "^11.8.2",
-    "normalize-url": "^7.0.0",
+    "got": "^11.8.3",
+    "normalize-url": "^7.0.3",
     "papaparse": "^5.3.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "simple-git": "^2.42.0",
-    "uglify-js": "^3.14.1"
+    "simple-git": "^2.48.0",
+    "uglify-js": "^3.15.1"
   }
 }
