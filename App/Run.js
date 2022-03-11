@@ -691,11 +691,13 @@ function create_project_json_variables() {
     project_json.inputs = [];
     project_json.progress_bar_visible = true; //not doing anything at the moment
     project_json.phase_no = 0;
+    project_json.phase_resp_no = 0;
     project_json.post_no = 0;
     if (typeof project_json.responses === "undefined") {
       project_json.responses = [];
     }
   }
+
   Project.activate_pipe();
 }
 

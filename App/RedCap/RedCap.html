@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
+		Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey (team@someopen.solutions)
 */
 
 -->
@@ -130,11 +130,11 @@ $("#upload_data_csv").on("change", function () {
             row["Field Type"] == "text"
           }).length == 0 & this_header !== ""){
             redcap_array.push({
-              "Variable / Field Name": this_org + "_" + this_repo + "_" + this_header,
+              "Variable / Field Name": this_header,
               "Form Name": this_org + "_" + this_repo,
               "Section Header": "",
               "Field Type": "text",
-              "Field Label": this_org + "_" + this_repo + "_" + this_header,
+              "Field Label": this_header,
               "Choices, Calculations, OR Slider Labels": "",
               "Field Note": "",
               "Text Validation Type OR Show Slider Number": "",
