@@ -100,6 +100,10 @@ Project = {
     }
   },
   finish_phase: function (go_to_info) {
+
+    // get date in useful format
+
+
     phase_end_ms = new Date().getTime();
     phase_inputs = {};
     $("#experiment_progress").css(
@@ -165,6 +169,11 @@ Project = {
 
     response_data[post_string + "_window_inner_width"] = window.innerWidth;
     response_data[post_string + "_window_inner_height"] = window.innerHeight;
+
+    response_data[post_string + "_US_date"] = new Date().toLocaleDateString("en-US");
+    response_data[post_string + "_time"]     = new Date().toLocaleTimeString();;
+    response_data[post_string + "_timezone"] = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     response_data[post_string + "_phase_end_ms"] = phase_end_ms;
     response_data[post_string + "_rt_ms"] =
       phase_end_ms - response_data[post_string + "_phase_start_ms"];

@@ -260,7 +260,6 @@ $("#project_list").on("change", function () {
   clean_conditions();
   $("#project_inputs").show();
   update_handsontables();
-  update_server_table();
   $("#save_btn").click();
 });
 

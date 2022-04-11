@@ -284,14 +284,11 @@ switch (Collector.detect_context()) {
   case "localhost":
     //show the github icon
     $("#github_logo").show();
-    $("#data_storage_logo").show();
     break;
   case "github":
   case "server":
-    $("#data_storage_logo").show();
     break;
   default:
-    $("#data_storage_logo").show(); //this might be redundant
     break;
 }
 
@@ -419,10 +416,6 @@ $("#show_security_info").on("click", function () {
   });
 });
 
-$("#data_storage_logo").on("click", function () {
-  update_server_table();
-  $("#login_modal").fadeIn();
-});
 
 /*
  * when you've loaded all the relevant js files
