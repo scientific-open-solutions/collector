@@ -1678,7 +1678,7 @@ function start_restart() {
     bootbox.alert(
       "This experiment will not run in safari. Please close and use another browser"
     );
-  } else if (
+  } else  /* //skipping resume for now if (
     (window.localStorage.getItem("project_json") !== null) &
     (Project.get_vars.platform !== "preview")
   ) {
@@ -1732,7 +1732,7 @@ function start_restart() {
         },
       },
     });
-  } else {
+  } else */ {
     Project.activate_pipe();
   }
 }
