@@ -21,10 +21,10 @@ $.ajaxSetup({ cache: false }); // prevents caching, which disrupts $.get calls
 
 code_obj = {
   delete_phasetypes: function () {
-    var deleted_code = $("#code_select").val();
-    master.phasetypes.file = $("#code_select").val();
+    var deleted_phasetype = $("#phasetype_select").val();
+    master.phasetypes.file = $("#phasetype_select").val();
     var this_file = master.phasetypes.file;
-    var this_loc = "/code/" + master.phasetypes.file;
+    var this_loc = "/PhaseTypes/" + master.phasetypes.file;
     bootbox.confirm(
       "Are you sure you want to delete this " + this_loc + "?",
       function (result) {
@@ -36,20 +36,20 @@ code_obj = {
             delete master.phasetypes.graphic.files[this_file];
           }
           delete master.phasetypes.user[this_file];
-          $("#code_select").attr("previousvalue", "");
-          $("#code_select option:selected").remove();
+          $("#phasetype_select").attr("previousvalue", "");
+          $("#phasetype_select option:selected").remove();
           $("#graphic_editor").hide();
-          master.phasetypes.file = $("#code_select").val();
+          master.phasetypes.file = $("#phasetype_select").val();
           code_obj.load_file("default");
-          Collector.custom_alert("Successfully deleted " + this_loc);
-          Collector.electron.fs.delete_file(
-            "PhaseTypes/" + deleted_code,
-            function (response) {
-              if (response !== "success") {
-                bootbox.alert(response);
-              }
-            }
+          var response = Collector.electron.fs.delete_file(
+            "PhaseTypes/" + deleted_phasetype + ".html"
           );
+
+          if (response !== "success") {
+            bootbox.alert(response);
+          } else {
+            Collector.custom_alert("Successfully deleted " + this_loc);
+          }
         }
       }
     );
@@ -60,7 +60,7 @@ code_obj = {
     $("#rename_code_button").show();
     if (user_default === "default") {
       $("#delete_phasetypes_button").hide();
-      $("#code_select")
+      $("#phasetype_select")
         .removeClass("user_code")
         .addClass("default_code");
     } else {
@@ -95,19 +95,19 @@ code_obj = {
       editor.setValue("");
     }
     if (
-      $("#code_select option").filter(function () {
+      $("#phasetype_select option").filter(function () {
         return $(this).val() === name;
       }).length === 0
     ) {
-      $("#code_select").append(
+      $("#phasetype_select").append(
         $("<option>", {
           value: name,
           text: name,
           class: "user_code",
         })
       );
-      $("#code_select").val(name);
-      $("#code_select")[0].className = $("#code_select")[0].className.replace(
+      $("#phasetype_select").val(name);
+      $("#phasetype_select")[0].className = $("#phasetype_select")[0].className.replace(
         "default_",
         "user_"
       );
@@ -152,9 +152,9 @@ function list_phasetypes(to_do_after) {
   }
 
   function process_returned(returned_data) {
-    $("#code_select").empty();
-    $("#code_select").append("<option disabled>Select a file</option>");
-    $("#code_select").val("Select a file");
+    $("#phasetype_select").empty();
+    $("#phasetype_select").append("<option disabled>Select a file</option>");
+    $("#phasetype_select").val("Select a file");
 
     var default_code = JSON.parse(returned_data);
     var user = master.phasetypes.user;
@@ -169,14 +169,14 @@ function list_phasetypes(to_do_after) {
     );
 
     default_keys.forEach(function (element) {
-      $("#code_select").append(
+      $("#phasetype_select").append(
         "<option class='default_code'>" + element + "</option>"
       );
     });
     master.phasetypes.user = user;
 
     user_keys.forEach(function (element) {
-      $("#code_select").append(
+      $("#phasetype_select").append(
         "<option class='user_code'>" + element + "</option>"
       );
     });

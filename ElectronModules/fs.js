@@ -76,24 +76,6 @@ function user() {
  * fs functions in alphabetical order
  */
 
-ipc.on("fs_delete_phasetypes", (event, args) => {
-  /*
-   * Security checks - should probably have more
-   */
-  if (args.phasetype.indexOf("..") !== -1) {
-    event.returnValue = "This request could be insecure, and was blocked";
-  } else {
-    try {
-      var content = fs.unlinkSync(
-        user().current.path + "/User/PhaseTypes/" + args.phasetype + ".html"
-      );
-      event.returnValue = "success";
-    } catch (error) {
-      event.returnValue = "failed to delete the trialtype: " + error;
-    }
-  }
-});
-
 ipc.on("fs_delete_project", (event, args) => {
   /*
    * Security checks - should probably have more
@@ -120,13 +102,16 @@ ipc.on("fs_delete_project", (event, args) => {
 });
 
 ipc.on("fs_delete_file", (event, args) => {
+  console.log("trying to delete " + args.file_path);
   if (args.file_path.indexOf("..") !== -1) {
     event.returnValue =
       "This attempt to delete a file looked dangerous, so hasn't been completed";
   } else if (!fs.existsSync(user().current.path + "/User/" + args.file_path)) {
+    console.log("trying to delete a file that doesn't exist");
     event.returnValue =
       "This file doesn't appear to exist, so could not be deleted on your computer (but also doesn't need to be deleted either.)";
   } else {
+    console.log("trying to delete a file that exists");
     fs.unlink(user().current.path + "/User/" + args.file_path);
     event.returnValue = "success";
   }
