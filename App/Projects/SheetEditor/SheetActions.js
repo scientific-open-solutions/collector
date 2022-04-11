@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-    Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
+    Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey (team@someopen.solutions)
 */
 $("#default_projects_select").on("change", function () {
   if ($("#default_projects_select").val() !== "Select an experiment") {
@@ -547,6 +547,8 @@ $("#save_btn").on("click", function () {
       });
       this_proc = cleaned_parsed_proc.map(function (row, row_index) {
         var cleaned_row = Collector.clean_obj_keys(row);
+        console.log("cleaned_row");
+        console.log(cleaned_row);
         if (phasetype_files.indexOf(cleaned_row.phasetype) === -1) {
           phasetype_files.push(cleaned_row.phasetype.toLowerCase());
         }

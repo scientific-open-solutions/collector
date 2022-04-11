@@ -192,16 +192,45 @@ function create_survey_HoT(this_survey) {
 
       for (var k = 0; k < this.countCols() - 1; k++) {
         var col_header = this.getDataAtCell(0, k).toLowerCase();
+        if(col_header.toLowerCase() === "item_name") {
 
-        if (col_header === "shuffle") {
-          this.setDataAtCell(0, k, "shuffle_question");
+          console.log("this.countRows");
+          console.log(this.countRows());
+          var row_count = this.countRows();
+
+          /*
+          for(var m = 1; m < row_count - 1; m++){
+            var this_item = this.getDataAtCell(m, k);
+            console.log("k");
+            console.log(k);
+            console.log("m");
+            console.log(m);
+            console.log(this_item);
+
+            this.setDataAtCell(m, k, this_item.replaceAll(".", "_"));
+
+
+            this.setDataAtCell(m, k, col_header.replaceAll(".", "_"));
+            this.setDataAtCell(m, k, col_header.replaceAll(" ", "_"));
+
+          }
+          */
+
+
         }
+
+
         if (
           col_header.indexOf("score") !== -1 &&
           col_header.indexOf(" ") !== -1
         ) {
           this.setDataAtCell(0, k, col_header.replaceAll(" ", ""));
         }
+
+        if (col_header === "shuffle") {
+          this.setDataAtCell(0, k, "shuffle_question");
+        }
+
 
         //Removing Empty middle columns
         if (this.isEmptyCol(k)) {
