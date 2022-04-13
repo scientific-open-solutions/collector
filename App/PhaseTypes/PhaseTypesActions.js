@@ -177,7 +177,7 @@ function initiate_actions() {
       .modal("show");
   });
 
-  $("#rename_code_button").on("click", function () {
+  $("#rename_phasetype_button").on("click", function () {
     var phasetype_selected = $("#phasetype_select").val();
 
     if (typeof master.phasetypes.default[phasetype_selected] !== "undefined") {

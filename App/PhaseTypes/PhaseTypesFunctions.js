@@ -57,7 +57,7 @@ code_obj = {
   load_file: function (user_default) {
     $("#ACE_editor").show();
     $("#new_code_button").show();
-    $("#rename_code_button").show();
+    $("#rename_phasetype_button").show();
     if (user_default === "default") {
       $("#delete_phasetypes_button").hide();
       $("#phasetype_select")
