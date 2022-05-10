@@ -194,29 +194,19 @@ function create_survey_HoT(this_survey) {
         var col_header = this.getDataAtCell(0, k).toLowerCase();
         if(col_header.toLowerCase() === "item_name") {
 
-          console.log("this.countRows");
-          console.log(this.countRows());
           var row_count = this.countRows();
 
-          /*
+
           for(var m = 1; m < row_count - 1; m++){
             var this_item = this.getDataAtCell(m, k);
-            console.log("k");
-            console.log(k);
-            console.log("m");
-            console.log(m);
-            console.log(this_item);
 
-            this.setDataAtCell(m, k, this_item.replaceAll(".", "_"));
-
-
-            this.setDataAtCell(m, k, col_header.replaceAll(".", "_"));
-            this.setDataAtCell(m, k, col_header.replaceAll(" ", "_"));
-
+            /*
+             * replace "." with "_" to prevent errors from "."s 
+             */
+            if(this_item.indexOf(".") !== -1){
+              this.setDataAtCell(m, k, this_item.replaceAll(".", "_"));
+            }
           }
-          */
-
-
         }
 
 

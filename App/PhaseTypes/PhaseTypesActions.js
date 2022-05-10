@@ -177,10 +177,10 @@ function initiate_actions() {
       .modal("show");
   });
 
-  $("#rename_code_button").on("click", function () {
-    var code_selected = $("#code_select").val();
+  $("#rename_phasetype_button").on("click", function () {
+    var phasetype_selected = $("#phasetype_select").val();
 
-    if (typeof master.phasetypes.default[code_selected] !== "undefined") {
+    if (typeof master.phasetypes.default[phasetype_selected] !== "undefined") {
       bootbox.alert("You can't rename a default code file");
     } else {
       bootbox.prompt(
@@ -188,15 +188,15 @@ function initiate_actions() {
         function (new_name) {
           if (new_name === null) {
             // close the window
-          } else if ($("#code_select").text().indexOf(new_name) !== -1) {
+          } else if ($("#phasetype_select").text().indexOf(new_name) !== -1) {
             bootbox.alert("You already have a code file with this name");
           } else {
-            var original_name = $("#code_select").val();
+            var original_name = $("#phasetype_select").val();
             master.phasetypes.user[new_name] =
               master.phasetypes.user[original_name];
             delete master.phasetypes.user[original_name];
 
-            $("#code_select").attr("previousvalue", "");
+            $("#phasetype_select").attr("previousvalue", "");
 
             var response = Collector.electron.fs.write_file(
               "Phase",
@@ -209,8 +209,8 @@ function initiate_actions() {
                 function (response) {
                   if (response === "success") {
                     list_phasetypes(function () {
-                      $("#code_select").val(new_name);
-                      $("#code_select").change();
+                      $("#phasetype_select").val(new_name);
+                      $("#phasetype_select").change();
                     });
                   } else {
                     bootbox.alert(response);
@@ -224,9 +224,9 @@ function initiate_actions() {
     }
   });
   $("#save_phasetype_btn").on("click", function () {
-    if ($("#code_select").val() !== null) {
+    if ($("#phasetype_select").val() !== null) {
       var content = editor.getValue();
-      var name = $("#code_select").val();
+      var name = $("#phasetype_select").val();
       if (typeof master.phasetypes.default[name] === "undefined") {
         code_obj.save(content, name, "old");
       } else {
@@ -238,7 +238,7 @@ function initiate_actions() {
       }
     }
   });
-  $("#code_select").on("change", function () {
+  $("#phasetype_select").on("change", function () {
     var old_code = $(this).attr("previousValue");
     if (
       (old_code !== "") &
@@ -286,12 +286,12 @@ function initiate_actions() {
         user_default = "default";
       }
 
-      $("#code_select").removeClass("user_code");
-      $("#code_select").removeClass("default_code_file");
+      $("#phasetype_select").removeClass("user_code");
+      $("#phasetype_select").removeClass("default_code_file");
       if (user_default === "user") {
-        $("#code_select").addClass("user_code");
+        $("#phasetype_select").addClass("user_code");
       } else {
-        $("#code_select").addClass("default_code_file");
+        $("#phasetype_select").addClass("default_code_file");
       }
       code_obj.load_file(user_default);
     }
