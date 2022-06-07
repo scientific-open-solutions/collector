@@ -100,6 +100,10 @@ Project = {
     }
   },
   finish_phase: function (go_to_info) {
+
+    // get date in useful format
+
+
     phase_end_ms = new Date().getTime();
     phase_inputs = {};
     $("#experiment_progress").css(
@@ -165,6 +169,11 @@ Project = {
 
     response_data[post_string + "_window_inner_width"] = window.innerWidth;
     response_data[post_string + "_window_inner_height"] = window.innerHeight;
+
+    response_data[post_string + "_US_date"] = new Date().toLocaleDateString("en-US");
+    response_data[post_string + "_time"]     = new Date().toLocaleTimeString();;
+    response_data[post_string + "_timezone"] = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     response_data[post_string + "_phase_end_ms"] = phase_end_ms;
     response_data[post_string + "_rt_ms"] =
       phase_end_ms - response_data[post_string + "_phase_start_ms"];
@@ -252,18 +261,19 @@ Project = {
 
       Object.keys(phase_responses).forEach(function(old_key){
 
-        //if(phase_responses[old_key].toLowerCase() !== "condition_redcap_url" & phase_responses[old_key] !== ""){
+        clean_phase_responses[old_key] =
+          phase_responses[old_key];
 
-
-          clean_phase_responses[this_location + "_" + old_key] =
-          phase_responses[old_key]
-        //}
       });
       delete(clean_phase_responses[
-        this_location + "_condition_redcap_url"
+        "condition_redcap_url"
       ]);
       delete(clean_phase_responses[
-        this_location + "_"
+        "_"
+      ]);
+
+      delete(clean_phase_responses[
+        "post_0_US_date"
       ]);
 
       console.log("clean_phase_responses");
@@ -272,7 +282,7 @@ Project = {
 
 
       clean_phase_responses['redcap_repeat_instance'] = project_json.phase_no;
-      clean_phase_responses['redcap_repeat_instrument'] = this_location;
+      clean_phase_responses['redcap_repeat_instrument'] = this_location.toLowerCase();
 
 
       /*
@@ -1360,7 +1370,7 @@ function post_welcome_data(returned_data) {
       $("#welcome_div").hide();
       $("#post_welcome").show();
       $("#project_div").show();
-      full_screen();
+      //full_screen();
     } else if (id_error === "random") {
       var this_code = Math.random().toString(36).substr(2, 16);
       post_welcome(this_code, "random");
@@ -1370,7 +1380,7 @@ function post_welcome_data(returned_data) {
           $("#welcome_div").hide();
           $("#post_welcome").show();
           $("#project_div").show();
-          full_screen();
+          //full_screen();
         }
       });
     }
@@ -1678,7 +1688,7 @@ function start_restart() {
     bootbox.alert(
       "This experiment will not run in safari. Please close and use another browser"
     );
-  } else if (
+  } else  /* //skipping resume for now if (
     (window.localStorage.getItem("project_json") !== null) &
     (Project.get_vars.platform !== "preview")
   ) {
@@ -1732,7 +1742,7 @@ function start_restart() {
         },
       },
     });
-  } else {
+  } else */ {
     Project.activate_pipe();
   }
 }
@@ -1921,23 +1931,6 @@ function write_phase_iframe(index) {
               '<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progress_bar"></div>' +
             '</div>'
           )
-          /*
-          .replace(
-            "#collector_phase_timer{",
-            "#collector_phase_timer{" +
-            "position: absolute;"+
-            "right: 0px;"+
-            "padding: 5px;"+
-            "border-radius: 50px;"+
-            "border-width: 5px;"+
-            //"border-color: #006688;"+
-            "border-style: solid;"+
-            "opacity: 0;"+
-            "width : 100px;" +
-            "height : 100px;" +
-            "color: #006688;"
-          )
-          */
           .replace(
             "var time_format;",
             "var time_format = 'progress'"
@@ -1945,12 +1938,15 @@ function write_phase_iframe(index) {
         } else {
           timer_code = timer_code
           .replace(
+            "[[TIMER_HERE]]",
+            '<h1 id="collector_phase_timer" class="bg-white"></h1>'
+          )
+          .replace(
             "#collector_phase_timer{",
             "#collector_phase_timer{" + this_proc.timer_style + ";"
           );
         }
       } else {
-        timer_code = timer_code
         timer_code = timer_code
         .replace(
           "[[TIMER_HERE]]",

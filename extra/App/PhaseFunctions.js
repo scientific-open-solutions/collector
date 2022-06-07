@@ -19,8 +19,24 @@
 */
 if (typeof Phase !== "undefined") {
   Phase.add_response = function (response_obj) {
-    response_obj.inserted_time_ms = new Date().getTime();
-    response_obj.inserted_time_date = new Date().toString("MM/dd/yy HH:mm:ss");
+
+    /*
+     * Increase counter to reflect a new response
+     */
+    if(typeof(parent.parent.project_json.repeat_no) == "undefined"){
+      parent.parent.project_json.repeat_no = parent.parent.project_json.phase_no;
+    }
+
+    parent.parent.project_json.repeat_no++;
+
+    /*
+
+     * Add all the normal response information here!
+
+     */
+
+    //response_obj.inserted_time_ms = new Date().getTime();
+    //response_obj.inserted_time_date = new Date().toString("MM/dd/yy HH:mm:ss");
     parent.parent.project_json.responses.push(response_obj);
 
     parent.parent.project_json.phase_resp_no++;
@@ -64,7 +80,8 @@ if (typeof Phase !== "undefined") {
        clean_phase_responses.record_id = parent.parent.$("#participant_code").val();
 
 
-       clean_phase_responses['redcap_repeat_instance'] = parent.parent.project_json.phase_no + "-" + parent.parent.project_json.phase_resp_no;
+       clean_phase_responses['redcap_repeat_instance'] =
+parent.parent.project_json.repeat_no; //        parent.parent.project_json.phase_no + "-" + parent.parent.project_json.phase_resp_no;
        clean_phase_responses['redcap_repeat_instrument'] = this_location;
 
 

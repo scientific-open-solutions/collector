@@ -261,18 +261,19 @@ Project = {
 
       Object.keys(phase_responses).forEach(function(old_key){
 
-        //if(phase_responses[old_key].toLowerCase() !== "condition_redcap_url" & phase_responses[old_key] !== ""){
+        clean_phase_responses[old_key] =
+          phase_responses[old_key];
 
-
-          clean_phase_responses[this_location + "_" + old_key] =
-          phase_responses[old_key]
-        //}
       });
       delete(clean_phase_responses[
-        this_location + "_condition_redcap_url"
+        "condition_redcap_url"
       ]);
       delete(clean_phase_responses[
-        this_location + "_"
+        "_"
+      ]);
+
+      delete(clean_phase_responses[
+        "post_0_US_date"
       ]);
 
       console.log("clean_phase_responses");
@@ -281,7 +282,7 @@ Project = {
 
 
       clean_phase_responses['redcap_repeat_instance'] = project_json.phase_no;
-      clean_phase_responses['redcap_repeat_instrument'] = this_location;
+      clean_phase_responses['redcap_repeat_instrument'] = this_location.toLowerCase();
 
 
       /*
