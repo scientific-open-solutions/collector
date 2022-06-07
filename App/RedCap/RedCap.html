@@ -125,7 +125,7 @@ $("#upload_data_csv").on("change", function () {
 
         these_headers.forEach(function(this_header){
           if(redcap_array.filter(function(row){
-            return row["Variable / Field Name"] == this_location + "_" + this_header &
+            return row["Variable / Field Name"] == this_header &
             row["Form Name"] == this_location &
             row["Field Type"] == "text"
           }).length == 0 & this_header !== ""){

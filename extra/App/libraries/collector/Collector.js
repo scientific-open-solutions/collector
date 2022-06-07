@@ -423,7 +423,6 @@ Collector.start = function(){
     initiate_actions();
     list_keys();
     list_data_servers();
-    list_servers();
     list_surveys();
     //list_pathways();
   }
