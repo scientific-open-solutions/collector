@@ -282,6 +282,43 @@ Project = {
 
 
       console.log("just before the ajax");
+
+      function redcap_post(
+        this_url,
+        this_data,
+        attempt_no
+      ){
+        console.log("attempt number " + attempt_no);
+        $.ajax({
+          type: "POST",
+          url: this_url,
+          crossDomain: true,
+          data: this_data,
+          success: function(result){
+            console.log("result");
+            console.log(result);
+            if(result.toLowerCase().indexOf("error") !== -1 | result.toLowerCase().indexOf("count") == -1){
+              attempt_no++;
+              if(attempt_no > 2){
+                alert("This data has not submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
+              } else {
+                redcap_post(
+                  this_url,
+                  this_data,
+                  attempt_no
+                );
+              }
+            }
+          }
+        });
+      };
+
+      redcap_post(
+        project_json.this_condition.redcap_url,
+        clean_phase_responses,
+        0
+      );
+      /*
       $.ajax({
         type: "POST",
         url: project_json.this_condition.redcap_url,
@@ -292,6 +329,7 @@ Project = {
           console.log(result);
         }
       });
+      */
     }
 
     switch (Project.get_vars.platform) {
