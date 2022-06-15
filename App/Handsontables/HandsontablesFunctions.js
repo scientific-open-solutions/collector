@@ -89,6 +89,10 @@ function trialTypesRenderer(
   }
 }
 function updateDimensions(hot, addWidth, addHeight) {
+  /*
+
+  POSSIBLY CAN DELETE THIS FUNCTION AND REFERENCES TO IT, MIGHT BE AN ARTIFACT OF AN EARLIER HANDSONTABLE!
+
   var addW = addWidth || 0;
   var addH = addHeight || 0;
 
@@ -108,6 +112,7 @@ function updateDimensions(hot, addWidth, addHeight) {
     width: thisWidth,
     height: thisHeight,
   });
+  */
 }
 function updateDimensionsDelayed(hot, addWidth, addHeight) {
   updateDimensions(hot, addWidth, addHeight);
@@ -122,6 +127,10 @@ function createHoT(container, data, sheet_name) {
     minSpareCols: 1,
     minSpareRows: 1,
 
+
+    /*
+     * Functions
+     */
     afterChange: function (changes, source) {
       var middleColEmpty = 0;
       var middleRowEmpty = 0;
@@ -214,9 +223,11 @@ function createHoT(container, data, sheet_name) {
         }
 
         if (this.isEmptyRow(k)) {
-          // if the row is empty
-          this.alter("remove_row", k); // delete this empty row
-          k--; // and then check this row number again.
+          // if the row is empty delete row
+          this.alter("remove_row", k);
+
+          // and then check this row number again.
+          k--;
         }
       }
 
@@ -241,21 +252,29 @@ function createHoT(container, data, sheet_name) {
     afterCreateCol: function () {
       updateDimensionsDelayed(this, 55, 0);
     },
-    afterCreateRow: function () {
-      updateDimensionsDelayed(this, 0, 28);
-    },
     afterRemoveCol: function () {
       updateDimensionsDelayed(this);
     },
+    /*
+    afterCreateRow: function () {
+      updateDimensionsDelayed(this, 0, 28);
+    },
+
     afterRemoveRow: function () {
       updateDimensionsDelayed(this);
     },
+
+    */
+
     afterSelectionEnd: function () {
       thisCellValue = this.getValue();
 
       var coords = this.getSelected();
       var column = this.getDataAtCell(0, coords[1]);
-      var thisCellValue = this.getDataAtCell(coords[0], coords[1]);
+      var thisCellValue = this.getDataAtCell(
+        coords[0],
+        coords[1]
+      );
 
       thisCellValue =
         thisCellValue == null ? (thisCellValue = "") : thisCellValue;
@@ -263,12 +282,17 @@ function createHoT(container, data, sheet_name) {
       window["Current HoT Coordinates"] = coords;
       helperActivate(column, thisCellValue, sheet_name);
     },
+
     cells: function (row, col, prop) {
       var cellProperties = {};
       if (row === 0) {
         cellProperties.renderer = firstRowRenderer;
       } else {
-        var thisHeader = this.instance.getDataAtCell(0, col).toLowerCase();
+        var thisHeader = this.instance.getDataAtCell(0, col);
+
+        if(thisHeader !== null){
+          thisHeader = thisHeader.toLowerCase();
+        }
         if (typeof thisHeader === "string" && thisHeader !== "") {
           if ((thisHeader === "code") | (thisHeader === "trialtype")) {
             thisHeader = "phasetype";
@@ -276,7 +300,18 @@ function createHoT(container, data, sheet_name) {
           }
           if (isPhaseTypeHeader(thisHeader)) {
             cellProperties.type = "dropdown";
-            cellProperties.source = trialTypes;
+
+            cellProperties.visibleRows = 10;
+
+            cellProperties.source = $.map(
+              $("#phasetype_select option"), function(option){
+                if(option.value.toLowerCase() !== "select a file"){
+                  return option.value;
+                }
+              }
+            );
+            cellProperties.trimDropdown = false;
+
             cellProperties.renderer = trialTypesRenderer;
           } else {
             cellProperties.type = "text";
@@ -294,7 +329,7 @@ function createHoT(container, data, sheet_name) {
       }
       return cellProperties;
     },
-    cells: function (row, col, prop) {},
+
     wordWrap: false,
     contextMenu: {
       items: {
@@ -316,19 +351,17 @@ function createHoT(container, data, sheet_name) {
             this_selection = selection;
 
             cell_editor_obj.content_before = this_sheet.getDataAtCell(
-              selection.start.row,
-              selection.start.col
+              selection[0].start.row,
+              selection[0].start.col
             );
 
             cell_editor.setValue(
               this_sheet.getDataAtCell(
-                selection.start.row,
-                selection.start.col
+                selection[0].start.row,
+                selection[0].start.col
               ),
               -1
             );
-
-            //var cell_editor_width = parseFloat($("#cell_editor_div").css("width").replace("px",""));
 
             if ($("#help_content").is(":visible")) {
               var helper_width = parseFloat(
@@ -393,11 +426,12 @@ function createHoT(container, data, sheet_name) {
       },
     },
     rowHeaders: true,
+
   });
   return table;
 }
 
-//solution by Jeffrey Harmon at https://stackoverflow.com/questions/1064089/inserting-a-text-where-cursor-is-using-javascript-jquery
+//https://stackoverflow.com/a/28353499/4490801
 function insertAtCaret(areaId, text) {
   var txtarea = document.getElementById(areaId);
   var scrollPos = txtarea.scrollTop;
