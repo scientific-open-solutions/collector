@@ -88,38 +88,6 @@ function trialTypesRenderer(
     }
   }
 }
-function updateDimensions(hot, addWidth, addHeight) {
-  /*
-
-  POSSIBLY CAN DELETE THIS FUNCTION AND REFERENCES TO IT, MIGHT BE AN ARTIFACT OF AN EARLIER HANDSONTABLE!
-
-  var addW = addWidth || 0;
-  var addH = addHeight || 0;
-
-  var container = hot.container;
-
-  var thisSizeBox = $(container).find(".wtHider");
-
-  var thisWidth = thisSizeBox.width() + 22 + addW;
-  var thisHeight = thisSizeBox.height() + 22 + addH;
-
-  var thisArea = $(container).closest(".tableArea");
-
-  thisWidth = Math.min(thisWidth, thisArea.width());
-  thisHeight = Math.min(thisHeight, thisArea.height());
-
-  hot.updateSettings({
-    width: thisWidth,
-    height: thisHeight,
-  });
-  */
-}
-function updateDimensionsDelayed(hot, addWidth, addHeight) {
-  updateDimensions(hot, addWidth, addHeight);
-  setTimeout(function () {
-    updateDimensions(hot);
-  }, 0);
-}
 
 function createHoT(container, data, sheet_name) {
   var table = new Handsontable(container, {
@@ -247,24 +215,14 @@ function createHoT(container, data, sheet_name) {
       }
     },
     afterInit: function () {
-      updateDimensions(this);
+
     },
     afterCreateCol: function () {
-      updateDimensionsDelayed(this, 55, 0);
+
     },
     afterRemoveCol: function () {
-      updateDimensionsDelayed(this);
-    },
-    /*
-    afterCreateRow: function () {
-      updateDimensionsDelayed(this, 0, 28);
-    },
 
-    afterRemoveRow: function () {
-      updateDimensionsDelayed(this);
     },
-
-    */
 
     afterSelectionEnd: function () {
       thisCellValue = this.getValue();
@@ -449,11 +407,3 @@ function insertAtCaret(areaId, text) {
   txtarea.focus();
   txtarea.scrollTop = scrollPos;
 }
-/*
-$(window).resize(function() {
-	resizeTimer = window.setTimeout(function() {
-		updateDimensions(stimTable);
-	}, 100);
-	window.clearTimeout(resizeTimer);
-});
-*/
