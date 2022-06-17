@@ -148,6 +148,12 @@ if (
   );
 }
 
+$("#everything").append(
+  $("<input>")
+    .prop("id", "false_submit")
+    .val(0)
+)
+
 /*
  * Defining objects
  */
@@ -286,9 +292,17 @@ $("#proceed_button").on("click", function () {
     appropriate_message(
       "You're missing some responses. Please fill in all the answers for the questions in red above."
     );
+
+    /*
+     * count how many times the participant has tried to proceed
+     */
+    var submit_fails = $("#false_submit")
+      .val();
+
+
   } else if (current_tab > survey_obj.tabs) {
     appropriate_message(
-      "Error - please contact Scientific Open Solutions about this problem, error 'Survey_001'."
+      "Error - please contact the researcher about this problem, error 'Survey_001'."
     );
   }
 });
