@@ -101,9 +101,6 @@ Project = {
   },
   finish_phase: function (go_to_info) {
 
-    // get date in useful format
-
-
     phase_end_ms = new Date().getTime();
     phase_inputs = {};
     $("#experiment_progress").css(
@@ -276,8 +273,6 @@ Project = {
         "post_0_US_date"
       ]);
 
-      console.log("clean_phase_responses");
-      console.log(clean_phase_responses);
       clean_phase_responses.record_id = phase_responses.username;
 
 
@@ -285,50 +280,56 @@ Project = {
       clean_phase_responses['redcap_repeat_instrument'] = this_location.toLowerCase();
 
 
-      /*
-      Object.keys(phase_responses).forEach(function(old_key){
-
-        Object.defineProperty(
-          phase_responses,
-          this_location + "_" + old_key,
-          Object.getOwnPropertyDescriptor(
-            phase_responses,
-            old_key
-          )
-        );
-        delete phase_responses[old_key];
-      });
-      */
-
 
       console.log("just before the ajax");
+
+      function redcap_post(
+        this_url,
+        this_data,
+        attempt_no
+      ){
+        console.log("attempt number " + attempt_no);
+        $.ajax({
+          type: "POST",
+          url: this_url,
+          crossDomain: true,
+          data: this_data,
+          success: function(result){
+            console.log("result");
+            console.log(result);
+            if(result.toLowerCase().indexOf("error") !== -1 | result.toLowerCase().indexOf("count") == -1){
+              attempt_no++;
+              if(attempt_no > 2){
+                alert("This data has not submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
+              } else {
+                redcap_post(
+                  this_url,
+                  this_data,
+                  attempt_no
+                );
+              }
+            }
+          }
+        });
+      };
+
+      redcap_post(
+        project_json.this_condition.redcap_url,
+        clean_phase_responses,
+        0
+      );
+      /*
       $.ajax({
         type: "POST",
         url: project_json.this_condition.redcap_url,
         crossDomain: true,
-        data: clean_phase_responses
-
-        /*
-        {
-          "record_id": parent.parent.$("#prehashed_code").val(),
-          "participant_code": $("#participant_code").val(),
-          "trial_no" : parent.parent.project_json.trial_no,
-          //"participant_confirm": parent.parent.$("#prehashed_code").val(),
-          "shape_response_time": this_rt,
-          "color_response": $("#color_response").val(),
-          "shape_response_complete": 2
-        }
-        */,
+        data: clean_phase_responses,
         success: function(result){
           console.log("result");
           console.log(result);
-          //Phase.submit();
         }
       });
-
-
-
-
+      */
     }
 
     switch (Project.get_vars.platform) {
@@ -393,6 +394,7 @@ Project = {
     var code_location =
       project_json.phasetypes[this_proc[post_no + "phasetype"]];
     this_phase = project_json.phasetypes[this_proc[post_no + "phasetype"]];
+
 
     //look through all variables and replace with the value
 
@@ -667,18 +669,6 @@ function clean_phasetypes() {
     return row;
   });
 
-  /*
-  project_json.parsed_proc.forEach(function (row, row_index) {
-    //identify code columns
-    var tt_cols = Object.keys(row).filter(
-      (this_key) => this_key.indexOf("phasetype") !== -1
-    );
-    tt_cols.forEach(function (tt_col) {
-      project_json.parsed_proc[row_index][tt_col] =
-        project_json.parsed_proc[row_index][tt_col].toLowerCase();
-    });
-  });
-  */
   Project.activate_pipe();
 }
 
@@ -720,7 +710,6 @@ function detect_exe() {
     Project.activate_pipe();
   });
 }
-
 function final_phase() {
   switch (Project.get_vars.platform) {
     case "github":
@@ -798,7 +787,7 @@ function final_phase() {
           project_json.responses.length
         );
       });
-      var download_at_end = project_json.this_condition.download_at_end;
+      download_at_end = project_json.this_condition.download_at_end;
       if (download_at_end === undefined) {
         download_at_end = "on";
       }
@@ -828,7 +817,10 @@ function final_phase() {
             "<h3 class='text-primary'>Please do not close this window until it has been confirmed that the researcher has been e-mailed your data (or you have downloaded the data yourself that you will e-mail the researcher). If you do not get a prompt to do this within 30 seconds, press CTRL-S and you should be able to directly download your data.</h3>"
         );
       } else if (download_at_end === "off") {
-        // do nothing
+        $("#download_div").html(
+          "<h1 class='text-danger'>" +
+            "<h3 class='text-primary'>If you would like to save your data (e.g. for your interest or as a back-up) press CTRL-S and you should be able to directly download your data.</h3>"
+        );
       }
       function online_save_check() {
         setTimeout(function () {
@@ -847,15 +839,8 @@ function final_phase() {
                     " please copy the link into a new window to proceed there."
                 );
               }
-              var download_at_end_html;
-              if (project_json.this_condition.download_at_end !== "off") {
-                download_at_end_html =
-                  " If you'd like to download your raw data <span id='download_json'>click here</span></h1>";
-              } else {
-                download_at_end_html = "";
-              }
               $("#project_div").html(
-                "<h1>Thank you for participating." + download_at_end_html
+                "<h1>Thank you for participating. If you'd like to download your raw data <span id='download_json'>click here</span></h1>"
               );
               $("#download_json").on("click", function () {
                 precrypted_data(
@@ -886,14 +871,8 @@ function final_phase() {
     case "preview":
     case "onlinepreview":
       online_data_obj.finished_and_stored = true;
-      if (project_json.this_condition.download_at_end !== "off") {
-        download_message =
-          "You can download the data by clicking <b><span id='download_json'>here</span></b>.";
-      } else {
-        download_message = "";
-      }
       $("#project_div").html(
-        "<h1>You have finished. " + download_message + "</h1>"
+        "<h1>You have finished. You can download the data by clicking <b><span id='download_json'>here</span></b></h1>"
       );
       $("#download_json").on("click", function () {
         precrypted_data(project_json, "What do you want to save this file as?");
@@ -905,7 +884,6 @@ function final_phase() {
       break;
   }
 }
-
 function full_screen() {
   if (typeof project_json.this_condition.fullscreen !== "undefined") {
     if (project_json.this_condition.fullscreen === "on") {
@@ -986,21 +964,31 @@ function get_htmls() {
 }
 
 function insert_end_checks() {
-  var this_proc = project_json.parsed_proc;
-  var this_proc_end = {
-    item: 0,
-    max_time: "",
-    text: "",
-    code: "end_checks_experiment",
-  };
-  var shuffle_levels = Object.keys(project_json.parsed_proc[0]).filter(
-    (item) => item.indexOf("shuffle") !== -1
-  );
-  shuffle_levels.forEach(function (shuffle_level) {
-    this_proc_end[shuffle_level] = "off";
-  });
+  if (
+    Project.get_vars.platform === "preview" ||
+    (typeof project_json.this_condition.skip_quality !== "undefined" &&
+      project_json.this_condition.skip_quality.toLowerCase() === "yes")
+  ) {
 
-  this_proc = this_proc.push(this_proc_end);
+  } else {
+
+    var this_proc = project_json.parsed_proc;
+    var this_proc_end = {
+      item: 0,
+      max_time: "",
+      text: "",
+      phasetype: "end_checks_experiment",
+    };
+    var shuffle_levels = Object.keys(project_json.parsed_proc[0]).filter(
+      (item) => item.indexOf("shuffle") !== -1
+    );
+    shuffle_levels.forEach(function (shuffle_level) {
+      this_proc_end[shuffle_level] = "off";
+    });
+
+    this_proc.push(this_proc_end);
+
+  }
   Project.activate_pipe();
 }
 
@@ -1869,6 +1857,7 @@ function write_phase_iframe(index) {
   var post_code = Object.keys(this_proc).filter(function (key) {
     return /phasetype/.test(key);
   });
+
 
   phase_events = post_code.filter(function (post_phase) {
     return this_proc[post_phase] !== "";
