@@ -28,7 +28,7 @@ function isPhaseTypeHeader(colHeader) {
   ) {
     postN = colHeader.substr(5, colHeader.length - 16);
     postN = parseInt(postN);
-    if (!isNaN(postN) && postN != 0) {
+    if (!isNaN(postN) && postN !== 0) {
       isPhaseTypeCol = true;
     }
   }
@@ -46,6 +46,12 @@ function isShuffleHeader(colHeader) {
   if (colHeader.toLowerCase().indexOf("shuffle") !== -1) isShuffle = true;
   return isShuffle;
 }
+function isSurveyHeader(colHeader){
+  var isSurvey = false;
+  if (colHeader.toLowerCase() === "survey") isSurvey = true;
+  return isSurvey;
+}
+
 function firstRowRenderer(instance, td, row, col, prop, value, cellProperties) {
   Handsontable.renderers.TextRenderer.apply(this, arguments);
   td.style.fontWeight = "bold";
@@ -113,7 +119,7 @@ function createHoT(container, data, sheet_name) {
         topRow[k] = this.getDataAtCell(0, k); // add the current column header to topRow array
         for (l = 0; l < k; l++) {
           // loop through all the columns before the current one
-          if (this.getDataAtCell(0, k) == this.getDataAtCell(0, l)) {
+          if (this.getDataAtCell(0, k) === this.getDataAtCell(0, l)) {
             // if another column has the same header:
             if (this.isEmptyCol(k)) {
               // check if it's a blank column
@@ -235,8 +241,8 @@ function createHoT(container, data, sheet_name) {
       );
 
       thisCellValue =
-        thisCellValue == null ? (thisCellValue = "") : thisCellValue;
-      column = column == null ? (column = "") : column;
+        thisCellValue === null ? (thisCellValue = "") : thisCellValue;
+      column = column === null ? (column = "") : column;
       window["Current HoT Coordinates"] = coords;
       helperActivate(column, thisCellValue, sheet_name);
     },
@@ -258,9 +264,7 @@ function createHoT(container, data, sheet_name) {
           }
           if (isPhaseTypeHeader(thisHeader)) {
             cellProperties.type = "dropdown";
-
             cellProperties.visibleRows = 10;
-
             cellProperties.source = $.map(
               $("#phasetype_select option"), function(option){
                 if(option.value.toLowerCase() !== "select a file"){
@@ -269,8 +273,21 @@ function createHoT(container, data, sheet_name) {
               }
             );
             cellProperties.trimDropdown = false;
-
-            cellProperties.renderer = trialTypesRenderer;
+            //cellProperties.renderer = trialTypesRenderer;
+          } else if(isSurveyHeader(thisHeader)){
+            cellProperties.type = "dropdown";
+            cellProperties.visibleRows = 10;
+            cellProperties.source = $.map(
+              $("#survey_select option"), function(option){
+                if(option.value.toLowerCase() !== "select a survey"){
+                  return option.value
+                    .replace("default|", "")
+                    .replace("user|", "");
+                }
+              }
+            );
+            cellProperties.trimDropdown = false;
+            //cellProperties.renderer = trialTypesRenderer;
           } else {
             cellProperties.type = "text";
             if (isNumericHeader(thisHeader)) {

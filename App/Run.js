@@ -1,6 +1,14 @@
 project_json = {};
 var home_dir;
 
+var start_date_time = new Date()
+  .toLocaleDateString("en-US")
+  .replaceAll("/","_") +
+  "_" +
+  new Date()
+    .toLocaleTimeString()
+    .replaceAll(":","_");
+
 /*
  * Objects
  */
@@ -240,10 +248,7 @@ Project = {
     /*
     * save to redcap (if appropriate)
     */
-    console.log("project_json.this_condition.redcap_url");
-    console.log(project_json.this_condition.redcap_url);
     if(typeof(project_json.this_condition.redcap_url) !== "undefined"){
-      console.log("hi, we;re here");
 
       var phase_responses = project_json.responses[project_json.responses.length-1];
 
@@ -273,7 +278,9 @@ Project = {
         "post_0_US_date"
       ]);
 
-      clean_phase_responses.record_id = phase_responses.username;
+      clean_phase_responses.record_id = phase_responses.username +
+        "_" +
+        start_date_time;
 
 
       clean_phase_responses['redcap_repeat_instance'] = project_json.phase_no;
@@ -297,7 +304,7 @@ Project = {
           success: function(result){
             console.log("result");
             console.log(result);
-            if(result.toLowerCase().indexOf("error") !== -1 | result.toLowerCase().indexOf("count") == -1){
+            if(result.toLowerCase().indexOf("error") !== -1 | result.toLowerCase().indexOf("count") === -1){
               attempt_no++;
               if(attempt_no > 2){
                 alert("This data has not submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
@@ -1407,7 +1414,7 @@ function precrypted_data(decrypted_data, message) {
 
   bootbox.prompt({
     title: message,
-    value: $("#participant_code").val() + ".csv",
+    value: $("#participant_code").val() + "_" + start_date_time + ".csv",
     callback: function (result) {
       if (result !== null) {
         save_csv(result, Papa.unparse(downloadable_csv));
