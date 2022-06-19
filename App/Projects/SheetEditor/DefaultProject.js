@@ -37,20 +37,7 @@ default_project = {
       "",
       5,
       "",
-    ],
-    [
-      "condition_2",
-      "You can put more detailed notes in this field",
-      "stimuli_1.csv",
-      "procedure_1.csv",
-      "off",
-      "",
-      "on",
-      "",
-      "",
-      5,
-      "",
-    ],
+    ]
   ],
   all_stims: {
     "stimuli_1.csv": [

@@ -144,9 +144,17 @@ if (
     );
 } else {
   appropriate_message(
-    "If you are the researcher, please check the 'settings for this survey. The input for 'tab_hor_vert' appears to be invalid. Please change it to 'horizontal' or 'vertical' or 'none' or remove 'tab_hot_vert' altogether from the settings, which will make the tabs invisible"
+    "If you are the researcher, please check the 'settings' for this survey. The input for 'tab_hor_vert' appears to be invalid. Please change it to 'horizontal' or 'vertical' or 'none' or remove 'tab_hot_vert' altogether from the settings, which will make the tabs invisible"
   );
 }
+
+$("#everything").append(
+  $("<input>")
+    .prop("id", "false_submit")
+    .prop("name", "false_submit")
+    .attr("type", "hidden")
+    .val(0)
+)
 
 /*
  * Defining objects
@@ -286,9 +294,17 @@ $("#proceed_button").on("click", function () {
     appropriate_message(
       "You're missing some responses. Please fill in all the answers for the questions in red above."
     );
+
+    /*
+     * count how many times the participant has tried to proceed
+     */
+    var submit_fails = $("#false_submit").val();
+        submit_fails++;
+        $("#false_submit").val(submit_fails);
+
   } else if (current_tab > survey_obj.tabs) {
     appropriate_message(
-      "Error - please contact Scientific Open Solutions about this problem, error 'Survey_001'."
+      "Error - please contact the researcher about this problem, error 'Survey_001'."
     );
   }
 });

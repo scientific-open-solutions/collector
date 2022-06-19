@@ -452,10 +452,13 @@ $("#run_btn").on("click", function () {
       select_html +
       "To run the study copy the following into a browser:<br>(make sure you've pushed the latest changes and waited 5+ minutes) <input class='form-control' value='" +
       github_url +
-      "' onfocus='this.select();' id='experiment_url_input'>" +
+      "' onfocus='this.select();' id='experiment_url_input'>",
+      /*
       "To <b>Preview</b> a project copy the following into a browser: <input class='form-control' value='" +
       github_url.replace("platform=github", "platform=onlinepreview") +
-      "' onfocus='this.select();' id='experiment_url_input'>",
+      "' onfocus='this.select();'" +
+      " id='experiment_url_input'>",
+      */
     buttons: {
       local: {
         label: "Run",
