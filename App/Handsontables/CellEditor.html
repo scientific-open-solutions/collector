@@ -174,10 +174,10 @@
     //insert content from ace editor into iframe
     var cell_contents = cell_editor.getValue();
 
-    if (Collector.electron.fs.home_dir() !== "") {
+    if (CElectron.fs.home_dir() !== "") {
       cell_contents = cell_contents.replaceAll(
         "\.\./User",
-        Collector.electron.fs.home_dir() + "/User"
+        CElectron.fs.home_dir() + "/User"
       );
     }
     /* hopefully can delete this:

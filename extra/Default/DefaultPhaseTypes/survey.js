@@ -26,7 +26,7 @@ if(typeof(parent.parent.Project) !== "undefined"){
     case "localhost":
     case "preview":
       org_repo = parent.parent.project_json.location.split("/");
-      home_dir = parent.parent.Collector.electron.git.locate_repo({
+      home_dir = parent.parent.CElectron.git.locate_repo({
         org: org_repo[0],
         repo: org_repo[1],
       });

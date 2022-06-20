@@ -1099,7 +1099,7 @@ data.design = jQuery.extend(true, {}, design);
         console.dir(data);
         data.forEach(function (trial, trial_no) {
           if (trial !== null) {
-            parent.parent.Collector.electron.fs.write_data(
+            parent.parent.CElectron.fs.write_data(
               parent.parent.Study.get_vars.location,
               parent.parent.$("#participant_code").val() +
                 "-" +

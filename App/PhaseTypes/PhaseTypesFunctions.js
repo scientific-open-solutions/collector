@@ -41,7 +41,7 @@ code_obj = {
           $("#graphic_editor").hide();
           master.phasetypes.file = $("#phasetype_select").val();
           code_obj.load_file("default");
-          var response = Collector.electron.fs.delete_file(
+          var response = CElectron.fs.delete_file(
             "PhaseTypes/" + deleted_phasetype + ".html"
           );
 
@@ -73,7 +73,7 @@ code_obj = {
     switch (Collector.detect_context()) {
       case "localhost":
         cleaned_code = this_file.toLowerCase().replace(".html", "") + ".html";
-        this_content = Collector.electron.fs.read_file(
+        this_content = CElectron.fs.read_file(
           "PhaseTypes",
           cleaned_code
         );
@@ -122,8 +122,8 @@ code_obj = {
     } else {
       Collector.custom_alert("success - " + name + " updated");
     }
-    if (typeof Collector.electron !== "undefined") {
-      var write_response = Collector.electron.fs.write_file(
+    if (typeof CElectron !== "undefined") {
+      var write_response = CElectron.fs.write_file(
         "PhaseTypes",
         name.toLowerCase().replace(".html", "") + ".html",
         content
@@ -137,13 +137,13 @@ code_obj = {
 
 function list_phasetypes(to_do_after) {
   //try{
-  if (typeof Collector.electron !== "undefined") {
-    var files = Collector.electron.fs.list_phasetypes();
+  if (typeof CElectron !== "undefined") {
+    var files = CElectron.fs.list_phasetypes();
     files = JSON.parse(files);
     files = files.map((item) => item.replaceAll(".html", ""));
     files.forEach(function (file) {
       if (Object.keys(master.phasetypes.user).indexOf(file) === -1) {
-        master.phasetypes.user[file] = Collector.electron.fs.read_file(
+        master.phasetypes.user[file] = CElectron.fs.read_file(
           "PhaseTypes",
           file + ".html"
         );
@@ -192,7 +192,7 @@ function list_phasetypes(to_do_after) {
 
       switch (Collector.detect_context()) {
         case "localhost":
-          var trial_content = Collector.electron.fs.read_default(
+          var trial_content = CElectron.fs.read_default(
             "DefaultPhaseTypes",
             item
           );

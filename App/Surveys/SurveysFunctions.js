@@ -32,7 +32,7 @@ function load_default_surveys() {
   switch (Collector.detect_context()) {
     case "localhost":
       default_survey_files.forEach(function (default_survey) {
-        survey_content = Collector.electron.fs.read_default(
+        survey_content = CElectron.fs.read_default(
           "DefaultSurveys",
           default_survey
         );
@@ -201,7 +201,7 @@ function create_survey_HoT(this_survey) {
             var this_item = this.getDataAtCell(m, k);
 
             /*
-             * replace "." with "_" to prevent errors from "."s 
+             * replace "." with "_" to prevent errors from "."s
              */
             if(this_item.indexOf(".") !== -1){
               this.setDataAtCell(m, k, this_item.replaceAll(".", "_"));
@@ -291,11 +291,11 @@ function list_surveys() {
       master.surveys.default_surveys
     );
 
-    var survey_files = JSON.parse(Collector.electron.fs.list_surveys());
+    var survey_files = JSON.parse(CElectron.fs.list_surveys());
 
     survey_files.forEach(function (survey_file) {
       var survey_csv = Papa.parse(
-        Collector.electron.fs.read_file("Surveys", survey_file)
+        CElectron.fs.read_file("Surveys", survey_file)
       ).data;
 
       master.surveys.user_surveys[survey_file] = survey_csv;
@@ -361,7 +361,7 @@ function preview_survey(this_survey) {
     $("#survey_preview").css("width", window.innerWidth);
   }
 
-  survey_template = Collector.electron.fs.read_default(
+  survey_template = CElectron.fs.read_default(
     "DefaultPhaseTypes",
     "survey.html"
   );

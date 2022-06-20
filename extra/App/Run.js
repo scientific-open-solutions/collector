@@ -341,7 +341,7 @@ Project = {
 
     switch (Project.get_vars.platform) {
       case "localhost":
-        var data_response = Collector.electron.fs.write_data(
+        var data_response = CElectron.fs.write_data(
           Project.get_vars.location,
           $("#participant_code").val() +
             "_" +
@@ -483,7 +483,7 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
      */
 
     if (
-      typeof Collector.electron !== "undefined" &&
+      typeof CElectron !== "undefined" &&
       window.navigator.platform.toLowerCase().indexOf("mac") !== -1
     ) {
       this_phase = this_phase.replaceAll("../User/", home_dir + "/User/");
@@ -1114,7 +1114,7 @@ function load_phases() {
     case "simulateonline":
     case "localhost":
     case "preview":
-      home_dir = Collector.electron.git.locate_repo({
+      home_dir = CElectron.git.locate_repo({
         org: org_repo[0],
         repo: org_repo[1],
       });
@@ -1177,11 +1177,11 @@ function parse_sheets() {
     case "simulateonline":
     case "preview":
       var folder = "Projects/" + Project.get_vars.location;
-      var proc_sheet_content = Collector.electron.fs.read_file(
+      var proc_sheet_content = CElectron.fs.read_file(
         folder,
         proc_sheet_name
       );
-      var stim_sheet_content = Collector.electron.fs.read_file(
+      var stim_sheet_content = CElectron.fs.read_file(
         folder,
         stim_sheet_name
       );
@@ -1764,10 +1764,10 @@ function start_project() {
       case "localhost":
       case "preview":
         electron_wait = setInterval(function () {
-          if (typeof Collector.electron.fs.read_file !== "undefined") {
+          if (typeof CElectron.fs.read_file !== "undefined") {
             clearInterval(electron_wait);
             project_json = JSON.parse(
-              Collector.electron.fs.read_file(
+              CElectron.fs.read_file(
                 "Projects",
                 Project.get_vars.location + ".json"
               )
@@ -1777,7 +1777,7 @@ function start_project() {
              * load conditions sheet
              */
             project_json.conditions = Collector.PapaParsed(
-              Collector.electron.fs.read_file(
+              CElectron.fs.read_file(
                 "Projects/" + Project.get_vars.location,
                 "conditions.csv"
               )

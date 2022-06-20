@@ -1,5 +1,5 @@
 $("#change_local_data_btn").on("click", function () {
-  var folder_dir = Collector.electron.find_path()[0];
+  var folder_dir = CElectron.find_path()[0];
   if (folder_dir) {
     user.data_folder = folder_dir;
     Collector.save_user();
@@ -57,7 +57,7 @@ switch (Collector.detect_context()) {
   case "localhost":
     $("#local_data_btn").show(500);
     $("#local_data_btn").on("click", function () {
-      var response = Collector.electron.open_folder(
+      var response = CElectron.open_folder(
         "relative",
         user.data_folder
       );
