@@ -34,8 +34,9 @@ function createWindow() {
     title: "Collector: Cat " + app.getVersion(),
     icon: __dirname + "/logos/collector_sized.png",
     webPreferences: {
-      contextIsolation: false, //has to be false with the way I've designed this
-      enableRemoteModule: true,
+      nodeIntegration: false,
+      contextIsolation: true, //has to be false with the way I've designed this
+      enableRemoteModule: false,
       //preload:                    [path.join(__dirname, 'App/libraries/collector/Collector.js')],
       preload: path.join(__dirname, "preload.js"),
       worldSafeExecuteJavaScript: true,

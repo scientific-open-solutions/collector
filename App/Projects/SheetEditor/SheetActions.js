@@ -44,7 +44,7 @@ $("#delete_proj_btn").on("click", function () {
 
           //delete the local file if this is
           if (Collector.detect_context() === "localhost") {
-            Collector.electron.fs.delete_project(
+            CElectron.fs.delete_project(
               proj_name,
               function (response) {
                 if (response !== "success") {
@@ -89,7 +89,7 @@ $("#delete_proc_button").on("click", function () {
            */
           var file_path = "Projects" + "/" + experiment + "/" + proc_file;
           if (Collector.detect_context() === "localhost") {
-            var this_response = Collector.electron.fs.delete_file(file_path);
+            var this_response = CElectron.fs.delete_file(file_path);
             if (this_response !== "success") {
               bootbox.alert(this_response);
             } else {
@@ -131,7 +131,7 @@ $("#delete_stim_button").on("click", function () {
            */
           var file_path = "Projects" + "/" + project + "/" + stim_file;
           if (Collector.detect_context() === "localhost") {
-            var this_response = Collector.electron.fs.delete_file(file_path);
+            var this_response = CElectron.fs.delete_file(file_path);
             if (this_response !== "success") {
               bootbox.alert(this_response);
             } else {
@@ -248,7 +248,7 @@ $("#new_stim_button").on("click", function () {
 });
 
 $("#open_proj_folder").on("click", function () {
-  Collector.electron.open_folder(
+  CElectron.open_folder(
     "repo",
     "User/Projects/" + $("#project_list").val()
   );
@@ -283,12 +283,12 @@ $("#rename_proj_btn").on("click", function () {
             master.projects.projects[original_name];
           delete master.projects.projects[original_name];
 
-          Collector.electron.fs.write_project(
+          CElectron.fs.write_project(
             new_name,
             JSON.stringify(master.projects.projects[new_name], null, 2),
             function (response) {
               if (response === "success") {
-                Collector.electron.fs.delete_project(
+                CElectron.fs.delete_project(
                   original_name,
                   function (response) {
                     if (response === "success") {
@@ -787,7 +787,7 @@ $("#save_btn").on("click", function () {
       this_proj.stims_csv = {};
 
       this_proj = JSON.stringify(this_proj, null, 2);
-      Collector.electron.fs.write_project(
+      CElectron.fs.write_project(
         project,
         this_proj,
         function (response) {
@@ -797,7 +797,7 @@ $("#save_btn").on("click", function () {
         }
       );
 
-      write_response = Collector.electron.fs.write_file(
+      write_response = CElectron.fs.write_file(
         "",
         "master.json",
         JSON.stringify(master, null, 2)
@@ -809,7 +809,7 @@ $("#save_btn").on("click", function () {
       }
     }
   } else {
-    write_response = Collector.electron.fs.write_file(
+    write_response = CElectron.fs.write_file(
       "",
       "master.json",
       JSON.stringify(master, null, 2)

@@ -198,13 +198,13 @@ function initiate_actions() {
 
             $("#phasetype_select").attr("previousvalue", "");
 
-            var response = Collector.electron.fs.write_file(
+            var response = CElectron.fs.write_file(
               "Phase",
               new_name.replace(".html", "") + ".html",
               master.phasetypes.user[new_name]
             );
             if (write_response === "success") {
-              Collector.electron.fs.delete_file(
+              CElectron.fs.delete_file(
                 "PhaseTypes/" + original_name,
                 function (response) {
                   if (response === "success") {

@@ -125,7 +125,7 @@
   survey_obj = {
     save: function (survey_name, survey_content) {
       if (typeof master.surveys.default_surveys[survey_name] == "undefined") {
-        var write_response = Collector.electron.fs.write_file(
+        var write_response = CElectron.fs.write_file(
           "Surveys",
           survey_name.toLowerCase().replace(".csv", "") + ".csv",
           survey_content

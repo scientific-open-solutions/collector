@@ -37,7 +37,7 @@ navbar_names.forEach(function (this_name, index) {
  * Detect if there are any repositories yet
  */
 
-//Collector.electron.fs.list_projects();
+//CElectron.fs.list_projects();
 navbar_html = "";
 navbar_names.forEach(function (name, index) {
   var this_icon = icons[index];
@@ -106,14 +106,14 @@ $(".top_icon").hover(
 
 $("#github_logo").on("click", function () {
   if (typeof user.repos === "undefined") {
-    var git_exists = Collector.electron.git.exists();
+    var git_exists = CElectron.git.exists();
     if (git_exists !== "true-true") {
       git_exists = git_exists.split("-");
       if (git_exists[0] !== "true") {
         bootbox.prompt(
           "What github email do you want to use?",
           function (email) {
-            var email_response = Collector.electron.git.set_email(email);
+            var email_response = CElectron.git.set_email(email);
             if (email_response !== "success") {
               bootbox.alert("error: " + email_response);
             }
@@ -124,7 +124,7 @@ $("#github_logo").on("click", function () {
         bootbox.prompt(
           "What github username do you want to use?",
           function (name) {
-            var name_response = Collector.electron.git.set_name(name);
+            var name_response = CElectron.git.set_name(name);
             if (name_response !== "success") {
               bootbox.alert("error: " + name_response);
             }
@@ -154,7 +154,7 @@ $("#github_logo").on("click", function () {
           typeof master.github.repository !== "undefined" &&
           master.github.repository !== ""
         ) {
-          var commits_behind = Collector.electron.git.status({
+          var commits_behind = CElectron.git.status({
             organization: master.github.organization,
             repository: master.github.repository,
           });
@@ -174,7 +174,7 @@ $("#github_logo").on("click", function () {
    * check repository information
    */
 
-  var git_status = Collector.electron.git.status({
+  var git_status = CElectron.git.status({
     org: $("#select_org").val(),
     repo: $("#select_repo").val(),
   });
@@ -258,7 +258,7 @@ $("#github_logo").on("click", function () {
           git_type = git_update;
         }
       });
-      var response = Collector.electron.git.undo({
+      var response = CElectron.git.undo({
         org: $("#select_org").val(),
         repo: $("#select_repo").val(),
         path: $(this).val(),

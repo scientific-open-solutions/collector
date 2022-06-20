@@ -16,7 +16,7 @@ $("#delete_survey_btn").on("click", function () {
         delete master.surveys.user_surveys[survey_name];
 
         //need to use electron to delete here
-        var response = Collector.electron.fs.delete_file(
+        var response = CElectron.fs.delete_file(
           "Surveys/" + survey_name.replace(".csv", "") + ".csv"
         );
         if (response === "success") {
@@ -117,7 +117,7 @@ $("#rename_survey_btn").on("click", function () {
           ) {
             bootbox.alert("This name clashes with an already existing survey");
           } else {
-            var write_response = Collector.electron.fs.write_file(
+            var write_response = CElectron.fs.write_file(
               "Surveys",
               new_survey_name,
               Papa.unparse(master.surveys.user_surveys[old_survey_name])
@@ -125,7 +125,7 @@ $("#rename_survey_btn").on("click", function () {
             if (write_response === "success") {
               master.surveys.user_surveys[new_survey_name] =
                 master.surveys.user_surveys[old_survey_name];
-              var delete_response = Collector.electron.fs.delete_file(
+              var delete_response = CElectron.fs.delete_file(
                 "Surveys/" + old_survey_name.replace(".csv", "") + ".csv"
               );
 
