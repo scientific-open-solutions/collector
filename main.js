@@ -19,7 +19,7 @@ function createWindow() {
         "Content-Security-Policy": [
 
 
-          "default-src 'self' 'unsafe-inline' data: filesystem:",
+          "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: filesystem",
 /*
           "script-src 'self'",
           "connect-src 'self'",
