@@ -53,7 +53,22 @@ function createWindow() {
   mainWindow.loadFile(__dirname + "/App/index_local.html");
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    //if (url === 'about:blank') {
+      return {
+        action: 'allow',
+        overrideBrowserWindowOptions: {
+          frame: true,
+          fullscreenable: true,
+          //backgroundColor: 'black',
+          webPreferences: {
+            preload: path.join(__dirname, "preload.js")
+          }
+        }
+      }
+    //}
+    //return { action: 'deny' }
+  })
 }
 app.on("ready", () => {
   createWindow();
