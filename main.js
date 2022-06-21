@@ -17,12 +17,16 @@ function createWindow() {
       responseHeaders: {
         ...details.responseHeaders,
         "Content-Security-Policy": [
-          //"default-src 'self'",
-          //"script-src 'self'",
-          //"connect-src 'self'",
-          //"img-src 'self'",
-          //"style-src 'self'",
-          //"font-src 'self'"
+
+
+          "default-src 'self' 'unsafe-inline' data: filesystem:",
+/*
+          "script-src 'self'",
+          "connect-src 'self'",
+          "img-src 'self'",
+          "style-src 'self'",
+          "font-src 'self'"
+          */
         ],
       },
     });
