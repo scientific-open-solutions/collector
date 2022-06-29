@@ -832,7 +832,7 @@ function final_phase() {
         } else {
           $("#download_div").append(
             $("<div>")
-              .html("You can now return to SONA by clicking <a href='" + project_json.this_condition.sona_url + "&sona_id=" + Project.get_vars.sona_id + "' id='sona_link'>here</a>")
+              .html("You can now return to SONA by clicking <a href='" + project_json.this_condition.sona_url + "&sona_id=" + Project.get_vars.sona_id + "' id='sona_link' target='_blank'>here</a>")
           );
         }
       }
