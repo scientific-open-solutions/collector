@@ -284,9 +284,8 @@ Project = {
 
 
       clean_phase_responses['redcap_repeat_instance'] = project_json.phase_no;
-      clean_phase_responses['redcap_repeat_instrument'] = this_location.toLowerCase();
-
-
+      clean_phase_responses['redcap_repeat_instrument'] = "main";
+      // this_location.toLowerCase();
 
       console.log("just before the ajax");
 
