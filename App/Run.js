@@ -347,7 +347,7 @@ Project = {
           console.log("result");
           console.log(result);
         }
-      });      
+      });
     }
 
     switch (Project.get_vars.platform) {
