@@ -85,8 +85,8 @@ function create_survey_HoT(this_survey) {
 
             cell_editor.setValue(
               this_sheet.getDataAtCell(
-                selection.start.row,
-                selection.start.col
+                selection[0].start.row,
+                selection[0].start.col
               ),
               -1
             );
