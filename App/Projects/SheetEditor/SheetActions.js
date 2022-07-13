@@ -549,8 +549,6 @@ $("#save_btn").on("click", function () {
       });
       this_proc = cleaned_parsed_proc.map(function (row, row_index) {
         var cleaned_row = Collector.clean_obj_keys(row);
-        console.log("cleaned_row");
-        console.log(cleaned_row);
         if (phasetype_files.indexOf(cleaned_row.phasetype) === -1) {
           phasetype_files.push(cleaned_row.phasetype.toLowerCase());
         }
@@ -628,7 +626,7 @@ $("#save_btn").on("click", function () {
      */
     this_proj.phasetypes = {};
     phasetype_files.forEach(function (code_file) {
-      if (typeof master.phasetypes.user[code_file] === "undefined") {
+      if (typeof master.phasetypes.default[code_file] !== "undefined") {
         this_proj.phasetypes[code_file] =
           "[[[LOCATION]]]../Default/DefaultPhaseTypes/" +
           code_file.replace(".html", "") +
