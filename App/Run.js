@@ -869,12 +869,7 @@ function final_phase() {
               $("#project_div").html(
                 "<h1>Thank you for participating. If you'd like to download your raw data <span id='download_json'>click here</span></h1>"
               );
-              $("#download_json").on("click", function () {
-                precrypted_data(
-                  project_json,
-                  "What do you want to save this file as?"
-                );
-              });
+
               //$("#participant_country").show();
               //$("#participant_country").load("ParticipantCountry.html");
               window.localStorage.removeItem("project_json");
@@ -892,6 +887,12 @@ function final_phase() {
           }
         }, 1000);
       }
+      $("#download_json").on("click", function () {
+        precrypted_data(
+          project_json,
+          "What do you want to save this file as?"
+        );
+      });
       //online_save_check();
       break;
     case "localhost":
