@@ -77,9 +77,6 @@ $("#delete_proc_button").on("click", function () {
           var project = $("#project_list").val();
           var proc_file = $("#proc_select").val();
           delete master.projects.projects[project].all_procs[proc_file];
-          delete master.projects.projects[project].parsed_procs[proc_file];
-
-          delete master.projects.projects[project].procs_csv[proc_file];
 
           // update the lists
           update_handsontables();
@@ -87,7 +84,7 @@ $("#delete_proc_button").on("click", function () {
           /*
            * Delete the file locally if in electron
            */
-          var file_path = "Projects" + "/" + experiment + "/" + proc_file;
+          var file_path = "Projects" + "/" + project + "/" + proc_file;
           if (Collector.detect_context() === "localhost") {
             var this_response = CElectron.fs.delete_file(file_path);
             if (this_response !== "success") {
@@ -850,9 +847,9 @@ $("#upload_default_exp_btn").on("click", function () {
   if (default_project_name !== "Select an experiment") {
     $.get(
       "Default/DefaultProjects/" + default_project_name + ".json",
-      function (experiment_json) {
+      function (project_json) {
         upload_exp_contents(
-          JSON.stringify(experiment_json),
+          JSON.stringify(project_json),
           default_project_name
         );
         $("#upload_experiment_modal").hide();

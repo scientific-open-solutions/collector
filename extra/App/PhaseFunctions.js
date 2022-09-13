@@ -129,6 +129,7 @@ parent.parent.project_json.repeat_no; //        parent.parent.project_json.phase
   };
 
   Phase.elapsed = function () {
+    alert("Don't use this function, as it has an average lag of 10-20ms. This code hasn't been deleted as this might be addressed in the future. Instead, you can use something like \n\n Phase.set_timer(function(){\nbaseline_time_manual = (new Date()).getTime();\n},0);\n\n to capture the time the phase started.");
     if (Phase.post_no == "") {
       Phase.post_no = 0;
     }
