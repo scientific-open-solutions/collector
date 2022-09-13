@@ -139,7 +139,9 @@ function list_projects() {
       );
       master.projects.projects[project] = project_json;
     } catch (error) {
-      bootbox.alert("You have a problem with project:" + project);
+      if(project !== ".DS_Store"){
+        bootbox.alert("You have a problem with project:" + project);
+      }
     }
   });
 
