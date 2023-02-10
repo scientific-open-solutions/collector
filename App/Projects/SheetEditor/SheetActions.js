@@ -60,6 +60,7 @@ $("#delete_proj_btn").on("click", function () {
       }
     );
   }
+}
 });
 
 $("#delete_proc_button").on("click", function () {
@@ -336,6 +337,7 @@ $("#rename_proj_btn").on("click", function () {
       }
     }
   );
+}
 });
 
 $("#rename_proc_button").on("click", function () {
