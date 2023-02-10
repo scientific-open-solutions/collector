@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
+		Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey 
 -->
 <style>
   #spreadsheet_preview_tabs {
@@ -125,7 +125,7 @@
   survey_obj = {
     save: function (survey_name, survey_content) {
       if (typeof master.surveys.default_surveys[survey_name] == "undefined") {
-        var write_response = Collector.electron.fs.write_file(
+        var write_response = CElectron.fs.write_file(
           "Surveys",
           survey_name.toLowerCase().replace(".csv", "") + ".csv",
           survey_content

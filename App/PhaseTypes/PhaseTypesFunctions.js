@@ -15,17 +15,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
+		Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey 
 */
 $.ajaxSetup({ cache: false }); // prevents caching, which disrupts $.get calls
 
 code_obj = {
   delete_phasetypes: function () {
-    var deleted_code = $("#code_select").val();
-    master.phasetypes.file = $("#code_select").val();
+    var deleted_phasetype = $("#phasetype_select").val();
+    master.phasetypes.file = $("#phasetype_select").val();
     var this_file = master.phasetypes.file;
-    // var this_loc = "/code/" + master.phasetypes.file;
-    var this_loc = "the PhaseType: " + master.phasetypes.file;
+    var this_loc = "/code/" + master.phasetypes.file;
     bootbox.confirm(
       "Are you sure you want to delete " + this_loc + "?",
       function (result) {
@@ -37,20 +36,20 @@ code_obj = {
             delete master.phasetypes.graphic.files[this_file];
           }
           delete master.phasetypes.user[this_file];
-          $("#code_select").attr("previousvalue", "");
-          $("#code_select option:selected").remove();
+          $("#phasetype_select").attr("previousvalue", "");
+          $("#phasetype_select option:selected").remove();
           $("#graphic_editor").hide();
-          master.phasetypes.file = $("#code_select").val();
+          master.phasetypes.file = $("#phasetype_select").val();
           code_obj.load_file("default");
-          Collector.custom_alert("Successfully deleted " + this_loc);
-          Collector.electron.fs.delete_file(
-            "PhaseTypes/" + deleted_code + ".html",
-            function (response) {
-              if (response !== "success") {
-                bootbox.alert(response);
-              }
-            }
+          var response = CElectron.fs.delete_file(
+            "PhaseTypes/" + deleted_phasetype + ".html"
           );
+
+          if (response !== "success") {
+            bootbox.alert(response);
+          } else {
+            Collector.custom_alert("Successfully deleted " + this_loc);
+          }
         }
       }
     );
@@ -58,10 +57,10 @@ code_obj = {
   load_file: function (user_default) {
     $("#ACE_editor").show();
     $("#new_code_button").show();
-    $("#rename_code_button").show();
+    $("#rename_phasetype_button").show();
     if (user_default === "default") {
       $("#delete_phasetypes_button").hide();
-      $("#code_select")
+      $("#phasetype_select")
         .removeClass("user_code")
         .addClass("default_code");
     } else {
@@ -74,7 +73,7 @@ code_obj = {
     switch (Collector.detect_context()) {
       case "localhost":
         cleaned_code = this_file.toLowerCase().replace(".html", "") + ".html";
-        this_content = Collector.electron.fs.read_file(
+        this_content = CElectron.fs.read_file(
           "PhaseTypes",
           cleaned_code
         );
@@ -96,19 +95,19 @@ code_obj = {
       editor.setValue("");
     }
     if (
-      $("#code_select option").filter(function () {
+      $("#phasetype_select option").filter(function () {
         return $(this).val() === name;
       }).length === 0
     ) {
-      $("#code_select").append(
+      $("#phasetype_select").append(
         $("<option>", {
           value: name,
           text: name,
           class: "user_code",
         })
       );
-      $("#code_select").val(name);
-      $("#code_select")[0].className = $("#code_select")[0].className.replace(
+      $("#phasetype_select").val(name);
+      $("#phasetype_select")[0].className = $("#phasetype_select")[0].className.replace(
         "default_",
         "user_"
       );
@@ -123,8 +122,8 @@ code_obj = {
     } else {
       Collector.custom_alert("success - " + name + " updated");
     }
-    if (typeof Collector.electron !== "undefined") {
-      var write_response = Collector.electron.fs.write_file(
+    if (typeof CElectron !== "undefined") {
+      var write_response = CElectron.fs.write_file(
         "PhaseTypes",
         name.toLowerCase().replace(".html", "") + ".html",
         content
@@ -138,14 +137,14 @@ code_obj = {
 
 function list_phasetypes(to_do_after) {
   //try{
-  if (typeof Collector.electron !== "undefined") {
-    var files = Collector.electron.fs.list_phasetypes();
+  if (typeof CElectron !== "undefined") {
+    var files = CElectron.fs.list_phasetypes();
     files = JSON.parse(files);
     files = files.map((item) => item.replaceAll(".html", ""));
     files.forEach(function (file) {
       if (Object.keys(master.phasetypes.user).indexOf(file) === -1) {
-        master.phasetypes.user[file] = Collector.electron.fs.read_file(
-          "PhaseTypes/",
+        master.phasetypes.user[file] = CElectron.fs.read_file(
+          "PhaseTypes",
           file + ".html"
         );
       }
@@ -153,9 +152,9 @@ function list_phasetypes(to_do_after) {
   }
 
   function process_returned(returned_data) {
-    $("#code_select").empty();
-    $("#code_select").append("<option disabled>Select a file</option>");
-    $("#code_select").val("Select a file");
+    $("#phasetype_select").empty();
+    $("#phasetype_select").append("<option disabled>Select a file</option>");
+    $("#phasetype_select").val("Select a file");
 
     var default_code = JSON.parse(returned_data);
     var user = master.phasetypes.user;
@@ -169,15 +168,15 @@ function list_phasetypes(to_do_after) {
       a.localeCompare(b, undefined, { sensitivity: "base" })
     );
 
-    default_keys.forEach((element) => {
-      $("#code_select").append(
+    default_keys.forEach(function (element) {
+      $("#phasetype_select").append(
         "<option class='default_code'>" + element + "</option>"
       );
     });
     master.phasetypes.user = user;
 
-    user_keys.forEach((element) => {
-      $("#code_select").append(
+    user_keys.forEach(function (element) {
+      $("#phasetype_select").append(
         "<option class='user_code'>" + element + "</option>"
       );
     });
@@ -193,7 +192,7 @@ function list_phasetypes(to_do_after) {
 
       switch (Collector.detect_context()) {
         case "localhost":
-          var trial_content = Collector.electron.fs.read_default(
+          var trial_content = CElectron.fs.read_default(
             "DefaultPhaseTypes",
             item
           );

@@ -32,7 +32,7 @@ function load_default_surveys() {
   switch (Collector.detect_context()) {
     case "localhost":
       default_survey_files.forEach(function (default_survey) {
-        survey_content = Collector.electron.fs.read_default(
+        survey_content = CElectron.fs.read_default(
           "DefaultSurveys",
           default_survey
         );
@@ -85,8 +85,8 @@ function create_survey_HoT(this_survey) {
 
             cell_editor.setValue(
               this_sheet.getDataAtCell(
-                selection.start.row,
-                selection.start.col
+                selection[0].start.row,
+                selection[0].start.col
               ),
               -1
             );
@@ -192,16 +192,35 @@ function create_survey_HoT(this_survey) {
 
       for (var k = 0; k < this.countCols() - 1; k++) {
         var col_header = this.getDataAtCell(0, k).toLowerCase();
+        if(col_header.toLowerCase() === "item_name") {
 
-        if (col_header === "shuffle") {
-          this.setDataAtCell(0, k, "shuffle_question");
+          var row_count = this.countRows();
+
+
+          for(var m = 1; m < row_count - 1; m++){
+            var this_item = this.getDataAtCell(m, k);
+
+            /*
+             * replace "." with "_" to prevent errors from "."s
+             */
+            if(this_item.indexOf(".") !== -1){
+              this.setDataAtCell(m, k, this_item.replaceAll(".", "_"));
+            }
+          }
         }
+
+
         if (
           col_header.indexOf("score") !== -1 &&
           col_header.indexOf(" ") !== -1
         ) {
           this.setDataAtCell(0, k, col_header.replaceAll(" ", ""));
         }
+
+        if (col_header === "shuffle") {
+          this.setDataAtCell(0, k, "shuffle_question");
+        }
+
 
         //Removing Empty middle columns
         if (this.isEmptyCol(k)) {
@@ -272,11 +291,11 @@ function list_surveys() {
       master.surveys.default_surveys
     );
 
-    var survey_files = JSON.parse(Collector.electron.fs.list_surveys());
+    var survey_files = JSON.parse(CElectron.fs.list_surveys());
 
     survey_files.forEach(function (survey_file) {
       var survey_csv = Papa.parse(
-        Collector.electron.fs.read_file("Surveys", survey_file)
+        CElectron.fs.read_file("Surveys", survey_file)
       ).data;
 
       master.surveys.user_surveys[survey_file] = survey_csv;
@@ -342,7 +361,7 @@ function preview_survey(this_survey) {
     $("#survey_preview").css("width", window.innerWidth);
   }
 
-  survey_template = Collector.electron.fs.read_default(
+  survey_template = CElectron.fs.read_default(
     "DefaultPhaseTypes",
     "survey.html"
   );

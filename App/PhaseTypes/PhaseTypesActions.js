@@ -1,6 +1,5 @@
 // App/PhaseTypes/PhasetypesActions.js
 functionIsRunning = false;
-
 function initiate_actions() {
   function protected_name_check(this_name) {
     protected_names = ["start_experiment"];
@@ -180,14 +179,11 @@ function initiate_actions() {
       .modal("show");
     }
   });
-  
-  $("#rename_code_button").on("click", function () {
-    // Get the selected PhaseType name and assign to variable
-    var code_selected = $("#code_select").val();
-    // Store the selected PhaseType name again as the original variable is overwritten before we delete anything meaning we can't use it or we delete the new file not the old one!
-    var originPT = code_selected;
 
-    if (typeof master.phasetypes.default[code_selected] !== "undefined") {
+  $("#rename_phasetype_button").on("click", function () {
+    var phasetype_selected = $("#phasetype_select").val();
+
+    if (typeof master.phasetypes.default[phasetype_selected] !== "undefined") {
       bootbox.alert("You can't rename a default code file");
     } else {
       bootbox.prompt(
@@ -195,59 +191,32 @@ function initiate_actions() {
         function (new_name) {
           if (new_name === null) {
             // close the window
-          } else if ($("#code_select").text().indexOf(new_name) !== -1) {
+          } else if ($("#phasetype_select").text().indexOf(new_name) !== -1) {
             bootbox.alert("You already have a code file with this name");
           } else {
-            var original_name = $("#code_select").val();
-            master.phasetypes.user[new_name] = master.phasetypes.user[original_name];
-            
-            // This adds the new PhaseType name as an attribute to the dropdown html, not 100% sure why
-            // $("#code_select").attr("previousvalue", "");
+            var original_name = $("#phasetype_select").val();
+            master.phasetypes.user[new_name] =
+              master.phasetypes.user[original_name];
+            delete master.phasetypes.user[original_name];
 
-            // This "renames" the file by actually creating a new file with the required name
-            var response = Collector.electron.fs.write_file(
-              "PhaseTypes/",
+            $("#phasetype_select").attr("previousvalue", "");
+
+            var response = CElectron.fs.write_file(
+              "Phase",
               new_name.replace(".html", "") + ".html",
               master.phasetypes.user[new_name]
-            );               
-            
-            // Then we write a variable to show that everything has worked ok and we're good to delete the old file
-            var write_response = "success";
-          }
-
-            // If the success variable was created we can delete the previous file
-            // NOTE: This is a hard delete (no recycle binning) I'm wondering if it's safer to move it to a "tempDelete" folder or something just in case
-          if (write_response == "success") {
-            // Remove the old PhaseType from the options dropdown
-            // $('#code_select option:contains('+originPT+')').remove();
-            
-            // Add .html to the originally selected PhaseType name, making it a file
-            originPT_file = originPT.concat(".html");
-            // Ass PhaseTypes/ to the file name we just created, giving us the path needed for the  delete funciton
-            var filePath = ("PhaseTypes/" + originPT_file); 
-            
-            // -----------------------------------
-            // Delete the file and dropdown option
-            // -----------------------------------
-
-            // Collector.electron.fs.delete_file(filePath);
-            var deleted_code = $("#code_select").val();
-            master.phasetypes.file = $("#code_select").val();
-            var this_file = master.phasetypes.file;
-            if (typeof master.phasetypes.graphic.files[this_file] !== "undefined") {
-              delete master.phasetypes.graphic.files[this_file];
-            }
-            delete master.phasetypes.user[this_file];
-            $("#code_select").attr("previousvalue", "");
-            $("#code_select option:selected").remove();
-            $("#graphic_editor").hide();
-            master.phasetypes.file = $("#code_select").val();
-            code_obj.load_file("default");
-            Collector.electron.fs.delete_file(
-                "PhaseTypes/" + deleted_code + ".html",
+            );
+            if (write_response === "success") {
+              CElectron.fs.delete_file(
+                "PhaseTypes/" + original_name,
                 function (response) {
-                  if (response !== "success") {
-                    // bootbox.alert(response);
+                  if (response === "success") {
+                    list_phasetypes(function () {
+                      $("#phasetype_select").val(new_name);
+                      $("#phasetype_select").change();
+                    });
+                  } else {
+                    bootbox.alert(response);
                   }
                 }
               );
@@ -270,9 +239,9 @@ function initiate_actions() {
     }
   });
   $("#save_phasetype_btn").on("click", function () {
-    if ($("#code_select").val() !== null) {
+    if ($("#phasetype_select").val() !== null) {
       var content = editor.getValue();
-      var name = $("#code_select").val();
+      var name = $("#phasetype_select").val();
       if (typeof master.phasetypes.default[name] === "undefined") {
         code_obj.save(content, name, "old");
       } else {
@@ -284,7 +253,7 @@ function initiate_actions() {
       }
     }
   });
-  $("#code_select").on("change", function () {
+  $("#phasetype_select").on("change", function () {
     var old_code = $(this).attr("previousValue");
     if (
       (old_code !== "") &
@@ -332,12 +301,12 @@ function initiate_actions() {
         user_default = "default";
       }
 
-      $("#code_select").removeClass("user_code");
-      $("#code_select").removeClass("default_code_file");
+      $("#phasetype_select").removeClass("user_code");
+      $("#phasetype_select").removeClass("default_code_file");
       if (user_default === "user") {
-        $("#code_select").addClass("user_code");
+        $("#phasetype_select").addClass("user_code");
       } else {
-        $("#code_select").addClass("default_code_file");
+        $("#phasetype_select").addClass("default_code_file");
       }
       code_obj.load_file(user_default);
     }

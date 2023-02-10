@@ -316,7 +316,7 @@
     if ($("#pathway_select").val() !== null) {
       switch (Collector.detect_context()) {
         case "localhost":
-          Collector.electron.fs.write_file(
+          CElectron.fs.write_file(
             "Pathway",
             $("#pathway_select").val().toLowerCase().replace(".json", "") +
               ".json",
@@ -326,7 +326,7 @@
               2
             )
           );
-          Collector.electron.fs.write_file(
+          CElectron.fs.write_file(
             "",
             "master.json",
             JSON.stringify(master, null, 2)

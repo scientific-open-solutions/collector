@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-    Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
+    Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey
 */
 $("#default_projects_select").on("change", function () {
   if ($("#default_projects_select").val() !== "Select an experiment") {
@@ -45,22 +45,21 @@ $("#delete_proj_btn").on("click", function () {
             Collector.custom_alert(proj_name + " succesfully deleted");
             update_handsontables();
 
-            //delete the local file if this is
-            if (Collector.detect_context() === "localhost") {
-              Collector.electron.fs.delete_project(
-                proj_name,
-                function (response) {
-                  if (response !== "success") {
-                    bootbox.alert(response);
-                  }
+          //delete the local file if this is
+          if (Collector.detect_context() === "localhost") {
+            CElectron.fs.delete_project(
+              proj_name,
+              function (response) {
+                if (response !== "success") {
+                  bootbox.alert(response);
                 }
-              );
-            }
+              }
+            );
           }
         }
-      );
-    }
-  };
+      }
+    );
+  }
 });
 
 $("#delete_proc_button").on("click", function () {
@@ -85,14 +84,6 @@ $("#delete_proc_button").on("click", function () {
           var file_path = "Projects" + "/" + project + "/" + proc_file;
           console.log(file_path);
           delete master.projects.projects[project].all_procs[proc_file];
-          // delete master.projects.projects[project].parsed_procs[proc_file];
-          delete master.projects.projects[project].procs_csv[proc_file];
-          var this_response =Collector.electron.fs.delete_file(file_path);
-          if (this_response !== "success") {
-                bootbox.alert(this_response);
-              } else {
-                Collector.custom_alert(this_response);
-              }
 
           // update the lists
           update_handsontables();
@@ -100,18 +91,15 @@ $("#delete_proc_button").on("click", function () {
           /*
            * Delete the file locally if in electron
            */
-          // var file_path = "Projects" + "/" + project + "/" + proc_file +".csv";
-          // if (Collector.detect_context() === "localhost") {
-          //   // var this_response = Collector.electron.fs.delete_file(file_path);
-          //   if (this_response !== "success") {
-          //     bootbox.alert(this_response);
-          //   } else {
-          //     Collector.custom_alert(this_response);
-          //   }
-          // }
-          setTimeout(function() { 
-            $("#save_btn").click();
-          }, 2100);
+          var file_path = "Projects" + "/" + project + "/" + proc_file;
+          if (Collector.detect_context() === "localhost") {
+            var this_response = CElectron.fs.delete_file(file_path);
+            if (this_response !== "success") {
+              bootbox.alert(this_response);
+            } else {
+              Collector.custom_alert(this_response);
+            }
+          }
         }
       }
     );
@@ -147,7 +135,7 @@ $("#delete_stim_button").on("click", function () {
            */
           var file_path = "Projects" + "/" + project + "/" + stim_file;
           if (Collector.detect_context() === "localhost") {
-            var this_response = Collector.electron.fs.delete_file(file_path);
+            var this_response = CElectron.fs.delete_file(file_path);
             if (this_response !== "success") {
               bootbox.alert(this_response);
             } else {
@@ -283,7 +271,7 @@ $("#new_stim_button").on("click", function () {
 });
 
 $("#open_proj_folder").on("click", function () {
-  Collector.electron.open_folder(
+  CElectron.open_folder(
     "repo",
     "User/Projects/" + $("#project_list").val()
   );
@@ -322,33 +310,32 @@ $("#rename_proj_btn").on("click", function () {
               master.projects.projects[original_name];
             delete master.projects.projects[original_name];
 
-            Collector.electron.fs.write_project(
-              new_name,
-              JSON.stringify(master.projects.projects[new_name], null, 2),
-              function (response) {
-                if (response === "success") {
-                  Collector.electron.fs.delete_project(
-                    original_name,
-                    function (response) {
-                      if (response === "success") {
-                        list_projects();
-                        $("#project_list").val(new_name);
-                        $("#project_list").change();
-                      } else {
-                        bootbox.alert(response);
-                      }
+          CElectron.fs.write_project(
+            new_name,
+            JSON.stringify(master.projects.projects[new_name], null, 2),
+            function (response) {
+              if (response === "success") {
+                CElectron.fs.delete_project(
+                  original_name,
+                  function (response) {
+                    if (response === "success") {
+                      list_projects();
+                      $("#project_list").val(new_name);
+                      $("#project_list").change();
+                    } else {
+                      bootbox.alert(response);
                     }
-                  );
-                } else {
-                  bootbox.alert(response);
-                }
+                  }
+                );
+              } else {
+                bootbox.alert(response);
               }
-            );
-          }
+            }
+          );
         }
       }
-    );
-  }
+    }
+  );
 });
 
 $("#rename_proc_button").on("click", function () {
@@ -574,6 +561,93 @@ $("#run_btn").on("click", function () {
         );
       });
     }
+  bootbox.dialog({
+    title: "Select a Condition",
+    message:
+      "Which condition would you like to run? <br><br>" +
+      select_html +
+      "To run the study copy the following into a browser:<br>(make sure you've pushed the latest changes and waited 5+ minutes) <input class='form-control' value='" +
+      github_url +
+      "' onfocus='this.select();' id='experiment_url_input'>",
+      /*
+      "To <b>Preview</b> a project copy the following into a browser: <input class='form-control' value='" +
+      github_url.replace("platform=github", "platform=onlinepreview") +
+      "' onfocus='this.select();'" +
+      " id='experiment_url_input'>",
+      */
+    buttons: {
+      local: {
+        label: "Run",
+        className: "btn-primary",
+        callback: function () {
+          window.open(
+            "Run.html?platform=localhost&" +
+              "location=" +
+              $("#project_list").val() +
+              "&" +
+              "name=" +
+              $("#select_condition").val(),
+            "_blank"
+          );
+        },
+      },
+      local_preview: {
+        label: "Preview Local",
+        className: "btn-info",
+        callback: function () {
+          window.open(
+            "Run.html?platform=preview&" +
+              "location=" +
+              $("#project_list").val() +
+              "&" +
+              "name=" +
+              $("#select_condition").val(),
+            "_blank"
+          );
+        },
+      },
+      online_preview: {
+        label: "Preview Online",
+        className: "btn-info",
+        callback: function () {
+          window.open(
+            "Run.html?platform=simulateonline&" +
+              "location=" +
+              $("#project_list").val() +
+              "&" +
+              "name=" +
+              $("#select_condition").val(),
+            "_blank"
+          );
+        },
+      },
+      cancel: {
+        label: "Cancel",
+        className: "btn-secondary",
+        callback: function () {
+          //nada;
+        },
+      },
+    },
+  });
+  $("#select_condition").on("change", function () {
+    $("#experiment_url_input").val(
+      "https://" +
+        org +
+        ".github.io" +
+        "/" +
+        repo +
+        "/" +
+        "App" +
+        "/" +
+        "Run.html?platform=github&" +
+        "location=" +
+        $("#project_list").val() +
+        "&" +
+        "name=" +
+        $("#select_condition").val()
+    );
+  });
 });
   
 $("#save_btn").attr("previousValue", "");
@@ -668,7 +742,7 @@ $("#save_btn").on("click", function () {
      */
     this_proj.phasetypes = {};
     phasetype_files.forEach(function (code_file) {
-      if (typeof master.phasetypes.user[code_file] === "undefined") {
+      if (typeof master.phasetypes.default[code_file] !== "undefined") {
         this_proj.phasetypes[code_file] =
           "[[[LOCATION]]]../Default/DefaultPhaseTypes/" +
           code_file.replace(".html", "") +
@@ -827,7 +901,7 @@ $("#save_btn").on("click", function () {
       this_proj.stims_csv = {};
 
       this_proj = JSON.stringify(this_proj, null, 2);
-      Collector.electron.fs.write_project(
+      CElectron.fs.write_project(
         project,
         this_proj,
         function (response) {
@@ -837,7 +911,7 @@ $("#save_btn").on("click", function () {
         }
       );
 
-      write_response = Collector.electron.fs.write_file(
+      write_response = CElectron.fs.write_file(
         "",
         "master.json",
         JSON.stringify(master, null, 2)
@@ -849,7 +923,7 @@ $("#save_btn").on("click", function () {
       }
     }
   } else {
-    write_response = Collector.electron.fs.write_file(
+    write_response = CElectron.fs.write_file(
       "",
       "master.json",
       JSON.stringify(master, null, 2)
@@ -892,9 +966,9 @@ $("#upload_default_exp_btn").on("click", function () {
   if (default_project_name !== "Select an experiment") {
     $.get(
       "Default/DefaultProjects/" + default_project_name + ".json",
-      function (experiment_json) {
+      function (project_json) {
         upload_exp_contents(
-          JSON.stringify(experiment_json),
+          JSON.stringify(project_json),
           default_project_name
         );
         $("#upload_experiment_modal").hide();

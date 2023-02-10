@@ -44,7 +44,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-		Kitten/Cat release (2019-21) author: Dr. Anthony Haffey (team@someopen.solutions)
+		Kitten/Cat release (2019-21) author: Dr. Anthony Haffey 
 -->
 
 <h1 id="pathway_header"></h1>
@@ -100,10 +100,10 @@
     switch (Pathway.get_vars.platform) {
       case "localhost":
         var lazy_electron_wait = setInterval(function () {
-          if (typeof Collector.electron !== "undefined") {
+          if (typeof CElectron !== "undefined") {
             clearInterval(lazy_electron_wait);
             var pathway = JSON.parse(
-              Collector.electron.fs.read_file(
+              CElectron.fs.read_file(
                 "Pathway",
                 Pathway.get_vars.pathway + ".json"
               )

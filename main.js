@@ -17,12 +17,16 @@ function createWindow() {
       responseHeaders: {
         ...details.responseHeaders,
         "Content-Security-Policy": [
-          //"default-src 'self'",
-          //"script-src 'self'",
-          //"connect-src 'self'",
-          //"img-src 'self'",
-          //"style-src 'self'",
-          //"font-src 'self'"
+
+
+          "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: filesystem",
+/*
+          "script-src 'self'",
+          "connect-src 'self'",
+          "img-src 'self'",
+          "style-src 'self'",
+          "font-src 'self'"
+          */
         ],
       },
     });
@@ -34,8 +38,9 @@ function createWindow() {
     title: "Collector: Cat " + app.getVersion(),
     icon: __dirname + "/logos/collector_sized.png",
     webPreferences: {
-      contextIsolation: false, //has to be false with the way I've designed this
-      enableRemoteModule: true,
+      nodeIntegration: false,
+      contextIsolation: true, //has to be false with the way I've designed this
+      enableRemoteModule: false,
       //preload:                    [path.join(__dirname, 'App/libraries/collector/Collector.js')],
       preload: path.join(__dirname, "preload.js"),
       worldSafeExecuteJavaScript: true,
@@ -48,7 +53,22 @@ function createWindow() {
   mainWindow.loadFile(__dirname + "/App/index_local.html");
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    //if (url === 'about:blank') {
+      return {
+        action: 'allow',
+        overrideBrowserWindowOptions: {
+          frame: true,
+          fullscreenable: true,
+          //backgroundColor: 'black',
+          webPreferences: {
+            preload: path.join(__dirname, "preload.js")
+          }
+        }
+      }
+    //}
+    //return { action: 'deny' }
+  })
 }
 app.on("ready", () => {
   createWindow();

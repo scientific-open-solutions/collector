@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
+		Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey 
 */
 function check_trialtypes_in_proc(procedure, post_trialtype) {
   var experiment = $("#project_list").val();
@@ -131,15 +131,17 @@ function get_HoT_data(current_sheet) {
   return data;
 }
 function list_projects() {
-  var local_projects = Collector.electron.fs.list_projects();
+  var local_projects = CElectron.fs.list_projects();
   local_projects.forEach(function (project) {
     try {
       var project_json = JSON.parse(
-        Collector.electron.fs.read_file("Projects", project + ".json")
+        CElectron.fs.read_file("Projects", project + ".json")
       );
       master.projects.projects[project] = project_json;
     } catch (error) {
-      bootbox.alert("You have a problem with project:" + project);
+      if(project !== ".DS_Store"){
+        bootbox.alert("You have a problem with project:" + project);
+      }
     }
   });
 
@@ -292,7 +294,7 @@ function update_handsontables() {
     }
   }
 
-  var conditions_sheet = Collector.electron.fs.read_file(
+  var conditions_sheet = CElectron.fs.read_file(
     "Projects/" + $("#project_list").val(),
     "conditions.csv"
   );
@@ -310,7 +312,7 @@ function update_handsontables() {
     conditions_sheet
   );
 
-  var stim_sheet = Collector.electron.fs.read_file(
+  var stim_sheet = CElectron.fs.read_file(
     "Projects/" + $("#project_list").val(),
     stim_file
   );
@@ -320,7 +322,7 @@ function update_handsontables() {
   }
   load_spreadsheet("Stimuli", stim_file, "all_stims[sheet_name]", stim_sheet);
 
-  var proc_sheet = Collector.electron.fs.read_file(
+  var proc_sheet = CElectron.fs.read_file(
     "Projects/" + $("#project_list").val(),
     proc_file
   );

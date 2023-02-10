@@ -2,6 +2,16 @@
  * @jest-environment jsdom
  */
 
+ String.prototype.replaceAll = function (str1, str2, ignore) {
+   return this.replace(
+     new RegExp(
+       str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"),
+       ignore ? "gi" : "g"
+     ),
+     typeof str2 === "string" ? str2.replace(/\$/g, "$$$$") : str2
+   );
+ };
+
 global.window = window;
 global.$ = require("../App/libraries/jquery.min.js");
 const fs = require("fs");
@@ -15,15 +25,7 @@ const run_html = fs.readFileSync(
 const run_js = require("../App/Run.js");
 const survey_js = require("../Default/DefaultPhaseTypes/survey.js");
 
-String.prototype.replaceAll = function (str1, str2, ignore) {
-  return this.replace(
-    new RegExp(
-      str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"),
-      ignore ? "gi" : "g"
-    ),
-    typeof str2 === "string" ? str2.replace(/\$/g, "$$$$") : str2
-  );
-};
+
 
 var survey_html = fs.readFileSync(
   path.resolve(__dirname, "../Default/DefaultPhaseTypes/survey.html"),
