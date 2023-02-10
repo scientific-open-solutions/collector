@@ -221,20 +221,22 @@ function initiate_actions() {
                 }
               );
             
-            // Changes the dropdown menu to show the new filename as being selected, and delete the old one
-            $("#code_select").append(new Option(new_name));  
-            // $("#code_select").val(new_name);
-            
-            Collector.custom_alert("<b>File renamed</b><br>Please select it at the bottom of the dropdown list");
-            // Lastly, we just do a master "save" to ensure the change is kept after quitting Collector
-            setTimeout(function() { 
-              $("#save_phasetype_btn").click();
-              $("#save_btn").click();
-              console.log("It saved the rename!");
-            }, 100);
-          } else { console.log("Rename failed");}
-        }       
-        
+              // Changes the dropdown menu to show the new filename as being selected, and delete the old one
+              $("#code_select").append(new Option(new_name));  
+              // $("#code_select").val(new_name);
+              
+              Collector.custom_alert("<b>File renamed</b><br>Please select it at the bottom of the dropdown list");
+              // Lastly, we just do a master "save" to ensure the change is kept after quitting Collector
+              setTimeout(function() { 
+                $("#save_phasetype_btn").click();
+                $("#save_btn").click();
+                console.log("It saved the rename!");
+              }, 100);
+            } else { 
+              console.log("Rename failed");
+            }
+          }       
+        } 
       );
     }
   });
