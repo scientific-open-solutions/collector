@@ -11,3 +11,5 @@ node_modules
 /Updater/UpdateCollector.spec
 /dist
 /venv
+.DS_Store
+.DS_Store?

@@ -30,7 +30,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
-	  Kitten/Cat release (2019-21) author: Dr. Anthony Haffey (team@someopen.solutions)
+	  Kitten/Cat release (2019-21) author: Dr. Anthony Haffey
 
 -->
 
@@ -48,11 +48,12 @@
 <script src="libraries/bootstrap.min.js"></script>
 <script src="libraries/bootbox.min.js"></script>
 <script src="libraries/papaparse.min.js"></script>
-<script src="libraries/ace-master/ace.js"></script>
-<script src="libraries/ace-master/ext-language_tools.js"></script>
+<script src="LocalLibraries/ace-master/ace.js"></script>
+<script src="LocalLibraries/ace-master/ext-language_tools.js"></script>
 <script src="Handsontables/handsontables.full.js"></script>
 
 <script src="libraries/collector/MobileCheck.js"></script>
+<script src="libraries/collector/Collector.js"></script>
 
 <style>
   .citation_info {
@@ -66,7 +67,6 @@
     width: 30px;
   }
 
-  #data_storage_logo,
   #everything {
     display: none;
   }
@@ -103,6 +103,7 @@
   ::-webkit-scrollbar-thumb:hover {
     background-color: #a8bbbf;
   }
+
 </style>
 
 <div class="spinner-border text-primary" role="status" id="loading_spinner">
@@ -238,9 +239,6 @@
     >
       <span class="content_name">Help</span>
     </button>
-    <button class="top_icon btn btn-primary bi-server" id="data_storage_logo">
-      <span class="content_name">Online Data Storage</span>
-    </button>
     <button class="top_icon btn btn-primary bi-github" id="github_logo">
       <span class="content_name">Github</span>
     </button>
@@ -255,5 +253,7 @@
   </table>
   <div id="register_div"></div>
 </div>
+
 <script src="Tests/RunTests.js"></script>
+
 <script src="index.js"></script>

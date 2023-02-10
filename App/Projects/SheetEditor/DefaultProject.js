@@ -37,7 +37,7 @@ default_project = {
       "",
       5,
       "",
-    ],
+    ]
   ],
   all_stims: {
     "stimuli_1.csv": [

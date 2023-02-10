@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-    Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
+    Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey
 */
 $("#default_projects_select").on("change", function () {
   if ($("#default_projects_select").val() !== "Select an experiment") {
@@ -44,7 +44,7 @@ $("#delete_proj_btn").on("click", function () {
 
           //delete the local file if this is
           if (Collector.detect_context() === "localhost") {
-            Collector.electron.fs.delete_project(
+            CElectron.fs.delete_project(
               proj_name,
               function (response) {
                 if (response !== "success") {
@@ -77,9 +77,6 @@ $("#delete_proc_button").on("click", function () {
           var project = $("#project_list").val();
           var proc_file = $("#proc_select").val();
           delete master.projects.projects[project].all_procs[proc_file];
-          delete master.projects.projects[project].parsed_procs[proc_file];
-
-          delete master.projects.projects[project].procs_csv[proc_file];
 
           // update the lists
           update_handsontables();
@@ -87,9 +84,9 @@ $("#delete_proc_button").on("click", function () {
           /*
            * Delete the file locally if in electron
            */
-          var file_path = "Projects" + "/" + experiment + "/" + proc_file;
+          var file_path = "Projects" + "/" + project + "/" + proc_file;
           if (Collector.detect_context() === "localhost") {
-            var this_response = Collector.electron.fs.delete_file(file_path);
+            var this_response = CElectron.fs.delete_file(file_path);
             if (this_response !== "success") {
               bootbox.alert(this_response);
             } else {
@@ -131,7 +128,7 @@ $("#delete_stim_button").on("click", function () {
            */
           var file_path = "Projects" + "/" + project + "/" + stim_file;
           if (Collector.detect_context() === "localhost") {
-            var this_response = Collector.electron.fs.delete_file(file_path);
+            var this_response = CElectron.fs.delete_file(file_path);
             if (this_response !== "success") {
               bootbox.alert(this_response);
             } else {
@@ -248,7 +245,7 @@ $("#new_stim_button").on("click", function () {
 });
 
 $("#open_proj_folder").on("click", function () {
-  Collector.electron.open_folder(
+  CElectron.open_folder(
     "repo",
     "User/Projects/" + $("#project_list").val()
   );
@@ -260,7 +257,6 @@ $("#project_list").on("change", function () {
   clean_conditions();
   $("#project_inputs").show();
   update_handsontables();
-  update_server_table();
   $("#save_btn").click();
 });
 
@@ -284,12 +280,12 @@ $("#rename_proj_btn").on("click", function () {
             master.projects.projects[original_name];
           delete master.projects.projects[original_name];
 
-          Collector.electron.fs.write_project(
+          CElectron.fs.write_project(
             new_name,
             JSON.stringify(master.projects.projects[new_name], null, 2),
             function (response) {
               if (response === "success") {
-                Collector.electron.fs.delete_project(
+                CElectron.fs.delete_project(
                   original_name,
                   function (response) {
                     if (response === "success") {
@@ -453,10 +449,13 @@ $("#run_btn").on("click", function () {
       select_html +
       "To run the study copy the following into a browser:<br>(make sure you've pushed the latest changes and waited 5+ minutes) <input class='form-control' value='" +
       github_url +
-      "' onfocus='this.select();' id='experiment_url_input'>" +
+      "' onfocus='this.select();' id='experiment_url_input'>",
+      /*
       "To <b>Preview</b> a project copy the following into a browser: <input class='form-control' value='" +
       github_url.replace("platform=github", "platform=onlinepreview") +
-      "' onfocus='this.select();' id='experiment_url_input'>",
+      "' onfocus='this.select();'" +
+      " id='experiment_url_input'>",
+      */
     buttons: {
       local: {
         label: "Run",
@@ -624,7 +623,7 @@ $("#save_btn").on("click", function () {
      */
     this_proj.phasetypes = {};
     phasetype_files.forEach(function (code_file) {
-      if (typeof master.phasetypes.user[code_file] === "undefined") {
+      if (typeof master.phasetypes.default[code_file] !== "undefined") {
         this_proj.phasetypes[code_file] =
           "[[[LOCATION]]]../Default/DefaultPhaseTypes/" +
           code_file.replace(".html", "") +
@@ -783,7 +782,7 @@ $("#save_btn").on("click", function () {
       this_proj.stims_csv = {};
 
       this_proj = JSON.stringify(this_proj, null, 2);
-      Collector.electron.fs.write_project(
+      CElectron.fs.write_project(
         project,
         this_proj,
         function (response) {
@@ -793,7 +792,7 @@ $("#save_btn").on("click", function () {
         }
       );
 
-      write_response = Collector.electron.fs.write_file(
+      write_response = CElectron.fs.write_file(
         "",
         "master.json",
         JSON.stringify(master, null, 2)
@@ -805,7 +804,7 @@ $("#save_btn").on("click", function () {
       }
     }
   } else {
-    write_response = Collector.electron.fs.write_file(
+    write_response = CElectron.fs.write_file(
       "",
       "master.json",
       JSON.stringify(master, null, 2)
@@ -848,9 +847,9 @@ $("#upload_default_exp_btn").on("click", function () {
   if (default_project_name !== "Select an experiment") {
     $.get(
       "Default/DefaultProjects/" + default_project_name + ".json",
-      function (experiment_json) {
+      function (project_json) {
         upload_exp_contents(
-          JSON.stringify(experiment_json),
+          JSON.stringify(project_json),
           default_project_name
         );
         $("#upload_experiment_modal").hide();

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--
 /*  Collector (Garcia, Kornell, Kerr, Blake & Haffey)
     A program for running experiments on the web
@@ -16,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
+		Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey
 */
 
 -->
@@ -52,7 +53,6 @@
 
 <script>
 
-var redcap_array = [];
 
 $("#download_redcap_dictionary").on("click", function(){
 
@@ -72,69 +72,66 @@ $("#download_redcap_dictionary").on("click", function(){
 
 
 });
+var this_csv;
+var forms = {};
 
 $("#upload_data_csv").on("change", function () {
   if (this.files && this.files[0]) {
-
+    var csvs_loaded = 0;
+    var this_files_length = this.files.length;
     for(var i = 0; i < this.files.length; i++){
       var myFile = this.files[i];
       var reader = new FileReader();
       var this_filename = this.files[i].name;
       reader.addEventListener("load", function (e) {
 
-        var this_csv = Collector.PapaParsed(e.target.result);
-
+        this_csv = Collector.PapaParsed(e.target.result);
         var this_location = this_csv[this_csv.length-1].location;
-
-        var this_org = this_csv[this_csv.length-1].organization;
-        var this_repo = this_csv[this_csv.length-1].repository;
-
-        var these_headers = Object.keys(this_csv[0]);
+        //var this_org = this_csv[this_csv.length-1].organization;
+        //var this_repo = this_csv[this_csv.length-1].repository;
+        //var these_headers = Object.keys(this_csv[0]);
 
 
+        //var form_names = [...new Set(this_csv.map(item => item.phasetype))];
         /*
-         * prevent adding an identical row
+         * create a series of forms, one for each phasetype and then one for each survey?
          */
 
+        this_csv.forEach(function(row){
+          if(typeof(forms[row.phasetype]) === "undefined"){
+            forms[row.phasetype] = {};
+          }
+          if(row.phasetype.toLowerCase() === "survey"){
+            if(typeof(forms[row.survey]) === "undefined"){
+              forms[row.survey] = {};
+            }
+            Object.keys(row).forEach(function(item){
+              if(row[item] !== ""){
+                forms[row.survey][item] = "text";
+              }
+            });
+          } else {
+            Object.keys(row).forEach(function(item){
+              if(row[item] !== ""){
+                forms[row.phasetype][item] = "text";
+              }
+            });
+          }
+        });
 
-        if(redcap_array.filter(function(row){
-          return row["Variable / Field Name"] == "record_id"
-        }).length == 0){
-          redcap_array.push({
-
-            "Variable / Field Name": "record_id",
-            "Form Name": this_org + "_" + this_repo,
-            "Section Header": "",
-            "Field Type": "text",
-            "Field Label": "Record ID",
-            "Choices, Calculations, OR Slider Labels": "",
-            "Field Note": "",
-            "Text Validation Type OR Show Slider Number": "",
-            "Text Validation Min": "",
-            "Text Validation Max": "",
-            "Identifier?": "",
-            "Branching Logic (Show field only if...)": "",
-            "Required Field?": "",
-            "Custom Alignment": "",
-            "Question Number (surveys only)": "",
-            "Matrix Group Name": ""
-          });
-        }
-
-
-
+        /*
         these_headers.forEach(function(this_header){
           if(redcap_array.filter(function(row){
-            return row["Variable / Field Name"] == this_location + "_" + this_header &
+            return row["Variable / Field Name"] == this_header &
             row["Form Name"] == this_location &
             row["Field Type"] == "text"
           }).length == 0 & this_header !== ""){
             redcap_array.push({
-              "Variable / Field Name": this_org + "_" + this_repo + "_" + this_header,
+              "Variable / Field Name": this_header,
               "Form Name": this_org + "_" + this_repo,
               "Section Header": "",
               "Field Type": "text",
-              "Field Label": this_org + "_" + this_repo + "_" + this_header,
+              "Field Label": this_header,
               "Choices, Calculations, OR Slider Labels": "",
               "Field Note": "",
               "Text Validation Type OR Show Slider Number": "",
@@ -150,11 +147,78 @@ $("#upload_data_csv").on("change", function () {
 
           }
         });
+        */
 
         //upload_exp_contents(e.target.result, this_filename);
+        csvs_loaded++;
+        if(csvs_loaded >= this_files_length-1){
+          produceRedcapForm();
+        }
       });
+
       reader.readAsBinaryString(myFile);
     }
   }
 });
+
+var redcap_array;
+function produceRedcapForm(){
+  /*
+   * prevent adding an identical row
+   */
+  redcap_array = [];
+
+  if(redcap_array.filter(function(row){
+    return row["Variable / Field Name"] == "record_id"
+  }).length == 0){
+    redcap_array.push({
+
+      "Variable / Field Name": "record_id",
+      "Form Name": "main",
+      "Section Header": "",
+      "Field Type": "text",
+      "Field Label": "Record ID",
+      "Choices, Calculations, OR Slider Labels": "",
+      "Field Note": "",
+      "Text Validation Type OR Show Slider Number": "",
+      "Text Validation Min": "",
+      "Text Validation Max": "",
+      "Identifier?": "",
+      "Branching Logic (Show field only if...)": "",
+      "Required Field?": "",
+      "Custom Alignment": "",
+      "Question Number (surveys only)": "",
+      "Matrix Group Name": ""
+    });
+  }
+
+
+  var used_items = [];
+  Object.keys(forms).forEach(function(form){
+    Object.keys(forms[form]).forEach(function(item){
+      if(used_items.indexOf(item) === -1){
+        used_items.push(item);
+        redcap_array.push({
+          "Variable / Field Name": item,
+          "Form Name": "main", //form,
+          "Section Header": "",
+          "Field Type": "text",
+          "Field Label": item,
+          "Choices, Calculations, OR Slider Labels": "",
+          "Field Note": "",
+          "Text Validation Type OR Show Slider Number": "",
+          "Text Validation Min": "",
+          "Text Validation Max": "",
+          "Identifier?": "",
+          "Branching Logic (Show field only if...)": "",
+          "Required Field?": "",
+          "Custom Alignment": "",
+          "Question Number (surveys only)": "",
+          "Matrix Group Name": ""
+        });
+      }
+    });
+  });
+}
+
 </script>
