@@ -24,9 +24,9 @@ code_obj = {
     var deleted_phasetype = $("#phasetype_select").val();
     master.phasetypes.file = $("#phasetype_select").val();
     var this_file = master.phasetypes.file;
-    var this_loc = "/PhaseTypes/" + master.phasetypes.file;
+    var this_loc = "/code/" + master.phasetypes.file;
     bootbox.confirm(
-      "Are you sure you want to delete this " + this_loc + "?",
+      "Are you sure you want to delete " + this_loc + "?",
       function (result) {
         if (result === true) {
           if (

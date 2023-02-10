@@ -41,6 +41,25 @@ navbar_names.forEach(function (this_name, index) {
 navbar_html = "";
 navbar_names.forEach(function (name, index) {
   var this_icon = icons[index];
+  var navbar_btn = $("<div>")
+    .css("font-size", "20px")
+    .addClass("top_icon")
+    .addClass("select_page")
+    .addClass("btn")
+    .addClass("btn-primary")
+    .addClass("bi-" + this_icon)
+    .prop("id", "top_tab_" + name)
+    .append(
+      $("<span>")
+        .addClass("content_name")
+        .html(name)
+    );
+  
+    navbar_html += navbar_btn[0].outerHTML;
+
+
+
+  /* possibly deletable, as has redundant code and is harder to read:
   navbar_html +=
     '<button style="font-size:20px;" class="top_icon select_page btn btn-primary bi-' +
     this_icon +
@@ -64,6 +83,7 @@ navbar_names.forEach(function (name, index) {
     name +
     "</span>" +
     " </button>";
+  */
 });
 
 $("#page_selected").html(navbar_html);

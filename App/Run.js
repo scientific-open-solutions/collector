@@ -55,7 +55,7 @@ Project = {
     "detect_exe",
     "get_htmls",
     "get_gets",
-    "start_restart",
+    //"start_restart", {CGD} Turned this off a long time ago, can't really remember why! (Think it was something to do with a double page loading thing)
     "start_project",
     "load_phases",
     "select_condition",
@@ -230,6 +230,13 @@ Project = {
     } else {
       project_json.post_no++;
       var start_time = new Date().getTime();
+      
+      $("#phase" + project_json.phase_no)
+        .contents()
+        .children()
+        .find("iframe")
+        .hide();
+      Project.start_post(go_to_info);
       project_json.this_phase[
         "post_" + project_json.post_no + "_phase_start_ms"
       ] = new Date().getTime();
@@ -237,12 +244,6 @@ Project = {
         "post_" + project_json.post_no + "_phase_start_date"
       ] = new Date(parseInt(start_time, 10)).toString("MM/dd/yy HH:mm:ss");
 
-      $("#phase" + project_json.phase_no)
-        .contents()
-        .children()
-        .find("iframe")
-        .hide();
-      Project.start_post(go_to_info);
     }
 
     /*
@@ -262,10 +263,7 @@ Project = {
       var clean_phase_responses = {};
 
       Object.keys(phase_responses).forEach(function(old_key){
-
-        clean_phase_responses[old_key] =
-          phase_responses[old_key];
-
+        clean_phase_responses[old_key] = phase_responses[old_key];
       });
       delete(clean_phase_responses[
         "condition_redcap_url"
@@ -284,9 +282,8 @@ Project = {
 
 
       clean_phase_responses['redcap_repeat_instance'] = project_json.phase_no;
-      clean_phase_responses['redcap_repeat_instrument'] = this_location.toLowerCase();
-
-
+      clean_phase_responses['redcap_repeat_instrument'] = "main";
+      // this_location.toLowerCase();
 
       console.log("just before the ajax");
 
@@ -326,6 +323,22 @@ Project = {
         0
       );
       /*
+      Object.keys(phase_responses).forEach(function(old_key){
+
+        Object.defineProperty(
+          phase_responses,
+          this_location + "_" + old_key,
+          Object.getOwnPropertyDescriptor(
+            phase_responses,
+            old_key
+          )
+        );
+        delete phase_responses[old_key];
+      });
+      */
+
+
+      console.log("just before the ajax");
       $.ajax({
         type: "POST",
         url: project_json.this_condition.redcap_url,
@@ -333,10 +346,10 @@ Project = {
         data: clean_phase_responses,
         success: function(result){
           console.log("result");
-          console.log(result);
+          // console.log(result);
+          //Phase.submit();
         }
       });
-      */
     }
 
     switch (Project.get_vars.platform) {
@@ -417,28 +430,20 @@ Project = {
         "window.addEventListener('blur', function(){ var focus_val = $('#window_switch').val();  $('#window_switch').val(focus_val + 'leave-' + (new Date()).getTime() + ';')}); window.addEventListener('focus', function(){ var focus_val = $('#window_switch').val(); $('#window_switch').val(focus_val + 'focus-' + (new Date()).getTime() + ';')}); "
       )[0].outerHTML;
 
-    /*
-project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new Date()).getTime();
-*/
 
     //baseline_time
 
     this_phase =
-      "<scr" +
-      "ipt> Phase = {}; Phase.phase_no = '" +
-      phase_no +
-      "'; Phase.post_no ='" +
-      post_no +
-      "' </scr" +
-      "ipt>" +
-      "<scr" +
-      "ipt src = 'PhaseFunctions.js' ></scr" +
-      "ipt>" +
-      this_phase; //; phase_script +
+      `<script> Phase = {}; Phase.phase_no = '${phase_no}'; Phase.post_no ='${post_no}' </script><script src = 'PhaseFunctions.js' ></script>${this_phase}`; //; phase_script +
 
     this_phase = this_phase.replace("[phase_no]", phase_no);
     this_phase = this_phase.replace("[post_no]", post_no);
 
+    if(this_proc.item.toString() === "") {
+      console.log("ERROR: If it's 'White Screening' it's because you've got an empty row in the 'Item' column of your procedure sheet!")
+      console.log("       ps. I spent hours trying to debug Collector when this happened to me as I hadn't realised it was just a missing 0")
+      console.log("           which is why I'm writing this long error message, so if it happens again I can fix it in seconds! CD")
+    }
     if (this_proc.item.toString() !== "0") {
       this_stim = project_json.parsed_stim[this_proc.item];
       variable_list = Object.keys(this_proc).concat(Object.keys(this_stim));
@@ -516,9 +521,6 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
     if (typeof project_json.responses[project_json.phase_no] === "undefined") {
       project_json.responses[project_json.phase_no] = {};
     }
-    project_json.this_phase[
-      "post_" + project_json.post_no + "_phase_start_ms"
-    ] = new Date().getTime();
     if (
       $("#phase" + project_json.phase_no)
         .contents()
@@ -545,6 +547,7 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
         .find(".post_iframe")
         .contents()
         .find("body")
+        .prepend('<button style="opacity:0; filter: alpha(opacity=0)" id="keyresponse_autofocus"></button>') // {CGD} Do not move, needs to prepend displayed HTML or autofocus scrolls to bottom on load
         .css("transform-origin", "top");
 
       try {
@@ -556,10 +559,10 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
             "scale(" + parent.parent.current_zoom + ")";
 
           if (isFirefox) {
-            this_iframe_style.width =
-              window.innerWidth / parent.parent.current_zoom;
-            this_iframe_style.height =
-              window.innerHeight / parent.parent.current_zoom;
+            this_iframe_style.width = (window.innerWidth * 0.98) / parent.parent.current_zoom;  // {CGD} adjusted all width/height to just under fullscreen to counter scroll bar issue
+            this_iframe_style.height = (window.innerHeight * 0.98)  / parent.parent.current_zoom;
+            this_iframe_style.maxWidth = (window.innerWidth * 0.97) / parent.parent.current_zoom;
+            this_iframe_style.maxHeight = (window.innerHeight * 0.97)  / parent.parent.current_zoom;
             this_iframe_style.transformOrigin = "left top";
           } else {
             this_iframe_style.width = "100%";
@@ -574,12 +577,13 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
       $("#phase" + project_json.phase_no).css("width", "100%");
       $("#phase" + project_json.phase_no).css("height", "100%");
       $("#phase" + project_json.phase_no).css("visibility", "visible");
-      $("#phase" + project_json.phase_no)
+      $("#phase" + project_json.phase_no) 
         .contents()
         .find("#post" + project_json.post_no)
         .contents()
-        .find("#zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
-        .focus(); //or anything that no-one would accidentally create.
+        .find("#keyresponse_autofocus") //.append("<input type='hidden' name='complete' value='0' />") // {CGD} used to set REDCap completion value so records are green on data input
+        .focus() //or anything that no-one would accidentally create.
+        .css('outline', 'none');
 
       //detect if max_time exists and start timer
       var post_val;
@@ -630,6 +634,9 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
         //no timers on this phase?
       }
     }
+    project_json.this_phase[
+      "post_" + project_json.post_no + "_phase_start_ms"
+    ] = new Date().getTime();
   },
 };
 
@@ -856,12 +863,7 @@ function final_phase() {
               $("#project_div").html(
                 "<h1>Thank you for participating. If you'd like to download your raw data <span id='download_json'>click here</span></h1>"
               );
-              $("#download_json").on("click", function () {
-                precrypted_data(
-                  project_json,
-                  "What do you want to save this file as?"
-                );
-              });
+
               //$("#participant_country").show();
               //$("#participant_country").load("ParticipantCountry.html");
               window.localStorage.removeItem("project_json");
@@ -879,6 +881,12 @@ function final_phase() {
           }
         }, 1000);
       }
+      $("#download_json").on("click", function () {
+        precrypted_data(
+          project_json,
+          "What do you want to save this file as?"
+        );
+      });
       //online_save_check();
       break;
     case "localhost":
@@ -1372,7 +1380,7 @@ function post_welcome_data(returned_data) {
       $("#welcome_div").hide();
       $("#post_welcome").show();
       $("#project_div").show();
-      //full_screen();
+      //full_screen(); {CGD} Commented out to stop multiple "do you want to do full screen?" messages
     } else if (id_error === "random") {
       var this_code = Math.random().toString(36).substr(2, 16);
       post_welcome(this_code, "random");
@@ -1688,7 +1696,7 @@ function shuffle_start_exp() {
 function start_restart() {
   if (isSafari) {
     bootbox.alert(
-      "This experiment will not run in safari. Please close and use another browser"
+      "Please do not use Safari to complete this study. It is likely that your data will not save correctly if you do. Please close Safari and use another browser"
     );
   } else  /* //skipping resume for now if (
     (window.localStorage.getItem("project_json") !== null) &
@@ -1902,9 +1910,8 @@ function write_phase_iframe(index) {
 
   for (let i = 0; i < phase_events.length; i++) {
     var phase_content = Project.generate_phase(index, i);
-    phase_content +=
-      "<button style='opacity:0; filter: alpha(opacity=0)' id='zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'></button>";
-
+      // phase_content +=
+      '<button style="opacity:0; filter: alpha(opacity=0)" id="zzz"></button>' + phase_content;
     doc = document
       .getElementById("phase" + index)
       .contentWindow.document.getElementById("post" + i).contentWindow;
@@ -2061,36 +2068,31 @@ $(window).bind("keydown", function (event) {
 });
 
 //prevent closing without warning
-window.onbeforeunload = function () {
-  var leave_early = project_json.this_condition.leave_early;
-  if (
-    typeof(leave_early) !== "undefined" && leave_early === "no"
-  ){
-    switch (Project.get_vars.platform) {
-      case "simulateonline":
-      case "localhost":
-        break;
-      default:
-        if (online_data_obj.finished_and_stored === false) {
-          bootbox.confirm(
-            "Would you like to leave the experiment early? If you didn't just download your data there's a risk of you losing your progress.",
-            function (result) {
-              if (result) {
-                online_data_obj.finished_and_stored = true; //even though it's not
-              }
-            }
-          );
-          precrypted_data(
-            project_json,
-            "It looks like you're trying to leave the experiment before you're finished (or at least before the data has been e-mailed to the researcher. Please choose a filename to save your data as and e-mail it to the researcher. It should appear in your downloads folder."
-          );
+// window.onbeforeunload = function () {
+//   switch (Project.get_vars.platform) {
+//     case "simulateonline":
+//     case "localhost":
+//       break;
+//     default:
+//       if (online_data_obj.finished_and_stored === false) {
+//         bootbox.confirm(
+//           "Would you like to leave the experiment early? If you didn't just download your data there's a risk of you losing your progress.",
+//           function (result) {
+//             if (result) {
+//               online_data_obj.finished_and_stored = true; //even though it's not
+//             }
+//           }
+//         );
+//         precrypted_data(
+//           project_json,
+//           "It looks like you're trying to leave the experiment before you're finished (or at least before the data has been e-mailed to the researcher. Please choose a filename to save your data as and e-mail it to the researcher. It should appear in your downloads folder."
+//         );
 
-          return "Please do not try to refresh - you will have to restart if you do so.";
-        }
-        break;
-    }
-  }
-};
+//         return "Please do not try to refresh - you will have to restart if you do so.";
+//       }
+//       break;
+//   }
+// };
 $("body").css("text-align", "center");
 $("body").css("margin", "auto");
 

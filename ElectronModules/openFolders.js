@@ -34,12 +34,22 @@ if (!fs.existsSync(root_dir + "User.json")) {
   );
 }
 
-var user = JSON.parse(fs.readFileSync(root_dir + "User.json"));
+function user() {
+  var user = JSON.parse(fs.readFileSync(root_dir + "/User.json"));
 
-if (typeof user.current.path === "undefined") {
-  if (user.current.repo !== "") {
-    user.current.path =
-      user.repos[user.current.org][user.current.repo].path + "/";
+  if (typeof user.current.path === "undefined") {
+    if (user.current.repo !== "") {
+      user.current.path =
+        user.repos[user.current.org][user.current.repo].path + "/";
+    }
+  }
+  return user;
+}
+
+if (typeof user().current.path === "undefined") {
+  if (user().current.repo !== "") {
+    user().current.path =
+      user().repos[user().current.org][user().current.repo].path + "/";
   }
 }
 
@@ -57,7 +67,7 @@ ipc.on("open_folder", (event, args) => {
     case "repo":
       console.log("opening a folder now");
       shell.openPath(
-        user.current.path.replaceAll("/", "\\") + "\\" + args.folder
+        user().current.path.replaceAll("/", "\\") + "\\" + args.folder
       );
       event.returnValue = "done";
       break;

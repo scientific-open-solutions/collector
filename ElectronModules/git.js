@@ -68,8 +68,7 @@ update = {
     "PhaseFunctions.js",
     "iframe_library.js",
   ],
-  folders: ["App/libraries", "App/Quality", "Default", "logos"],
-  excesses: ["App/libraries/ace-master"],
+  folders: ["App/libraries", "App/Quality", "Default", "logos"]
 };
 
 /*
@@ -195,13 +194,14 @@ ipc.on("git_add_repo", (event, args) => {
                     });
 
                     /*
-                     * remove excess
-                     */
+                     * remove excess - no longer doing this due to LocalLibraries
+
                     update.excesses.forEach(function (this_excess) {
                       fs.rmdirSync(user.current.path + this_excess, {
                         recursive: true,
                       });
                     });
+                    */
                     event.returnValue = "success";
                   })
                   .catch(function (error) {
@@ -450,8 +450,8 @@ ipc.on("git_push", (event, args) => {
     });
 
     /*
-     * remove excess
-     */
+     * remove excess - no longer doing this due to LocalLibraries
+
     update.excesses.forEach(function (this_excess) {
       fs.rmdirSync(user().current.path + this_excess, {
         recursive: true,
@@ -460,6 +460,7 @@ ipc.on("git_push", (event, args) => {
         recursive: true,
       });
     });
+    */
   }
 
   /*

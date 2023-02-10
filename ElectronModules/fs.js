@@ -169,9 +169,6 @@ ipc.on("fs_list_projects", (event, args) => {
   } else {
     event.returnValue = "No repo loaded yet";
   }
-  //} catch(error){
-  //  event.returnValue = error;
-  //}
 });
 
 ipc.on("fs_list_surveys", (event, args) => {

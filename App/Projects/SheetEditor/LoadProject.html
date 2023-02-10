@@ -18,8 +18,11 @@
 
 		Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey 
 -->
-
+<!-- LOADPROJECT.HTML -->
 <script src="Projects/SheetEditor/DefaultProject.js"></script>
+<!-- The items below fix the select box not being populated on first start -->
+<script src="Projects/SheetEditor/SheetFunctions.js"></script>
+<script src="Projects/SheetEditor/SheetActions.js"></script>
 
 <div class="modal" tabindex="-1" role="dialog" id="upload_experiment_modal">
   <div class="modal-dialog" role="document">
@@ -79,6 +82,7 @@
 </div>
 
 <script>
+  var functionIsRunning = false;
   $("#close_upload_experiment_modal").on("click", function () {
     $("#upload_experiment_modal").hide();
   });
@@ -123,6 +127,17 @@
 </div>
 
 <script>
+
+ $("#project_list").change(function () {
+    $("#exp_data_table").show();
+    project_json = master.projects.projects[this.value];
+    clean_conditions();
+    $("#project_inputs").show();
+    // update_handsontables(); This isn't needed as it's called within the clean_conditions() function
+    update_server_table();
+    $("#save_btn").click();
+  });
+
   // CTRL key shortcuts
   /////////////////////
 
@@ -155,3 +170,4 @@
     delete keys[event.which];
   });
 </script>
+
