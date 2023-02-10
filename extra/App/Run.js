@@ -47,7 +47,7 @@ Project = {
     "detect_exe",
     "get_htmls",
     "get_gets",
-    "start_restart",
+    //"start_restart",
     "start_project",
     "load_phases",
     "select_condition",
@@ -311,7 +311,7 @@ Project = {
         */,
         success: function(result){
           console.log("result");
-          console.log(result);
+          //console.log(result); {CGD} commented out to stop collector outputting all the html code in the console everytime a page loads in an experiment
           //Phase.submit();
         }
       });
@@ -526,6 +526,7 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
         .find(".post_iframe")
         .contents()
         .find("body")
+        .prepend('<button style="opacity:0; filter: alpha(opacity=0)" id="keyresponse_autofocus"></button>') // {CGD} Do not move, needs to prepend displayed HTML or autofocus scrolls to bottom on load
         .css("transform-origin", "top");
 
       try {
@@ -537,10 +538,10 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
             "scale(" + parent.parent.current_zoom + ")";
 
           if (isFirefox) {
-            this_iframe_style.width =
-              window.innerWidth / parent.parent.current_zoom;
-            this_iframe_style.height =
-              window.innerHeight / parent.parent.current_zoom;
+            this_iframe_style.width = (window.innerWidth * 0.98) / parent.parent.current_zoom;  // {CGD} adjusted all width/height to just under fullscreen to counter scroll bar issue
+            this_iframe_style.height = (window.innerHeight * 0.98)  / parent.parent.current_zoom;
+            this_iframe_style.maxWidth = (window.innerWidth * 0.97) / parent.parent.current_zoom;
+            this_iframe_style.maxHeight = (window.innerHeight * 0.97)  / parent.parent.current_zoom;
             this_iframe_style.transformOrigin = "left top";
           } else {
             this_iframe_style.width = "100%";
@@ -555,12 +556,13 @@ project_json.this_phase["post_"+project_json.post_no+"_phase_start_ms"] = (new D
       $("#phase" + project_json.phase_no).css("width", "100%");
       $("#phase" + project_json.phase_no).css("height", "100%");
       $("#phase" + project_json.phase_no).css("visibility", "visible");
-      $("#phase" + project_json.phase_no)
+      $("#phase" + project_json.phase_no) 
         .contents()
         .find("#post" + project_json.post_no)
         .contents()
-        .find("#zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
-        .focus(); //or anything that no-one would accidentally create.
+        .find("#keyresponse_autofocus") //.append("<input type='hidden' name='complete' value='0' />") // {CGD} used to set REDCap completion value so records are green on data input
+        .focus() //or anything that no-one would accidentally create.
+        .css('outline', 'none');
 
       //detect if max_time exists and start timer
       var post_val;
@@ -1358,7 +1360,7 @@ function post_welcome_data(returned_data) {
       $("#welcome_div").hide();
       $("#post_welcome").show();
       $("#project_div").show();
-      full_screen();
+      //full_screen(); {CGD} Commented out to stop multiple "do you want to do full screen?" messages
     } else if (id_error === "random") {
       var this_code = Math.random().toString(36).substr(2, 16);
       post_welcome(this_code, "random");
@@ -1368,7 +1370,7 @@ function post_welcome_data(returned_data) {
           $("#welcome_div").hide();
           $("#post_welcome").show();
           $("#project_div").show();
-          full_screen();
+          //full_screen();
         }
       });
     }
@@ -1674,7 +1676,7 @@ function shuffle_start_exp() {
 function start_restart() {
   if (isSafari) {
     bootbox.alert(
-      "This experiment will not run in safari. Please close and use another browser"
+      "Please do not use Safari to complete this study. It is likely that your data will not save correctly if you do. Please close Safari and use another browser"
     );
   } else if (
     (window.localStorage.getItem("project_json") !== null) &
@@ -1887,9 +1889,8 @@ function write_phase_iframe(index) {
 
   for (let i = 0; i < phase_events.length; i++) {
     var phase_content = Project.generate_phase(index, i);
-    phase_content +=
-      "<button style='opacity:0; filter: alpha(opacity=0)' id='zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'></button>";
-
+      // phase_content +=
+      '<button style="opacity:0; filter: alpha(opacity=0)" id="zzz"></button>' + phase_content;
     doc = document
       .getElementById("phase" + index)
       .contentWindow.document.getElementById("post" + i).contentWindow;
@@ -1919,23 +1920,6 @@ function write_phase_iframe(index) {
               '<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progress_bar"></div>' +
             '</div>'
           )
-          /*
-          .replace(
-            "#collector_phase_timer{",
-            "#collector_phase_timer{" +
-            "position: absolute;"+
-            "right: 0px;"+
-            "padding: 5px;"+
-            "border-radius: 50px;"+
-            "border-width: 5px;"+
-            //"border-color: #006688;"+
-            "border-style: solid;"+
-            "opacity: 0;"+
-            "width : 100px;" +
-            "height : 100px;" +
-            "color: #006688;"
-          )
-          */
           .replace(
             "var time_format;",
             "var time_format = 'progress'"
@@ -1943,12 +1927,15 @@ function write_phase_iframe(index) {
         } else {
           timer_code = timer_code
           .replace(
+            "[[TIMER_HERE]]",
+            '<h1 id="collector_phase_timer" class="bg-white"></h1>'
+          )
+          .replace(
             "#collector_phase_timer{",
             "#collector_phase_timer{" + this_proc.timer_style + ";"
           );
         }
       } else {
-        timer_code = timer_code
         timer_code = timer_code
         .replace(
           "[[TIMER_HERE]]",
@@ -2060,31 +2047,31 @@ $(window).bind("keydown", function (event) {
 });
 
 //prevent closing without warning
-window.onbeforeunload = function () {
-  switch (Project.get_vars.platform) {
-    case "simulateonline":
-    case "localhost":
-      break;
-    default:
-      if (online_data_obj.finished_and_stored === false) {
-        bootbox.confirm(
-          "Would you like to leave the experiment early? If you didn't just download your data there's a risk of you losing your progress.",
-          function (result) {
-            if (result) {
-              online_data_obj.finished_and_stored = true; //even though it's not
-            }
-          }
-        );
-        precrypted_data(
-          project_json,
-          "It looks like you're trying to leave the experiment before you're finished (or at least before the data has been e-mailed to the researcher. Please choose a filename to save your data as and e-mail it to the researcher. It should appear in your downloads folder."
-        );
+// window.onbeforeunload = function () {
+//   switch (Project.get_vars.platform) {
+//     case "simulateonline":
+//     case "localhost":
+//       break;
+//     default:
+//       if (online_data_obj.finished_and_stored === false) {
+//         bootbox.confirm(
+//           "Would you like to leave the experiment early? If you didn't just download your data there's a risk of you losing your progress.",
+//           function (result) {
+//             if (result) {
+//               online_data_obj.finished_and_stored = true; //even though it's not
+//             }
+//           }
+//         );
+//         precrypted_data(
+//           project_json,
+//           "It looks like you're trying to leave the experiment before you're finished (or at least before the data has been e-mailed to the researcher. Please choose a filename to save your data as and e-mail it to the researcher. It should appear in your downloads folder."
+//         );
 
-        return "Please do not try to refresh - you will have to restart if you do so.";
-      }
-      break;
-  }
-};
+//         return "Please do not try to refresh - you will have to restart if you do so.";
+//       }
+//       break;
+//   }
+// };
 $("body").css("text-align", "center");
 $("body").css("margin", "auto");
 

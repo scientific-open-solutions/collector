@@ -24,9 +24,10 @@ code_obj = {
     var deleted_code = $("#code_select").val();
     master.phasetypes.file = $("#code_select").val();
     var this_file = master.phasetypes.file;
-    var this_loc = "/code/" + master.phasetypes.file;
+    // var this_loc = "/code/" + master.phasetypes.file;
+    var this_loc = "the PhaseType: " + master.phasetypes.file;
     bootbox.confirm(
-      "Are you sure you want to delete this " + this_loc + "?",
+      "Are you sure you want to delete " + this_loc + "?",
       function (result) {
         if (result === true) {
           if (
@@ -43,7 +44,7 @@ code_obj = {
           code_obj.load_file("default");
           Collector.custom_alert("Successfully deleted " + this_loc);
           Collector.electron.fs.delete_file(
-            "PhaseTypes/" + deleted_code,
+            "PhaseTypes/" + deleted_code + ".html",
             function (response) {
               if (response !== "success") {
                 bootbox.alert(response);
@@ -144,7 +145,7 @@ function list_phasetypes(to_do_after) {
     files.forEach(function (file) {
       if (Object.keys(master.phasetypes.user).indexOf(file) === -1) {
         master.phasetypes.user[file] = Collector.electron.fs.read_file(
-          "PhaseTypes",
+          "PhaseTypes/",
           file + ".html"
         );
       }
@@ -168,14 +169,14 @@ function list_phasetypes(to_do_after) {
       a.localeCompare(b, undefined, { sensitivity: "base" })
     );
 
-    default_keys.forEach(function (element) {
+    default_keys.forEach((element) => {
       $("#code_select").append(
         "<option class='default_code'>" + element + "</option>"
       );
     });
     master.phasetypes.user = user;
 
-    user_keys.forEach(function (element) {
+    user_keys.forEach((element) => {
       $("#code_select").append(
         "<option class='user_code'>" + element + "</option>"
       );

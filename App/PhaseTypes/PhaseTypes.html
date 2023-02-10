@@ -1,24 +1,5 @@
-<!--
-/*  Collector (Garcia, Kornell, Kerr, Blake & Haffey)
-    A program for running experiments on the web
-    Copyright 2012-2016 Mikey Garcia & Nate Kornell
+    <!-- App/PhaseTypes/Phasetypes.html -->
 
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 3 as published by
-    the Free Software Foundation.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>
-
-		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
-*/
--->
 <style>
   .user_code {
     background-color: PaleGreen;
@@ -30,6 +11,21 @@
     width: 100%;
     height: 100%;
     margin: 30px;
+  }
+  #ace_theme {
+    position: absolute;
+    top: 29px;
+    left: 650px;
+  }
+  #ace_theme_btn_light{
+    display: none;
+    top: 3px;
+    position: relative;
+  }
+  #ace_theme_btn_dark{
+    display: none;
+    top: 3px;
+    position: relative;
   }
 </style>
 <br /><br />
@@ -130,28 +126,16 @@
             	</div>
               -->
               <div class="col-md-3">
-                <select
-                  id="code_select"
-                  class="form-select"
-                  previousValue=""
-                ></select>
+                <select id="code_select" class="form-select" previousValue=""></select>
               </div>
               <div class="col-md-9">
                 <button id="new_code_button" class="btn btn-primary">
                   New
                 </button>
-                <button
-                  id="rename_code_button"
-                  class="btn btn-primary"
-                  style="display: none"
-                >
+                <button id="rename_code_button" class="btn btn-primary" style="display: none" >
                   Rename
                 </button>
-                <button
-                  id="delete_phasetypes_button"
-                  class="btn btn-primary"
-                  style="display: none"
-                >
+                <button id="delete_phasetypes_button" class="btn btn-primary" style="display: none">
                   Delete
                 </button>
                 <button id="save_phasetype_btn" class="btn btn-primary">
@@ -163,6 +147,8 @@
                 <button class="btn btn-outline-primary" id="view_graphic_btn">
                   Graphic
                 </button>
+                <button class="btn btn btn-outline-secondary btn-sm" id="ace_theme_btn_light">Light Theme</button>
+                <button class="btn btn btn-secondary btn-sm" id="ace_theme_btn_dark">Dark Theme</button>
               </div>
             </div>
 
@@ -171,10 +157,9 @@
               <!--
                 This is to allow the ace editor width to change when the helper is shown (or not)
               -->
-              <div id="ACE_editor" style="display: none; width: 100%"></div>
+              <div id="ACE_editor" style="display: none; width: 98%">No PhaseType selected</div>
             </div>
             <div id="graphic_editor" style="display: none"></div>
-
           </div>
           <div
             class="tab-pane fade"
@@ -193,6 +178,27 @@
 
 <script src="iframe_library.js"></script>
 <script>
+// ACE Theme Swap
+$("#ace_theme_btn_dark").on("click", function () {
+    editor.setTheme("ace/theme/tomorrow_night");
+    $('#ace_theme_btn_dark').hide();
+    $('#ace_theme_btn_light').show();
+  });
+
+$("#ace_theme_btn_light").on("click", function () {
+  editor.setTheme("ace/theme/chrome");
+  $('#ace_theme_btn_dark').show();
+  $('#ace_theme_btn_light').hide();
+});
+
+$("#code_select").change(function () {
+  if ($('#code_select').attr('previousvalue') == "" ) {
+    $('#ace_theme_btn_dark').show();
+  } else {
+    console.log($('#code_select').val());
+  }
+});
+
   $("#code_editor-tab").on("click", function () {
     $("#code_preview").prop("src", "about:blank");
   });
@@ -301,8 +307,8 @@
     enableBasicAutocompletion: true,
     enableSnippets: false,
     enableLiveAutocompletion: true,
-    fontSize: 13,
-    maxLines: 50,
+    fontSize: 14,
+    maxLines: 60,
     minLines: 30,
     tabSize: 2,
     wrap: true,

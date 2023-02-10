@@ -1,22 +1,6 @@
-/*  Collector (Garcia, Kornell, Kerr, Blake & Haffey)
-    A program for running experiments on the web
-    Copyright 2012-2016 Mikey Garcia & Nate Kornell
+// App/PhaseTypes/PhasetypesActions.js
+functionIsRunning = false;
 
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 3 as published by
-    the Free Software Foundation.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>
-
-    Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
-*/
 function initiate_actions() {
   function protected_name_check(this_name) {
     protected_names = ["start_experiment"];
@@ -87,10 +71,23 @@ function initiate_actions() {
 
   $("#delete_phasetypes_button").on("click", function () {
     code_obj.delete_phasetypes();
+    setTimeout(function() { 
+      $("#save_btn").click();
+      console.log("It saved the delete!");
+    }, 2100);
   });
 
+ 
+  // output html framework to a variable
+  var htmlFramework = $.ajax({
+    url: "./PhaseTypes/html.txt",
+    async: false
+  }).responseText;
+
   $("#new_code_button").on("click", function () {
-    var dialog = bootbox
+    if (!functionIsRunning) {
+      functionIsRunning = true;
+      var dialog = bootbox
       .dialog({
         show: false,
         title: "What would you like to name this new code file?",
@@ -108,6 +105,7 @@ function initiate_actions() {
             label: "Using Code",
             className: "btn-primary",
             callback: function () {
+              functionIsRunning = false;
               var new_name = $("#new_code_name").val().toLowerCase();
               if (protected_name_check(new_name)) {
                 if (valid_new_name(new_name)) {
@@ -116,6 +114,10 @@ function initiate_actions() {
                   master.phasetypes.file = new_name;
                   code_obj.save(content, new_name, "new", "code");
                   editor.textInput.getElement().onkeydown = "";
+                  $("#rename_code_button").show();
+                  $("#delete_phasetypes_button").show();
+                  editor.session.setValue(htmlFramework);
+                  $("#ace_theme_btn_dark").show();
                 }
               }
             },
@@ -124,6 +126,7 @@ function initiate_actions() {
             label: "Using Graphics",
             className: "btn-primary",
             callback: function () {
+              functionIsRunning = false;
               var new_name = $("#new_code_name").val().toLowerCase();
               if (protected_name_check(new_name)) {
                 if (valid_new_name(new_name)) {
@@ -175,10 +178,14 @@ function initiate_actions() {
         $("#new_code_name").focus();
       })
       .modal("show");
+    }
   });
-
+  
   $("#rename_code_button").on("click", function () {
+    // Get the selected PhaseType name and assign to variable
     var code_selected = $("#code_select").val();
+    // Store the selected PhaseType name again as the original variable is overwritten before we delete anything meaning we can't use it or we delete the new file not the old one!
+    var originPT = code_selected;
 
     if (typeof master.phasetypes.default[code_selected] !== "undefined") {
       bootbox.alert("You can't rename a default code file");
@@ -192,34 +199,73 @@ function initiate_actions() {
             bootbox.alert("You already have a code file with this name");
           } else {
             var original_name = $("#code_select").val();
-            master.phasetypes.user[new_name] =
-              master.phasetypes.user[original_name];
-            delete master.phasetypes.user[original_name];
+            master.phasetypes.user[new_name] = master.phasetypes.user[original_name];
+            
+            // This adds the new PhaseType name as an attribute to the dropdown html, not 100% sure why
+            // $("#code_select").attr("previousvalue", "");
 
-            $("#code_select").attr("previousvalue", "");
-
+            // This "renames" the file by actually creating a new file with the required name
             var response = Collector.electron.fs.write_file(
-              "Phase",
+              "PhaseTypes/",
               new_name.replace(".html", "") + ".html",
               master.phasetypes.user[new_name]
-            );
-            if (write_response === "success") {
-              Collector.electron.fs.delete_file(
-                "PhaseTypes/" + original_name,
+            );               
+            
+            // Then we write a variable to show that everything has worked ok and we're good to delete the old file
+            var write_response = "success";
+          }
+
+            // If the success variable was created we can delete the previous file
+            // NOTE: This is a hard delete (no recycle binning) I'm wondering if it's safer to move it to a "tempDelete" folder or something just in case
+          if (write_response == "success") {
+            // Remove the old PhaseType from the options dropdown
+            // $('#code_select option:contains('+originPT+')').remove();
+            
+            // Add .html to the originally selected PhaseType name, making it a file
+            originPT_file = originPT.concat(".html");
+            // Ass PhaseTypes/ to the file name we just created, giving us the path needed for the  delete funciton
+            var filePath = ("PhaseTypes/" + originPT_file); 
+            
+            // -----------------------------------
+            // Delete the file and dropdown option
+            // -----------------------------------
+
+            // Collector.electron.fs.delete_file(filePath);
+            var deleted_code = $("#code_select").val();
+            master.phasetypes.file = $("#code_select").val();
+            var this_file = master.phasetypes.file;
+            if (typeof master.phasetypes.graphic.files[this_file] !== "undefined") {
+              delete master.phasetypes.graphic.files[this_file];
+            }
+            delete master.phasetypes.user[this_file];
+            $("#code_select").attr("previousvalue", "");
+            $("#code_select option:selected").remove();
+            $("#graphic_editor").hide();
+            master.phasetypes.file = $("#code_select").val();
+            code_obj.load_file("default");
+            Collector.electron.fs.delete_file(
+                "PhaseTypes/" + deleted_code + ".html",
                 function (response) {
-                  if (response === "success") {
-                    list_phasetypes(function () {
-                      $("#code_select").val(new_name);
-                      $("#code_select").change();
-                    });
-                  } else {
-                    bootbox.alert(response);
+                  if (response !== "success") {
+                    // bootbox.alert(response);
                   }
                 }
               );
-            }
-          }
-        }
+            
+            // Changes the dropdown menu to show the new filename as being selected, and delete the old one
+            $("#code_select").append(new Option(new_name));  
+            // $("#code_select").val(new_name);
+            
+            Collector.custom_alert("<b>File renamed</b><br>Please select it at the bottom of the dropdown list");
+            // Lastly, we just do a master "save" to ensure the change is kept after quitting Collector
+            setTimeout(function() { 
+              $("#save_phasetype_btn").click();
+              $("#save_btn").click();
+              console.log("It saved the rename!");
+            }, 100);
+          } else { console.log("Rename failed");}
+        }       
+        
       );
     }
   });
