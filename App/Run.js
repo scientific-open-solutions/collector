@@ -55,7 +55,7 @@ Project = {
     "detect_exe",
     "get_htmls",
     "get_gets",
-    "start_restart",
+    //"start_restart", {CGD} Turned this off a long time ago, can't really remember why! (Think it was something to do with a double page loading thing)
     "start_project",
     "load_phases",
     "select_condition",
@@ -346,7 +346,8 @@ Project = {
         data: clean_phase_responses,
         success: function(result){
           console.log("result");
-          console.log(result);
+          // console.log(result);
+          //Phase.submit();
         }
       });
     }
@@ -433,21 +434,16 @@ Project = {
     //baseline_time
 
     this_phase =
-      "<scr" +
-      "ipt> Phase = {}; Phase.phase_no = '" +
-      phase_no +
-      "'; Phase.post_no ='" +
-      post_no +
-      "' </scr" +
-      "ipt>" +
-      "<scr" +
-      "ipt src = 'PhaseFunctions.js' ></scr" +
-      "ipt>" +
-      this_phase; //; phase_script +
+      `<script> Phase = {}; Phase.phase_no = '${phase_no}'; Phase.post_no ='${post_no}' </script><script src = 'PhaseFunctions.js' ></script>${this_phase}`; //; phase_script +
 
     this_phase = this_phase.replace("[phase_no]", phase_no);
     this_phase = this_phase.replace("[post_no]", post_no);
 
+    if(this_proc.item.toString() === "") {
+      console.log("ERROR: If it's 'White Screening' it's because you've got an empty row in the 'Item' column of your procedure sheet!")
+      console.log("       ps. I spent hours trying to debug Collector when this happened to me as I hadn't realised it was just a missing 0")
+      console.log("           which is why I'm writing this long error message, so if it happens again I can fix it in seconds! CD")
+    }
     if (this_proc.item.toString() !== "0") {
       this_stim = project_json.parsed_stim[this_proc.item];
       variable_list = Object.keys(this_proc).concat(Object.keys(this_stim));
@@ -581,7 +577,7 @@ Project = {
       $("#phase" + project_json.phase_no).css("width", "100%");
       $("#phase" + project_json.phase_no).css("height", "100%");
       $("#phase" + project_json.phase_no).css("visibility", "visible");
-      $("#phase" + project_json.phase_no)
+      $("#phase" + project_json.phase_no) 
         .contents()
         .find("#post" + project_json.post_no)
         .contents()
@@ -1384,7 +1380,7 @@ function post_welcome_data(returned_data) {
       $("#welcome_div").hide();
       $("#post_welcome").show();
       $("#project_div").show();
-      //full_screen();
+      //full_screen(); {CGD} Commented out to stop multiple "do you want to do full screen?" messages
     } else if (id_error === "random") {
       var this_code = Math.random().toString(36).substr(2, 16);
       post_welcome(this_code, "random");
@@ -1700,7 +1696,7 @@ function shuffle_start_exp() {
 function start_restart() {
   if (isSafari) {
     bootbox.alert(
-      "This experiment will not run in safari. Please close and use another browser"
+      "Please do not use Safari to complete this study. It is likely that your data will not save correctly if you do. Please close Safari and use another browser"
     );
   } else  /* //skipping resume for now if (
     (window.localStorage.getItem("project_json") !== null) &
@@ -2072,36 +2068,31 @@ $(window).bind("keydown", function (event) {
 });
 
 //prevent closing without warning
-window.onbeforeunload = function () {
-  var leave_early = project_json.this_condition.leave_early;
-  if (
-    typeof(leave_early) !== "undefined" && leave_early === "no"
-  ){
-    switch (Project.get_vars.platform) {
-      case "simulateonline":
-      case "localhost":
-        break;
-      default:
-        if (online_data_obj.finished_and_stored === false) {
-          bootbox.confirm(
-            "Would you like to leave the experiment early? If you didn't just download your data there's a risk of you losing your progress.",
-            function (result) {
-              if (result) {
-                online_data_obj.finished_and_stored = true; //even though it's not
-              }
-            }
-          );
-          precrypted_data(
-            project_json,
-            "It looks like you're trying to leave the experiment before you're finished (or at least before the data has been e-mailed to the researcher. Please choose a filename to save your data as and e-mail it to the researcher. It should appear in your downloads folder."
-          );
+// window.onbeforeunload = function () {
+//   switch (Project.get_vars.platform) {
+//     case "simulateonline":
+//     case "localhost":
+//       break;
+//     default:
+//       if (online_data_obj.finished_and_stored === false) {
+//         bootbox.confirm(
+//           "Would you like to leave the experiment early? If you didn't just download your data there's a risk of you losing your progress.",
+//           function (result) {
+//             if (result) {
+//               online_data_obj.finished_and_stored = true; //even though it's not
+//             }
+//           }
+//         );
+//         precrypted_data(
+//           project_json,
+//           "It looks like you're trying to leave the experiment before you're finished (or at least before the data has been e-mailed to the researcher. Please choose a filename to save your data as and e-mail it to the researcher. It should appear in your downloads folder."
+//         );
 
-          return "Please do not try to refresh - you will have to restart if you do so.";
-        }
-        break;
-    }
-  }
-};
+//         return "Please do not try to refresh - you will have to restart if you do so.";
+//       }
+//       break;
+//   }
+// };
 $("body").css("text-align", "center");
 $("body").css("margin", "auto");
 

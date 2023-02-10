@@ -24,23 +24,26 @@ $("#default_projects_select").on("change", function () {
 });
 
 $("#delete_proj_btn").on("click", function () {
-  var proj_name = $("#project_list").val();
-  if (proj_name === null) {
-    bootbox.alert("You need to select a study to delete it");
-  } else {
-    bootbox.confirm(
-      "Are you sure you want to delete your project?",
-      function (result) {
-        if (result) {
-          //delete from master
-          delete master.projects.projects[proj_name];
+  if (!functionIsRunning) {
+    functionIsRunning = true;
+    var proj_name = $("#project_list").val();
+    if (proj_name === null) {
+      bootbox.alert("You need to select a study to delete it");
+    } else {
+      bootbox.confirm(
+        "Are you sure you want to delete your project?",
+        function (result) {
+          functionIsRunning = false;
+          if (result) {
+            //delete from master
+            delete master.projects.projects[proj_name];
 
-          $("#project_list option:contains(" + proj_name + ")")[0].remove();
-          $("#project_list").val(
-            document.getElementById("project_list").options[1].value
-          );
-          Collector.custom_alert(proj_name + " succesfully deleted");
-          update_handsontables();
+            $("#project_list option:contains(" + proj_name + ")")[0].remove();
+            $("#project_list").val(
+              document.getElementById("project_list").options[1].value
+            );
+            Collector.custom_alert(proj_name + " succesfully deleted");
+            update_handsontables();
 
           //delete the local file if this is
           if (Collector.detect_context() === "localhost") {
@@ -65,8 +68,10 @@ $("#delete_proc_button").on("click", function () {
       "This would mean you have no procedure sheets. Please just edit the current sheet rather than deleting it."
     );
   } else {
+    console.log("Delete!!")
+    var proc_file = $("#proc_select").val();
     bootbox.confirm(
-      "Are you sure you want to delete this procedure sheet?",
+      "Are you sure you want to delete the <b>"+ proc_file +"</b> procedure sheet?",
       function (result) {
         if (!result) {
           // do nothing
@@ -76,6 +81,8 @@ $("#delete_proc_button").on("click", function () {
            */
           var project = $("#project_list").val();
           var proc_file = $("#proc_select").val();
+          var file_path = "Projects" + "/" + project + "/" + proc_file;
+          console.log(file_path);
           delete master.projects.projects[project].all_procs[proc_file];
 
           // update the lists
@@ -135,6 +142,9 @@ $("#delete_stim_button").on("click", function () {
               Collector.custom_alert(this_response);
             }
           }
+          setTimeout(function() { 
+            $("#save_btn").click();
+          }, 2100);
         }
       }
     );
@@ -142,106 +152,122 @@ $("#delete_stim_button").on("click", function () {
 });
 
 $("#download_project_button").on("click", function () {
-  var project = $("#project_list").val();
-  var project_json = master.projects.projects[project];
-  var default_filename = project + ".json";
-  bootbox.prompt({
-    title: "What do you want to save this file as?",
-    value: default_filename, //"data.csv",
-    callback: function (result) {
-      if (result) {
-        Collector.download_file(
-          result,
-          JSON.stringify(project_json, null, 2),
-          "json"
-        );
-      }
-    },
-  });
+  if (!functionIsRunning) {
+    functionIsRunning = true;
+    var project = $("#project_list").val();
+    var project_json = master.projects.projects[project];
+    var default_filename = project + ".json";
+    bootbox.prompt({
+      title: "What do you want to save this file as?",
+      value: default_filename, //"data.csv",
+      callback: function (result) {
+        functionIsRunning = false;
+        if (result) {
+          Collector.download_file(
+            result,
+            JSON.stringify(project_json, null, 2),
+            "json"
+          );
+        }
+      },
+    });
+  };
 });
 
 $("#new_proc_button").on("click", function () {
-  var proc_template = default_project.all_procs["procedure_1.csv"];
-  bootbox.prompt(
-    "What would you like the name of the new <b>procedure</b> sheet to be?",
-    function (new_proc_name) {
-      if (new_proc_name) {
-        var project = $("#project_list").val();
-        var this_proj = master.projects.projects[project];
-        var current_procs = Object.keys(this_proj.all_procs);
-        if (current_procs.indexOf(new_proc_name) !== -1) {
-          bootbox.alert("You already have a procedure sheet with that name");
-        } else {
-          new_proc_name = new_proc_name.replace(".csv", "") + ".csv";
-          this_proj.all_procs[new_proc_name] = proc_template;
-          $("#proc_select").append(
-            $("<option>", {
-              text: new_proc_name,
-            })
-          );
-          $("#proc_select").val(new_proc_name);
-          createExpEditorHoT(
-            this_proj.all_procs[new_proc_name],
-            "procedure",
-            new_proc_name
-          );
+  if (!functionIsRunning) {
+    functionIsRunning = true;
+    var proc_template = default_project.all_procs["procedure_1.csv"];
+    bootbox.prompt(
+      "What would you like the name of the new <b>procedure</b> sheet to be?",
+      function (new_proc_name) {
+        functionIsRunning = false;
+        if (new_proc_name) {
+          var project = $("#project_list").val();
+          var this_proj = master.projects.projects[project];
+          var current_procs = Object.keys(this_proj.all_procs);
+          if (current_procs.indexOf(new_proc_name) !== -1) {
+            bootbox.alert("You already have a procedure sheet with that name");
+          } else {
+            new_proc_name = new_proc_name.replace(".csv", "") + ".csv";
+            this_proj.all_procs[new_proc_name] = proc_template;
+            $("#proc_select").append(
+              $("<option>", {
+                text: new_proc_name,
+              })
+            );
+            $("#proc_select").val(new_proc_name);
+            createExpEditorHoT(
+              this_proj.all_procs[new_proc_name],
+              "procedure",
+              new_proc_name
+            );
+          }
         }
       }
-    }
-  );
+    );
+  };
 });
 
 $("#new_project_button").on("click", function () {
-  bootbox.prompt(
-    "What would you like to name the new project?",
-    function (result) {
-      if (result !== null) {
-        result = result.toLowerCase();
-        result = Collector.clean_string(result);
-        if ($("#project_list").text().indexOf(result) !== -1) {
-          bootbox.alert("You already have an experiment with this name");
-        } else {
-          $("#exp_data_table").show();
-          new_project(result);
-          $("#save_btn").click();
+  if (!functionIsRunning) {
+    functionIsRunning = true;
+    bootbox.prompt(
+      "What would you like to name the new project?",
+      function (result) {
+        functionIsRunning = false;
+        if (result !== null) {
+          result = result.toLowerCase();
+          result = Collector.clean_string(result);
+          if ($("#project_list").text().indexOf(result) !== -1) {
+            bootbox.alert("You already have an experiment with this name");
+          } else {
+            $("#exp_data_table").show();
+            new_project(result);
+            $("#save_btn").click();
+          }
         }
       }
-    }
-  );
+    );
+  };
 });
 
 $("#new_stim_button").on("click", function () {
-  var stim_template = default_project.all_stims["stimuli_1.csv"];
-  bootbox.prompt(
-    "What would you like the name of the new <b>Stimuli</b> sheet to be?",
-    function (new_sheet_name) {
-      if (new_sheet_name) {
-        var project = $("#project_list").val();
-        var this_proj = master.projects.projects[project];
-        var current_stims = Object.keys(this_proj.all_stims);
-        if (current_stims.indexOf(new_sheet_name) !== -1) {
-          bootbox.alert(
-            "You already have a <b>Stimuli</b> sheet with that name"
-          );
-        } else {
-          new_sheet_name = new_sheet_name.replace(".csv", "") + ".csv";
-          this_proj.all_stims[new_sheet_name] = stim_template;
-          $("#stim_select").append(
-            $("<option>", {
-              text: new_sheet_name,
-            })
-          );
-          $("#stim_select").val(new_sheet_name);
+  if (!functionIsRunning) {
+    functionIsRunning = true;
+    var stim_template = default_project.all_stims["stimuli_1.csv"];
+    bootbox.prompt(
+      "What would you like the name of the new <b>Stimuli</b> sheet to be?",
+      function (new_sheet_name) {
+        functionIsRunning = false;
+        if (new_sheet_name) {
+          var project = $("#project_list").val();
+          var this_proj = master.projects.projects[project];
+          var current_stims = Object.keys(this_proj.all_stims);
+          if (current_stims.indexOf(new_sheet_name) !== -1) {
+            bootbox.alert(
+              "You already have a <b>Stimuli</b> sheet with that name"
+            );
+          } else {
+            new_sheet_name = new_sheet_name.replace(".csv", "") + ".csv";
+            this_proj.all_stims[new_sheet_name] = stim_template;
+            $("#stim_select").append(
+              $("<option>", {
+                text: new_sheet_name,
+              })
+            );
+            $("#stim_select").val(new_sheet_name);
 
-          createExpEditorHoT(
-            this_proj.all_stims[new_sheet_name],
-            "stimuli",
-            new_sheet_name
-          );
+            createExpEditorHoT(
+              this_proj.all_stims[new_sheet_name],
+              "stimuli",
+              new_sheet_name
+            );
+          }
         }
       }
-    }
-  );
+    );
+  };
 });
 
 $("#open_proj_folder").on("click", function () {
@@ -256,7 +282,8 @@ $("#project_list").on("change", function () {
   project_json = master.projects.projects[this.value];
   clean_conditions();
   $("#project_inputs").show();
-  update_handsontables();
+  // update_handsontables(); This isn't needed as it's called within the clean_conditions() function
+  update_server_table();
   $("#save_btn").click();
 });
 
@@ -267,18 +294,21 @@ $("#proc_select").on("change", function () {
 });
 
 $("#rename_proj_btn").on("click", function () {
-  bootbox.prompt(
-    "What would you like to rename this experiment to?",
-    function (new_name) {
-      if (new_name) {
-        if ($("#project_list").text().indexOf(new_name) !== -1) {
-          bootbox.alert("You already have an experiment with this name");
-        } else {
-          //proceed
-          var original_name = $("#project_list").val();
-          master.projects.projects[new_name] =
-            master.projects.projects[original_name];
-          delete master.projects.projects[original_name];
+  if (!functionIsRunning) {
+    functionIsRunning = true;
+    bootbox.prompt(
+      "What would you like to rename this experiment to?",
+      function (new_name) {
+        functionIsRunning = false;
+        if (new_name) {
+          if ($("#project_list").text().indexOf(new_name) !== -1) {
+            bootbox.alert("You already have an experiment with this name");
+          } else {
+            //proceed
+            var original_name = $("#project_list").val();
+            master.projects.projects[new_name] =
+              master.projects.projects[original_name];
+            delete master.projects.projects[original_name];
 
           CElectron.fs.write_project(
             new_name,
@@ -309,139 +339,228 @@ $("#rename_proj_btn").on("click", function () {
 });
 
 $("#rename_proc_button").on("click", function () {
-  bootbox.prompt(
-    "What do you want to rename this <b>Procedure</b> sheet to?",
-    function (new_proc_name) {
-      if (new_proc_name) {
-        new_proc_name = new_proc_name.toLowerCase();
-        var project = $("#project_list").val();
-        var this_proj = master.projects.projects[project];
-        var current_procs = Object.keys(this_proj.all_procs);
-        var current_proc = $("#proc_select").val();
-        current_procs.splice(current_procs.indexOf(current_proc), 1);
-        var current_proc_sheet = this_proj.all_procs[current_proc];
+  if (!functionIsRunning) {
+    functionIsRunning = true;
+    bootbox.prompt(
+      "What do you want to rename this <b>Procedure</b> sheet to?",
+      function (new_proc_name) {
+        functionIsRunning = false;
+        if (new_proc_name) {
+          new_proc_name = new_proc_name.toLowerCase();
+          var project = $("#project_list").val();
+          var this_proj = master.projects.projects[project];
+          var current_procs = Object.keys(this_proj.all_procs);
+          var current_proc = $("#proc_select").val();
+          current_procs.splice(current_procs.indexOf(current_proc), 1);
+          var current_proc_sheet = this_proj.all_procs[current_proc];
 
-        if (current_procs.indexOf(new_proc_name) !== -1) {
-          bootbox.alert("You already have a procedure sheet with that name");
-        } else {
-          new_proc_name = new_proc_name.replace(".csv", "") + ".csv";
-          master.projects.projects[project].all_procs[new_proc_name] =
-            current_proc_sheet;
+          if (current_procs.indexOf(new_proc_name) !== -1) {
+            bootbox.alert("You already have a procedure sheet with that name");
+          } else {
+            new_proc_name = new_proc_name.replace(".csv", "") + ".csv";
+            master.projects.projects[project].all_procs[new_proc_name] =
+              current_proc_sheet;
 
-          delete master.projects.projects[project].all_procs[current_proc];
-          $("#proc_select").append(
-            $("<option>", {
-              text: new_proc_name,
-            })
-          );
-          $("#proc_select").val(new_proc_name);
-          $('#proc_select option[value="' + current_proc + '"]').remove();
-          createExpEditorHoT(
-            this_proj.all_procs[new_proc_name],
-            "procedure",
-            new_proc_name
-          );
+            delete master.projects.projects[project].all_procs[current_proc];
+            $("#proc_select").append(
+              $("<option>", {
+                text: new_proc_name,
+              })
+            );
+            $("#proc_select").val(new_proc_name);
+            $('#proc_select option[value="' + current_proc + '"]').remove();
+            createExpEditorHoT(
+              this_proj.all_procs[new_proc_name],
+              "procedure",
+              new_proc_name
+            );
+          }
         }
       }
-    }
-  );
+    );
+  };
 });
 
 $("#rename_stim_button").on("click", function () {
-  bootbox.prompt(
-    "What do you want to rename this <b>Stimuli</b> sheet to?",
-    function (new_sheet_name) {
-      if (new_sheet_name) {
-        new_sheet_name = new_sheet_name.toLowerCase();
-        var project = $("#project_list").val();
-        var this_proj = master.projects.projects[project];
+  if (!functionIsRunning) {
+    functionIsRunning = true;
+    bootbox.prompt(
+      "What do you want to rename this <b>Stimuli</b> sheet to?",
+      function (new_sheet_name) {
+        functionIsRunning = false;
+        if (new_sheet_name) {
+          new_sheet_name = new_sheet_name.toLowerCase();
+          var project = $("#project_list").val();
+          var this_proj = master.projects.projects[project];
 
-        var current_stims = Object.keys(this_proj.all_stims);
-        var current_stim = $("#stim_select").val();
-        current_stims.splice(current_stims.indexOf(current_stim), 1);
+          var current_stims = Object.keys(this_proj.all_stims);
+          var current_stim = $("#stim_select").val();
+          current_stims.splice(current_stims.indexOf(current_stim), 1);
 
-        var current_stim_sheet = this_proj.all_stims[current_stim];
+          var current_stim_sheet = this_proj.all_stims[current_stim];
 
-        if (current_stims.indexOf(new_sheet_name) !== -1) {
-          bootbox.alert(
-            "You already have a <b>Stimuli</b> sheet with that name"
-          );
-        } else {
-          new_sheet_name = new_sheet_name.replace(".csv", "") + ".csv";
+          if (current_stims.indexOf(new_sheet_name) !== -1) {
+            bootbox.alert(
+              "You already have a <b>Stimuli</b> sheet with that name"
+            );
+          } else {
+            new_sheet_name = new_sheet_name.replace(".csv", "") + ".csv";
 
-          master.projects.projects[project].all_stims[new_sheet_name] =
-            current_stim_sheet;
+            master.projects.projects[project].all_stims[new_sheet_name] =
+              current_stim_sheet;
 
-          delete master.projects.projects[project].all_stims[current_stim];
+            delete master.projects.projects[project].all_stims[current_stim];
 
-          $("#stim_select").append(
-            $("<option>", {
-              text: new_sheet_name,
-            })
-          );
-          $("#stim_select").val(new_sheet_name);
+            $("#stim_select").append(
+              $("<option>", {
+                text: new_sheet_name,
+              })
+            );
+            $("#stim_select").val(new_sheet_name);
 
-          $('#stim_select option[value="' + current_stim + '"]').remove();
+            $('#stim_select option[value="' + current_stim + '"]').remove();
 
-          createExpEditorHoT(
-            this_proj.all_stims[new_sheet_name],
-            "stimuli",
-            new_sheet_name
-          );
+            createExpEditorHoT(
+              this_proj.all_stims[new_sheet_name],
+              "stimuli",
+              new_sheet_name
+            );
+          }
         }
       }
-    }
-  );
+    );
+  };
 });
 
+
+
 $("#run_btn").on("click", function () {
-  var project = $("#project_list").val();
-  var project_json = master.projects.projects[project];
-  var select_html = '<select id="select_condition" class="form-select">';
-  var conditions = Collector.PapaParsed(project_json.conditions);
-  if (typeof conditions === "undefined") {
-    conditions = conditions.filter(function (condition) {
-      return condition.name !== "";
-    });
-  }
-  conditions.forEach(function (condition) {
-    select_html += "<option>" + condition.name + "</option>";
-  });
-  select_html += "</select>";
-
-  if (
-    typeof master.data.save_script === "undefined" ||
-    //test here for whether there is a github repository linked
-    master.data.save_script === ""
-  ) {
-    /* might reinstate this later if it becomes helpful
-    bootbox.prompt("You currently have no link that saves your data. Please follow the instructions in the tutorial (to be completed), and then copy the link to confirm where to save your data below:",function(this_url){
-      if(this_url){
-        master.data.save_script = this_url;
-        $("#save_btn").click();
+    if (!functionIsRunning) {
+      functionIsRunning = true;
+      var project = $("#project_list").val();
+      var project_json = master.projects.projects[project];
+      var select_html = '<select id="select_condition" class="form-select">';
+      var conditions = Collector.PapaParsed(project_json.conditions);
+      if (typeof conditions === "undefined") {
+        conditions = conditions.filter(function (condition) {
+          return condition.name !== "";
+        });
       }
-    });
-    */
-  }
-  var org = user.current.org;
-  var repo = user.current.repo;
+      conditions.forEach(function (condition) {
+        select_html += "<option>" + condition.name + "</option>";
+      });
+      select_html += "</select>";
 
-  var github_url =
-    "https://" +
-    org +
-    ".github.io" +
-    "/" +
-    repo +
-    "/" +
-    "App" +
-    "/" +
-    "Run.html?platform=github&" +
-    "location=" +
-    $("#project_list").val() +
-    "&" +
-    "name=" +
-    conditions[0].name;
+      if (
+        typeof master.data.save_script === "undefined" ||
+        //test here for whether there is a github repository linked
+        master.data.save_script === ""
+      ) {
+        /* might reinstate this later if it becomes helpful
+        bootbox.prompt("You currently have no link that saves your data. Please follow the instructions in the tutorial (to be completed), and then copy the link to confirm where to save your data below:",function(this_url){
+          if(this_url){
+            master.data.save_script = this_url;
+            $("#save_btn").click();
+          }
+        });
+        */
+      }
+      var org = user.current.org;
+      var repo = user.current.repo;
 
+      var github_url =
+        "https://" +
+        org +
+        ".github.io" +
+        "/" +
+        repo +
+        "/" +
+        "App" +
+        "/" +
+        "Run.html?platform=github&" +
+        "location=" +
+        $("#project_list").val() +
+        "&" +
+        "name=" +
+        conditions[0].name;
+
+      bootbox.dialog({
+        title: "Select a Condition",
+        message:
+          "Which condition would you like to run? <br><br>" +
+          select_html +
+          "To run the study copy the following into a browser:<br>(make sure you've pushed the latest changes and waited 5+ minutes) <input class='form-control' value='" +
+          github_url +
+          "' onfocus='this.select();' id='experiment_url_input'>" +
+          "To <b>Preview</b> a project copy the following into a browser: <input class='form-control' value='" +
+          github_url.replace("platform=github", "platform=onlinepreview") +
+          "' onfocus='this.select();' id='experiment_url_input'>",
+        buttons: {
+          local: {
+            label: "Run",
+            className: "btn-primary",
+            callback: function () {
+              var functionIsRunning = false;
+              window.open(
+                "Run.html?platform=localhost&" +
+                  "location=" +
+                  $("#project_list").val() +
+                  "&" +
+                  "name=" +
+                  $("#select_condition").val(),
+                "_blank"
+              );
+            },
+          },
+          local_preview: {
+            label: "Preview Local",
+            className: "btn-info",
+            callback: function () {
+              functionIsRunning = false;
+              window.open(
+                "Run.html?platform=preview&" +
+                  "location=" +
+                  $("#project_list").val() +
+                  "&" +
+                  "name=" +
+                  $("#select_condition").val(),
+                "_blank"
+              );
+            },
+          },
+          online_preview: {
+            label: "Preview Online",
+            className: "btn-info",
+            callback: function () {
+              functionIsRunning = false;
+              window.open(
+                "Run.html?platform=simulateonline&" +
+                  "location=" +
+                  $("#project_list").val() +
+                  "&" +
+                  "name=" +
+                  $("#select_condition").val(),
+                "_blank"
+              );
+            },
+          },
+          cancel: {
+            label: "Cancel",
+            className: "btn-secondary",
+            callback: function () {
+              functionIsRunning = false;
+              //nada;
+            },
+          },
+        },
+      });
+      $("#select_condition").change(() => {
+        var ConditionValue = $("#select_condition").val();
+        $("#experiment_url_input").val(
+          `https://${org}.github.io/${repo}/App/Run.html?platform=github&location=${$("#project_list").val()}&name=${ConditionValue}`
+        );
+      });
+    }
   bootbox.dialog({
     title: "Select a Condition",
     message:
@@ -530,7 +649,7 @@ $("#run_btn").on("click", function () {
     );
   });
 });
-
+  
 $("#save_btn").attr("previousValue", "");
 
 $("#save_btn").on("click", function () {

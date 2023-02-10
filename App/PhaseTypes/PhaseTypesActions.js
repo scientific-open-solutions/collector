@@ -1,22 +1,5 @@
-/*  Collector (Garcia, Kornell, Kerr, Blake & Haffey)
-    A program for running experiments on the web
-    Copyright 2012-2016 Mikey Garcia & Nate Kornell
-
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 3 as published by
-    the Free Software Foundation.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>
-
-    Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey 
-*/
+// App/PhaseTypes/PhasetypesActions.js
+functionIsRunning = false;
 function initiate_actions() {
   function protected_name_check(this_name) {
     protected_names = ["start_experiment"];
@@ -87,10 +70,23 @@ function initiate_actions() {
 
   $("#delete_phasetypes_button").on("click", function () {
     code_obj.delete_phasetypes();
+    setTimeout(function() { 
+      $("#save_btn").click();
+      console.log("It saved the delete!");
+    }, 2100);
   });
 
+ 
+  // output html framework to a variable
+  var htmlFramework = $.ajax({
+    url: "./PhaseTypes/html.txt",
+    async: false
+  }).responseText;
+
   $("#new_code_button").on("click", function () {
-    var dialog = bootbox
+    if (!functionIsRunning) {
+      functionIsRunning = true;
+      var dialog = bootbox
       .dialog({
         show: false,
         title: "What would you like to name this new code file?",
@@ -108,6 +104,7 @@ function initiate_actions() {
             label: "Using Code",
             className: "btn-primary",
             callback: function () {
+              functionIsRunning = false;
               var new_name = $("#new_code_name").val().toLowerCase();
               if (protected_name_check(new_name)) {
                 if (valid_new_name(new_name)) {
@@ -116,6 +113,10 @@ function initiate_actions() {
                   master.phasetypes.file = new_name;
                   code_obj.save(content, new_name, "new", "code");
                   editor.textInput.getElement().onkeydown = "";
+                  $("#rename_code_button").show();
+                  $("#delete_phasetypes_button").show();
+                  editor.session.setValue(htmlFramework);
+                  $("#ace_theme_btn_dark").show();
                 }
               }
             },
@@ -124,6 +125,7 @@ function initiate_actions() {
             label: "Using Graphics",
             className: "btn-primary",
             callback: function () {
+              functionIsRunning = false;
               var new_name = $("#new_code_name").val().toLowerCase();
               if (protected_name_check(new_name)) {
                 if (valid_new_name(new_name)) {
@@ -175,6 +177,7 @@ function initiate_actions() {
         $("#new_code_name").focus();
       })
       .modal("show");
+    }
   });
 
   $("#rename_phasetype_button").on("click", function () {
@@ -217,9 +220,21 @@ function initiate_actions() {
                   }
                 }
               );
-            }
-          }
-        }
+            
+            // Changes the dropdown menu to show the new filename as being selected, and delete the old one
+            $("#code_select").append(new Option(new_name));  
+            // $("#code_select").val(new_name);
+            
+            Collector.custom_alert("<b>File renamed</b><br>Please select it at the bottom of the dropdown list");
+            // Lastly, we just do a master "save" to ensure the change is kept after quitting Collector
+            setTimeout(function() { 
+              $("#save_phasetype_btn").click();
+              $("#save_btn").click();
+              console.log("It saved the rename!");
+            }, 100);
+          } else { console.log("Rename failed");}
+        }       
+        
       );
     }
   });

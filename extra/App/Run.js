@@ -55,7 +55,7 @@ Project = {
     "detect_exe",
     "get_htmls",
     "get_gets",
-    "start_restart",
+    //"start_restart",
     "start_project",
     "load_phases",
     "select_condition",
@@ -346,7 +346,8 @@ Project = {
         data: clean_phase_responses,
         success: function(result){
           console.log("result");
-          console.log(result);
+          //console.log(result); {CGD} commented out to stop collector outputting all the html code in the console everytime a page loads in an experiment
+          //Phase.submit();
         }
       });
     }
@@ -552,6 +553,7 @@ Project = {
         .contents()
         .find("body")
         .prepend('<button style="opacity:0; filter: alpha(opacity=0)" id="keyresponse_autofocus"></button>') // {CGD} Do not move, needs to prepend displayed HTML or autofocus scrolls to bottom on load
+        .prepend('<button style="opacity:0; filter: alpha(opacity=0)" id="keyresponse_autofocus"></button>') // {CGD} Do not move, needs to prepend displayed HTML or autofocus scrolls to bottom on load
         .css("transform-origin", "top");
 
       try {
@@ -581,7 +583,7 @@ Project = {
       $("#phase" + project_json.phase_no).css("width", "100%");
       $("#phase" + project_json.phase_no).css("height", "100%");
       $("#phase" + project_json.phase_no).css("visibility", "visible");
-      $("#phase" + project_json.phase_no)
+      $("#phase" + project_json.phase_no) 
         .contents()
         .find("#post" + project_json.post_no)
         .contents()
@@ -1384,7 +1386,7 @@ function post_welcome_data(returned_data) {
       $("#welcome_div").hide();
       $("#post_welcome").show();
       $("#project_div").show();
-      //full_screen();
+      full_screen();
     } else if (id_error === "random") {
       var this_code = Math.random().toString(36).substr(2, 16);
       post_welcome(this_code, "random");
@@ -1700,7 +1702,7 @@ function shuffle_start_exp() {
 function start_restart() {
   if (isSafari) {
     bootbox.alert(
-      "This experiment will not run in safari. Please close and use another browser"
+      "Please do not use Safari to complete this study. It is likely that your data will not save correctly if you do. Please close Safari and use another browser"
     );
   } else  /* //skipping resume for now if (
     (window.localStorage.getItem("project_json") !== null) &
@@ -2096,10 +2098,9 @@ window.onbeforeunload = function () {
             "It looks like you're trying to leave the experiment before you're finished (or at least before the data has been e-mailed to the researcher. Please choose a filename to save your data as and e-mail it to the researcher. It should appear in your downloads folder."
           );
 
-          return "Please do not try to refresh - you will have to restart if you do so.";
-        }
-        break;
-    }
+        return "Please do not try to refresh - you will have to restart if you do so.";
+      }
+      break;
   }
 };
 $("body").css("text-align", "center");

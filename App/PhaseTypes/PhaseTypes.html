@@ -31,6 +31,21 @@
     height: 100%;
     margin: 30px;
   }
+  #ace_theme {
+    position: absolute;
+    top: 29px;
+    left: 650px;
+  }
+  #ace_theme_btn_light{
+    display: none;
+    top: 3px;
+    position: relative;
+  }
+  #ace_theme_btn_dark{
+    display: none;
+    top: 3px;
+    position: relative;
+  }
 </style>
 <br /><br />
 
@@ -147,11 +162,7 @@
                 >
                   Rename
                 </button>
-                <button
-                  id="delete_phasetypes_button"
-                  class="btn btn-primary"
-                  style="display: none"
-                >
+                <button id="delete_phasetypes_button" class="btn btn-primary" style="display: none">
                   Delete
                 </button>
                 <button id="save_phasetype_btn" class="btn btn-primary">
@@ -163,6 +174,8 @@
                 <button class="btn btn-outline-primary" id="view_graphic_btn">
                   Graphic
                 </button>
+                <button class="btn btn btn-outline-secondary btn-sm" id="ace_theme_btn_light">Light Theme</button>
+                <button class="btn btn btn-secondary btn-sm" id="ace_theme_btn_dark">Dark Theme</button>
               </div>
             </div>
 
@@ -171,10 +184,9 @@
               <!--
                 This is to allow the ace editor width to change when the helper is shown (or not)
               -->
-              <div id="ACE_editor" style="display: none; width: 100%"></div>
+              <div id="ACE_editor" style="display: none; width: 98%">No PhaseType selected</div>
             </div>
             <div id="graphic_editor" style="display: none"></div>
-
           </div>
           <div
             class="tab-pane fade"
@@ -193,6 +205,27 @@
 
 <script src="iframe_library.js"></script>
 <script>
+// ACE Theme Swap
+$("#ace_theme_btn_dark").on("click", function () {
+    editor.setTheme("ace/theme/tomorrow_night");
+    $('#ace_theme_btn_dark').hide();
+    $('#ace_theme_btn_light').show();
+  });
+
+$("#ace_theme_btn_light").on("click", function () {
+  editor.setTheme("ace/theme/chrome");
+  $('#ace_theme_btn_dark').show();
+  $('#ace_theme_btn_light').hide();
+});
+
+$("#code_select").change(function () {
+  if ($('#code_select').attr('previousvalue') == "" ) {
+    $('#ace_theme_btn_dark').show();
+  } else {
+    console.log($('#code_select').val());
+  }
+});
+
   $("#code_editor-tab").on("click", function () {
     $("#code_preview").prop("src", "about:blank");
   });
@@ -301,8 +334,8 @@
     enableBasicAutocompletion: true,
     enableSnippets: false,
     enableLiveAutocompletion: true,
-    fontSize: 13,
-    maxLines: 50,
+    fontSize: 14,
+    maxLines: 60,
     minLines: 30,
     tabSize: 2,
     wrap: true,

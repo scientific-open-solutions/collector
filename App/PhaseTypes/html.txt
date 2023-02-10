@@ -1,0 +1,16 @@
+<!-- it can help to add a description between the --'s of what this code does -->
+<link rel="stylesheet" href="../../collector-experiments/User/Assets/Global/css/global_css.css">
+</style>
+    <!-- put any page specific css here -->
+</style>
+<button id="zoomOut" tabindex="-1"></button>
+<button id="zoomIn" tabindex="-1"></button>
+<div id="container">
+    <!-- Your code goes here-->
+    <!-- If you rename this file without editing this code, this base code will be removed -->
+    <button class="btn btn-primary" id="proceed_button" onclick="Phase.submit()">Next</button>
+</div>
+<script>
+    <!-- put any page specific javascript here -->
+</script>
+<script src="../../collector-experiments/User/Assets/Global/js/zoom_script.js"></script>
