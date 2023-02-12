@@ -300,7 +300,6 @@ Project = {
           data: this_data,
           success: function(result){
             console.log("result");
-            console.log(result);
             if(result.toLowerCase().indexOf("error") !== -1 | result.toLowerCase().indexOf("count") === -1){
               attempt_no++;
               if(attempt_no > 2){
@@ -1386,7 +1385,6 @@ function post_welcome_data(returned_data) {
       $("#welcome_div").hide();
       $("#post_welcome").show();
       $("#project_div").show();
-      full_screen();
     } else if (id_error === "random") {
       var this_code = Math.random().toString(36).substr(2, 16);
       post_welcome(this_code, "random");
@@ -2125,4 +2123,5 @@ if (typeof module !== "undefined") {
     clean_var: clean_var,
     clean_this_condition: clean_this_condition,
   };
+}
 }

@@ -279,8 +279,6 @@ function initiate_actions() {
 
       load_code_mods();
 
-      $("#view_code_btn").removeClass("btn-outline-primary");
-      $("#view_code_btn").addClass("btn-primary");
       $("#ACE_editor").show();
       $("#view_graphic_btn").removeClass("btn-outline-primary");
       $("#view_graphic_btn").addClass("btn-primary");
@@ -288,6 +286,9 @@ function initiate_actions() {
       $("#delete_phasetypes_button").show();
 
     } else {
+      $("#ace_theme_btn_dark").show();
+      $("#view_code_btn").removeClass("btn-outline-primary");
+      $("#view_code_btn").addClass("btn-primary");
       editor.setOption("readOnly", false);
       $("#graphic_editor").hide();
       $("#view_graphic_btn").removeClass("btn-primary");
