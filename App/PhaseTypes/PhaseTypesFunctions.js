@@ -22,11 +22,11 @@ $.ajaxSetup({ cache: false }); // prevents caching, which disrupts $.get calls
 code_obj = {
   delete_phasetypes: function () {
     var deleted_phasetype = $("#phasetype_select").val();
+    console.log(deleted_phasetype);
     master.phasetypes.file = $("#phasetype_select").val();
     var this_file = master.phasetypes.file;
-    var this_loc = "/code/" + master.phasetypes.file;
     bootbox.confirm(
-      "Are you sure you want to delete " + this_loc + "?",
+      "Are you sure you want to delete the PhaseType: " + this_file + "?",
       function (result) {
         if (result === true) {
           if (
@@ -42,14 +42,18 @@ code_obj = {
           master.phasetypes.file = $("#phasetype_select").val();
           code_obj.load_file("default");
           var response = CElectron.fs.delete_file(
-            "PhaseTypes/" + deleted_phasetype + ".html"
+            "PhaseTypes/" + deleted_phasetype + ".html",
           );
-
           if (response !== "success") {
-            bootbox.alert(response);
+            Collector.custom_alert("Failed to delete the phase type: " + this_file);
           } else {
-            Collector.custom_alert("Successfully deleted " + this_loc);
+            Collector.custom_alert("The phase type: " + this_file + " has been deleted");
           }
+          // This is just delayed to allow the custom alert to clear first
+          setTimeout(function() { 
+            $("#save_btn").click();
+            console.log("It saved the delete!");
+          }, 2100);
         }
       }
     );
@@ -57,7 +61,7 @@ code_obj = {
   load_file: function (user_default) {
     $("#ACE_editor").show();
     $("#new_code_button").show();
-    $("#rename_phasetype_button").show();
+    $("#rename_phasetypes_button").show();
     if (user_default === "default") {
       $("#delete_phasetypes_button").hide();
       $("#phasetype_select")
