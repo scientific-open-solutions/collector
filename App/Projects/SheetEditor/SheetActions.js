@@ -17,6 +17,7 @@
 
     Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey
 */
+functionIsRunning = false;
 $("#default_projects_select").on("change", function () {
   if ($("#default_projects_select").val() !== "Select an experiment") {
     $("#upload_default_exp_btn").attr("disabled", false);
@@ -60,6 +61,7 @@ $("#delete_proj_btn").on("click", function () {
       }
     );
   }
+}
 });
 
 $("#delete_proc_button").on("click", function () {
@@ -336,6 +338,7 @@ $("#rename_proj_btn").on("click", function () {
       }
     }
   );
+}
 });
 
 $("#rename_proc_button").on("click", function () {
@@ -500,7 +503,7 @@ $("#run_btn").on("click", function () {
             label: "Run",
             className: "btn-primary",
             callback: function () {
-              var functionIsRunning = false;
+              functionIsRunning = false;
               window.open(
                 "Run.html?platform=localhost&" +
                   "location=" +
@@ -561,75 +564,6 @@ $("#run_btn").on("click", function () {
         );
       });
     }
-  bootbox.dialog({
-    title: "Select a Condition",
-    message:
-      "Which condition would you like to run? <br><br>" +
-      select_html +
-      "To run the study copy the following into a browser:<br>(make sure you've pushed the latest changes and waited 5+ minutes) <input class='form-control' value='" +
-      github_url +
-      "' onfocus='this.select();' id='experiment_url_input'>",
-      /*
-      "To <b>Preview</b> a project copy the following into a browser: <input class='form-control' value='" +
-      github_url.replace("platform=github", "platform=onlinepreview") +
-      "' onfocus='this.select();'" +
-      " id='experiment_url_input'>",
-      */
-    buttons: {
-      local: {
-        label: "Run",
-        className: "btn-primary",
-        callback: function () {
-          window.open(
-            "Run.html?platform=localhost&" +
-              "location=" +
-              $("#project_list").val() +
-              "&" +
-              "name=" +
-              $("#select_condition").val(),
-            "_blank"
-          );
-        },
-      },
-      local_preview: {
-        label: "Preview Local",
-        className: "btn-info",
-        callback: function () {
-          window.open(
-            "Run.html?platform=preview&" +
-              "location=" +
-              $("#project_list").val() +
-              "&" +
-              "name=" +
-              $("#select_condition").val(),
-            "_blank"
-          );
-        },
-      },
-      online_preview: {
-        label: "Preview Online",
-        className: "btn-info",
-        callback: function () {
-          window.open(
-            "Run.html?platform=simulateonline&" +
-              "location=" +
-              $("#project_list").val() +
-              "&" +
-              "name=" +
-              $("#select_condition").val(),
-            "_blank"
-          );
-        },
-      },
-      cancel: {
-        label: "Cancel",
-        className: "btn-secondary",
-        callback: function () {
-          //nada;
-        },
-      },
-    },
-  });
   $("#select_condition").on("change", function () {
     $("#experiment_url_input").val(
       "https://" +
