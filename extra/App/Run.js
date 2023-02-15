@@ -2,7 +2,7 @@ project_json = {};
 var home_dir;
 
 var start_date_time = new Date()
-  .toLocaleDateString("en-US")
+  .toLocaleDateString("en-GB")
   .replaceAll("/","_") +
   "_" +
   new Date()
@@ -175,7 +175,7 @@ Project = {
     response_data[post_string + "_window_inner_width"] = window.innerWidth;
     response_data[post_string + "_window_inner_height"] = window.innerHeight;
 
-    response_data[post_string + "_US_date"] = new Date().toLocaleDateString("en-US");
+    response_data[post_string + "_UK_date"] = new Date().toLocaleDateString("en-GB");
     response_data[post_string + "_time"]     = new Date().toLocaleTimeString();;
     response_data[post_string + "_timezone"] = Intl.DateTimeFormat().resolvedOptions().timeZone;
 

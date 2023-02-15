@@ -180,6 +180,9 @@ function create_survey_HoT(this_survey) {
       if (
         typeof master.surveys.default_surveys[current_survey] !== "undefined"
       ) {
+        $('#save_survey_btn').hide();
+        $('#rename_survey_btn').hide();
+        $('#delete_survey_btn').hide();
         Collector.custom_alert(
           "These changes will not be saved, as you are editing a <b>default</b> survey. Please click <b>New Survey</b> to create a new survey"
         );
@@ -313,6 +316,10 @@ function list_surveys() {
         })
       );
     });
+setTimeout(function(){
+  $('#survey_select :nth-child(7)').after("<option disabled>--- User Surveys ---</option>");
+},500);
+  
     Collector.tests.pass("surveys", "list");
   } catch (error) {
     /* muting this error for now

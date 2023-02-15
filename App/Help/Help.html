@@ -37,11 +37,11 @@
   }
 </style>
 
-<div id="help_content" class="card help_class">
-  <b class="text-danger"
-    >To see the whole cell when editing the sheets, either press F2 or double
-    click on the cell, or right click on the cell and select 'Edit cell'</b
-  >
+<div id="help_content" class="card help_class" >
+  <b class="text-danger" style="padding: 20px!important;">
+    To see the whole cell when editing the sheets, either press F2 or double
+    click on the cell, or right click on the cell and select 'Edit cell'
+  </b>
   <div class="card-body">
     <h5 class="card-title text-primary" id="help_title">
       Click on a something editable for help
@@ -55,8 +55,8 @@
 
     <h5 class="card-title text-primary">General tips</h5>
     <p class="card-text help_general"></p>
-    <button class="btn btn-primary change_tip">Previous</button>
-    <button class="btn btn-primary change_tip">Next</button>
+    <button class="btn btn-primary change_tip bi bi-arrow-left-square">Previous</button>
+    <button class="btn btn-primary change_tip bi bi-arrow-right-square">Next</button>
   </div>
 </div>
 
@@ -291,6 +291,7 @@
       $("#help_btn").removeClass("btn-outline-primary");
       $("#help_btn").removeClass("bg-white");
       $("#help_btn").addClass("btn-primary");
+      $("#help_btn").removeClass("text-primary");
       $("#help_area").hide(500);
       $("#ace_div").animate(
         {
@@ -325,6 +326,7 @@
       $("#help_btn").addClass("btn-outline-primary");
       $("#help_btn").addClass("bg-white");
       $("#help_btn").removeClass("btn-primary");
+      $("#help_btn").addClass("text-primary");
 
       var helper_width = parseFloat(
         $("#help_content").css("width").replace("px", "")

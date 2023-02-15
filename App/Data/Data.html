@@ -55,55 +55,27 @@
   <table>
     <tr>
       <td>
-        <button class="btn btn-primary data_navbar_input" id="js_decrypt_btn">
+        <button class="btn btn-primary data_navbar_input bi bi-file-earmark-break" id="js_decrypt_btn">
           Decrypt file(s)
         </button>
       </td>
       <td>
-        <input
-          class="data_navbar_input"
-          type="file"
-          id="fileToLoad"
-          style="display: none"
-          multiple
-        />
+        <input class="data_navbar_input" type="file" id="fileToLoad" style="display: none" multiple />
       </td>
       <td>
-        <button
-          class="btn btn-primary data_navbar_input"
-          onclick="encrypt_obj.change_password()"
-        >
-          Change password
-        </button>
+        <button id="change_password_btn" class="btn btn-primary data_navbar_input" onclick="encrypt_obj.change_password()">Change password</button>
       </td>
       <td>
-        <button
-          class="btn btn-primary data_navbar_input"
-          id="google_script_btn"
-        >
-          Google Script
-        </button>
+        <button class="btn btn-primary data_navbar_input bi bi-google" id="google_script_btn">Google script</button>
       </td>
       <td>
-        <button class="btn btn-primary data_navbar_input" id="local_data_btn">
-          Local Data
-        </button>
+        <button class="btn btn-primary data_navbar_input" id="local_data_btn">Local data</button>
       </td>
       <td>
-        <input
-          class="form-control data_navbar_input"
-          id="local_data_folder"
-          readonly
-          onClick="this.select();"
-        />
+        <input class="form-control data_navbar_input" id="local_data_folder" readonly onClick="this.select();"/>
       </td>
       <td>
-        <button
-          class="btn btn-primary data_navbar_input"
-          id="change_local_data_btn"
-        >
-          Change folder
-        </button>
+        <button class="btn btn-primary data_navbar_input bi bi-folder-symlink" id="change_local_data_btn">Change folder</button>
       </td>
     </tr>
   </table>
@@ -136,8 +108,7 @@
     </div>
   </div>
   <div class="form-group row">
-    <label for="data_user_password" class="col-sm-2 col-form-label"
-      >Password</label
+    <label for="data_user_password" class="col-sm-2 col-form-label">Password</label
     >
     <div class="col-sm-10">
       <input type="password" class="form-control" id="data_user_password" />
@@ -147,7 +118,7 @@
 <div id="select_server"></div>
 <hr />
 
-<button class="btn btn-primary" id="list_data_btn">Check my data</button>
+<button class="btn btn-primary " id="list_data_btn">Check my data</button>
 <table class="table">
   <thead>
     <tr>
@@ -202,3 +173,15 @@
 
 <script src="Data/DataActions.js"></script>
 <script src="Data/DataFunctions.js"></script>
+<script>
+  $('#list_data_btn').prepend('<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 20 20" style="transform: translateY(2px);padding-right:5px;"  fill="#fff">' +
+  '<path d="m13.22,10.387c2.373-2.373,2.373-6.234,0-8.608C10.847-.593,6.986-.593,4.613,1.78c-2.013,2.013-2.318,5.008-.916,7.346,0,0,.101.169-.035.305-.776.776-3.105,3.105-3.105,3.105-.618.618-.765,1.482-.217,2.03l.094.094c.548.548,1.412.401,2.03-.217,0,0,2.324-2.324,3.099-3.099.143-.143.312-.042.312-.042,2.338,1.403,5.332,1.098,7.346-.916Zm-7.484-1.124c-1.753-1.753-1.753-4.607,0-6.36,1.753-1.753,4.607-1.753,6.36,0,1.753,1.753,1.753,4.607,0,6.36-1.753,1.753-4.607,1.753-6.36,0Z"/><path d="m6.125,5.722c-.082,0-.165-.016-.245-.05-.319-.135-.469-.504-.334-.823.85-2.008,3.175-2.951,5.183-2.101.319.135.469.504.334.823-.135.32-.504.469-.823.334-1.37-.58-2.957.063-3.536,1.433-.101.24-.334.384-.579.384Z"/>'+
+  '</svg>');
+  $('#change_password_btn').prepend('<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 35 50" style="transform: translateY(-1px);padding-right:10px;"  fill="#fff">' +
+  '<path d="m31.004,15.945h-2.657v-3.543C28.346,5.563,22.783,0,15.945,0S3.543,5.563,3.543,12.402v3.543H.886c-.49,0-.886.396-.886.886v22.146c0,1.954,1.589,3.543,3.543,3.543h24.803c1.954,0,3.543-1.589,3.543-3.543v-22.146c0-.49-.396-.886-.886-.886Zm-12.407,18.505c.028.25-.053.501-.221.689-.168.188-.408.295-.66.295h-3.543c-.252,0-.492-.107-.66-.295s-.248-.439-.221-.689l.559-5.025c-.907-.66-1.45-1.704-1.45-2.85,0-1.954,1.589-3.543,3.543-3.543s3.543,1.589,3.543,3.543c0,1.145-.542,2.19-1.45,2.85l.559,5.025Zm4.434-18.505h-14.173v-3.543c0-3.907,3.179-7.087,7.087-7.087s7.087,3.179,7.087,7.087v3.543Z"/>'+
+  '</svg>');
+  $('#local_data_btn').prepend('<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 15 12" style="transform: translateY(-1px);padding-right:10px;"  fill="#fff">' +
+  '<path d="m14.737,8.751H5.029c-.145,0-.263-.118-.263-.263V2.402c0-.145.118-.263.263-.263h9.708c.145,0,.263.118.263.263v6.086c0,.145-.118.263-.263.263Zm-2.69,1.921h-.984v-1.183h-2.361v1.183h-.984c-.204,0-.369.165-.369.369s.165.369.369.369h4.328c.204,0,.369-.165.369-.369s-.165-.369-.369-.369ZM5.89,1.402h-.861c-.054,0-.106.005-.158.014-.03-.008-.062-.014-.094-.014H1.113c-.204,0-.369.165-.369.369s.165.369.369.369h2.951c-.023.084-.036.172-.036.263v.687H1.113c-.204,0-.369.165-.369.369s.165.369.369.369h2.915v.95H1.113c-.204,0-.369.165-.369.369s.165.369.369.369h2.915v2.974c0,.552.449,1.001,1,1.001h.861v1.552c0,.204-.165.369-.369.369H.369c-.204,0-.369-.165-.369-.369V.369c0-.204.165-.369.369-.369h5.152c.204,0,.369.165.369.369v1.033Zm-3.514,7.283c0,.314.255.569.569.569s.569-.255.569-.569-.255-.569-.569-.569c-.314,0-.569.255-.569.569Z"/>'+
+  '</svg>');
+  
+</script>

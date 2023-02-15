@@ -1,24 +1,7 @@
-<!--
-/*  Collector (Garcia, Kornell, Kerr, Blake & Haffey)
-    A program for running experiments on the web
-    Copyright 2012-2016 Mikey Garcia & Nate Kornell
-
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 3 as published by
-    the Free Software Foundation.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>
-
-		Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey 
-*/
+<!-- App/PhaseTypes/PhaseTypes.html
+     Collector Kitten/Cat release (2019-2022) © Dr. Anthony Haffey 
 -->
+<!-- <link rel="stylesheet" href="../App/style.css"> -->
 <style>
   .user_code {
     background-color: PaleGreen;
@@ -36,15 +19,14 @@
     top: 29px;
     left: 650px;
   }
-  #ace_theme_btn_light{
+  #editor_theme_select {
+    width: 220px;
+    position: absolute;
+    transform: translate(4px,1px);
     display: none;
-    top: 3px;
-    position: relative;
   }
-  #ace_theme_btn_dark{
+  #save_phasetype_btn{
     display: none;
-    top: 3px;
-    position: relative;
   }
 </style>
 <br /><br />
@@ -53,51 +35,21 @@
   <table>
     <tr>
       <td>
-        <ul class="nav nav-pills bg-secondary" role="tablist">
-          <li class="nav-item">
-            <button
-              class="nav-link text-white active"
-              id="code_editor-tab"
-              data-bs-toggle="pill"
-              data-bs-target="#code_editor"
-              type="button"
-              role="tab"
-              aria-controls="code_editor"
-              aria-selected="false"
-            >
-              Editor
-            </button>
-          </li>
-          <li class="nav-item">
-            <button
-              class="nav-link text-white"
-              id="code-preview-tab"
-              data-bs-toggle="pill"
-              data-bs-target="#code-preview"
-              type="button"
-              role="tab"
-              aria-controls="pills-contact"
-              aria-selected="false"
-            >
-              Preview
-            </button>
-          </li>
+        <ul class="nav nav-pills" role="tablist">
+          <div class="btn-group" role="group" >
+              <button type="button" id="code_editor-tab" class="btn btn-outline-info bi bi-file-text" data-bs-toggle="pill" data-bs-target="#code_editor" role="tab" aria-controls="code_editor" aria-selected="false">Editor</button>
+              <button type="button" id="code-preview-tab" class="btn btn-outline-info bi bi-eye" data-bs-toggle="pill" data-bs-target="#code-preview" type="button" role="tab" aria-controls="pills-contact" aria-selected="false" >Preview</button>
+          </div>
         </ul>
-      </td>
       <td>
-        <!--
-        <select id="code_project_select" class="form-select" style="margin:2px">
+ 
+        <!-- <select id="code_project_select" class="form-select" style="margin:2px">
           <option disabled selected>Project (optional)</option>
           <option>None</option>
         </select>
-        -->
-      </td>
-      <td>
-        <select
-          id="code_procedure_select"
-          class="form-select"
-          style="margin: 2px; display: none"
-        >
+      </td> -->
+      <!-- <td>
+        <select id="code_procedure_select" class="form-select" style="margin: 2px; display: none">
           <option disabled selected>Procedure sheet (optional)</option>
           <option>None</option>
         </select>
@@ -117,26 +69,15 @@
           <option disabled selected>Stimuli sheet (optional)</option>
           <option>None</option>
         </select>
-      </td>
+      </td> -->
       <td>
-        <button id="code_preview_fullscreen" class="btn btn-primary">
-          Fullscreen
-        </button>
+        <button id="code_preview_fullscreen" class="btn btn-primary bi bi-arrows-fullscreen">Fullscreen</button>
       </td>
     </tr>
     <tr>
       <td colspan="2">
-        <div
-          class="tab-content"
-          id="pills-tabContent"
-          style="top: 100px; width: 800px; height: 800px; position: absolute"
-        >
-          <div
-            class="tab-pane fade show active"
-            id="code_editor"
-            role="tabpanel"
-            aria-labelledby="pills-spreadsheet-tab"
-          >
+        <div class="tab-content" id="pills-tabContent" style="top: 100px; width: 800px; height: 800px; position: absolute">
+          <div class="tab-pane fade show active" id="code_editor" role="tabpanel" aria-labelledby="pills-spreadsheet-tab">
             <br />
             <div class="row">
               <!--
@@ -145,35 +86,60 @@
             	</div>
               -->
               <div class="col-md-3">
-                <select
-                  id="phasetype_select"
-                  class="form-select"
-                  previousValue=""
-                ></select>
+                <select id="phasetype_select" class="form-select" previousValue=""></select>
               </div>
               <div class="col-md-9">
-                <button id="new_code_button" class="btn btn-primary">
-                  New
-                </button>
-                <button id="rename_phasetypes_button" class="btn btn-primary" style="display: none">
-                  Rename
-                </button>
-                <button id="delete_phasetypes_button" class="btn btn-primary" style="display: none">
-                  Delete
-                </button>
-                <button id="save_phasetype_btn" class="btn btn-primary">
-                  Save
-                </button>
-                <button class="btn btn-outline-primary" id="view_code_btn">
-                  Code
-                </button>
-                <button class="btn btn-outline-primary" id="view_graphic_btn">
-                  Graphic
-                </button>
-                <button class="btn btn btn-outline-secondary btn-sm" id="ace_theme_btn_light">Light Theme</button>
-                <button class="btn btn btn-secondary btn-sm" id="ace_theme_btn_dark">Dark Theme</button>
+                <button id="new_code_button" class="btn btn-primary bi bi-file-earmark-plus">New</button>
+                <button id="rename_phasetypes_button" class="btn btn-primary bi bi-pencil-fill" style="display: none">Rename</button>
+                <button id="delete_phasetypes_button" class="btn btn-primary bi bi-trash" style="display: none">Delete</button>
+                <button id="save_phasetype_btn" class="btn btn-primary">Save</button>
+                <button id="view_code_btn" class="btn btn-outline-primary bi bi bi-toggles">Code</button>
+                <button id="view_graphic_btn" class="btn btn-outline-primary bi bi-toggles" style="display: none;">Graphic</button>    
+                <select id="editor_theme_select" class="form-select">
+                  <option disabled selected hidden>Code Editor Themes</option>
+                  <option disabled>--- Light ---</option>
+                  <option>Chrome (Default)</option>
+                  <option>Clouds</option>
+                  <option>Crimson Editor</option>
+                  <option>Dawn</option>
+                  <option>Dreamweaver</option>
+                  <option>Eclipse</option>
+                  <option>Github</option>
+                  <option>IPlastic</option>
+                  <option>KatzenMilch</option>
+                  <option>Kuroir</option>
+                  <option>Solarized Light</option>
+                  <option>SQL Server</option>
+                  <option>TextMate</option>
+                  <option>Tomorrow</option>
+                  <option>XCode</option>
+                  <option disabled>--- Dark ----</option>
+                  <option>Ambiance</option>
+                  <option>Chaos</option>
+                  <option>Clouds Midnight</option>
+                  <option>Cobalt</option>
+                  <option>Dracula</option>
+                  <option>Green on Black</option>
+                  <option>Gruvbox</option>
+                  <option>Idle Fingers</option>
+                  <option>KrTheme</option>
+                  <option>Merbivore</option>
+                  <option>Mono Industrial</option>
+                  <option>Monokai</option>
+                  <option>Nord Dark</option>
+                  <option>Pastel on Dark</option>
+                  <option>Solarized Dark</option>
+                  <option>Terminal</option>
+                  <option>Tomorrow Night</option>
+                  <option>Tomorrow Night Blue</option>
+                  <option>Tomorrow Night Bright</option>
+                  <option>Tomorrow Night 80s</option>
+                  <option>Twilight</option>
+                  <option>Vibrant Ink</option>
+                </select>
               </div>
             </div>
+
 
             <h6><em>ACE (https://ace.c9.io/)</em> is used for editing code</h6>
             <div id="ace_div">
@@ -184,13 +150,7 @@
             </div>
             <div id="graphic_editor" style="display: none"></div>
           </div>
-          <div
-            class="tab-pane fade"
-            id="code-preview"
-            role="tabpanel"
-            aria-labelledby="code-preview-tab"
-            style="height: 100%"
-          >
+          <div class="tab-pane fade" id="code-preview" role="tabpanel" aria-labelledby="code-preview-tab" style="height: 130%;width: 150%;">
             <iframe id="code_preview"></iframe>
           </div>
         </div>
@@ -202,16 +162,23 @@
 <script src="iframe_library.js"></script>
 <script>
 // ACE Theme Swap
-$("#ace_theme_btn_dark").on("click", function () {
-    editor.setTheme("ace/theme/tomorrow_night");
-    $('#ace_theme_btn_dark').hide();
-    $('#ace_theme_btn_light').show();
-  });
-
-$("#ace_theme_btn_light").on("click", function () {
-  editor.setTheme("ace/theme/chrome");
-  $('#ace_theme_btn_dark').show();
-  $('#ace_theme_btn_light').hide();
+$("#editor_theme_select").on("change", function () {
+  var name = $(this).children(":selected").val()
+  if (name == 'Chrome (Default)'){
+    var theme_name = 'chrome'
+  } else if (name == 'Green on Black'){
+    var theme_name = 'gob'
+  } else if (name == 'KrTheme'){
+    var theme_name = 'kr_theme'
+  } else if (name == 'SQL Server'){
+    var theme_name = 'sqlserver'
+  } else if (name == 'Tomorrow Night 80s'){
+    var theme_name = 'tomorrow_night_eighties'
+  } else {
+    var theme_name = name.toLowerCase().replace(/ /g,"_")
+  }
+  editor.setTheme("ace/theme/"+theme_name+"");
+  console.log(theme_name);
 });
 
 $("#code_select").change(function () {
@@ -224,7 +191,10 @@ $("#code_select").change(function () {
 
   $("#code_editor-tab").on("click", function () {
     $("#code_preview").prop("src", "about:blank");
+    $(this).addClass("active").removeClass("btn-outline-info").addClass("btninfo");
+    $('#code-preview-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
   });
+
   //https://stackoverflow.com/a/32100295/4490801
   $("#code_preview_fullscreen").on("click", function () {
     // if already full screen; exit
@@ -278,6 +248,8 @@ $("#code_select").change(function () {
   });
 
   $("#code-preview-tab").on("click", function () {
+    $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");
+    $('#code_editor-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
     /*
      * try to run the code in the ace editor into the iframe
      */
@@ -388,6 +360,9 @@ $("#code_select").change(function () {
       ]);
     },
   });
+
+  // This adds the custom 'save' icons
+  $('#save_phasetype_btn').prepend('<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 15 15" fill="#fff" style="margin-right: 8px;transform: translateY(-1px);"><path fill=#"fff" d="m12.313,0H1.758C.789,0,0,.789,0,1.758v11.484c0,.969.789,1.758,1.758,1.758h11.484c.969,0,1.758-.789,1.758-1.758V2.687l-2.687-2.687Zm-7.713,1.172h3.486v2.227h1.172V1.172h1.172v2.812c0,.323-.263.586-.586.586h-4.658c-.323,0-.586-.263-.586-.586V1.172Zm7.002,12.656H3.428v-5.156c0-.323.263-.586.586-.586h7.002c.323,0,.586.263.586.586v5.156Zm2.227-.586c0,.323-.263.586-.586.586h-.469v-5.156c0-.969-.789-1.758-1.758-1.758h-7.002c-.969,0-1.758.789-1.758,1.758v5.156h-.498c-.323,0-.586-.263-.586-.586V1.758c0-.323.263-.586.586-.586h1.67v2.812c0,.969.789,1.758,1.758,1.758h4.658c.969,0,1.758-.789,1.758-1.758V1.172h.226l2.001,2.001v10.07Z"/></svg>');
 </script>
 <script type="text/javascript" src="PhaseTypes/PhaseTypesFunctions.js"></script>
 <script type="text/javascript" src="PhaseTypes/PhaseTypesActions.js"></script>

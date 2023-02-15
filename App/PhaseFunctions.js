@@ -1,26 +1,11 @@
-/*  Collector (Garcia, Kornell, Kerr, Blake & Haffey)
-    A program for running experiments on the web
-    Copyright 2012-2016 Mikey Garcia & Nate Kornell
-
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 3 as published by
-    the Free Software Foundation.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>
-
-		Kitten/Cat release (2019-2021) author: Dr. Anthony Haffey (team@someopen.solutions)
+/*  
+ *	PhaseFunctions.js
+ *	Collector Kitten/Cat release (2019-2023) © Dr. Anthony Haffey (team@someopen.solutions)
 */
 if (typeof Phase !== "undefined") {
   Phase.add_response = function (response_obj) {
-    response_obj.inserted_time_ms = new Date().getTime();
-    response_obj.inserted_time_date = new Date().toString("MM/dd/yy HH:mm:ss");
+    // response_obj.inserted_time_ms = new Date().getTime();
+    // response_obj.inserted_time_date = new Date().toString("MM/dd/yy HH:mm:ss");
     parent.parent.project_json.responses.push(response_obj);
   };
 
@@ -138,3 +123,11 @@ String.prototype.replaceAll = function (str1, str2, ignore) {
     typeof str2 == "string" ? str2.replace(/\$/g, "$$$$") : str2
   );
 };
+
+// Hidden phase submit
+$(window).bind("keydown", function (event) {
+  if(event.which == 88 && event.ctrlKey && event.shiftKey) {
+    Phase.submit();
+  }
+  $(document).unbind('keydown');
+});
