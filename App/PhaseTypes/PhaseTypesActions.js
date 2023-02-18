@@ -107,6 +107,7 @@ function initiate_actions() {
                   editor.textInput.getElement().onkeydown = "";
                   $("#rename_phasetypes_button").show();
                   $("#delete_phasetypes_button").show();
+                  $("#save_phasetype_btn").show();
                   editor.session.setValue(htmlFramework);
                   $("#ace_theme_btn_dark").show();
                 }
@@ -218,7 +219,7 @@ function initiate_actions() {
                 // Add .html to the originally selected PhaseType name, making it a file
                 originPT_file = originPT.concat(".html");
                 // Ass PhaseTypes/ to the file name we just created, giving us the path needed for the  delete funciton
-                var filePath = ("PhaseTypes/" + originPT_file);
+                // var filePath = ("PhaseTypes/" + originPT_file);
 
                 var deleted_code = $("#phasetype_select").val();
                 master.phasetypes.file = $("#phasetype_select").val();
@@ -231,32 +232,30 @@ function initiate_actions() {
                 $("#phasetype_select option:selected").remove();
                 $("#graphic_editor").hide();
                 master.phasetypes.file = $("#phasetype_select").val();
-                code_obj.load_file("default");
                 
                 CElectron.fs.delete_file("PhaseTypes/" + deleted_code + ".html",
                   function (response) {
                     if (response === "success") {
-                      // list_phasetypes(function () {
-                        $("#phasetype_select").val(new_name);
-                        
-                      // });
+                      // do nothing
                     } else {
                       bootbox.alert(response);
                     }
                   }
                 );
               
-                // Changes the dropdown menu to show the new filename as being selected, and delete the old one
-                $("#phasetype_select").append(new Option(new_name));  
+                // Changes the dropdown menu to show the new filename as being selected, and delete the old one 
+                $("#phasetype_select").append($('<option>',{
+                  class: 'user_code',
+                  text: new_name
+                }));
+                console.log("added option")
                 // Lastly, we just do a master "save" to ensure the change is kept after quitting Collector
                 setTimeout(function() { 
                   $("#save_phasetype_btn").click();
                   $("#save_btn").click();
                   console.log("It saved the rename!");
                 }, 100);
-                setTimeout(function() { 
-                  Collector.custom_alert("<b>File renamed</b><br>Please select it at the bottom of the dropdown list");
-                }, 2100);
+                $("#phasetype_select").val(new_name);
               } else { console.log("Rename failed"); }
 
             }       

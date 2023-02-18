@@ -316,9 +316,9 @@ function list_surveys() {
         })
       );
     });
-setTimeout(function(){
-  $('#survey_select :nth-child(7)').after("<option disabled>--- User Surveys ---</option>");
-},500);
+// setTimeout(function(){
+//   $('#survey_select :nth-child(7)').after("<option disabled>--- User Surveys ---</option>");
+// },500);
   
     Collector.tests.pass("surveys", "list");
   } catch (error) {

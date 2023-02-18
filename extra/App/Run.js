@@ -2,7 +2,7 @@ project_json = {};
 var home_dir;
 
 var start_date_time = new Date()
-  .toLocaleDateString("en-GB")
+  .toLocaleDateString("en-US")
   .replaceAll("/","_") +
   "_" +
   new Date()
@@ -55,7 +55,7 @@ Project = {
     "detect_exe",
     "get_htmls",
     "get_gets",
-    //"start_restart",
+    //"start_restart", {CGD} Turned this off a long time ago, can't really remember why! (Think it was something to do with a double page loading thing)
     "start_project",
     "load_phases",
     "select_condition",
@@ -175,7 +175,7 @@ Project = {
     response_data[post_string + "_window_inner_width"] = window.innerWidth;
     response_data[post_string + "_window_inner_height"] = window.innerHeight;
 
-    response_data[post_string + "_UK_date"] = new Date().toLocaleDateString("en-GB");
+    response_data[post_string + "_US_date"] = new Date().toLocaleDateString("en-US");
     response_data[post_string + "_time"]     = new Date().toLocaleTimeString();;
     response_data[post_string + "_timezone"] = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -345,7 +345,7 @@ Project = {
         data: clean_phase_responses,
         success: function(result){
           console.log("result");
-          //console.log(result); {CGD} commented out to stop collector outputting all the html code in the console everytime a page loads in an experiment
+          // console.log(result);
           //Phase.submit();
         }
       });
@@ -433,21 +433,16 @@ Project = {
     //baseline_time
 
     this_phase =
-      "<scr" +
-      "ipt> Phase = {}; Phase.phase_no = '" +
-      phase_no +
-      "'; Phase.post_no ='" +
-      post_no +
-      "' </scr" +
-      "ipt>" +
-      "<scr" +
-      "ipt src = 'PhaseFunctions.js' ></scr" +
-      "ipt>" +
-      this_phase; //; phase_script +
+      `<script> Phase = {}; Phase.phase_no = '${phase_no}'; Phase.post_no ='${post_no}' </script><script src = 'PhaseFunctions.js' ></script>${this_phase}`; //; phase_script +
 
     this_phase = this_phase.replace("[phase_no]", phase_no);
     this_phase = this_phase.replace("[post_no]", post_no);
 
+    if(this_proc.item.toString() === "") {
+      console.log("ERROR: If it's 'White Screening' it's because you've got an empty row in the 'Item' column of your procedure sheet!")
+      console.log("       ps. I spent hours trying to debug Collector when this happened to me as I hadn't realised it was just a missing 0")
+      console.log("           which is why I'm writing this long error message, so if it happens again I can fix it in seconds! CD")
+    }
     if (this_proc.item.toString() !== "0") {
       this_stim = project_json.parsed_stim[this_proc.item];
       variable_list = Object.keys(this_proc).concat(Object.keys(this_stim));
@@ -551,7 +546,6 @@ Project = {
         .find(".post_iframe")
         .contents()
         .find("body")
-        .prepend('<button style="opacity:0; filter: alpha(opacity=0)" id="keyresponse_autofocus"></button>') // {CGD} Do not move, needs to prepend displayed HTML or autofocus scrolls to bottom on load
         .prepend('<button style="opacity:0; filter: alpha(opacity=0)" id="keyresponse_autofocus"></button>') // {CGD} Do not move, needs to prepend displayed HTML or autofocus scrolls to bottom on load
         .css("transform-origin", "top");
 
@@ -1385,6 +1379,7 @@ function post_welcome_data(returned_data) {
       $("#welcome_div").hide();
       $("#post_welcome").show();
       $("#project_div").show();
+      //full_screen(); {CGD} Commented out to stop multiple "do you want to do full screen?" messages
     } else if (id_error === "random") {
       var this_code = Math.random().toString(36).substr(2, 16);
       post_welcome(this_code, "random");
@@ -2072,35 +2067,31 @@ $(window).bind("keydown", function (event) {
 });
 
 //prevent closing without warning
-window.onbeforeunload = function () {
-  var leave_early = project_json.this_condition.leave_early;
-  if (
-    typeof(leave_early) !== "undefined" && leave_early === "no"
-  ){
-    switch (Project.get_vars.platform) {
-      case "simulateonline":
-      case "localhost":
-        break;
-      default:
-        if (online_data_obj.finished_and_stored === false) {
-          bootbox.confirm(
-            "Would you like to leave the experiment early? If you didn't just download your data there's a risk of you losing your progress.",
-            function (result) {
-              if (result) {
-                online_data_obj.finished_and_stored = true; //even though it's not
-              }
-            }
-          );
-          precrypted_data(
-            project_json,
-            "It looks like you're trying to leave the experiment before you're finished (or at least before the data has been e-mailed to the researcher. Please choose a filename to save your data as and e-mail it to the researcher. It should appear in your downloads folder."
-          );
+// window.onbeforeunload = function () {
+//   switch (Project.get_vars.platform) {
+//     case "simulateonline":
+//     case "localhost":
+//       break;
+//     default:
+//       if (online_data_obj.finished_and_stored === false) {
+//         bootbox.confirm(
+//           "Would you like to leave the experiment early? If you didn't just download your data there's a risk of you losing your progress.",
+//           function (result) {
+//             if (result) {
+//               online_data_obj.finished_and_stored = true; //even though it's not
+//             }
+//           }
+//         );
+//         precrypted_data(
+//           project_json,
+//           "It looks like you're trying to leave the experiment before you're finished (or at least before the data has been e-mailed to the researcher. Please choose a filename to save your data as and e-mail it to the researcher. It should appear in your downloads folder."
+//         );
 
-        return "Please do not try to refresh - you will have to restart if you do so.";
-      }
-      break;
-  }
-};
+//         return "Please do not try to refresh - you will have to restart if you do so.";
+//       }
+//       break;
+//   }
+// };
 $("body").css("text-align", "center");
 $("body").css("margin", "auto");
 
@@ -2123,5 +2114,4 @@ if (typeof module !== "undefined") {
     clean_var: clean_var,
     clean_this_condition: clean_this_condition,
   };
-}
 }

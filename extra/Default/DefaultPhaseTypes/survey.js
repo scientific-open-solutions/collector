@@ -520,12 +520,12 @@ function process_question(row, row_no) {
         .addClass("row_" + row_no)
         .prop("id", survey_id + "_response")
         .prop("name", survey_id + "_response")
-        .val("")[0].outerHTML +
-      $("<input>")
-        .attr("type", "hidden")
-        .prop("id", survey_id + "_value")
-        .prop("name", survey_id + "_value")
-        .val("")[0].outerHTML;
+        .val("")[0].outerHTML; // +
+      // $("<input>")
+      //   .attr("type", "hidden")
+      //   .prop("id", survey_id + "_value")
+      //   .prop("name", survey_id + "_value")
+      //   .val("")[0].outerHTML;
 
     /*
      * Survey settings
@@ -940,10 +940,12 @@ function response_check(submitted_element) {
   update_score();
 }
 
+var item_name;
+
 function retrieve_row_no_item_name(this_element) {
   var these_classes = this_element.className.split(" ");
   var row_no;
-  var item_name;
+  // var item_name;
   these_classes.forEach(function (this_class) {
     if (this_class.indexOf("row_") > -1) {
       row_no = this_class.replace("row_", "");

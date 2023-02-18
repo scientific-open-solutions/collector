@@ -1,6 +1,6 @@
 <!-- it can help to add a description between the --'s of what this code does -->
 <link rel="stylesheet" href="../../collector-experiments/User/Assets/Global/css/global_css.css">
-</style>
+<style>
     <!-- put any page specific css here -->
 </style>
 <button id="zoomOut" tabindex="-1"></button>

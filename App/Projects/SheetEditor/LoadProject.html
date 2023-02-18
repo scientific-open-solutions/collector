@@ -167,7 +167,16 @@
       switch (String.fromCharCode(event.which).toLowerCase()) {
         case "s":
           event.preventDefault();
-          $("#save_btn").click();
+          if ($('#top_tab_PhaseTypes').hasClass('bg-white')){
+            console.log("PhaseTypes Open");
+            $("#save_phasetype_btn").click();
+          } else if ($('#top_tab_Surveys').hasClass('bg-white')) {
+            console.log("Surveys Open");
+            $("#save_survey_btn").click();
+          } else {
+            console.log("Projects Open");
+            $("#save_btn").click();
+          }
           break;
       }
     }
@@ -176,10 +185,6 @@
     delete keys[event.which];
   });
   
-  // Does this fix the issues with non-responsive keys?
-  $(document).unbind('keydown');
-  $(document).unbind('keyup');
-
   // This enables the tooltips for buttons
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()

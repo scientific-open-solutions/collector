@@ -201,9 +201,9 @@ function list_phasetypes(to_do_after) {
     if (typeof to_do_after !== "undefined") {
       to_do_after();
     }
-    setTimeout(function(){
-      $('#phasetype_select :nth-child(6)').after("<option disabled>--- User Surveys ---</option>");
-    },500);
+    // setTimeout(function(){
+    //   $('#phasetype_select :nth-child(6)').after("<option disabled>--- User Surveys ---</option>");
+    // },500);
   }
 
   function get_default(list) {
