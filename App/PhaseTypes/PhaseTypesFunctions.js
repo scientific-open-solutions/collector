@@ -56,13 +56,9 @@ code_obj = {
                     if (response !== "success") {
                       Collector.custom_alert("Failed to delete the phase type: " + this_file);
                     } else {
+                      $("#save_btn").click();
                       Collector.custom_alert("The phase type: " + this_file + " has been deleted");
                     }
-                  // This is just delayed to allow the custom alert to clear first
-                  setTimeout(function() { 
-                    $("#save_btn").click();
-                    console.log("It saved the delete!");
-                  }, 2100);
                 }
               }
             });

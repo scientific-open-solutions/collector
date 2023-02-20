@@ -76,10 +76,12 @@
 }
 .fixed-top-2 {
   margin-top: 50px;
-  height: 42px;
+  margin-bottom: 75px;
+  margin-left: 20px;
+  padding: 10px 10px 10px 10px!important;
 }
 .help_class {
-  width: 354px;
+  width: 351px;
 }
 .logo {
   height: 20px;

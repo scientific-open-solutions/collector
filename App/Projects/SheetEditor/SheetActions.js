@@ -376,7 +376,7 @@ $("#project_list").on("change", function () {
   $("#project_inputs").show();
   // update_handsontables(); This isn't needed as it's called within the clean_conditions() function
   // update_server_table();
-  $("#save_btn").click();
+  // $("#save_btn").click();
 });
 
 $("#proc_select").on("change", function () {
@@ -561,7 +561,7 @@ $("#run_btn").on("click", function () {
         buttons: {
           local: {
             label: "Run",
-            className: "btn btn-success bi bi-play-btn btn-sm",
+            className: "btn btn-success bi bi-play-btn",
             callback: function () {
               parent.parent.functionIsRunning = false;
               window.open("Run.html?platform=localhost&location=" + $("#project_list").val() + "&name=" + $("#select_condition").val(),
@@ -571,7 +571,7 @@ $("#run_btn").on("click", function () {
           },
           local_preview: {
             label: "Preview Local",
-            className: "btn-info bi bi-laptop btn-sm",
+            className: "btn-info",
             callback: function () {
               parent.parent.functionIsRunning = false;
               window.open("Run.html?platform=preview&location=" + $("#project_list").val() + "&name=" + $("#select_condition").val(),
@@ -581,7 +581,7 @@ $("#run_btn").on("click", function () {
           },
           online_preview: {
             label: "Preview Online",
-            className: "btn-info bi bi-globe2 btn-sm",
+            className: "btn-info",
             callback: function () {
               parent.parent.functionIsRunning = false;
               window.open(
@@ -592,7 +592,7 @@ $("#run_btn").on("click", function () {
           },
           cancel: {
             label: "Cancel",
-            className: "btn-secondary btn-sm",
+            className: "btn-secondary",
             callback: function () {
               parent.parent.functionIsRunning = false;
               //nada;

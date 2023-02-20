@@ -1,44 +1,13 @@
-<!--
-    Collector (Garcia, Kornell, Kerr, Blake & Haffey)
-    A program for running experiments on the web
-    Copyright 2012-2016 Mikey Garcia & Nate Kornell
+<!-- ----------------------------------------- -->
+<!-- App/Projects/SheetEditor/LoadProject.html -->
+<!-- ----------------------------------------- -->
 
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 3 as published by
-    the Free Software Foundation.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>
-
-		Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey 
--->
-<!-- LOADPROJECT.HTML -->
 <link rel="stylesheet" href="../App/style.css">
 <script src="Projects/SheetEditor/DefaultProject.js"></script>
 <!-- The items below fix the select box not being populated on first start -->
 <script src="Projects/SheetEditor/SheetFunctions.js"></script>
-<script>
-  setTimeout(() => {
-    $.getScript("Projects/SheetEditor/SheetActions.js")             
-  }, 100);
-</script>
+<script>setTimeout(() => {$.getScript("Projects/SheetEditor/SheetActions.js")}, 100);</script>
 <style>
-  .saveSVG {
-    background: url(../logos/floppy.svg) no-repeat top left;
-    /* background-size: 22px; */
-    background-size: contain;
-    height: 15px;
-    width: 15px;
-    margin-right: 10px;
-    transform: translate(1px,1px) scale(1.15);
-    display: inherit;
-  }
   .bi-file-earmark-arrow-up::before, .bi-file-earmark-arrow-down::before {
     transform: translate(-2px,-2px);
   }

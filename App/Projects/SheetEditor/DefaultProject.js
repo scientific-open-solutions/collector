@@ -23,7 +23,7 @@ default_project = {
       "end_message",
       "start_message",
       "buffer",
-      "scripts",
+      // "scripts",
     ],
     [
       "condition_1",

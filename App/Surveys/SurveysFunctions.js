@@ -55,6 +55,7 @@ function load_default_surveys() {
 /*
  * Survey functions
  */
+var columnHeader;
 function create_survey_HoT(this_survey) {
   var container = document.getElementById("survey_HoT");
   $("#survey_HoT").html("");
@@ -162,13 +163,15 @@ function create_survey_HoT(this_survey) {
 
       //clearTimeout(disable_cell_timeout);
       var coords = this.getSelected();
-      var column = this.getDataAtCell(0, coords[1]);
-      var thisCellValue = this.getDataAtCell(coords[0], coords[1]);
-      thisCellValue =
-        thisCellValue === null ? (thisCellValue = "") : thisCellValue;
+      var column = this.getDataAtCell(0, coords[0][1]);
+      // var thisCellValue = this.getDataAtCell(coords[0], coords[1]);
+      // thisCellValue =
+      //   thisCellValue === null ? (thisCellValue = "") : thisCellValue;
       column = column === null ? (column = "") : column;
-
+      console.log("column: "+column)
+      
       helperActivate(column, thisCellValue, "survey");
+
     },
     afterChange: function () {
       /*

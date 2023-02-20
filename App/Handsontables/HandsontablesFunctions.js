@@ -17,6 +17,7 @@
 
 		Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey
 */
+var thisCellValue;
 var this_sheet;
 var this_selection;
 function isPhaseTypeHeader(colHeader) {
@@ -115,7 +116,7 @@ function createHoT(container, data, sheet_name) {
       var topRow = [];
       for (var k = 0; k < this.countCols() - 1; k++) {
         // loop through columns (for identical headers)
-        var cellValue = this.getDataAtCell(0, k); // store the current column header
+        cellValue = this.getDataAtCell(0, k); // store the current column header
         topRow[k] = this.getDataAtCell(0, k); // add the current column header to topRow array
         for (l = 0; l < k; l++) {
           // loop through all the columns before the current one
@@ -234,14 +235,10 @@ function createHoT(container, data, sheet_name) {
       thisCellValue = this.getValue();
 
       var coords = this.getSelected();
-      var column = this.getDataAtCell(0, coords[1]);
-      var thisCellValue = this.getDataAtCell(
-        coords[0],
-        coords[1]
-      );
+      var column = this.getDataAtCell(0, coords[0][1]);
 
-      thisCellValue =
-        thisCellValue === null ? (thisCellValue = "") : thisCellValue;
+      // thisCellValue =
+      //   thisCellValue === null ? (thisCellValue = "") : thisCellValue;
       column = column === null ? (column = "") : column;
       window["Current HoT Coordinates"] = coords;
       helperActivate(column, thisCellValue, sheet_name);
@@ -405,7 +402,6 @@ function createHoT(container, data, sheet_name) {
   });
   return table;
 }
-
 //https://stackoverflow.com/a/28353499/4490801
 function insertAtCaret(areaId, text) {
   var txtarea = document.getElementById(areaId);
