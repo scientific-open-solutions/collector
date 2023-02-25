@@ -2,6 +2,8 @@
  *	PhaseFunctions.js
  *	Collector Kitten/Cat release (2019-2023) © Dr. Anthony Haffey (team@someopen.solutions)
 */
+
+// Collector Phase Functions
 if (typeof Phase !== "undefined") {
   Phase.add_response = function (response_obj) {
     // response_obj.inserted_time_ms = new Date().getTime();
@@ -25,10 +27,18 @@ if (typeof Phase !== "undefined") {
     return parent.parent.project_json.study_vars[this_name];
   };
   Phase.get_proc = function (this_name) {
-    return parent.parent.project_json.all_procs[this_name];
+    // return parent.parent.project_json.all_procs[this_name]; <- this line just inserts the stimuli sheet as a comma separated list
+    required_proc_sheet = parent.parent.project_json.all_procs[this_name];
+    var required_proc_sheetConverted = csvToArray(required_proc_sheet)
+    return required_proc_sheetConverted
+    // {CGD} It would be good to make this function swap the loaded procedure sheet so you could alter a study based on prior performance if needed
   };
   Phase.get_stim = function (this_name) {
-    return parent.parent.project_json.all_stims[this_name];
+    // return parent.parent.project_json.all_stims[this_name]; <- this line just inserts the stimuli sheet as a comma separated list
+    required_stim_sheet = parent.parent.project_json.all_stims[this_name];
+    var required_stim_sheetConverted = csvToArray(required_stim_sheet)
+    return required_stim_sheetConverted
+    // {CGD} It would be good to make this function swap the loaded stimuli sheet so you could alter a task based on prior performance if needed
   };
   Phase.go_to = function (new_trial_no) {
     parent.parent.Project.go_to(new_trial_no);
@@ -131,3 +141,33 @@ $(window).bind("keydown", function (event) {
   }
   $(document).unbind('keydown');
 });
+
+// "csv to array" Function
+// - https://github.com/nsebhastian/javascript-csv-array-example/blob/master/index.html
+function csvToArray(str, delimiter = ",") {
+
+  // slice from start of text to the first \n index
+  // use split to create an array from string by delimiter
+  const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+
+  // slice from \n index + 1 to the end of the text
+  // use split to create an array of each csv value row
+  const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+
+  // Map the rows
+  // split values from each row into an array
+  // use headers.reduce to create an object
+  // object properties derived from headers:values
+  // the object passed as an element of the array
+  const arr = rows.map(function (row) {
+    const values = row.split(delimiter);
+    const el = headers.reduce(function (object, header, index) {
+      object[header] = values[index];
+      return object;
+    }, {});
+    return el;
+  });
+
+  // return the array
+  return arr;
+}

@@ -58,7 +58,7 @@
     "likert": "Participants can click on one of the options that they want. ",
     "number": "Only allows participants to type in a number. ",
     "para": "Gives the participant a large text box to write in their answer. ",
-    "radio": "Allows the participant to only select one option in a list (unlike checkboxes).",
+    "radio": "Allows the participant to only select one option in a list (unlike checkboxes). Use radio_horizontal if wish to change the direction of the radio list",
     "text": "Gives the participant a text box to write in their answer."
   },
   "values": {

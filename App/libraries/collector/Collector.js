@@ -287,6 +287,13 @@ Collector.custom_alert= function(msg, duration) {
       });
     }
   },duration);
+
+  // This just removes the "saved" message alert instantly by pressing escape
+  $(document).keyup(function(e) {
+    if (e.key === "Escape") {
+      $(this_alert).remove();
+    }
+  });
 }
 Collector.detect_context= function(){
   //turn to false to make use of eel and python

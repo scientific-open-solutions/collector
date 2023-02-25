@@ -552,12 +552,12 @@ $("#run_btn").on("click", function () {
         message:
           "Which condition would you like to run? <br><br>" +
           select_html +
-          "To run the study copy the following into a browser:<br>(make sure you've pushed the latest changes and waited 5+ minutes) <input class='form-control' value='" +
-          github_url +
-          "' onfocus='this.select();' id='experiment_url_input'>" +
-          "To <b>Preview</b> a project copy the following into a browser: <input class='form-control' value='" +
-          github_url.replace("platform=github", "platform=onlinepreview") +
-          "' onfocus='this.select();' id='experiment_url_input_preview'>",
+          "To run the study copy the following into a browser:<br>(make sure you've pushed the latest changes and waited 5+ minutes) "+
+          '<div class="input-group mb-3">'+"<input class='form-control' value='" + github_url + "' onfocus='this.select();' id='experiment_url_input'>"+
+          '<div class="input-group-append"><button class="btn btn-primary" type="button" onclick="copyToClipboard_url_input()" style="border-top-left-radius: 0;border-bottom-left-radius: 0;" title="Copy to clipboard"><i class="bi-files"></i></button></div></div>' +
+          "To <b>Preview</b> a project copy the following into a browser: "+
+          '<div class="input-group mb-3">'+"<input type='text' class='form-control' value='" + github_url.replace("platform=github", "platform=onlinepreview") + "' onfocus='this.select();' id='experiment_url_input_preview'>" +
+          '<div class="input-group-append"><button class="btn btn-primary" type="button" onclick="copyToClipboard_url_input_preview()" style="border-top-left-radius: 0;border-bottom-left-radius: 0;" title="Copy to clipboard"><i class="bi-files"></i></button></div></div>',
         buttons: {
           local: {
             label: "Run",
@@ -602,6 +602,7 @@ $("#run_btn").on("click", function () {
       });
       $("#select_condition").change(() => {
         var ConditionValue = $("#select_condition").val();
+        // Update link text
         $("#experiment_url_input").val(
           `https://${org}.github.io/${repo}/App/Run.html?platform=github&location=${$("#project_list").val()}&name=${ConditionValue}`
         );
@@ -951,3 +952,31 @@ $("#upload_project_input").on("change", function () {
     reader.readAsBinaryString(myFile);
   }
 });
+
+
+// Functions to copy preview/run links to clipboard
+function copyToClipboard_url_input() {
+  var textBox = $("#experiment_url_input");
+  textBox.select();
+  
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    Collector.custom_alert('URL was ' + msg + ' copied');
+  } catch (err) {
+    Collector.custom_alert('Oops, unable to copy');
+  }
+};
+
+function copyToClipboard_url_input_preview() {
+  var textBox = $("#experiment_url_input_preview");
+  textBox.select();
+  
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    Collector.custom_alert('URL was ' + msg + ' copied');
+  } catch (err) {
+    Collector.custom_alert('Oops, unable to copy');
+  }
+};
