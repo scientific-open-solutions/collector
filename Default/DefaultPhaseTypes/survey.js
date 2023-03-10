@@ -825,7 +825,7 @@ function process_score(
   if (typeof values_reverse !== "undefined" && values_reverse === "r") {
     item_values.reverse();
   }
-  item_answers = survey_obj.data[row_no]["values"].split("|");
+  item_answers = survey_obj.data[row_no]["answers"].split("|");
   var this_value = item_values[item_answers.indexOf(this_response)];
   $("#survey_" + item + "_score").val(this_value);
   if (typeof this_value !== "undefined") {
@@ -1079,9 +1079,10 @@ function update_score() {
 
     questions.forEach(function (row_no) {
       var item = survey_obj.data[row_no].item_name.toLowerCase();
-      var this_response = $("#survey_" + item + "_value").val();
+      var this_response = $("#survey_" + item + "_response").val();
       var normal_reverse = this_scale.questions[row_no];
 
+      
       if (normal_reverse.indexOf("-") === -1) {
         var multiplier = parseFloat(normal_reverse.replace("r", ""));
         if (normal_reverse.indexOf("r") === 0) {
