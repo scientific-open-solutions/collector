@@ -18,9 +18,7 @@ String.prototype.replaceAll = function (str1, str2, ignore) {
 //window.onload = function () {
 const ipc = require("electron").ipcRenderer;
 
-const {
-    contextBridge
-} = require("electron");
+const { contextBridge, shell } = require("electron");
 
 if (typeof Collector === "undefined") {
 

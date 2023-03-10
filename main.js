@@ -3,13 +3,15 @@
 
 //const remote = require('remote');
 
-const { app, BrowserWindow, dialog, remote } = require("electron");
+const { app, BrowserWindow, dialog } = require("electron");
 
 const fs = require("fs-extra");
-const ipc = require("electron").ipcMain;
+// const ipc = require("electron").ipcMain;
 const path = require("path");
 
 const { session } = require("electron");
+
+app.disableHardwareAcceleration()
 
 function createWindow() {
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
@@ -19,7 +21,7 @@ function createWindow() {
         "Content-Security-Policy": [
 
 
-          "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: filesystem",
+          // "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: filesystem",
 /*
           "script-src 'self'",
           "connect-src 'self'",
@@ -37,6 +39,7 @@ function createWindow() {
     // frame: false,
     title: "Collector: Cat " + app.getVersion(),
     icon: __dirname + "/logos/collector_sized.png",
+    minWidth:1000, minHeight:700,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true, //has to be false with the way I've designed this

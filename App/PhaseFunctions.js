@@ -2,15 +2,74 @@
  *	PhaseFunctions.js
  *	Collector Kitten/Cat release (2019-2023) © Dr. Anthony Haffey (team@someopen.solutions)
 */
-
+var start_date_time = new Date().toLocaleDateString("en-US").replaceAll("/","_") + "_" + new Date().toLocaleTimeString().replaceAll(":","_");
 // Collector Phase Functions
 if (typeof Phase !== "undefined") {
-  Phase.add_response = function (response_obj) {
-    // response_obj.inserted_time_ms = new Date().getTime();
-    // response_obj.inserted_time_date = new Date().toString("MM/dd/yy HH:mm:ss");
-    parent.parent.project_json.responses.push(response_obj);
-  };
 
+  /* ADD A NEW RESPONSE WITHOUT ENDING PHASE 
+   * *************************************** */
+  Phase.add_response = function (response_obj) {
+    /* If we don't have a repeat number set have a repeat_no set - then this is the first
+       time we've added a response and so set the repeat_no to be the current phase number 
+    */
+    if(typeof(parent.parent.project_json.repeat_no) == "undefined"){
+      parent.parent.project_json.repeat_no = parent.parent.project_json.phase_no;
+    }
+
+    /* Then we want to add 1 to the repeat_no
+    */
+    parent.parent.project_json.repeat_no++;
+
+    // This pushed the responses
+    parent.parent.project_json.responses.push(response_obj);
+
+    parent.parent.project_json.phase_resp_no++
+
+
+    // If we have a REDCap URL set do the following....
+   if(typeof(parent.parent.project_json.this_condition.redcap_url) !== "undefined"){
+
+       var phase_responses = response_obj;
+
+       console.log("phase_responses");
+      //  var this_location = parent.parent.project_json.location.split("/")[0].replaceAll("-","") + "_" + parent.parent.project_json.location.split("/")[1].replaceAll("-","");
+
+       var clean_phase_responses = {};
+
+      Object.keys(phase_responses).forEach(function(old_key){
+        clean_phase_responses[old_key] = phase_responses[old_key];
+      });
+      
+      // This removes the data we don't need in REDCap based on the list at the top.
+      parent.parent.add_response_remove_fields.forEach(adjust_redcap_array)
+        function adjust_redcap_array(field) {
+          delete(clean_phase_responses[field]);
+        };
+
+      // This sets the REDCap record ID.  
+      clean_phase_responses.record_id = parent.parent.$("#participant_code").val() + "_" + parent.parent.start_date_time;
+      console.log(clean_phase_responses.record_id)
+      clean_phase_responses['redcap_repeat_instance'] = parent.parent.project_json.repeat_no;
+      clean_phase_responses['redcap_repeat_instrument'] = "main";
+       
+       console.log("just before the ajax");
+       function redcap_post(this_url,this_data){
+        $.ajax({
+          type: "POST",
+          url: this_url,
+          crossDomain: true,
+          data: this_data,
+
+         success: function(result){
+           console.log("result");
+           //console.log(result);
+           //Phase.submit();
+         }
+       });
+     };
+     redcap_post(parent.parent.project_json.this_condition.redcap_url,clean_phase_responses);
+  };
+  };
   Phase.elapsed = function () {
     alert("Don't use this function, as it has an average lag of 10-20ms. This code hasn't been deleted as this might be addressed in the future. Instead, you can use something like \n\n Phase.set_timer(function(){\nbaseline_time_manual = (new Date()).getTime();\n},0);\n\n to capture the time the phase started.");
     if (Phase.post_no == "") {
@@ -40,8 +99,17 @@ if (typeof Phase !== "undefined") {
     return required_stim_sheetConverted
     // {CGD} It would be good to make this function swap the loaded stimuli sheet so you could alter a task based on prior performance if needed
   };
-  Phase.go_to = function (new_trial_no) {
-    parent.parent.Project.go_to(new_trial_no);
+  Phase.go_to = function (new_phase_no) {
+    parent.parent.go_to_active = true;
+    parent.parent.Project.go_to(new_phase_no);
+  };
+  Phase.redcap_markers = function(){
+    for (var i = 0; i <= parent.parent.project_json.phase_no; i++) {
+      parent.parent.project_json.repeat_no = i;
+      Phase.add_response({
+        main_complete: 2
+      });
+    }
   };
   Phase.set = function (this_name, this_content) {
     if (typeof parent.parent.project_json.study_vars == "undefined") {
