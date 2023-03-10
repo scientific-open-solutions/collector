@@ -20,7 +20,7 @@ var icons = [
   "card-checklist",
   //"arrow-up-right",
   "table",
-  "arrow-up-right"
+  "Redcap"
 ];
 navbar_names.forEach(function (this_name, index) {
   $("#content_area").append(
@@ -47,6 +47,7 @@ navbar_names.forEach(function (name, index) {
     .addClass("select_page")
     .addClass("btn")
     .addClass("btn-primary")
+    .addClass("bi")
     .addClass("bi-" + this_icon)
     .prop("id", "top_tab_" + name)
     .append(
@@ -467,3 +468,22 @@ var loaded_scripts = {
   "SheetFunctions.js": false, //for projects
   "Graphic.js": false,        //for phasetypes
 };
+
+// This loads in the custom 'Redcap' button icon
+$('#top_tab_RedCap').prepend('<svg id="Redcap-icon" xmlns="http://www.w3.org/2000/svg" width="35" height="22" viewBox="0 0 15 10.601" style="transform: translate(-5px, -1px);">'+
+'<path fill="#ffffff" d="m.585,9.633c.985.647,2.508-.202,3.425-.919.488.251,1.05.553,1.716.919,1.409.776,3.094,1.317,4.589.703,1.35-.551,1.955-1.793,2.14-2.276.541.101,1.657.23'+
+'4,2.14-.028.052-.026.091-.073.11-.129,1.022-2.974-.708-6.148-3.657-6.959.04-.462-.279-.837-.701-.902l-.18-.03c-.443-.07-.856.216-.952.64-.005,0-.806-.098-.832-.103-1.91-.239-'+
+'3.715.919-4.294,2.754l-.827,2.625c-.884.483-2.039,1.111-2.103,1.151,0,0-.002,0-.005.002-1.081.72-1.662,1.831-.57,2.553ZM8.186,1c-.895.488-1.58,1.303-1.896,2.304l-.755,2.388c'+
+'-.537-.007-1.207.012-1.737.094l.738-2.344c.497-1.575,2.016-2.581,3.65-2.442Zm3.427.647c2.299,1.027,3.443,3.617,2.684,5.998-.18.052-.698.143-1.685-.033.455-2.051.094-4.175-.'+
+'998-5.965ZM1.895,7.209l1.636-.893c2.768-.476,7.158.635,8.487,1.573-.347.863-.999,1.653-1.882,2.014-1.123.459-2.531.23-4.186-.682-1.088-.598-2.899-1.577-4.055-2.011Z"/></svg>');
+
+// This turns the RedCap icon blue when it's active and white when it's inactive
+$( "nav" ).click(function() {
+  if ($("#top_tab_RedCap").hasClass('bg-white')) {
+    $('#Redcap-icon').find("path").css({ fill: '#20669b' });
+  } else {
+    $('#Redcap-icon').find("path").css({ fill: '#ffff' });
+  }
+});
+  // This is the global variable that ensures we can capture if a modal popup has already opened and thus, not to open more than one
+parent.parent.functionIsRunning = false;

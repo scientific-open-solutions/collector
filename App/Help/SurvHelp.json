@@ -31,7 +31,7 @@
     "subtitle": "Default is 50%",
     "text": "You can control how wide the question is relative to the responses. This can be particularly useful if you are just presenting a series of statements for the user to agree to, so don't need to give the response side much space"
   },
-  "shuffle": {
+  "shuffle_question": {
     "subtitle": "randomise order of items",
     "text": "In this column, if you want to randomise the order of questions, you can either simply write <b>'on'</b> in the items you want randomised, or you can use a different words for different groups of items you want randomised together. For example, if you wanted the first and second half of your items shuffled, you could write 'first' in the shuffle column for each of the first half of the items, and 'second' for each of the second half of the items. The order of items is preserved otherwise, so any items without a word in the shuffle column will not be shuffled. If you write 'off' in this column, the item will <b>not</b> be shuffled."
   },
@@ -53,17 +53,12 @@
   },
   "type": {
     "checkbox": "If you want the participant to be able to select multiple options, use a checkbox. If you only want them to be able to select one option, use a 'Radio'",
-    "date": "This allows standardised storage of date. Note that this works better in Chrome than firefox. ",
     "dropdown": "A standard dropdown list. ",
-    "google_slide": "This is not YET in action. But will be :-) ",
     "instruct": "Allows you to type in instructions. ",
     "likert": "Participants can click on one of the options that they want. ",
     "number": "Only allows participants to type in a number. ",
     "para": "Gives the participant a large text box to write in their answer. ",
-    "radio": "Allows the participant to only select one option in a list (unlike checkboxes).",
-    "select": "A standard dropdown list. ",
-    "shortAnswer": "Gives participant space for a small paragraph for their response. ",
-    "slider": "The participant can slide between values you specify. ",
+    "radio": "Allows the participant to only select one option in a list (unlike checkboxes). Use radio_horizontal if wish to change the direction of the radio list",
     "text": "Gives the participant a text box to write in their answer."
   },
   "values": {

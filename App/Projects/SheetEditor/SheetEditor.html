@@ -1,25 +1,10 @@
-<!--
-/*  Collector (Garcia, Kornell, Kerr, Blake & Haffey)
-    A program for running experiments on the web
-    Copyright 2012-2016 Mikey Garcia & Nate Kornell
+<!-- ----------------------------------------- -->
+<!-- App/Projects/SheetEditor/SheetEditor.html -->
+<!-- ----------------------------------------- -->
 
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 3 as published by
-    the Free Software Foundation.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>
-
-		Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey
-*/
--->
-<!-- SHEETEDITOR.HTML -->
+<!-- <script src="Projects/SheetEditor/SheetFunctions.js"></script>
+<script src="Projects/SheetEditor/SheetActions.js"></script> -->
+<link rel="stylesheet" href="../App/style.css">
 <style>
 .handsontable td {
   max-width: 100px;
@@ -46,14 +31,13 @@
 </style>
 
 <br /><br /><br />
-<table id="exp_data_table">
+<table id="exp_data_table" style="margin-top: 10px;">
   <tr>
     <td align="left" class="exp_table_cells">
       <div id="Conditions" class="hide_show_elements">
         <h3>Conditions</h3>
         <div id="conditionsArea"></div>
       </div>
-      <br /><br />
     </td>
     <td></td>
   </tr>
@@ -71,13 +55,13 @@
           class="form-select"
           style="width: auto"
         ></select>
-        <button type="button" id="new_proc_button" class="btn btn-primary">
+        <button type="button" id="new_proc_button" class="btn btn-primary bi bi-file-earmark-plus">
           New
         </button>
-        <button type="button" id="rename_proc_button" class="btn btn-primary">
+        <button type="button" id="rename_proc_button" class="btn btn-primary bi bi-pencil-fill">
           Rename
         </button>
-        <button type="button" id="delete_proc_button" class="btn btn-primary">
+        <button type="button" id="delete_proc_button" class="btn btn-primary bi bi-trash">
           Delete
         </button>
       </div>
@@ -106,16 +90,16 @@
           class="form-select"
           style="width: auto"
         ></select>
-        <button type="button" id="new_stim_button" class="btn btn-primary">
+        <button type="button" id="new_stim_button" class="btn btn-primary bi bi-file-earmark-plus">
           New
         </button>
-        <button type="button" id="rename_stim_button" class="btn btn-primary">
+        <button type="button" id="rename_stim_button" class="btn btn-primary bi bi-pencil-fill">
           Rename
         </button>
-        <button type="button" id="delete_stim_button" class="btn btn-primary">
+        <button type="button" id="delete_stim_button" class="btn btn-primary bi bi-trash">
           Delete
         </button>
-        <button type="button" id="stim_folder_button" class="btn btn-primary">
+        <button type="button" id="stim_folder_button" class="btn btn-primary bi bi-folder">
           User Folder
         </button>
       </div>
@@ -125,8 +109,6 @@
     </td>
   </tr>
 </table>
-<script src="Projects/SheetEditor/SheetFunctions.js"></script>
-<script src="Projects/SheetEditor/SheetActions.js"></script>
 
 <script>
   $("#stim_folder_button").on("click", function () {

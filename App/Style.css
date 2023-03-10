@@ -33,3 +33,17 @@
   color: white;
   border-radius: 0px;
 }
+.bi::before {
+  margin-right: 7px;
+  transform: translateY(-2px);
+}
+#upload_experiment_button, #download_project_button{
+  width: 10px;
+}
+#upload_experiment_button::before, #download_project_button::before {
+  transform: translateX(-8px);
+}
+
+.bootbox-close-button {
+  display: none;
+}

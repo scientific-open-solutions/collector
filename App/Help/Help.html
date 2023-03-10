@@ -1,24 +1,7 @@
-<!--
-    Collector (Garcia, Kornell, Kerr, Blake & Haffey)
-    A program for running experiments on the web
-    Copyright 2012-2016 Mikey Garcia & Nate Kornell
-
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 3 as published by
-    the Free Software Foundation.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>
-
-		Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey 
--->
-
+<!-- ------------------ -->
+<!-- App/Help/Help.html -->
+<!-- ------------------ -->
+<script src="../App/Help/help_buttons.js"></script>
 <style>
   .change_tip {
     margin: 2px;
@@ -26,41 +9,126 @@
   .general_tip {
     display: none;
     margin: 2px;
-    padding: 20px;
   }
   #help_content {
+   margin-bottom: 10px;
+  }
+  #help_container {
     position: fixed;
-    right: 0px;
-    top: 100px;
+    right: 12px;
+    top: 60px;
     bottom: 0;
-    overflow-y: auto;
+    /* overflow-y: overlay; */
+    overflow-y: hidden;
+  }
+  #help_container:hover, #help_container:active, #help_container:focus {
+    overflow-y: overlay;
+  }
+  #noitalic{
+    font-style: normal;
+  }
+  #active_help_tab{
+    cursor: default;
+  }
+  pre {
+  background-color:lightgrey;
+  padding:10px;
+  border-radius:5px;
+  width: 100%;
+  margin: 1rem auto;
+  }
+  .nav-tabs {
+    padding: 0 1em!important;
+    margin: 0 -1em!important;
+    font-weight: bold;
   }
 </style>
-
-<div id="help_content" class="card help_class">
-  <b class="text-danger"
-    >To see the whole cell when editing the sheets, either press F2 or double
-    click on the cell, or right click on the cell and select 'Edit cell'</b
-  >
-  <div class="card-body">
-    <h5 class="card-title text-primary" id="help_title">
-      Click on a something editable for help
-    </h5>
-    <h6 class="card-subtitle mb-2 text-muted" id="help_subtitle">
-      or Click on "Help" to hide
-    </h6>
-    <p class="card-text" id="help_text">
-      This text will change depending on where you click. Have fun!
-    </p>
-
-    <h5 class="card-title text-primary">General tips</h5>
-    <p class="card-text help_general"></p>
-    <button class="btn btn-primary change_tip">Previous</button>
-    <button class="btn btn-primary change_tip">Next</button>
+<div id="help_container">
+<div id="help_content" class="card help_class" >
+  <div class="card-header">
+    <h5 id="mainHelpHeader" class="card-title text-primary"><i class="bi bi-file-earmark"></i> Page specific help</h5>
   </div>
+  <div class="card-body">
+    <h5 class="card-title text-primary" id="help_title"></h5>
+    <em><h6 class="card-subtitle mb-2 text-muted" id="help_subtitle"></h6></em>
+    <p class="card-text" id="help_text"></p>
+  </div>
+  <div class="card-footer"></div>
+</div>
+<div id="general_help" class="card help_class" >
+  <div class="card-header">
+    <h5 class="card-title text-primary"><i class="bi bi-info-circle"></i> General tips</h5>
+  </div>
+  <div class="card-body">
+    <p class="help_general"></p>
+    <button class="btn btn-primary change_tip bi bi-arrow-left-square" id="prevTip">Previous</button>
+    <button class="btn btn-primary change_tip bi bi-arrow-right-square" id="nextTip">Next</button>
+  </div>
+</div>
 </div>
 
 <script>
+    /* Check which tab is open and thus, what to monitor
+  **************************************************** */
+
+  // Create a function to allow us to reset the help text when changing page
+  function resetHelp(){
+    $("#help_title").html("Click something editable for help");
+    $("#help_subtitle").html('or click on "<i class="bi bi-life-preserver"></i><span id="noitalic">Help"</span> to hide this sidebar');
+    $("#help_text").html("This text will change depending on where you click. Have fun!");
+  }
+
+  // Second, monitor for clicks on the nav bar and work out which tab is open and store the name to our previous variable
+  $( "nav" ).click(function() {
+    if ( $( "#top_tab_PhaseTypes" ).hasClass('text-primary') ) {
+      console.log("Phasetypes page open");
+      resetHelp();
+      $("#mainHelpHeader").html("<i class='bi bi-code-slash'></i> PhaseTypes specific help");
+      $(".card-footer").html("<b class='text-danger'>Note 1:</b> Please do not use <em>Phase.elapsed()</em> it suffers from a 10-20ms delay making it an unreliable measure.<br><br><b class='text-danger'>Note 2:</b> Do not name <xmp style='margin: 0;display: inline;'><inputs></xmp> using uppercase letters. REDCap uses lowercase field names and is case sensitve. Your data wont be stored.");
+      $('#help_container').css('top','60px');
+      $('.fixed-top-2').css('width','');
+    } else if ( $( "#top_tab_Projects" ).hasClass('text-primary') ) {
+      console.log("Projects page open");
+      resetHelp();
+      $("#mainHelpHeader").html("<i class='bi bi-folder'></i> Projects specific help");
+      $(".card-footer").html("<b class='text-danger'>Note:</b><br>To see the whole cell when editing within a table - press F2, double click the cell, or right click the cell and select 'Edit cell'");
+      $('#help_container').css('top','112px');
+      $('.fixed-top-2').css('width','');
+    } else if ( $( "#top_tab_Surveys" ).hasClass('text-primary') ) {
+      console.log("Surveys page open");
+      resetHelp();
+      $("#mainHelpHeader").html("<i class='bi bi-card-checklist'></i> Surveys specific help");
+      $(".card-footer").html("<b class='text-danger'>Note:</b><br>To see the whole cell when editing within a table - press F2, double click the cell, or right click the cell and select 'Edit cell'");
+      $('#help_container').css('top','60px');
+      $('.fixed-top-2').css('width','75%');
+    } else {
+      var pageName = $(".top_icon.select_page.bg-white").text();
+      if (pageName == 'Data') {
+        $("#mainHelpHeader").html("<i class='bi bi-table'></i> "+ pageName +" specific help");
+      } else if (pageName == 'RedCap') {
+        $("#mainHelpHeader").html('<svg xmlns="http://www.w3.org/2000/svg" width="35" height="22" viewBox="0 0 15 10.601" style="transform: translate(-5px, -1px);">'+
+        '<path fill="#006599" d="m.585,9.633c.985.647,2.508-.202,3.425-.919.488.251,1.05.553,1.716.919,1.409.776,3.094,1.317,4.589.703,1.35-.551,1.955-1.793,2.14-2.276.541.101,1.657.23'+
+        '4,2.14-.028.052-.026.091-.073.11-.129,1.022-2.974-.708-6.148-3.657-6.959.04-.462-.279-.837-.701-.902l-.18-.03c-.443-.07-.856.216-.952.64-.005,0-.806-.098-.832-.103-1.91-.239-'+
+        '3.715.919-4.294,2.754l-.827,2.625c-.884.483-2.039,1.111-2.103,1.151,0,0-.002,0-.005.002-1.081.72-1.662,1.831-.57,2.553ZM8.186,1c-.895.488-1.58,1.303-1.896,2.304l-.755,2.388c'+
+        '-.537-.007-1.207.012-1.737.094l.738-2.344c.497-1.575,2.016-2.581,3.65-2.442Zm3.427.647c2.299,1.027,3.443,3.617,2.684,5.998-.18.052-.698.143-1.685-.033.455-2.051.094-4.175-.'+
+        '998-5.965ZM1.895,7.209l1.636-.893c2.768-.476,7.158.635,8.487,1.573-.347.863-.999,1.653-1.882,2.014-1.123.459-2.531.23-4.186-.682-1.088-.598-2.899-1.577-4.055-2.011Z"/></svg> '+
+        pageName +" specific help");
+      } else {
+        $("#mainHelpHeader").html("<i class='bi bi-file-earmark'></i> Page specific help");
+      }
+      console.log("Non-editable page open");
+      resetHelp();
+      $('#help_container').css('top','60px');
+      $('.fixed-top-2').css('width','75%');
+    }
+  });
+
+  /* Populate the help sidebar when the page first loads
+  ****************************************************** */
+  resetHelp();
+
+  /* Start creating the actual help files to populate the sidebar
+  *************************************************************** */
   help_obj = {};
   var help_dictionary = {
     cond: "Help/CondHelp.json",
@@ -68,6 +136,7 @@
     main: "Help/MainHelp.json",
     proc: "Help/ProcHelp.json",
     surv: "Help/SurvHelp.json",
+    code: "Help/CodeHelp.json",
   };
   function load_help(this_list) {
     if (this_list.length > 0) {
@@ -77,14 +146,9 @@
         load_help(this_list);
       });
     } else {
-      help_general_html = '<div class="container">';
+      help_general_html = '<div id="generalTips">';
       help_obj.main.forEach(function (tip, index) {
-        help_general_html +=
-          '<div class="jumbotron general_tip tip' +
-          index +
-          '">' +
-          tip +
-          "</div>";
+        help_general_html += '<div class="general_tip tip' + index + '">' + tip + "</div>";
       });
       $(".help_general").html(help_general_html);
 
@@ -115,6 +179,9 @@
   }
   load_help(Object.keys(help_dictionary));
 
+  // Creating a variable in the global space to store the name of the active helper tab
+  var activeText;
+
   function helperActivate(help_title, cellValue, help_type) {
     $("#help_title").html(help_title);
     var help_title = help_title.toLowerCase();
@@ -141,14 +208,42 @@
     // give trialtype code advice
     /////////////////////////////
     if (help_type == "trialtype_code") {
-      $("#help_subtitle").html("General tips");
-      $("#help_text").html(
-        "Whilst Collector is written to try to make the phase types as generalisable as possible (in case you want to use them on another platform), there are a few functions that are specific to Collector: <br><br>" +
-          "<b>Phase.set_timer(this_function,timeout)</b>: should be used if you want to set a timer from the beginning of a trial. This is because trials are buffered, and so <b>setTimeout</b> would be triggered from when the trial is buffered, not when the participant has started the trial. <br>Phase.set_timer requires two inputs, a function and then the time until it should be triggered. For example <br><br>" +
-          "<pre style='background-color:lightgrey; padding:10px; border-radius:5px;'>Phase.set_timer(function(){ <br> alert('hi') <br>},5000);</pre> <br><br>" +
-          "<b>Phase.submit()</b>: ends the current Phase. <br><br>" +
-          "<b>Phase.elapsed()</b>: will return the time since the trial began. This is necessary due to buffering, as normal efforts to get the time since the trial began (e.g. using <em>(new Date()).getTime()</em>) may be distorted by the buffering of trials."
-      );
+      if ($("#active_help_tab").html() == null || $("#active_help_tab").html() == "Collector" ){
+        var code_items = help_obj.code.functions;
+
+        var keys = [];
+        var texts = [];
+        for (var key in code_items) {
+          keys.push(key);
+        }
+        var options = '';
+        var text_div_to_change = "'#help_text'";
+        var heading_div_to_change = "'#active_help_tab'";
+        var hide_dropdown = "$('.dropdown-menu, .dropdown-toggle').removeClass('show');"
+        keys.forEach(function(title) {
+          options = options + '<a class="dropdown-item" href="#" onclick="$('+text_div_to_change+').html('+help_obj.code.functions[title]+');$('+heading_div_to_change+').html(\''+title+'\');'+activeText+' = help_obj.code.functions[title];'+hide_dropdown+'">'+title+'</a>'
+        });
+        $("#help_subtitle").html(
+          "Whilst Collector utilises HTML, JavaScript, and CSS to try to make the PhaseTypes as generalisable as possible (in case you want to use them on another platform), there are a few specific Collector functions: <br><br>" +
+            '<ul class="nav nav-tabs">'+
+              '<li class="nav-item">'+
+                '<a id="active_help_tab" class="nav-link active" href="#")">Collector</a>'+
+              '</li>'+  
+              '<li class="nav-item dropdown">'+
+                '<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">Functions</a>'+
+                '<div class="dropdown-menu">'+
+                  options +
+                '</div>'+
+              '</li>'+
+            '</ul>'
+        );
+        var starterText = help_obj.code.choose_function['choose_function'];
+        starterText = starterText.replace(/(^\'+|\'+$)/mg, '')
+        $("#help_text").html(starterText);
+        $('.dropdown-toggle').dropdown()
+      }
+    } else {
+      //do nothing
     }
 
     // give keyboard advice
@@ -190,10 +285,10 @@
           $("#help_subtitle").html(help_obj.cond[help_title].subtitle);
           $("#help_text").html(help_obj.cond[help_title].text);
         } else {
-          $("#help_subtitle").html("unknown setting");
+          $("#help_subtitle").html("Unknown setting");
           $("#help_text").html(
-            "This is not a setting for the <b>conditions</b> sheet that Collector is aware of - maybe it should be in a <b>procedure</b> sheet?" +
-              "Valid <b>conditions</b> settings include: <br><em>" +
+            "This is not a setting for the <b>conditions</b> sheet that Collector is aware of - maybe you created it yourself, or maybe it should be in a <b>procedure</b> sheet?" +
+              "<br><br>Valid <b>conditions</b> settings include: <br><em>" +
               Object.keys(help_obj.cond).join("<br>") +
               "</em>"
           );
@@ -206,8 +301,7 @@
     if (help_type == "survey") {
       if (help_title == "type") {
         $("#help_subtitle").html("What type of item?");
-        var item_type_html =
-          "You can choose from the following types of survey items: <br><br>";
+        var item_type_html = "You can choose from the following types of survey items: <br><br>";
         var item_types = Object.keys(help_obj.surv.type);
         item_types.forEach(function (item_type) {
           item_type_html += "<h6>" + item_type + "</h6>";
@@ -220,8 +314,8 @@
           $("#help_subtitle").html(help_obj.surv[help_title].subtitle);
           $("#help_text").html(help_obj.surv[help_title].text);
         } else {
-          $("#help_subtitle").html("unknown");
-          $("#help_text").html("unknown");
+          $("#help_subtitle").html("Unknown");
+          $("#help_text").html("Unknown");
         }
       }
     }
@@ -256,10 +350,10 @@
           $("#help_subtitle").html(help_obj.proc[help_title].subtitle);
           $("#help_text").html(help_obj.proc[help_title].text);
         } else {
-          $("#help_subtitle").html("unknown setting");
+          $("#help_subtitle").html("Unknown setting");
           $("#help_text").html(
-            "This is not a setting for the <b>procedure</b> sheet that Collector is aware of - maybe it should be in the <b>conditions</b> sheet?" +
-              "Valid <b>procedure</b> settings include: <br><em>" +
+            "This is not a setting for the <b>procedure</b> sheet that Collector is aware of -  - maybe you created it yourself, or maybe it should be in the <b>conditions</b> sheet?" +
+              "<br><br>Valid <b>procedure</b> settings include: <br><em>" +
               Object.keys(help_obj.proc).join("<br>") +
               "</em>"
           );
@@ -291,6 +385,7 @@
       $("#help_btn").removeClass("btn-outline-primary");
       $("#help_btn").removeClass("bg-white");
       $("#help_btn").addClass("btn-primary");
+      $("#help_btn").removeClass("text-primary");
       $("#help_area").hide(500);
       $("#ace_div").animate(
         {
@@ -325,6 +420,7 @@
       $("#help_btn").addClass("btn-outline-primary");
       $("#help_btn").addClass("bg-white");
       $("#help_btn").removeClass("btn-primary");
+      $("#help_btn").addClass("text-primary");
 
       var helper_width = parseFloat(
         $("#help_content").css("width").replace("px", "")
@@ -362,4 +458,17 @@
       );
     }
   });
+
+  /* This is just watching for the helper tab name to be changed when a user opens a function
+   * and if that function is 'redcap markers' to shrink the text slightly to keep everything on
+   * the same line.  
+  */
+  $("body").on('DOMSubtreeModified', "#active_help_tab", function() {
+    var activeText = $('#active_help_tab').text()
+    if(activeText == "Phase.redcap_markers()") {
+	    $('#active_help_tab').css("font-size","0.9em")
+    } else {
+      $('#active_help_tab').css("font-size","1em")
+    }
+  })
 </script>

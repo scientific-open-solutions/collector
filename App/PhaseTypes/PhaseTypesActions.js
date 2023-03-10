@@ -1,6 +1,7 @@
-// App/PhaseTypes/PhasetypesActions.js
-functionIsRunning = false;
-
+/*
+ * PaseTypesActions.js
+ * PhaseTypes actions (i.e. element triggers)
+ */
 function initiate_actions() {
   function protected_name_check(this_name) {
     protected_names = ["start_experiment"];
@@ -74,20 +75,13 @@ function initiate_actions() {
     code_obj.delete_phasetypes();
   });
 
- 
-  // output html.txt framework to a variable to load into the ACE editor later
-  var htmlFramework = $.ajax({
-    url: "./PhaseTypes/html.txt",
-    async: false
-  }).responseText;
-
   $("#new_code_button").on("click", function () {
-    if (!functionIsRunning) {
-      functionIsRunning = true;
+    if (!parent.parent.functionIsRunning) {
+      parent.parent.functionIsRunning = true;
       var dialog = bootbox
       .dialog({
         show: false,
-        title: "What would you like to name this new code file?",
+        title: "What would you like to name the new <b>PhaseType</b>?",
         message:
           "<p><input class='form-control' id='new_code_name' autofocus='autofocus'></p>",
         buttons: {
@@ -95,14 +89,14 @@ function initiate_actions() {
             label: "Cancel",
             className: "btn-secondary",
             callback: function () {
-              functionIsRunning = false;
+              parent.parent.functionIsRunning = false;
             },
           },
           code: {
             label: "Using Code",
-            className: "btn-primary",
+            className: "btn-primary bi bi-file-earmark-code",
             callback: function () {
-              functionIsRunning = false;
+              parent.parent.functionIsRunning = false;
               var new_name = $("#new_code_name").val().toLowerCase();
               if (protected_name_check(new_name)) {
                 if (valid_new_name(new_name)) {
@@ -113,17 +107,20 @@ function initiate_actions() {
                   editor.textInput.getElement().onkeydown = "";
                   $("#rename_phasetypes_button").show();
                   $("#delete_phasetypes_button").show();
+                  $("#save_phasetype_btn").show();
                   editor.session.setValue(htmlFramework);
                   $("#ace_theme_btn_dark").show();
                 }
+                //the editor button should be on
+                $('#code_editor-tab').removeClass('btn-outline-info').addClass('btn-info')
               }
             },
           },
           graphic: {
             label: "Using Graphics",
-            className: "btn-primary",
+            className: "btn-primary bi bi-textarea-t",
             callback: function () {
-              functionIsRunning = false;
+              parent.parent.functionIsRunning = false;
               var new_name = $("#new_code_name").val().toLowerCase();
               if (protected_name_check(new_name)) {
                 if (valid_new_name(new_name)) {
@@ -164,6 +161,9 @@ function initiate_actions() {
                   $("#view_code_btn").addClass("btn-primary");
                   $("#ACE_editor").show();
                   $("#delete_phasetypes_button").show();
+
+                  //the editor button should be on
+                  $('#code_editor-tab').removeClass('btn-outline-info').addClass('btn-info')
                 }
               }
             },
@@ -179,86 +179,89 @@ function initiate_actions() {
   });
 
   $("#rename_phasetypes_button").on("click", function () {
-    // Get the selected PhaseType name and assign to variable
-    var phasetype_selected = $("#phasetype_select").val();
-    // Store the selected PhaseType name again as the original variable is overwritten before we delete anything meaning we can't use it or we delete the new file not the old one!
-    var originPT = phasetype_selected;
+    if (!parent.parent.functionIsRunning) {
+      parent.parent.functionIsRunning = true;
+      // Get the selected PhaseType name and assign to variable
+      var phasetype_selected = $("#phasetype_select").val();
+      // Store the selected PhaseType name again as the original variable is overwritten before we delete anything meaning we can't use it or we delete the new file not the old one!
+      var originPT = phasetype_selected;
 
-    if (typeof master.phasetypes.default[phasetype_selected] !== "undefined") {
-      bootbox.alert("You can't rename a default code file");
-    } else {
-      bootbox.prompt(
-        "What would you like to rename the Phasetype to?",
-        function (new_name) {
-          if (new_name === null) {
-            // close the window
-          } else if ($("#phasetype_select").text().indexOf(new_name) !== -1) {
-            bootbox.alert("You already have a code file with this name");
-          } else {
-            var original_name = $("#phasetype_select").val();
-            master.phasetypes.user[new_name] = master.phasetypes.user[original_name];
-            delete master.phasetypes.user[original_name];
+      if (typeof master.phasetypes.default[phasetype_selected] !== "undefined") {
 
-            var response = CElectron.fs.write_file(
-              "PhaseTypes/",
-              new_name.replace(".html", "") + ".html",
-              master.phasetypes.user[new_name]
-            );
+        bootbox.alert("You can't rename a default code file");
+        parent.parent.functionIsRunning = false;
+      } else {
+        bootbox.prompt(
+          "What would you like to rename the <b>Phasetype</b> to?",
+          function (new_name) {
+            if (new_name === null) {
+              // close the window
+              parent.parent.functionIsRunning = false;
+            } else if ($("#phasetype_select").text().indexOf(new_name) !== -1) {
+              bootbox.alert("You already have a code file with this name");
+              parent.parent.functionIsRunning = false;
+            } else {
+              parent.parent.functionIsRunning = false;
+              var original_name = $("#phasetype_select").val();
+              master.phasetypes.user[new_name] = master.phasetypes.user[original_name];
+              delete master.phasetypes.user[original_name];
 
-            var write_response = "success";
-
-            if (write_response === "success") {
-
-              // Add .html to the originally selected PhaseType name, making it a file
-              originPT_file = originPT.concat(".html");
-              // Ass PhaseTypes/ to the file name we just created, giving us the path needed for the  delete funciton
-              var filePath = ("PhaseTypes/" + originPT_file);
-
-              var deleted_code = $("#phasetype_select").val();
-              master.phasetypes.file = $("#phasetype_select").val();
-              var this_file = master.phasetypes.file;
-              if (typeof master.phasetypes.graphic.files[this_file] !== "undefined") {
-                delete master.phasetypes.graphic.files[this_file];
-              }
-              delete master.phasetypes.user[this_file];
-              $("#phasetype_select").attr("previousvalue", "");
-              $("#phasetype_select option:selected").remove();
-              $("#graphic_editor").hide();
-              master.phasetypes.file = $("#phasetype_select").val();
-              code_obj.load_file("default");
-               
-              CElectron.fs.delete_file(
-                "PhaseTypes/" + deleted_code + ".html",
-                function (response) {
-                  if (response === "success") {
-                    // list_phasetypes(function () {
-                    //   $("#phasetype_select").val(new_name);
-                    //   $("#phasetype_select").change();
-                    // });
-                  } else {
-                    bootbox.alert(response);
-                  }
-                }
+              var response = CElectron.fs.write_file(
+                "PhaseTypes/",
+                new_name.replace(".html", "") + ".html",
+                master.phasetypes.user[new_name]
               );
-            
-              // Changes the dropdown menu to show the new filename as being selected, and delete the old one
-              $("#phasetype_select").append(new Option(new_name));  
-              // $("#code_select").val(new_name);
-              // Lastly, we just do a master "save" to ensure the change is kept after quitting Collector
-              setTimeout(function() { 
-                $("#save_phasetype_btn").click();
-                $("#save_btn").click();
-                console.log("It saved the rename!");
-              }, 100);
-              setTimeout(function() { 
-                Collector.custom_alert("<b>File renamed</b><br>Please select it at the bottom of the dropdown list");
-              }, 2100);
-            } else { console.log("Rename failed"); }
 
-          }       
-        } 
-      );
-      
+              var write_response = "success";
+
+              if (write_response === "success") {
+
+                // Add .html to the originally selected PhaseType name, making it a file
+                originPT_file = originPT.concat(".html");
+                // Ass PhaseTypes/ to the file name we just created, giving us the path needed for the  delete funciton
+                // var filePath = ("PhaseTypes/" + originPT_file);
+
+                var deleted_code = $("#phasetype_select").val();
+                master.phasetypes.file = $("#phasetype_select").val();
+                var this_file = master.phasetypes.file;
+                if (typeof master.phasetypes.graphic.files[this_file] !== "undefined") {
+                  delete master.phasetypes.graphic.files[this_file];
+                }
+                delete master.phasetypes.user[this_file];
+                $("#phasetype_select").attr("previousvalue", "");
+                $("#phasetype_select option:selected").remove();
+                $("#graphic_editor").hide();
+                master.phasetypes.file = $("#phasetype_select").val();
+                
+                CElectron.fs.delete_file("PhaseTypes/" + deleted_code + ".html",
+                  function (response) {
+                    if (response === "success") {
+                      // do nothing
+                    } else {
+                      bootbox.alert(response);
+                    }
+                  }
+                );
+              
+                // Changes the dropdown menu to show the new filename as being selected, and delete the old one 
+                $("#phasetype_select").append($('<option>',{
+                  class: 'user_code',
+                  text: new_name
+                }));
+                console.log("added option")
+                // Lastly, we just do a master "save" to ensure the change is kept after quitting Collector
+                setTimeout(function() { 
+                  $("#save_phasetype_btn").click();
+                  $("#save_btn").click();
+                  console.log("It saved the rename!");
+                }, 100);
+                $("#phasetype_select").val(new_name);
+              } else { console.log("Rename failed"); }
+
+            }       
+          } 
+        );
+      } 
     }
   });
   $("#save_phasetype_btn").on("click", function () {
@@ -277,6 +280,13 @@ function initiate_actions() {
     }
   });
   $("#phasetype_select").on("change", function () {
+    var code_file = master.phasetypes.file;
+    var phasetype_selected = $("#phasetype_select").val(); //I don't think this get's called?
+    if (typeof master.phasetypes.graphic.files[code_file] !== "undefined") {
+      $('#view_graphic_btn').show()
+    }
+    $('#code_editor-tab').removeClass("btn-outline-info");
+    $('#code_editor-tab').addClass("btn-info");
     var old_code = $(this).attr("previousValue");
     if (
       (old_code !== "") &
@@ -305,9 +315,10 @@ function initiate_actions() {
       $("#view_graphic_btn").addClass("btn-primary");
       $("#graphic_editor").show();
       $("#delete_phasetypes_button").show();
+      $("#save_phasetype_btn").show();
+      $("#editor_theme_select").show();
 
     } else {
-      $("#ace_theme_btn_dark").show();
       $("#view_code_btn").removeClass("btn-outline-primary");
       $("#view_code_btn").addClass("btn-primary");
       editor.setOption("readOnly", false);
@@ -333,7 +344,16 @@ function initiate_actions() {
         $("#phasetype_select").addClass("default_code_file");
       }
       code_obj.load_file(user_default);
+      $("#delete_phasetypes_button").show();
+      $("#save_phasetype_btn").show();
+      $("#editor_theme_select").show();
     }
+    if ($('#phasetype_select option:selected').hasClass('default_code')) {
+      console.log("hello");
+      $('#rename_phasetypes_button').hide();
+      $('#save_phasetype_btn').hide();
+      $('#delete_phasetypes_button').hide();
+    } 
   });
 
   $("#view_code_btn").on("click", function () {
@@ -342,12 +362,12 @@ function initiate_actions() {
       $("#view_code_btn").addClass("btn-outline-primary");
       $("#view_code_btn").removeClass("btn-primary");
       $("#ACE_editor").hide();
-      $("#ace_theme_btn_dark").hide();
+      $("#editor_theme_select").hide();
     } else {
       $("#view_code_btn").removeClass("btn-outline-primary");
       $("#view_code_btn").addClass("btn-primary");
       $("#ACE_editor").show();
-      $("#ace_theme_btn_dark").show();
+      $("#editor_theme_select").show();
     }
   });
   $("#view_graphic_btn").on("click", function () {
@@ -357,6 +377,9 @@ function initiate_actions() {
         "This code_file was not created using the graphic editor, so cannot be edited with it"
       );
     } else {
+      $('#view_graphic_btn').show()
+      $('#save_phasetype_btn').show()
+      $('#rename_phasetype_btn').show()
       if ($("#view_graphic_btn").hasClass("btn-primary")) {
         // then hide
         $("#view_graphic_btn").addClass("btn-outline-primary");
@@ -370,3 +393,6 @@ function initiate_actions() {
     }
   });
 }
+
+// output html.txt framework to a variable to load into the ACE editor later
+var htmlFramework = $.ajax({url: "./PhaseTypes/html.txt", async: false}).responseText;

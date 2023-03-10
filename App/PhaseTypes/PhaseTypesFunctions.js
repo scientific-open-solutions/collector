@@ -1,62 +1,71 @@
-/*  Collector (Garcia, Kornell, Kerr, Blake & Haffey)
-    A program for running experiments on the web
-    Copyright 2012-2016 Mikey Garcia & Nate Kornell
-
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 3 as published by
-    the Free Software Foundation.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>
-
-		Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey 
-*/
+/*
+ * PhaseTypesSFunctions.js
+ * PhaseTypes functions (i.e. element subroutines)
+ */
 $.ajaxSetup({ cache: false }); // prevents caching, which disrupts $.get calls
 
 code_obj = {
   delete_phasetypes: function () {
-    var deleted_phasetype = $("#phasetype_select").val();
-    console.log(deleted_phasetype);
-    master.phasetypes.file = $("#phasetype_select").val();
-    var this_file = master.phasetypes.file;
-    bootbox.confirm(
-      "Are you sure you want to delete the PhaseType: " + this_file + "?",
-      function (result) {
-        if (result === true) {
-          if (
-            typeof master.phasetypes.graphic.files[this_file] !==
-            "undefined"
-          ) {
-            delete master.phasetypes.graphic.files[this_file];
+    if (!parent.parent.functionIsRunning) {
+      parent.parent.functionIsRunning = true;
+      var deleted_phasetype = $("#phasetype_select").val();
+      console.log(deleted_phasetype);
+      master.phasetypes.file = $("#phasetype_select").val();
+      var this_file = master.phasetypes.file;
+      bootbox.confirm({
+        message: "Are you sure you want to delete the <b>" + this_file + "</b> PhaseType?",
+        buttons: {
+          confirm: {
+              label: 'Yes',
+              className: 'btn-success'
+          },
+          cancel: {
+              label: 'No',
+              className: 'btn-danger'
           }
-          delete master.phasetypes.user[this_file];
-          $("#phasetype_select").attr("previousvalue", "");
-          $("#phasetype_select option:selected").remove();
-          $("#graphic_editor").hide();
-          master.phasetypes.file = $("#phasetype_select").val();
-          code_obj.load_file("default");
-          var response = CElectron.fs.delete_file(
-            "PhaseTypes/" + deleted_phasetype + ".html",
-          );
-          if (response !== "success") {
-            Collector.custom_alert("Failed to delete the phase type: " + this_file);
-          } else {
-            Collector.custom_alert("The phase type: " + this_file + " has been deleted");
+        },
+        callback: function (result) {
+          parent.parent.functionIsRunning = false;
+          firstResponse = result;
+          if (firstResponse == true) {
+            bootbox.confirm({
+              message: "Are you very sure? This cannot be undone",
+              buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+              },
+              callback: function (result) {  
+                parent.parent.functionIsRunning = false;
+                if (result) {
+                  if (typeof master.phasetypes.graphic.files[this_file] !== "undefined") {
+                    delete master.phasetypes.graphic.files[this_file];
+                  }
+                  delete master.phasetypes.user[this_file];
+                  $("#phasetype_select").attr("previousvalue", "");
+                  $("#phasetype_select option:selected").remove();
+                  $("#graphic_editor").hide();
+                  master.phasetypes.file = $("#phasetype_select").val();
+                  code_obj.load_file("default");
+                  var response = CElectron.fs.delete_file("PhaseTypes/" + deleted_phasetype + ".html");
+                    if (response !== "success") {
+                      Collector.custom_alert("Failed to delete the phase type: " + this_file);
+                    } else {
+                      $("#save_btn").click();
+                      Collector.custom_alert("The phase type: " + this_file + " has been deleted");
+                    }
+                }
+              }
+            });
           }
-          // This is just delayed to allow the custom alert to clear first
-          setTimeout(function() { 
-            $("#save_btn").click();
-            console.log("It saved the delete!");
-          }, 2100);
         }
-      }
-    );
+      });
+    }
   },
   load_file: function (user_default) {
     $("#ACE_editor").show();
@@ -188,6 +197,9 @@ function list_phasetypes(to_do_after) {
     if (typeof to_do_after !== "undefined") {
       to_do_after();
     }
+    // setTimeout(function(){
+    //   $('#phasetype_select :nth-child(6)').after("<option disabled>--- User Surveys ---</option>");
+    // },500);
   }
 
   function get_default(list) {

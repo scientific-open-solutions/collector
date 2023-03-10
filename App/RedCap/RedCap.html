@@ -1,26 +1,6 @@
-<!DOCTYPE html>
-<!--
-/*  Collector (Garcia, Kornell, Kerr, Blake & Haffey)
-    A program for running experiments on the web
-    Copyright 2012-2020 Mikey Garcia & Nate Kornell
-
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 3 as published by
-    the Free Software Foundation.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>
-
-		Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey
-*/
-
--->
+<!-- ---------------------- -->
+<!-- App/RedCap/RedCap.html -->
+<!-- ---------------------- -->
 
 <style>
 #redcap_interface{
@@ -28,34 +8,79 @@
   top: 60px;
   width: 100%;
 }
+#custom-file-label{
+  cursor: pointer;
+}
+#redcap_input p {
+  margin-top: 75px;
+}
+#redcap-logo{
+  margin-bottom: 27px
+}
+#redcap-input{
+  margin-left: 27px;
+}
+.list-group {
+  width: 50%;
+}
+#footer-note{
+  margin-left:5px;
+}
 </style>
 
+
 <div id="redcap_interface">
+  <img id="redcap-logo" src="../logos/redcap_logo.png" alt="REDCap logo" />
+  <div id="redcap-input">
+    <p>To create a REDCap dictionary file, please complete the steps below:</p>
 
-
-  <div class="custom-file">
-    <input
-      type="file"
-      class="custom-file-input"
-      id="upload_data_csv"
-      aria-describedby="upload_data_csv_addon"
-      multiple
-    />
-    <label class="custom-file-label" for="upload_data_csv"
-      >Upload Project</label
-    >
-  </div>
-  <button id="download_redcap_dictionary">download</button>
-
+    <ol class="list-group list-group-numbered">
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Generate a Collector experimental data file</div>
+          <ul>
+            <li>Run through your full study as if you were a participant</li>
+            <li>When you reach the end, before closing the browser window, save the data to your computer (Ctrl/Cmd + S)</li>
+          </ul>
+          <br>
+        </div>
+        <span id="redcap-one"></span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Upload your data file to Collector</div>
+          <ul>
+            <li>Click on the 'Choose files' button below and select the ".csv" data file that you just created/saved,<br>
+                when the file has been correctly selected it's name will be displayed within the box</li>
+            <br>
+            <div class="custom-file">
+              <input type="file" class="custom-file-input btn btn-outline-info" id="upload_data_csv" aria-describedby="upload_data_csv_addon" multiple />
+            </div>
+            <br>
+        </div>
+        <span id="redcap-two"></span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Download REDCap dictionary</div>
+          <ul>
+            <li>Click the button below to save the dictionary ".csv" file</li>
+            <li>Open your REDCap project and import the dictionary ".csv" file</li>
+            <br>
+            <button id="download_redcap_dictionary" class="bi bi-file-earmark-arrow-down btn btn-primary">Download Dictionary</button>
+          </ul>
+          <br>
+        </div>
+        <span id="redcap-three"></span>
+      </li>
+    </ol>
+    <span id="footer-note" class="text-muted"><em>If you have any problems please contact Dr Anthony Haffey.</em></span>
 </div>
 
-
-
 <script>
-
+$.getScript( "libraries/collector/redcap_dropped_fields.js")
 
 $("#download_redcap_dictionary").on("click", function(){
-
   Collector.save_data(
     "dictionary.csv",
     Papa.unparse(redcap_array, {
@@ -69,66 +94,221 @@ $("#download_redcap_dictionary").on("click", function(){
       columns: null, //or array of strings
     })
   );
-
-
 });
-var this_csv;
-var forms = {};
+// var this_csv;
+// var forms = {};
+
+// $("#upload_data_csv").on("change", function () {
+//   if (this.files && this.files[0]) {
+//     var csvs_loaded = 0;
+//     var this_files_length = this.files.length;
+//     for(var i = 0; i < this.files.length; i++){
+//       var myFile = this.files[i];
+//       var reader = new FileReader();
+//       var this_filename = this.files[i].name;
+//       reader.addEventListener("load", function (e) {
+
+//         this_csv = Collector.PapaParsed(e.target.result);
+//         var this_location = this_csv[this_csv.length-1].location;
+//         //var this_org = this_csv[this_csv.length-1].organization;
+//         //var this_repo = this_csv[this_csv.length-1].repository;
+//         //var these_headers = Object.keys(this_csv[0]);
+
+
+//         //var form_names = [...new Set(this_csv.map(item => item.phasetype))];
+//         /*
+//          * create a series of forms, one for each phasetype and then one for each survey?
+//          */
+
+//         this_csv.forEach(function(row){
+//           if(typeof(forms[row.phasetype]) === "undefined"){
+//             forms[row.phasetype] = {};
+//           }
+//           if(row.phasetype.toLowerCase() === "survey"){
+//             if(typeof(forms[row.survey]) === "undefined"){
+//               forms[row.survey] = {};
+//             }
+//             Object.keys(row).forEach(function(item){
+//               if(row[item] !== ""){
+//                 forms[row.survey][item] = "text";
+//               }
+//             });
+//           } else {
+//             Object.keys(row).forEach(function(item){
+//               if(row[item] !== ""){
+//                 forms[row.phasetype][item] = "text";
+//               }
+//             });
+//           }
+//         });
+
+//         /*
+//         these_headers.forEach(function(this_header){
+//           if(redcap_array.filter(function(row){
+//             return row["Variable / Field Name"] == this_header &
+//             row["Form Name"] == this_location &
+//             row["Field Type"] == "text"
+//           }).length == 0 & this_header !== ""){
+//             redcap_array.push({
+//               "Variable / Field Name": this_header,
+//               "Form Name": this_org + "_" + this_repo,
+//               "Section Header": "",
+//               "Field Type": "text",
+//               "Field Label": this_header,
+//               "Choices, Calculations, OR Slider Labels": "",
+//               "Field Note": "",
+//               "Text Validation Type OR Show Slider Number": "",
+//               "Text Validation Min": "",
+//               "Text Validation Max": "",
+//               "Identifier?": "",
+//               "Branching Logic (Show field only if...)": "",
+//               "Required Field?": "",
+//               "Custom Alignment": "",
+//               "Question Number (surveys only)": "",
+//               "Matrix Group Name": ""
+//             });
+
+//           }
+//         });
+//         */
+
+//         //upload_exp_contents(e.target.result, this_filename);
+//         csvs_loaded++;
+//         if(csvs_loaded >= this_files_length-1){
+//           produceRedcapForm();
+//         }
+//       });
+
+//       reader.readAsBinaryString(myFile);
+//     }
+//   }
+// });
+
+// var redcap_array;
+// function produceRedcapForm(){
+//   /*
+//    * prevent adding an identical row
+//    */
+//   redcap_array = [];
+
+//   if(redcap_array.filter(function(row){
+//     return row["Variable / Field Name"] == "record_id"
+//   }).length == 0){
+//     redcap_array.push({
+
+//       "Variable / Field Name": "record_id",
+//       "Form Name": "main",
+//       "Section Header": "",
+//       "Field Type": "text",
+//       "Field Label": "Record ID",
+//       "Choices, Calculations, OR Slider Labels": "",
+//       "Field Note": "",
+//       "Text Validation Type OR Show Slider Number": "",
+//       "Text Validation Min": "",
+//       "Text Validation Max": "",
+//       "Identifier?": "",
+//       "Branching Logic (Show field only if...)": "",
+//       "Required Field?": "",
+//       "Custom Alignment": "",
+//       "Question Number (surveys only)": "",
+//       "Matrix Group Name": ""
+//     });
+//   }
+
+
+//   var used_items = [];
+//   Object.keys(forms).forEach(function(form){
+//     Object.keys(forms[form]).forEach(function(item){
+//       if(used_items.indexOf(item) === -1){
+//         used_items.push(item);
+//         redcap_array.push({
+//           "Variable / Field Name": item,
+//           "Form Name": "main", //form,
+//           "Section Header": "",
+//           "Field Type": "text",
+//           "Field Label": item,
+//           "Choices, Calculations, OR Slider Labels": "",
+//           "Field Note": "",
+//           "Text Validation Type OR Show Slider Number": "",
+//           "Text Validation Min": "",
+//           "Text Validation Max": "",
+//           "Identifier?": "",
+//           "Branching Logic (Show field only if...)": "",
+//           "Required Field?": "",
+//           "Custom Alignment": "",
+//           "Question Number (surveys only)": "",
+//           "Matrix Group Name": ""
+//         });
+//       }
+//     });
+//   });
+// }
+
+
+var redcap_array = [];
+var form_name;
 
 $("#upload_data_csv").on("change", function () {
   if (this.files && this.files[0]) {
-    var csvs_loaded = 0;
-    var this_files_length = this.files.length;
+
     for(var i = 0; i < this.files.length; i++){
       var myFile = this.files[i];
       var reader = new FileReader();
       var this_filename = this.files[i].name;
       reader.addEventListener("load", function (e) {
 
-        this_csv = Collector.PapaParsed(e.target.result);
+        var this_csv = Collector.PapaParsed(e.target.result);
+
         var this_location = this_csv[this_csv.length-1].location;
-        //var this_org = this_csv[this_csv.length-1].organization;
-        //var this_repo = this_csv[this_csv.length-1].repository;
-        //var these_headers = Object.keys(this_csv[0]);
 
+        // var this_org = this_csv[this_csv.length-1].organization;
+        // var this_repo = this_csv[this_csv.length-1].repository;
 
-        //var form_names = [...new Set(this_csv.map(item => item.phasetype))];
+        var these_headers = Object.keys(this_csv[0]);
         /*
-         * create a series of forms, one for each phasetype and then one for each survey?
+         * prevent adding an identical row
          */
 
-        this_csv.forEach(function(row){
-          if(typeof(forms[row.phasetype]) === "undefined"){
-            forms[row.phasetype] = {};
-          }
-          if(row.phasetype.toLowerCase() === "survey"){
-            if(typeof(forms[row.survey]) === "undefined"){
-              forms[row.survey] = {};
-            }
-            Object.keys(row).forEach(function(item){
-              if(row[item] !== ""){
-                forms[row.survey][item] = "text";
-              }
-            });
-          } else {
-            Object.keys(row).forEach(function(item){
-              if(row[item] !== ""){
-                forms[row.phasetype][item] = "text";
-              }
-            });
-          }
-        });
 
-        /*
+        if(redcap_array.filter(function(row){
+          return row["Variable / Field Name"] == "record_id"
+        }).length == 0){
+          redcap_array.push({
+
+            "Variable / Field Name": "record_id",
+            "Form Name": "main",
+            "Section Header": "",
+            "Field Type": "text",
+            "Field Label": "Record ID",
+            "Choices, Calculations, OR Slider Labels": "",
+            "Field Note": "",
+            "Text Validation Type OR Show Slider Number": "",
+            "Text Validation Min": "",
+            "Text Validation Max": "",
+            "Identifier?": "",
+            "Branching Logic (Show field only if...)": "",
+            "Required Field?": "",
+            "Custom Alignment": "",
+            "Question Number (surveys only)": "",
+            "Matrix Group Name": ""
+          });
+        }
+
         these_headers.forEach(function(this_header){
+          if (this_header.includes("_pii_")) {
+            form_name = this_header.split("_pii", 1)[0]
+          } else {
+            form_name = "main";
+        }
+          
           if(redcap_array.filter(function(row){
             return row["Variable / Field Name"] == this_header &
-            row["Form Name"] == this_location &
+            row["Form Name"] == form_name &
             row["Field Type"] == "text"
           }).length == 0 & this_header !== ""){
             redcap_array.push({
               "Variable / Field Name": this_header,
-              "Form Name": this_org + "_" + this_repo,
+              "Form Name": form_name,
               "Section Header": "",
               "Field Type": "text",
               "Field Label": this_header,
@@ -147,78 +327,76 @@ $("#upload_data_csv").on("change", function () {
 
           }
         });
-        */
 
+        // delete stuff we don't want in the data (e.g., weights) this list is taken from the "redcap_dropped_felds.js" file in the "Default" directory
+        main_remove_fields.forEach(adjust_redcap_array)
+        function adjust_redcap_array(field) {
+          redcap_array = redcap_array.filter(function( obj ) {
+            return obj['Field Label'] !== field;  
+          }); 
+        };
+        /* 
+         * This sorts the REDCap dictionary to ensure any differences in form name run sequentially or REDCap cannot import them. 
+         * It does screw up the ordering of the "main" fields though as it puts them into alphabetical order
+         */
+        redcap_array.sort(dynamicSortMultiple("-Form Name", "!Variable / Field Name"));
+        
+        // Split the REDCap array into two, one for all the "Form Name = Main" and one for everything else
+        const array_main = [];
+        const array_rest = [];
+
+        redcap_array.forEach(obj => {
+          switch(obj["Form Name"]) {
+            case 'main':
+              array_main.push(obj);
+              break;
+            default:
+              array_rest.push(obj);
+              break;
+          }
+        });
+
+        // Rebuilt the REDCap dictionary array with "main" fields first, and everything else afterwards in ascending (A-Z) order.
+        redcap_array = array_main.concat(array_rest)
+        
         //upload_exp_contents(e.target.result, this_filename);
-        csvs_loaded++;
-        if(csvs_loaded >= this_files_length-1){
-          produceRedcapForm();
-        }
       });
-
       reader.readAsBinaryString(myFile);
     }
   }
 });
 
-var redcap_array;
-function produceRedcapForm(){
-  /*
-   * prevent adding an identical row
-   */
-  redcap_array = [];
-
-  if(redcap_array.filter(function(row){
-    return row["Variable / Field Name"] == "record_id"
-  }).length == 0){
-    redcap_array.push({
-
-      "Variable / Field Name": "record_id",
-      "Form Name": "main",
-      "Section Header": "",
-      "Field Type": "text",
-      "Field Label": "Record ID",
-      "Choices, Calculations, OR Slider Labels": "",
-      "Field Note": "",
-      "Text Validation Type OR Show Slider Number": "",
-      "Text Validation Min": "",
-      "Text Validation Max": "",
-      "Identifier?": "",
-      "Branching Logic (Show field only if...)": "",
-      "Required Field?": "",
-      "Custom Alignment": "",
-      "Question Number (surveys only)": "",
-      "Matrix Group Name": ""
-    });
-  }
 
 
-  var used_items = [];
-  Object.keys(forms).forEach(function(form){
-    Object.keys(forms[form]).forEach(function(item){
-      if(used_items.indexOf(item) === -1){
-        used_items.push(item);
-        redcap_array.push({
-          "Variable / Field Name": item,
-          "Form Name": "main", //form,
-          "Section Header": "",
-          "Field Type": "text",
-          "Field Label": item,
-          "Choices, Calculations, OR Slider Labels": "",
-          "Field Note": "",
-          "Text Validation Type OR Show Slider Number": "",
-          "Text Validation Min": "",
-          "Text Validation Max": "",
-          "Identifier?": "",
-          "Branching Logic (Show field only if...)": "",
-          "Required Field?": "",
-          "Custom Alignment": "",
-          "Question Number (surveys only)": "",
-          "Matrix Group Name": ""
-        });
-      }
-    });
-  });
-}
+// These are just adding some icons to the page. You can ignore this.
+$('#redcap-one').prepend('<svg xmlns="http://www.w3.org/2000/svg" height="40" viewBox="0 0 15 10.601" style="transform: translate(-5px, 13px);"  fill="#20669b">' +
+  '<path d="m12.763,10.741h-7.864c-.221,0-.401.179-.401.401v.247c0,.221.179.401.401.401h9.189v-1.048h-1.325Z"/><circle cx="4.066" cy="2.218" r="2.218"/><path d="m9.477,7.657l'+
+  '-5.082-.003h-.12v-.59l-.004-.494c0-1.179-.956-2.135-2.135-2.135-.04,0-.08.001-.119.004l-.003-.004c-1.112,0-2.013.901-2.013,2.013v5.685h4.274v-2.422l-.057-.004s-.005,0-.008'+
+  ',0c-.289,0-.566-.122-.762-.335l-1.735-1.894c-.055-.06-.051-.154.009-.209.06-.055.154-.051.209.009l1.735,1.894c.141.154.34.248.549.251.014,0,.204.003.204.003h5.057c.489,0,+'+
+  '.885-.396.885-.885,0-.489-.396-.885-.885-.885Z"/><path d="m14.732,4.518c-.207-.071-.432.039-.503.246l-1.679,4.902h-6.008c-.219,0-.396.177-.396.396s.177.396.396.396h6.286c.'+
+  '135,0,.254-.067.325-.17.025-.033.045-.069.059-.11l1.766-5.156c.071-.207-.04-.432-.246-.503Z"/>'+
+  '</svg>');
+
+  $('#redcap-two').prepend('<svg xmlns="http://www.w3.org/2000/svg" height="65" viewBox="0 0 50 50" style="transform: translate(1px, 15px);"  fill="#20669b">' +
+  '<path d="m28.978,18.406v-8.047c0-.23-.106-.443-.257-.611L19.7.275c-.168-.177-.408-.275-.647-.275H4.75C2.109,0,0,2.153,0,4.794v27.046c0,2.641,2.109,4.759,4.75,4.759h11.29c2.135'+
+  ',3.545,6.017,5.92,10.439,5.92,6.717,0,12.203-5.459,12.203-12.185.009-5.875-4.209-10.785-9.704-11.928ZM19.939,3.111l6.053,6.371h-3.926c-1.17,0-2.127-.966-2.127-2.135V3.111Zm-15'+
+  '.189,31.716c-1.657,0-2.977-1.329-2.977-2.986V4.794c0-1.666,1.32-3.022,2.977-3.022h13.417v5.574c0,2.153,1.746,3.908,3.899,3.908h5.14v6.921c-.266-.009-.478-.035-.709-.035-3.093,'+
+  '0-5.937,1.188-8.082,3.049H7.16c-.488,0-.886.399-.886.886s.399.886.886.886h9.606c-.629.886-1.152,1.772-1.56,2.747H7.16c-.488,0-.886.399-.886.886s.399.886.886.886h7.47c-.222.886'+
+  '-.337,1.87-.337,2.853,0,1.595.31,3.173.868,4.502H4.75v-.009Zm21.738,5.929c-5.742,0-10.413-4.67-10.413-10.413s4.661-10.413,10.413-10.413,10.412,4.67,10.412,10.413-4.67,10.413-1'+
+  '0.412,10.413Z"/><path d="m7.16,18.521h8.977c.488,0,.886-.399.886-.886s-.399-.886-.886-.886H7.16c-.488,0-.886.399-.886.886s.399.886.886.886Z"/><path d="m27.117,23.803c-.168-.177'+
+  '-.399-.284-.647-.284s-.478.106-.647.284l-5.193,5.574c-.337.355-.31.922.044,1.25.355.337.93.31,1.267-.044l3.669-3.926v9.677c0,.488.399.886.886.886s.886-.399.886-.886v-9.677l3.6'+
+  '42,3.926c.177.186.408.284.647.284.212,0,.425-.08.602-.239.355-.337.381-.895.044-1.25l-5.202-5.574Z"/>'+
+  '</svg>');
+
+  $('#redcap-three').prepend('<svg xmlns="http://www.w3.org/2000/svg" height="65" viewBox="0 0 50 50" style="transform: translate(1px, 15px);"  fill="#20669b">' +
+  '<path d="m28.978,18.406v-8.047c0-.23-.106-.443-.257-.611L19.7.275c-.168-.177-.408-.275-.647-.275H4.75C2.109,0,0,2.153,0,4.794v27.046c0,2.641,2.109,4.759,4.75,4.759h11.29c2.1'+
+  '35,3.545,6.017,5.92,10.439,5.92,6.717,0,12.203-5.459,12.203-12.185.009-5.875-4.209-10.785-9.704-11.928ZM19.939,3.111l6.053,6.371h-3.926c-1.17,0-2.127-.966-2.127-2.135V3.111Z'+
+  'm-15.189,31.716c-1.657,0-2.977-1.329-2.977-2.986V4.794c0-1.666,1.32-3.022,2.977-3.022h13.417v5.574c0,2.153,1.746,3.908,3.899,3.908h5.14v6.921c-.266-.009-.478-.035-.709-.035-'+
+  '3.093,0-5.937,1.188-8.082,3.049H7.16c-.488,0-.886.399-.886.886s.399.886.886.886h9.606c-.629.886-1.152,1.772-1.56,2.747H7.16c-.488,0-.886.399-.886.886s.399.886.886.886h7.47c-'+
+  '.222.886-.337,1.87-.337,2.853,0,1.595.31,3.173.868,4.502H4.75v-.009Zm21.738,5.929c-5.742,0-10.413-4.67-10.413-10.413s4.661-10.413,10.413-10.413,10.412,4.67,10.412,10.413-4.6'+
+  '7,10.413-10.412,10.413Z"/><path d="m7.16,18.521h8.977c.488,0,.886-.399.886-.886s-.399-.886-.886-.886H7.16c-.488,0-.886.399-.886.886s.399.886.886.886Z"/><path d="m31.025,30.1'+
+  '57l-3.642,3.926v-9.677c0-.488-.399-.886-.886-.886s-.886.399-.886.886v9.677l-3.669-3.926c-.337-.354-.904-.381-1.258-.044s-.381.895-.044,1.25l5.184,5.574c.168.177.399.284.647.'+
+  '284s.478-.106.647-.284l5.193-5.574c.337-.355.319-.922-.036-1.25-.363-.337-.913-.31-1.25.044Z"/>'+
+  '</svg>');
 
 </script>

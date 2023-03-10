@@ -55,6 +55,7 @@ function load_default_surveys() {
 /*
  * Survey functions
  */
+var columnHeader;
 function create_survey_HoT(this_survey) {
   var container = document.getElementById("survey_HoT");
   $("#survey_HoT").html("");
@@ -162,13 +163,15 @@ function create_survey_HoT(this_survey) {
 
       //clearTimeout(disable_cell_timeout);
       var coords = this.getSelected();
-      var column = this.getDataAtCell(0, coords[1]);
-      var thisCellValue = this.getDataAtCell(coords[0], coords[1]);
-      thisCellValue =
-        thisCellValue === null ? (thisCellValue = "") : thisCellValue;
+      var column = this.getDataAtCell(0, coords[0][1]);
+      // var thisCellValue = this.getDataAtCell(coords[0], coords[1]);
+      // thisCellValue =
+      //   thisCellValue === null ? (thisCellValue = "") : thisCellValue;
       column = column === null ? (column = "") : column;
-
+      console.log("column: "+column)
+      
       helperActivate(column, thisCellValue, "survey");
+
     },
     afterChange: function () {
       /*
@@ -180,6 +183,9 @@ function create_survey_HoT(this_survey) {
       if (
         typeof master.surveys.default_surveys[current_survey] !== "undefined"
       ) {
+        $('#save_survey_btn').hide();
+        $('#rename_survey_btn').hide();
+        $('#delete_survey_btn').hide();
         Collector.custom_alert(
           "These changes will not be saved, as you are editing a <b>default</b> survey. Please click <b>New Survey</b> to create a new survey"
         );
@@ -313,6 +319,10 @@ function list_surveys() {
         })
       );
     });
+// setTimeout(function(){
+//   $('#survey_select :nth-child(7)').after("<option disabled>--- User Surveys ---</option>");
+// },500);
+  
     Collector.tests.pass("surveys", "list");
   } catch (error) {
     /* muting this error for now
