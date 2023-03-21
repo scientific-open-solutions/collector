@@ -115,7 +115,11 @@ Project = {
     }
   },
   finish_phase: function (go_to_info) {
-
+    const highestId = window.setTimeout(() => {
+      for (let i = highestId; i >= 0; i--) {
+      window.clearInterval(i);
+      }
+    }, 0);
     phase_end_ms = new Date().getTime();
     phase_inputs = {};
     $("#experiment_progress").css(
