@@ -29,6 +29,7 @@
 /**
  * Fix for bootstrap styles
  */
+ @charset "UTF-8";
 
 .handsontable .table th, .handsontable .table td {
   border-top: none;
@@ -207,7 +208,7 @@
 .handsontable th:first-child.htNoFrame,
 .handsontable th.htNoFrame {
   border-left-width: 0;
-  background-color: white;
+  background-color: #ffffff;
   border-color: #FFF;
 }
 
@@ -642,7 +643,7 @@ CheckboxRenderer
 .handsontable.listbox .ht_master table {
   border: 1px solid #ccc;
   border-collapse: separate;
-  background: white;
+  background: #ffffff
 }
 
 .handsontable.listbox th,
@@ -1069,7 +1070,6 @@ thead .htCollapseButton:after {
   animation-fill-mode: forwards;
   -webkit-animation-fill-mode: forwards;
 }
-@charset "UTF-8";
 
 /*!
  * Pikaday
@@ -1358,7 +1358,7 @@ http://nicolasgallagher.com/micro-clearfix-hack/
 }
 
 .htContextMenu table tbody tr td {
-  background: white;
+  background: #ffffff;
   border-width: 0;
   padding: 4px 6px 0 6px;
   cursor: pointer;

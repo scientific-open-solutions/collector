@@ -53,7 +53,7 @@
   },
   "skip_quality": {
     "subtitle": "Skips the data quality checks at the start",
-    "text": "If you're building an interactive website rather than collecting data then putting 'yes' in this column can be helpful for a more natural experience."
+    "text": "If you're building an interactive website rather than collecting data then putting <b>'yes'</b> in this column can be helpful for a more natural experience."
   },
   "start_message": {
     "subtitle": "A message at the very start",

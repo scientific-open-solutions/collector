@@ -49,7 +49,7 @@ describe("Running projects", function () {
       path.resolve(__dirname, "../Default/DefaultSurveys/autism_quotient.csv"),
       "utf8"
     );
-
+console.log("Error Message");
     aq_survey = Papa.parse(aq_survey, {
       beforeFirstChunk: function (chunk) {
         var rows = chunk.split(/\r\n|\r|\n/);
@@ -60,7 +60,6 @@ describe("Running projects", function () {
       header: true,
       skipEmptyLines: true,
     }).data;
-
     document.body.innerHTML = survey_html;
     $("#survey_outline").html("hi");
 
@@ -70,58 +69,113 @@ describe("Running projects", function () {
      * click on a range of AQ responses and then check the expected score with the actual score
      */
 
-    $("#likert_1_0").click();
-    $("#likert_2_3").click();
-    $("#likert_3_1").click();
-    $("#likert_4_3").click();
-    $("#likert_5_2").click();
-    $("#likert_6_1").click();
-    $("#likert_7_0").click();
-    $("#likert_8_1").click();
-    $("#likert_9_1").click();
-    $("#likert_10_3").click();
-    $("#likert_11_2").click();
-    $("#likert_12_1").click();
-    $("#likert_13_0").click();
-    $("#likert_14_1").click();
-    $("#likert_15_2").click();
-    $("#likert_16_3").click();
-    $("#likert_17_2").click();
-    $("#likert_18_1").click();
-    $("#likert_19_0").click();
-    $("#likert_20_1").click();
-    $("#likert_21_2").click();
-    $("#likert_22_3").click();
-    $("#likert_23_2").click();
-    $("#likert_24_1").click();
-    $("#likert_25_0").click();
-    $("#likert_26_1").click();
-    $("#likert_27_2").click();
-    $("#likert_28_3").click();
-    $("#likert_29_2").click();
-    $("#likert_30_1").click();
-    $("#likert_31_0").click();
-    $("#likert_32_1").click();
-    $("#likert_33_2").click();
-    $("#likert_34_3").click();
-    $("#likert_35_2").click();
-    $("#likert_36_1").click();
-    $("#likert_37_0").click();
-    $("#likert_38_1").click();
-    $("#likert_39_2").click();
-    $("#likert_40_1").click();
-    $("#likert_41_2").click();
-    $("#likert_42_1").click();
-    $("#likert_43_0").click();
-    $("#likert_44_1").click();
-    $("#likert_45_2").click();
-    $("#likert_46_3").click();
-    $("#likert_47_2").click();
-    $("#likert_48_1").click();
-    $("#likert_49_0").click();
-    $("#likert_50_1").click();
+    // $("#likert_1_0").click();
+    // $("#likert_2_3").click();
+    // $("#likert_3_1").click();
+    // $("#likert_4_3").click();
+    // $("#likert_5_2").click();
+    // $("#likert_6_1").click();
+    // $("#likert_7_0").click();
+    // $("#likert_8_1").click();
+    // $("#likert_9_1").click();
+    // $("#likert_10_3").click();
+    // $("#likert_11_2").click();
+    // $("#likert_12_1").click();
+    // $("#likert_13_0").click();
+    // $("#likert_14_1").click();
+    // $("#likert_15_2").click();
+    // $("#likert_16_3").click();
+    // $("#likert_17_2").click();
+    // $("#likert_18_1").click();
+    // $("#likert_19_0").click();
+    // $("#likert_20_1").click();
+    // $("#likert_21_2").click();
+    // $("#likert_22_3").click();
+    // $("#likert_23_2").click();
+    // $("#likert_24_1").click();
+    // $("#likert_25_0").click();
+    // $("#likert_26_1").click();
+    // $("#likert_27_2").click();
+    // $("#likert_28_3").click();
+    // $("#likert_29_2").click();
+    // $("#likert_30_1").click();
+    // $("#likert_31_0").click();
+    // $("#likert_32_1").click();
+    // $("#likert_33_2").click();
+    // $("#likert_34_3").click();
+    // $("#likert_35_2").click();
+    // $("#likert_36_1").click();
+    // $("#likert_37_0").click();
+    // $("#likert_38_1").click();
+    // $("#likert_39_2").click();
+    // $("#likert_40_1").click();
+    // $("#likert_41_2").click();
+    // $("#likert_42_1").click();
+    // $("#likert_43_0").click();
+    // $("#likert_44_1").click();
+    // $("#likert_45_2").click();
+    // $("#likert_46_3").click();
+    // $("#likert_47_2").click();
+    // $("#likert_48_1").click();
+    // $("#likert_49_0").click();
+    // $("#likert_50_1").click();
 
+    $("#likert_1_0").trigger("click");
+    $("#likert_2_3").trigger("click");
+    $("#likert_3_1").trigger("click");
+    $("#likert_4_3").trigger("click");
+    $("#likert_5_2").trigger("click");
+    $("#likert_6_1").trigger("click");
+    $("#likert_7_0").trigger("click");
+    $("#likert_8_1").trigger("click");
+    $("#likert_9_1").trigger("click");
+    $("#likert_10_3").trigger("click");
+    $("#likert_11_2").trigger("click");
+    $("#likert_12_1").trigger("click");
+    $("#likert_13_0").trigger("click");
+    $("#likert_14_1").trigger("click");
+    $("#likert_15_2").trigger("click");
+    $("#likert_16_3").trigger("click");
+    $("#likert_17_2").trigger("click");
+    $("#likert_18_1").trigger("click");
+    $("#likert_19_0").trigger("click");
+    $("#likert_20_1").trigger("click");
+    $("#likert_21_2").trigger("click");
+    $("#likert_22_3").trigger("click");
+    $("#likert_23_2").trigger("click");
+    $("#likert_24_1").trigger("click");
+    $("#likert_25_0").trigger("click");
+    $("#likert_26_1").trigger("click");
+    $("#likert_27_2").trigger("click");
+    $("#likert_28_3").trigger("click");
+    $("#likert_29_2").trigger("click");
+    $("#likert_30_1").trigger("click");
+    $("#likert_31_0").trigger("click");
+    $("#likert_32_1").trigger("click");
+    $("#likert_33_2").trigger("click");
+    $("#likert_34_3").trigger("click");
+    $("#likert_35_2").trigger("click");
+    $("#likert_36_1").trigger("click");
+    $("#likert_37_0").trigger("click");
+    $("#likert_38_1").trigger("click");
+    $("#likert_39_2").trigger("click");
+    $("#likert_40_1").trigger("click");
+    $("#likert_41_2").trigger("click");
+    $("#likert_42_1").trigger("click");
+    $("#likert_43_0").trigger("click");
+    $("#likert_44_1").trigger("click");
+    $("#likert_45_2").trigger("click");
+    $("#likert_46_3").trigger("click");
+    $("#likert_47_2").trigger("click");
+    $("#likert_48_1").trigger("click");
+    $("#likert_49_0").trigger("click");
+    $("#likert_50_1").trigger("click");
+
+    // console.log($("#likert_50_1").val())
+    // console.log($('#survey_aq1_response').val())
+    
     var aq_total = $("input[name=score_aq_test]").val();
+    console.log("AQ total = " +aq_total)
     expect(aq_total).toStrictEqual("20");
 
     var soc_sk_total = $("input[name=score_social_skill]").val();

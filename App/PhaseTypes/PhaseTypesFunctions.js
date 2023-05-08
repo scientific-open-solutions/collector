@@ -1,5 +1,5 @@
 /*
- * PhaseTypesSFunctions.js
+ * Code Editor PhaseTypes Functions.js
  * PhaseTypes functions (i.e. element subroutines)
  */
 $.ajaxSetup({ cache: false }); // prevents caching, which disrupts $.get calls
@@ -50,8 +50,16 @@ code_obj = {
                   $("#phasetype_select").attr("previousvalue", "");
                   $("#phasetype_select option:selected").remove();
                   $("#graphic_editor").hide();
+                  $("#view_graphic_btn").hide();
+                  $("#view_code_btn").addClass("btn-primary");
                   master.phasetypes.file = $("#phasetype_select").val();
                   code_obj.load_file("default");
+                  try {
+                    var delete_graphicObj = CElectron.fs.delete_file("Graphics/" + deleted_phasetype + ".html");
+                    console.log("Deleted Graphic Object:" + delete_graphicObj)
+                  } catch(e) {
+                    console.log(e + "<-------"); // error in the above string (in this case, yes)!
+                  }
                   var response = CElectron.fs.delete_file("PhaseTypes/" + deleted_phasetype + ".html");
                     if (response !== "success") {
                       Collector.custom_alert("Failed to delete the phase type: " + this_file);
@@ -73,9 +81,7 @@ code_obj = {
     $("#rename_phasetypes_button").show();
     if (user_default === "default") {
       $("#delete_phasetypes_button").hide();
-      $("#phasetype_select")
-        .removeClass("user_code")
-        .addClass("default_code");
+      $("#phasetype_select").removeClass("user_code").addClass("default_code");
     } else {
       $("#delete_phasetypes_button").show();
     }
@@ -86,10 +92,13 @@ code_obj = {
     switch (Collector.detect_context()) {
       case "localhost":
         cleaned_code = this_file.toLowerCase().replace(".html", "") + ".html";
-        this_content = CElectron.fs.read_file(
-          "PhaseTypes",
-          cleaned_code
-        );
+        this_content = CElectron.fs.read_file("PhaseTypes",cleaned_code);
+        try {
+          this_graphic = CElectron.fs.read_file("Graphics",cleaned_code);
+          parent.parent.graphicObj = this_graphic;
+        } catch(e) {
+          console.log(e + "<-------"); // error in the above string (in this case, yes)!
+        }
         if (this_content === "") {
           editor.setValue(master.phasetypes[user_default][this_file]);
         } else {
@@ -104,7 +113,7 @@ code_obj = {
   },
   save: function (content, name, new_old, graphic_code) {
     if (new_old === "new") {
-      graphic_editor_obj.clean_canvas();
+      // graphic_editor_obj.create_canvas();
       editor.setValue("");
     }
     if (
@@ -120,10 +129,7 @@ code_obj = {
         })
       );
       $("#phasetype_select").val(name);
-      $("#phasetype_select")[0].className = $("#phasetype_select")[0].className.replace(
-        "default_",
-        "user_"
-      );
+      $("#phasetype_select")[0].className = $("#phasetype_select")[0].className.replace("default_","user_");
 
       if (graphic_code === "code") {
         $("#ACE_editor").show();
@@ -136,13 +142,17 @@ code_obj = {
       Collector.custom_alert("success - " + name + " updated");
     }
     if (typeof CElectron !== "undefined") {
-      var write_response = CElectron.fs.write_file(
-        "PhaseTypes",
-        name.toLowerCase().replace(".html", "") + ".html",
-        content
-      );
+      var write_response = CElectron.fs.write_file("PhaseTypes",name.toLowerCase().replace(".html", "") + ".html",content);
       if (write_response !== "success") {
         bootbox.alert(write_response);
+      }
+      console.log(master.phasetypes.graphic.files[name])
+      if (master.phasetypes.graphic.files[name] != null) {
+        graphic_objcontent = JSON.stringify(master.phasetypes.graphic.files[name]);
+        var write_graphic = CElectron.fs.write_file("Graphics",name.toLowerCase().replace(".html", "") + ".html",graphic_objcontent);
+        if (write_graphic !== "success") {
+          bootbox.alert(write_graphic);
+        }
       }
     }
   },

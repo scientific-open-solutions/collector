@@ -44,6 +44,7 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true, //has to be false with the way I've designed this
       enableRemoteModule: false,
+      nativeWindowOpen: true,
       //preload:                    [path.join(__dirname, 'App/libraries/collector/Collector.js')],
       preload: path.join(__dirname, "preload.js"),
       worldSafeExecuteJavaScript: true,

@@ -4,7 +4,7 @@
 </style>
 <div id="container">
     <!-- Your html code goes here-->
-    <!-- If you rename this file without editing this code, this base code will be removed -->
+    <!-- If you wish to use the 'Assets' folder to store experimental stimuli, the directory path is '../../{your repository name}/User/Assets/'  -->
 </div>
 <script>
     <!-- put any page specific javascript here -->

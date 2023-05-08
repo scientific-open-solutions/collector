@@ -8,6 +8,7 @@
  *
  * Date: Mon May 04 2015 10:11:13 GMT+0200 (CEST)
  */
+ @charset "UTF-8";
 
 .handsontable {
   position: relative;
@@ -119,7 +120,7 @@
 .handsontable th:first-child.htNoFrame,
 .handsontable th.htNoFrame {
   border-left-width: 0;
-  background-color: white;
+  background-color: #ffffff;
   border-color: #fff;
 }
 
@@ -553,7 +554,7 @@ Comment For Cell
 .handsontable.listbox .ht_master table {
   border: 1px solid #ccc;
   border-collapse: separate;
-  background: white;
+  background: #ffffff;
 }
 
 .handsontable.listbox th,
@@ -624,7 +625,7 @@ Comment For Cell
 }
 
 .htContextMenu table tbody tr td {
-  background: white;
+  background: #ffffff;
   border-width: 0;
   padding: 4px 6px 0px 6px;
   cursor: pointer;
@@ -658,7 +659,7 @@ Comment For Cell
 }
 
 .htContextMenu table tbody tr td.htDisabled:hover {
-  background: white;
+  background: #ffffff;
   color: #999;
   cursor: default;
 }
@@ -1187,7 +1188,7 @@ thead .htCollapseButton:after {
 }
 
 .htContextMenu table tbody tr td {
-  background: white;
+  background: #ffffff;
   border-width: 0;
   padding: 4px 6px 0px 6px;
   cursor: pointer;
@@ -1221,7 +1222,7 @@ thead .htCollapseButton:after {
 }
 
 .htContextMenu table tbody tr td.htDisabled:hover {
-  background: white;
+  background: #ffffff;
   color: #999;
   cursor: default;
 }
@@ -1233,7 +1234,6 @@ thead .htCollapseButton:after {
   position: absolute;
   left: 4px;
 }
-@charset "UTF-8";
 
 /*!
  * Pikaday
