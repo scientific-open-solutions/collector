@@ -1072,6 +1072,7 @@ function update_score() {
       var this_response = $("#" + survey_prepend + item + "_response").val();
       var normal_reverse = this_scale.questions[row_no];
 
+      
       if (normal_reverse.indexOf("-") === -1) {
         var multiplier = parseFloat(normal_reverse.replace("r", ""));
         if (normal_reverse.indexOf("r") === 0) {
