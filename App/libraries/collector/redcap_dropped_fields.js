@@ -1,50 +1,13 @@
-// let main_remove_fields = [
-  parent.parent.main_remove_fields = [
-    "buffer",
-    "condition_",
-    "condition_buffer",
-    "condition_end_message",
-    "condition_fullscreen",
-    "condition_notes",
-    "condition_participant_id",
-    "condition_redcap_url",
-    "condition_skip_quality",
-    "condition_start_message",
-    "end_message",
-    "fullscreen",
-    "item",
-    "location",
-    "main_complete",
-    "max_time",
-    "name",
-    "organization",
-    "participant_id",
-    "post_0_phase_end_date",
-    "post_0_phase_end_ms",
-    "post_0_timezone",
-    "post_0_window_inner_height",
-    "post_0_window_inner_width",
-    "procedure",
-    "redcap_url",
-    "repeat",
-    "repository",
-    "shuffle_1",
-    "shuffle_2",
-    "skip_quality",
-    "start_message",
-    "stimuli",
-    "weight",
-    "return_page",
-    "completion_code",
-    "prehashed_code",
-  ]
-
+/*  
+ * These fields are removed when using either phase.submit or phase.add_response
+*/
   parent.parent.add_response_remove_fields = [
     "buffer",
     "condition_",
     "condition_buffer",
     "condition_end_message",
     "condition_fullscreen",
+    "condition_mobile",
     "condition_notes",
     "condition_participant_id",
     "condition_redcap_url",
@@ -74,7 +37,23 @@
     "stimuli",
     "weight",
   ]
+
+ /*  
+ * These fields are added to the above list when using phase.submit
+ */
+  var additional_main_fields = [
+    "main_complete",
+    "return_page",
+    "completion_code",
+    "prehashed_code",
+  ]
+
+  // Ignore - this just adds the additional fields to the main list
+  parent.parent.main_remove_fields = parent.parent.add_response_remove_fields.concat(additional_main_fields);
   
+  /*  
+ * These fields are removed when sending pii data to redcap
+*/
   parent.parent.pii_remove_fields = [
     "condition_name",
     "condition_procedure",

@@ -37,8 +37,8 @@
       <td>
         <ul class="nav nav-pills" role="tablist">
           <div class="btn-group" role="group" >
-              <button type="button" id="code_editor-tab" class="btn btn-outline-info bi bi-file-text" data-bs-toggle="pill" data-bs-target="#code_editor" role="tab" aria-controls="code_editor" aria-selected="false">Editor</button>
-              <button type="button" id="code-preview-tab" class="btn btn-outline-info bi bi-eye" data-bs-toggle="pill" data-bs-target="#code-preview" type="button" role="tab" aria-controls="pills-contact" aria-selected="false" >Preview</button>
+              <button disabled type="button" id="code_editor-tab" class="btn btn-outline-info bi bi-file-text" data-bs-toggle="pill" data-bs-target="#code_editor" role="tab" aria-controls="code_editor" aria-selected="false">Editor</button>
+              <button disabled type="button" id="code-preview-tab" class="btn btn-outline-info bi bi-eye" data-bs-toggle="pill" data-bs-target="#code-preview" type="button" role="tab" aria-controls="pills-contact" aria-selected="false" >Preview</button>
           </div>
         </ul>
       <td>
@@ -76,7 +76,7 @@
     </tr>
     <tr>
       <td colspan="2">
-        <div class="tab-content" id="pills-tabContent" style="top: 100px; width: 800px; height: 800px; position: absolute">
+        <div class="tab-content" id="pills-tabContent" style="top: 100px; width: 1000px; height: 800px; position: absolute">
           <div class="tab-pane fade show active" id="code_editor" role="tabpanel" aria-labelledby="pills-spreadsheet-tab">
             <br />
             <div class="row">
@@ -93,8 +93,13 @@
                 <button id="save_phasetype_btn" class="btn btn-primary">Save</button>
                 <button id="rename_phasetypes_button" class="btn btn-primary bi bi-pencil-fill" style="display: none">Rename</button>
                 <button id="delete_phasetypes_button" class="btn btn-primary bi bi-trash" style="display: none">Delete</button>
-                <button id="view_code_btn" class="btn btn-outline-primary bi bi bi-toggles">Code</button>
+                <button id="view_code_btn" class="btn btn-outline-primary bi bi bi-toggles" style="display: none">Code</button>
                 <button id="view_graphic_btn" class="btn btn-outline-primary bi bi-toggles" style="display: none;">Graphic</button>    
+                <div class="btn-group" role="group" aria-label="Basic example">
+                  <button id="assets_folder_btn" class="btn btn-outline-primary bi bi-folder">Assets</button>
+                  <button id="assets_loc_btn" class="btn btn-outline-primary bi bi-files" title="Copy Asset folder location to clipboard"></button>
+                </div>
+                <button id="convert_to_code_btn" class="btn btn-outline-primary bi bi-shuffle" style="display: none">Convert to Code File</button>
                 <select id="editor_theme_select" class="form-select">
                   <option disabled selected hidden>Code Editor Themes</option>
                   <option disabled>--- Light ---</option>
@@ -140,8 +145,7 @@
               </div>
             </div>
 
-
-            <h6><em>ACE (https://ace.c9.io/)</em> is used for editing code</h6>
+            <h6 id="ACE_citation" style="display: none"><em>ACE (https://ace.c9.io/)</em> is used for editing code</h6>
             <div id="ace_div">
               <!--
                 This is to allow the ace editor width to change when the helper is shown (or not)
@@ -161,6 +165,12 @@
 
 <script src="iframe_library.js"></script>
 <script>
+/* 
+ * This is just an empty variable that is filled via the PhaseTypeActions if PhaseTypes were created in the graphics editor
+ * It's needed to allow us to check whether a file should be able to be opened in the graphics editor or just the code editor 
+*/
+var graphics_file; 
+
 // ACE Theme Swap
 $("#editor_theme_select").on("change", function () {
   var name = $(this).children(":selected").val()
@@ -177,8 +187,8 @@ $("#editor_theme_select").on("change", function () {
   } else {
     var theme_name = name.toLowerCase().replace(/ /g,"_")
   }
-  editor.setTheme("ace/theme/"+theme_name+"");
-  console.log(theme_name);
+  editor.setTheme("ace/theme/"+ theme_name +"");
+  console.log("Theme changed to: " + theme_name);
 });
 
 $("#code_select").change(function () {
@@ -189,14 +199,14 @@ $("#code_select").change(function () {
   }
 });
 
-  $("#code_editor-tab").on("click", function () {
+$("#code_editor-tab").on("click", function () {
     $("#code_preview").prop("src", "about:blank");
     $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");
     $('#code-preview-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
   });
 
   //https://stackoverflow.com/a/32100295/4490801
-  $("#code_preview_fullscreen").on("click", function () {
+$("#code_preview_fullscreen").on("click", function () {
     // if already full screen; exit
     // else go fullscreen
     if (
@@ -238,22 +248,30 @@ $("#code_select").change(function () {
   */
   });
 
-  $("#graphic_editor").load(collector_map["Graphic.html"]);
+$("#graphic_editor").load(collector_map["Graphic.html"]);
 
-  $("#community_code_btn").on("click", function () {
+$("#community_code_btn").on("click", function () {
     var win = window.open(
       "https://github.com/scientific-open-solutions/collector/discussions/categories/code",
       "_blank"
     );
   });
 
-  $("#code-preview-tab").on("click", function () {
+$("#code-preview-tab").on("click", function () {
     $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");
     $('#code_editor-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
+
     /*
-     * try to run the code in the ace editor into the iframe
+     * work out if we're in a graphics editor or code editor file and get the appropriate html
      */
-    var iframe_content = editor.getValue();
+
+    if(parent.parent.graphicObj) {
+      required_code_name = $("#phasetype_select").val();
+      var iframe_content = master.phasetypes.user[required_code_name];
+    } else {
+      var iframe_content = editor.getValue();
+      console.log(iframe_content)
+    }    
 
     /*
      * find and replace items for developmental piloting
@@ -263,10 +281,7 @@ $("#code_select").change(function () {
     /*
      * use ../User folder
      */
-    home_dir = CElectron.git.locate_repo({
-      org: $("#select_org").val(),
-      repo: $("#select_repo").val(),
-    });
+    home_dir = CElectron.git.locate_repo({org: $("#select_org").val(),repo: $("#select_repo").val(),});
 
     iframe_content = iframe_content.replaceAll("../User/", home_dir + "/User/");
 
@@ -278,10 +293,7 @@ $("#code_select").change(function () {
         } else if (this_key.length == 0) {
           bootbox.alert("Error: You don't have any keys!");
         } else {
-          iframe_content = iframe_content.replaceAll(
-            "{{" + this_key[0] + "}}",
-            row[this_key[0]]
-          );
+          iframe_content = iframe_content.replaceAll("{{" + this_key[0] + "}}",row[this_key[0]]);
         }
       });
     }
@@ -290,15 +302,15 @@ $("#code_select").change(function () {
     doc.open();
     doc.write(libraries + iframe_content);
     doc.close();
-  });
+});
 
-  var editor = ace.edit("ACE_editor");
-  editor.getSession().setUseWorker(false);
-  editor.setTheme("ace/theme/chrome");
-  editor.getSession().setMode("ace/mode/html");
-  editor.$blockScrolling = Infinity;
+var editor = ace.edit("ACE_editor");
+editor.getSession().setUseWorker(false);
+editor.setTheme("ace/theme/chrome");
+editor.getSession().setMode("ace/mode/html");
+editor.$blockScrolling = Infinity;
 
-  editor.setOptions({
+editor.setOptions({
     enableBasicAutocompletion: true,
     enableSnippets: false,
     enableLiveAutocompletion: true,
@@ -308,13 +320,13 @@ $("#code_select").change(function () {
     tabSize: 2,
     wrap: true,
   });
-  editor.$blockScrolling = Infinity;
+editor.$blockScrolling = Infinity;
 
-  editor.on("focus", function () {
-    helperActivate("PhaseType", "", "trialtype_code");
-  });
+editor.on("focus", function () {
+   helperActivate("PhaseType", "", "trialtype_code");
+});
 
-  editor.completers.push({
+editor.completers.push({
     getCompletions: function (editor, session, pos, prefix, callback) {
       callback(null, [
         {
@@ -362,8 +374,8 @@ $("#code_select").change(function () {
   });
 
   // This adds the custom 'save' icons
-  $('#save_phasetype_btn').prepend('<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 15 15" fill="#fff" style="margin-right: 8px;transform: translateY(-1px);">'+
-    '<path fill=#"fff" d="m12.313,0H1.758C.789,0,0,.789,0,1.758v11.484c0,.969.789,1.758,1.758,1.758h11.484c.969,0,1.758-.789,1.758-1.758V2.687l-2.687-2.687Zm-7.713,1.172h3.486v2.227h1.172V1.172h1.172v2.812c0,.323-.263.586-.586.586h-4.658c-.323,0-.586-.263-.586-.586V1.172Zm7.002,12.656H3.428v-5.156c0-.323.263-.586.586-.586h7.002c.323,0,.586.263.586.586v5.156Zm2.227-.586c0,.323-.263.586-.586.586h-.469v-5.156c0-.969-.789-1.758-1.758-1.758h-7.002c-.969,0-1.758.789-1.758,1.758v5.156h-.498c-.323,0-.586-.263-.586-.586V1.758c0-.323.263-.586.586-.586h1.67v2.812c0,.969.789,1.758,1.758,1.758h4.658c.969,0,1.758-.789,1.758-1.758V1.172h.226l2.001,2.001v10.07Z"/>'+
+$('#save_phasetype_btn').prepend('<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 15 15" fill="#fff" style="margin-right: 8px;transform: translateY(-1px);">'+
+    '<path fill="#fff" d="m12.313,0H1.758C.789,0,0,.789,0,1.758v11.484c0,.969.789,1.758,1.758,1.758h11.484c.969,0,1.758-.789,1.758-1.758V2.687l-2.687-2.687Zm-7.713,1.172h3.486v2.227h1.172V1.172h1.172v2.812c0,.323-.263.586-.586.586h-4.658c-.323,0-.586-.263-.586-.586V1.172Zm7.002,12.656H3.428v-5.156c0-.323.263-.586.586-.586h7.002c.323,0,.586.263.586.586v5.156Zm2.227-.586c0,.323-.263.586-.586.586h-.469v-5.156c0-.969-.789-1.758-1.758-1.758h-7.002c-.969,0-1.758.789-1.758,1.758v5.156h-.498c-.323,0-.586-.263-.586-.586V1.758c0-.323.263-.586.586-.586h1.67v2.812c0,.969.789,1.758,1.758,1.758h4.658c.969,0,1.758-.789,1.758-1.758V1.172h.226l2.001,2.001v10.07Z"/>'+
     '</svg>');
 </script>
 <script type="text/javascript" src="PhaseTypes/PhaseTypesFunctions.js"></script>

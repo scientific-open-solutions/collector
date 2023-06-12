@@ -117,16 +117,13 @@ Project = {
   finish_phase: function (go_to_info) {
     const highestId = window.setTimeout(() => {
       for (let i = highestId; i >= 0; i--) {
-      window.clearInterval(i);
+        window.clearInterval(i);
       }
     }, 0);
     phase_end_ms = new Date().getTime();
+    parent.parent.phase_start_time_ms = phase_end_ms;
     phase_inputs = {};
-    $("#experiment_progress").css(
-      "width",
-      (100 * project_json.phase_no) / (project_json.parsed_proc.length - 1) +
-        "%"
-    );
+    $("#experiment_progress").css("width",(100 * project_json.phase_no) / (project_json.parsed_proc.length - 1) + "%");
 
     for (var i = 0; i < project_json.inputs.length; i++) {
       if (
@@ -187,25 +184,26 @@ Project = {
     response_data[post_string + "_window_inner_height"] = window.innerHeight;
 
     response_data[post_string + "_us_date"] = new Date().toLocaleDateString("en-US");
-    response_data[post_string + "_time"]     = new Date().toLocaleTimeString();;
+    response_data[post_string + "_time"]     = new Date().toLocaleTimeString();
     response_data[post_string + "_timezone"] = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     response_data[post_string + "_phase_end_ms"] = phase_end_ms;
     response_data[post_string + "_rt_ms"] = phase_end_ms - response_data[post_string + "_phase_start_ms"];
-    response_data[post_string + "_phase_end_date"] = new Date(
-      parseInt(phase_end_ms, 10)
-    ).toString("MM/dd/yy HH:mm:ss");
+    response_data[post_string + "_phase_end_date"] = new Date(parseInt(phase_end_ms, 10)).toString("MM/dd/yy HH:mm:ss");
     response_data.platform = window.navigator.platform;
     response_data.username = $("#participant_code").val();
 
     Object.keys(project_json.this_condition).forEach(function (condition_item) {
-      response_data["condition_" + condition_item] =
-        project_json.this_condition[condition_item];
+      response_data["condition_" + condition_item] = project_json.this_condition[condition_item];
     });
 
     project_json.this_phase = response_data;
-    response_data.participant_browser = participant_browser;
-    response_data.phase_number = project_json.phase_no;
+    response_data.participant_browser = parent.parent.participant_browser;
+    if(parent.parent.project_json.repeat_no >= project_json.phase_no){
+      response_data.phase_number = project_json.phase_no + 1;
+    } else {
+      response_data.phase_number = project_json.phase_no;
+    }
 
     var not_final_phase = true;
 
@@ -266,13 +264,8 @@ Project = {
         .find("iframe")
         .hide();
       Project.start_post(go_to_info);
-      project_json.this_phase[
-        "post_" + project_json.post_no + "_phase_start_ms"
-      ] = new Date().getTime();
-      project_json.this_phase[
-        "post_" + project_json.post_no + "_phase_start_date"
-      ] = new Date(parseInt(start_time, 10)).toString("MM/dd/yy HH:mm:ss");
-
+      project_json.this_phase["post_" + project_json.post_no + "_phase_start_ms"] = parent.parent.phase_start_time_ms;
+      project_json.this_phase["post_" + project_json.post_no + "_phase_start_date"] = new Date(parseInt(start_time, 10)).toString("MM/dd/yy HH:mm:ss");
     }
 
     /*
@@ -316,9 +309,15 @@ Project = {
           delete(clean_phase_responses[field]);
         };
 
-      clean_phase_responses.record_id = phase_responses.username + "_" + parent.parent.start_date_time;
+       clean_phase_responses.record_id = phase_responses.username + "_" + parent.parent.start_date_time;
 
-      clean_phase_responses['redcap_repeat_instance'] = project_json.phase_no;
+      if (parent.parent.project_json.repeat_no == null){
+        clean_phase_responses['redcap_repeat_instance'] = parent.parent.project_json.phase_no;
+        parent.parent.project_json.repeat_no = parent.parent.project_json.phase_no;
+      } else {
+        clean_phase_responses['redcap_repeat_instance'] = parent.parent.project_json.repeat_no;
+      }
+      
       clean_phase_responses['redcap_repeat_instrument'] = parent.parent.redcap_instrument;
       if (parent.parent.redcap_instrument != "main") {
         var field_name = parent.parent.redcap_instrument;
@@ -348,8 +347,8 @@ Project = {
             if(result.toLowerCase().indexOf("error") !== -1 | result.toLowerCase().indexOf("count") === -1){
               attempt_no++;
               if(attempt_no > 2){
-                // alert("This data has not submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
-                console.log("This data may not have been submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
+                bootbox.alert("⚠ <b class='text-danger'>WARNING</b> ⚠ <br><br>This data has not submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
+                // console.log("This data may not have been submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
               } else {
                 redcap_post(
                   this_url,
@@ -395,8 +394,13 @@ Project = {
           //Phase.submit();
         }
       });
-    }
 
+      // Finally, let's just update the repeat instance number
+      parent.parent.project_json.repeat_no++;
+    }
+    //
+    // Saving Local Data Now
+    //
     switch (Project.get_vars.platform) {
       case "localhost":
         var data_response = CElectron.fs.write_data(
@@ -662,9 +666,7 @@ Project = {
         //no timers on this phase?
       }
     }
-    project_json.this_phase[
-      "post_" + project_json.post_no + "_phase_start_ms"
-    ] = new Date().getTime();
+    project_json.this_phase["post_" + project_json.post_no + "_phase_start_ms"] = new Date().getTime();
   },
 };
 

@@ -11,11 +11,13 @@ root_dir = root_dir.replaceAll("\\", "/");
 if (!fs.existsSync(root_dir)) {
   fs.mkdirSync(root_dir);
 }
+
+//make sure there is a Data folder in documents
 if (!fs.existsSync(root_dir + "Data")) {
   fs.mkdirSync(root_dir + "Data");
 }
 
-//make sure there is a Collector folder in documents
+//make sure there is a User.json file in the root director
 if (!fs.existsSync(root_dir + "/User.json")) {
   fs.writeFileSync(
     root_dir + "/User.json",
@@ -70,6 +72,11 @@ function user() {
     }
   }
   return user;
+}
+
+//make sure there is an Assets file in the users directory
+if (!fs.existsSync(user().current.path + "/User/Assets/")) {
+  fs.mkdirSync(user().current.path + "/User/Assets/");
 }
 
 /*

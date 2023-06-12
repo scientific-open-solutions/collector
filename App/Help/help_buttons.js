@@ -11,14 +11,15 @@
     count = $("#generalTips .general_tip").length;
     setTimeout(() => {
       for (let i = 0; i <= count; i++) {
-        if ($('.tip'+i).is(":visible")) {
+        // if ($('.tip'+i).is(":visible")) {
+          if ($('.tip'+i).css("display") == "block") {
           tipNum = i;
         }
       }
       count = count - 1
       oldTip = tipNum
-    }, 1000);
-  }, 1000);
+    }, 500);
+  }, 1500);
 
   // If a user presses "Next" this checks if we're at the end (and restarts the loop if we are) or moves us 1 place up the list
   $('#nextTip').click(function() {

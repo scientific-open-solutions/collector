@@ -1,10 +1,20 @@
 <!-- --------------------------- -->
 <!-- App/PhaseTypes/Graphic.html -->
 <!-- --------------------------- -->
+<!-- This only adjusts the styling within Collector,
+     to adjust styling within the created phasetype or within the editor canvas,
+     you need to update things in the graphic.js file  -->
 <style>
+  .input-group-append{
+    width:40px;
+  }
+  .input-group-prepend{
+    min-width: 85px;
+  }
   .input-group-text {
-    width: 200px;
     text-align: left;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
   .pre_timeline {
     display: inline-block;
@@ -20,17 +30,77 @@
   .trial_mod {
     width: 100%;
   }
+  .canvas_grid {
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(to right, grey 1px, transparent 1px),
+    linear-gradient(to bottom, grey 1px, transparent 1px);
+  }
+  .accordion-button {
+    color: var(--collector_blue)!important;
+    padding: 0.5rem 1.25rem!important
+  }
+  .accordion-button:not(.collapsed), .accordion-button:hover {
+    background-color:var(--collector_blue)!important;
+    color: #fff!important;
+  }
+  .selected_element:hover {
+    cursor: pointer;
+  }
+  /* .accordion-button::hover {
+    background-image: url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#fff'><path fill='#fff' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z' /></svg>");
+  } */
+  .timeline_text_indent {
+    padding: 0 10px!important;
+    text-align: right;
+    transform: translateY(-11px);
+  }
+
+  #delete_element_btn {
+    height: 37px;
+    border-radius: 0 5px 5px 0;
+  }
   #element_name {
     font-size: 20px;
+    cursor: pointer;
+  }
+  #element_header, #background_header{
+    padding: 9px 0px;
+    margin-top: 4px;
+  }
+  #element_timelines{
+    padding-right:15px;
+  }
+  #element_timeline_btn{
+    position: absolute;
+    right: -377px;
+  }
+  #empty_timeline{
+    margin-left:15px;
   }
   #graphic_canvas {
-    height: 600px;
-    width: 600px;
+    /* height: 600px;
+    width: 600px; */
     position: relative;
+    border: 2px black solid;
+    margin: 15px;
+    margin-bottom: 0;
   }
   #graphic_editor {
     height: 700px;
-    width: 100%;
+    /* width: 280px; */
+  }
+  #graphic_editor_options{
+    min-width: 260px;
+    margin-right: 10px
+  }
+  #graphic_editor_option_buttons {
+    display: flex;
+    margin-bottom: 15px;
+    margin-left: 15px;
+  }
+  #graphic_editor_option_buttons .btn {
+    margin-right: 10px;
   }
   #keyboard_settings {
     padding: 10px;
@@ -40,176 +110,131 @@
     margin: auto;
     text-align: center;
   }
+  #new_text_btn, #new_audio_btn, #new_image_btn, #new_video_btn, #new_input_btn {
+    margin-top: 10px;
+  }
+  #setting_background-color, #setting_color, #setting_border-color, .input-group, .input-group-text, .form-control{
+    min-height:37px;
+    max-height:37px;
+  }
+  #trial_background_color, #stim_background_color {
+    height: 37px;
+    max-width: 155px!important;
+  }
+  #trial_width, #trial_height {
+    width:100px;
+  }
+    #trial_width_unit.input-group-text, #trial_height_unit.input-group-text {
+    text-align: left;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+  input[type=range] {width: 170px!important;}
+  xmp { white-space: pre-wrap }
 </style>
-<table style="width: 100%" class="bg-light">
+<table id="pageboundary" style="width: 168%; border-radius: 5px;" class="bg-light">
   <tr style="width: 100%">
     <td style="width: 70%" style="text-align: center">
-      <div id="element_timelines">No elements yet</div>
       <div id="new_element_interface">
-        <button
-          class="btn btn-outline-info canvas_btn"
-          align="left"
-          id="new_text_btn"
-          value="Text"
-        >
-          Text
-        </button>
-        <button
-          class="btn btn-outline-secondary canvas_btn"
-          align="left"
-          id="new_audio_btn"
-          value="Audio"
-        >
-          Audio
-        </button>
-        <button
-          class="btn btn-outline-success canvas_btn"
-          align="left"
-          id="new_image_btn"
-          value="Image"
-        >
-          Image
-        </button>
-        <button
-          class="btn btn-outline-danger canvas_btn"
-          align="left"
-          id="new_video_btn"
-          value="Video"
-        >
-          Video
-        </button>
-        <button
-          class="btn btn-outline-dark canvas_btn"
-          align="left"
-          id="new_input_btn"
-          value="Input"
-        >
-          Input
-        </button>
-        <button
-          class="btn btn-outline-primary canvas_btn"
-          align="right"
-          id="canvas_click_btn"
-          style="display: none"
-          value="Click"
-        >
-          Click
-        </button>
-        <button class="btn btn-primary" align="right" id="element_timeline_btn">
-          Timeline
-        </button>
-        <br />
+        <button class="btn btn-outline-info canvas_btn bi bi-type" align="left" id="new_text_btn" value="Text">Text</button>
+        <button class="btn btn-outline-secondary canvas_btn bi bi-music-note" align="left" id="new_audio_btn" value="Audio">Audio</button>
+        <button class="btn btn-outline-success canvas_btn bi bi-file-image" align="left" id="new_image_btn" value="Image">Image</button>
+        <button class="btn btn-outline-danger canvas_btn bi bi-film" align="left" id="new_video_btn" value="Video">Video</button>
+        <button class="btn btn-outline-dark canvas_btn bi bi-input-cursor-text" align="left" id="new_input_btn" value="Input">Input</button>
+        <button class="btn btn-outline-primary canvas_btn bi bi-hand-index" align="right" id="canvas_click_btn" style="display: none" value="Click">Click</button>
+        <br>
         <iframe id="graphic_canvas" class="bg-white"></iframe>
+        <div id="graphic_editor_option_buttons">
+          <button id="toggle_canvas_grid" class="btn btn-sm btn-outline-secondary bi bi-grid-3x3">Toggle Grid</button>
+          <button id="view_graphic_code_btn" class="btn btn-sm btn-outline-primary bi bi-journal-code">View Code</button>
+          <button id="element_timeline_btn"class="btn btn-sm btn-primary bi bi-toggles">Timeline</button>
+        </div>
       </div>
     </td>
-    <td style="width: 30%">
+    <td style="min-width: 300px;padding-right: 20px;top: 85px;position: absolute;">
       <div id="graphic_editor">
-        <div id="graphic_general_settings">
+        <div id="graphic_general_settings"> <!-- This is the editor specific settings -->
+          <h4 id="background_header" class="text-primary"><i class="bi bi-display"></i> Page Settings</h4>
+          <h5 class="text-primary">Screen Size</h5>
           <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="trial_width_prep"
-                >Phase Width (px)</span
-              >
-            </div>
-            <input
-              type="number"
-              class="form-control"
-              aria-describedby="trial_width_prep"
-              id="trial_width"
-              value="600"
-            />
+              <button type="button" id="required_screen_lg" class="btn btn-primary btn-sm" style="width: 70px;"><i class="bi bi-aspect-ratio"></i>16:9</button>
+              <button type="button" id="required_screen_sm" class="btn btn-outline-primary btn-sm" style="width: 60px;"><i class="bi bi-aspect-ratio"></i>4:3</button>
+              <button type="button" id="required_screen_flex" class="btn btn-outline-primary btn-sm" style="width: 65px;"><i class="bi bi-percent"></i>Flex</button>
+              <button type="button" id="required_screen_cstm" class="btn btn-outline-primary btn-sm" style="width: 87px;"><i class="bi bi-sliders"></i>Custom</button>
           </div>
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="trial_height_prep"
-                >Phase Height (px)</span
-              >
+              <span class="input-group-text" id="trial_width_prep" style="padding-right: 16px;">Phase Width</span>
             </div>
-            <input
-              type="number"
-              class="form-control"
-              aria-describedby="trial_height_prep"
-              id="trial_height"
-              value="600"
-            />
+            <input type="text" class="form-control" aria-describedby="trial_width_prep" id="trial_width" value="" />
+            <!-- <div class="input-group-append">
+              <span class="input-group-text" id="trial_width_unit">px</span>
+            </div> -->
           </div>
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="trial_background_color_prep"
-                >Background Color</span
-              >
+              <span class="input-group-text" id="trial_height_prep">Phase Height</span>
             </div>
-            <input
-              type="text"
-              class="form-control"
-              aria-describedby="trial_height_prep"
-              id="trial_background_color"
-              value="white"
-            />
+            <input type="text" class="form-control" aria-describedby="trial_height_prep" id="trial_height" value="" disabled/>
+            <!-- <div class="input-group-append">
+              <span class="input-group-text" id="trial_height_unit">px</span>
+            </div> -->
           </div>
-
-          <h3 class="text-primary">Mouse</h3>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="trial_background_color_prep">Background Colour</span>
+            </div>
+            <input type="color" class="form-control" aria-describedby="trial_height_prep" id="trial_background_color" value="#ffffff">
+          </div>
+          <div id="trial_bg_selector" class="input-group mb-3" style="display: none;">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="stim_background_color_prep" style="padding-right: 66px;">Stim Colour</span>
+            </div>
+            <input type="color" class="form-control" aria-describedby="stim_height_prep" id="stim_background_color" value="#ffffff">
+          </div>
+          <!-- <div class="input-group mb-3" style="display: none;">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="trial_background_opacity_prep">Background Opacity</span>
+            </div>
+            <input type="range" min="0" max="1" value="1" step="0.1" aria-describedby="trial_height_prep" id="trial_background_opacity">
+          </div> -->
+          <!-- <br> -->
+          <h5 class="text-primary">Mouse</h5>
           <div class="custom-control custom-checkbox">
-            <input
-              type="checkbox"
-              class="custom-control-input"
-              id="mouse_visible"
-              checked="checked"
-            />
-            <label class="custom-control-label text-primary" for="mouse_visible"
-              >Visible</label
-            >
+            <input type="checkbox" class="custom-control-input" id="mouse_visible" checked="checked" />
+            <label class="custom-control-label text-primary" for="mouse_visible">Visible</label>
           </div>
-          <h3 class="text-primary">Keyboard Responses</h3>
-
+          <br>
+          <h5 class="text-primary">Keyboard Responses</h5>
           <div id="keyboard_settings" class="border border-primary bg-white">
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <span
-                  class="input-group-text"
-                  style="width: 70px"
-                  id="trial_valid_keys_prep"
-                  >Keys</span
-                >
+                <span class="input-group-text" style="width: 70px" id="trial_valid_keys_prep">Keys</span>
               </div>
-              <input
-                type="text"
-                class="form-control keyboard_setting"
-                aria-describedby="trial_valid_keys_prep"
-                id="keyboard_valid_keys"
-                value=""
-              />
+              <input type="text" class="form-control keyboard_setting" aria-describedby="trial_valid_keys_prep" id="keyboard_valid_keys" value="" />
             </div>
             <div class="custom-control custom-checkbox">
-              <input
-                type="checkbox"
-                class="custom-control-input"
-                id="keyboard_end_press"
-                checked="checked"
-              />
-              <label
-                class="custom-control-label text-primary"
-                for="keyboard_end_press"
-                >End Phase on key press</label
-              >
+              <input type="checkbox" class="custom-control-input" id="keyboard_end_press" checked="checked" />
+              <label class="custom-control-label text-primary" for="keyboard_end_press" >End Phase on key press</label>
             </div>
           </div>
-          <h3 class="text-primary">mods</h3>
+          <br>
+          <h5 class="text-primary">Mods</h5>
           <div id="current_mods"></div>
           <div id="mod_settings"></div>
 
-          <button
-            class="btn btn-outline-primary"
-            style="width: 100%"
-            id="add_mod_btn"
-          >
-            Add mod
-          </button>
+          <button class="btn btn-outline-primary" style="width: 100%" id="add_mod_btn" disabled>Add mod</button>
         </div>
-        <div id="graphic_settings"></div>
+        <div id="graphic_settings"></div> <!-- This is for element specific settings -->
       </div>
     </td>
   </tr>
+  <tr>
+    <td>
+      <div id="element_timelines"></div>
+    </td>
+  </tr>
 </table>
-
 <script src="PhaseTypes/Graphic.js"></script>
