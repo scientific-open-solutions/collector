@@ -34,6 +34,7 @@ function correct_master(){
   master.phasetypes.user = Collector.missing_object(master.phasetypes.user);
   master.phasetypes.graphic = Collector.missing_object(master.phasetypes.graphic);
   master.phasetypes.graphic.files = Collector.missing_object(master.phasetypes.graphic.files);
+  
   /*
   * studies --> projects
   */
@@ -102,8 +103,10 @@ function correct_master(){
       }
     });
   }
-  master.phasetypes.graphic = Collector.missing_object(master.phasetypes.graphic);
-  master.phasetypes.graphic.files = Collector.missing_object(master.phasetypes.graphic.files);
+  master.phasetypes.graphic = Collector
+    .missing_object(master.phasetypes.graphic);
+  master.phasetypes.graphic.files = Collector
+    .missing_object(master.phasetypes.graphic.files);
 
   if(typeof(master.phasetypes.graphic.files) === "undefined" &
      typeof(master.phasetypes.graphic.trialtypes) !== "undefined"){
