@@ -1583,6 +1583,7 @@ function write_survey(this_survey, this_id) {
     response_check(this);
   });
 
+
   //scroll to top
   $("#" + this_id).show(0); 
 
@@ -1591,7 +1592,6 @@ function write_survey(this_survey, this_id) {
     "height": window.innerHeight + "px",
     "top": (parseFloat(window.innerHeight/2)) + "px"
   });
-
 
   //show("slide", {direction: "down" }, "slow");
 

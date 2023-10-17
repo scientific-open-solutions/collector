@@ -75,8 +75,10 @@ function user() {
 }
 
 //make sure there is an Assets file in the users directory
-if (!fs.existsSync(user().current.path + "/User/Assets/")) {
-  fs.mkdirSync(user().current.path + "/User/Assets/");
+if (fs.existsSync(user().current.path)) {
+  if (!fs.existsSync(user().current.path + "/User/Assets/")) {
+    fs.mkdirSync(user().current.path + "/User/Assets/");
+  }
 }
 
 /*
