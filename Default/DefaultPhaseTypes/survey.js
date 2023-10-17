@@ -1584,6 +1584,7 @@ function write_survey(this_survey, this_id) {
   });
 
   //scroll to top 
+
   $("#" + this_id).show(0); 
 
   //(hopeful) Firefox fix

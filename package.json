@@ -29,7 +29,7 @@
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "coffee-script": "~1.6.3",
-    "electron": "^18.3.7",
+    "electron": "^22.3.25",
     "jest": "^27.5.1",
     "png-to-ico": "^2.0.0",
     "prettier": "2.3.2"

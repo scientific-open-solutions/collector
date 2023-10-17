@@ -769,6 +769,9 @@ $("#save_btn").on("click", function () {
                 }
               });
             } else if (typeof master.surveys.default_surveys[this_survey] !== "undefined") {
+              if(typeof(this_proj.surveys) == "undefined"){
+                this_proj.surveys = {};
+              }
               this_proj.surveys[proc_row.survey] = master.surveys.default_surveys[this_survey];
             } else {
               if (!parent.parent.functionIsRunning) {
