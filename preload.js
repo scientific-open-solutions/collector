@@ -1,11 +1,12 @@
-const path = require("path");
-require(path.join(__dirname, "./App/libraries/collector/Collector.js"));
+// Code that can probably be deleted:
+//const path = require("path");
+//require(path.join(__dirname, "./App/libraries/collector/Collector.js"));
 //require("./App/libraries/collector/Collector.js");
 
-/*
- * by qwerty at
- * https://stackoverflow.com/questions/2116558/fastest-method-to-replace-all-instances-of-a-character-in-a-string
- */
+
+ // by qwerty at
+ // https://stackoverflow.com/questions/2116558/fastest-method-to-replace-all-instances-of-a-character-in-a-string
+ 
 String.prototype.replaceAll = function (str1, str2, ignore) {
   return this.replace(
     new RegExp(
