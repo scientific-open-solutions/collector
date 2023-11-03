@@ -42,9 +42,10 @@ function createWindow() {
     minWidth:1000, minHeight:700,
     webPreferences: {
       nodeIntegration: false,
-      contextIsolation: true, //has to be false with the way I've designed this
+      contextIsolation: true,
       enableRemoteModule: false,
       nativeWindowOpen: true,
+      sandbox: true,
       //preload:                    [path.join(__dirname, 'App/libraries/collector/Collector.js')],
       preload: path.join(__dirname, "preload.js"),
       worldSafeExecuteJavaScript: true,
