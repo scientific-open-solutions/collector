@@ -1,5 +1,5 @@
 /*
- * Collector Survey 3.2.0
+ * Collector Survey 3.2.1
  */
 
 /* 
@@ -1583,8 +1583,8 @@ function write_survey(this_survey, this_id) {
     response_check(this);
   });
 
+  //scroll to top 
 
-  //scroll to top
   $("#" + this_id).show(0); 
 
   //(hopeful) Firefox fix

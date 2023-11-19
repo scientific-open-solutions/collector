@@ -193,10 +193,6 @@ Project = {
     response_data.platform = window.navigator.platform;
     response_data.username = $("#participant_code").val();
 
-    Object.keys(project_json.this_condition).forEach(function (condition_item) {
-      response_data["condition_" + condition_item] = project_json.this_condition[condition_item];
-    });
-
     project_json.this_phase = response_data;
     response_data.participant_browser = parent.parent.participant_browser;
     if(parent.parent.project_json.repeat_no >= project_json.phase_no){
@@ -275,18 +271,22 @@ Project = {
 
       var keys = Object.keys(response_data)
         // if (keys.includes("_pii_")) {
-          if (keys.some(e => e.includes("_pii_"))) {
-            for (let i = 0; i < keys.length; i++) {
-              let field = keys[i]
-              if (field.includes("_pii_")) {
-                form_name = field.split("_pii", 1)[0]
-                parent.parent.redcap_instrument = form_name;
-              } else {
-                //do nothing
-              }
+        if (keys.some(e => e.includes("_pii_"))) {
+          for (let i = 0; i < keys.length; i++) {
+            let field = keys[i]
+            if (field.includes("_pii_")) {
+              form_name = field.split("_pii", 1)[0]
+              parent.parent.redcap_instrument = form_name;
+            } else {
+              //do nothing
             }
+          }
         } else {
           parent.parent.redcap_instrument = "main";
+          Object.keys(project_json.this_condition).forEach(function (condition_item) {
+            response_data["condition_" + condition_item] = project_json.this_condition[condition_item];
+          });
+          
         }
         console.log("REDcap Instrument: " + parent.parent.redcap_instrument)
       var phase_responses = project_json.responses[project_json.responses.length-1];
@@ -327,6 +327,7 @@ Project = {
           delete(clean_phase_responses[field]);
         };
       }
+      console.log(clean_phase_responses) // Uncomment this if you want to see what variables are submitted during each phase.submit() call
       // this_location.toLowerCase();
 
       console.log("just before the ajax");
@@ -595,15 +596,14 @@ Project = {
           var this_iframe = these_iframes[i];
           this_iframe_style = this_iframe.contentWindow.document.body.style;
           this_iframe_style.zoom = parent.parent.current_zoom;
-          this_iframe_style.MozTransform =
-            "scale(" + parent.parent.current_zoom + ")";
 
           if (isFirefox) {
             this_iframe_style.width = (window.innerWidth * 0.98) / parent.parent.current_zoom;  // {CGD} adjusted all width/height to just under fullscreen to counter scroll bar issue
             this_iframe_style.height = (window.innerHeight * 0.98)  / parent.parent.current_zoom;
             this_iframe_style.maxWidth = (window.innerWidth * 0.97) / parent.parent.current_zoom;
             this_iframe_style.maxHeight = (window.innerHeight * 0.97)  / parent.parent.current_zoom;
-            this_iframe_style.transformOrigin = "left top";
+            $("#phase" + project_json.phase_no).contents().find(".post_iframe").contents()
+            .find("#container").css("transform", "scale(" + parent.parent.current_zoom + ")");
           } else {
             this_iframe_style.width = "100%";
             this_iframe_style.height = "100%";
