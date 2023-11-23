@@ -5,10 +5,13 @@
   var count;
   var oldTip;
 
+  $('#prevTip, #nextTip').prop('disabled', true);
+
   // Then we work out how long the list of help options is and capture which one is currently showing - the associated integers are then stored in our previous variables
   // Note: this is delayed due to the need to wait for the html compenents earlier to exist before we can capture them
   setTimeout(() => {
     count = $("#generalTips .general_tip").length;
+    $('#prevTip, #nextTip').prop('disabled', false);
     setTimeout(() => {
       for (let i = 0; i <= count; i++) {
         // if ($('.tip'+i).is(":visible")) {
