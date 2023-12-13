@@ -7,6 +7,10 @@
     "subtitle": "Number of trials you want buffered",
     "text": "By default, Collector will try to have 5 trials in advance loaded to try to make the experiment run as smoothly as possible. You can change this number to whatever number of trials you want to have in advance"
   },
+  "counterbalance": {
+    "subtitle": "This allows you to use multiple 'Procedure' sheets, presented sequentially, from one 'Conditions' row",
+    "text": "It selects the next, sequential procedure sheet to the one previously used each time the study starts (resetting when all procedure sheets have been presented, restarting the cycle). If anything goes wrong (e.g., connection cannot be made to the required files to know which procedure sheet is next) procedure sheet order is randomised instead, and participant(s) prompted to inform you that counterbalancing failed. <br><br><b>Implementation: </b>You need to call the 'Conditions' row: counterbalance, before creating a php file, called 'counterbalance.php' with the following code: <pre>&lt;?php<br>$newData = $_POST['new_data'];<br>$url = $_POST['url_txt'];<br>$myfile = fopen($url, 'w') or die('Unable to open file!');<br>fwrite($myfile, $newData);<br>fclose($myfile);<br>?></pre> and a text file, containing just the number: 1, named with the following convention: the project name followed by _counterbalance (e.g., <em>myproject_counterbalance.txt</em>). You then need to upload both the PHP and text filed to the same location on an external webhost (e.g., the UoR cPanel hosting). Within this counterbalance column, enter the web address of the folder you just uploaded files to. Your procedure sheets must have a shared 'named',  differentiated by adding _1, _2, _3 after each (e.g., procedure_1, procedure_2 etc.). This order is the order the sheets are cycled through."
+  },
   "description": {
     "subtitle": "deprecated",
     "text": "please change this column header to <b>name</b>."

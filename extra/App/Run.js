@@ -1001,12 +1001,11 @@ function get_gets() {
     return params;
   }
   var prmstr = window.location.search.substr(1);
-  Project.get_vars =
-    prmstr !== null && prmstr !== "" ? transformToAssocArray(prmstr) : {};
+  Project.get_vars = prmstr !== null && prmstr !== "" ? transformToAssocArray(prmstr) : {};
 
   // maybe the following is left over from the simulator?
   if (typeof Project.get_vars.name !== "undefined") {
-    exp_condition = Project.get_vars.name;
+      exp_condition = Project.get_vars.name;
   } else {
     exp_condition = "";
   }
@@ -1079,9 +1078,7 @@ function insert_start() {
       text: "",
       phasetype: phasetype,
     };
-    var shuffle_levels = Object.keys(project_json.parsed_proc[0]).filter(
-      (item) => item.indexOf("shuffle") !== -1
-    );
+    var shuffle_levels = Object.keys(project_json.parsed_proc[0]).filter((item) => item.indexOf("shuffle") !== -1);
     shuffle_levels.forEach(function (shuffle_level) {
       this_phase_info[shuffle_level] = "off";
     });
@@ -1229,72 +1226,141 @@ function load_phases() {
 }
 
 function parse_sheets() {
-  var proc_sheet_name =
-    project_json.this_condition.procedure.toLowerCase().replace(".csv", "") +
-    ".csv";
-  var stim_sheet_name =
-    project_json.this_condition.stimuli.toLowerCase().replace(".csv", "") +
-    ".csv";
-  proc_stim_loaded = [];
+  // Counterbalancing
+  
+console.log(project_json);
+// console.log("--------");
+// console.log(Object.keys(project_json.all_procs).length);
+// console.log("--------");
+  
+  var proc_sheet_name;
+  var levels;
+  var suffix;
+  var new_data;
+  // var folder = "../User/Projects/" + Project.get_vars.location;
+  var proc_sheet_name = project_json.this_condition.procedure.toLowerCase().split('_')[0];
+  var data_url = project_json.this_condition.counterbalance + Project.get_vars.location + "_" + project_json.this_condition.name + ".txt";
+  var url_txt = Project.get_vars.location + "_" + project_json.this_condition.name + ".txt";
+  var isCounterbalanceNeeded = Project.get_vars.location + " counterbalance";
+  var CounterbalanceCheck = Project.get_vars.location + " " + project_json.this_condition.name;
+  parent.parent.cb_new;
+  parent.parent.cb_total;
 
-  switch (Project.get_vars.platform) {
-    case "localhost":
-    case "simulateonline":
-    case "preview":
-      var folder = "Projects/" + Project.get_vars.location;
-      var proc_sheet_content = CElectron.fs.read_file(
-        folder,
-        proc_sheet_name
-      );
-      var stim_sheet_content = CElectron.fs.read_file(
-        folder,
-        stim_sheet_name
-      );
-      project_json.parsed_proc = Collector.PapaParsed(proc_sheet_content);
-      project_json.parsed_stim = [null, null].concat(
-        Collector.PapaParsed(stim_sheet_content)
-      );
-      Project.activate_pipe();
-      break;
-    case "github":
-    case "onlinepreview":
-      var proc_url =
-        "../User/Projects/" + Project.get_vars.location + "/" + proc_sheet_name;
-      $.get(proc_url, function (proc_sheet_content) {
+  // This is the original code that loads the stim sheets in and then activates the rest of the Collector pipeline
+  function switch_platform () {
+    var stim_sheet_name = project_json.this_condition.stimuli.toLowerCase().replace(".csv", "") + ".csv";
+    proc_stim_loaded = [];
+  
+    switch (Project.get_vars.platform) {
+      case "localhost":
+      case "simulateonline":
+      case "preview":
+        var folder = "Projects/" + Project.get_vars.location;
+        var proc_sheet_content = CElectron.fs.read_file(folder,proc_sheet_name);
+        var stim_sheet_content = CElectron.fs.read_file(folder,stim_sheet_name);
         project_json.parsed_proc = Collector.PapaParsed(proc_sheet_content);
+        project_json.parsed_stim = [null, null].concat(Collector.PapaParsed(stim_sheet_content));
+        Project.activate_pipe();
+        break;
+      case "github":
+      case "onlinepreview":
+        var proc_url = "../User/Projects/" + Project.get_vars.location + "/" + proc_sheet_name;
+        $.get(proc_url, function (proc_sheet_content) {
+          project_json.parsed_proc = Collector.PapaParsed(proc_sheet_content);
+          proc_stim_loaded[1] = "procedure";
+          if (proc_stim_loaded.join("-") === "stimuli-procedure") {
+            Project.activate_pipe();
+          }
+        });
+        var stim_url = "../User/Projects/" + Project.get_vars.location + "/" + stim_sheet_name;
+        $.get(stim_url, function (stim_sheet_content) {
+          project_json.parsed_stim = [null, null].concat(Collector.PapaParsed(stim_sheet_content));
+          proc_stim_loaded[0] = "stimuli";
+          if (proc_stim_loaded.join("-") === "stimuli-procedure") {
+            Project.activate_pipe();
+          }
+        });
+        break;
+      case "server":
         proc_stim_loaded[1] = "procedure";
+        project_json.parsed_proc = Collector.PapaParsed(project_json.all_procs[proc_sheet_name]);
         if (proc_stim_loaded.join("-") === "stimuli-procedure") {
           Project.activate_pipe();
         }
-      });
-      var stim_url =
-        "../User/Projects/" + Project.get_vars.location + "/" + stim_sheet_name;
-      $.get(stim_url, function (stim_sheet_content) {
         project_json.parsed_stim = [null, null].concat(
-          Collector.PapaParsed(stim_sheet_content)
+          Collector.PapaParsed(project_json.all_stims[stim_sheet_name])
         );
         proc_stim_loaded[0] = "stimuli";
         if (proc_stim_loaded.join("-") === "stimuli-procedure") {
           Project.activate_pipe();
         }
-      });
-      break;
-    case "server":
-      proc_stim_loaded[1] = "procedure";
-      project_json.parsed_proc = Collector.PapaParsed(
-        project_json.all_procs[proc_sheet_name]
-      );
-      if (proc_stim_loaded.join("-") === "stimuli-procedure") {
-        Project.activate_pipe();
+        break;
+    }
+  }
+
+  // This function updates the counterbalancing data value (+1 or reset) ready for the next time the study is run
+  function counterbalance (new_data) {
+    var url_php = project_json.this_condition.counterbalance + project_json.this_condition.name + ".php";
+    console.log("url php:" + url_php);
+    var url_txt = Project.get_vars.location + "_" + project_json.this_condition.name + ".txt";
+    console.log("url text:" + url_txt);
+    console.log("the counterbalance function fired");
+    $.ajax({
+      type: "POST",
+      url: url_php,
+      crossDomain: true,
+      data: {new_data: new_data, url_txt: url_txt},
+      success: function(result){
+        console.log("success!");
       }
-      project_json.parsed_stim = [null, null].concat(
-        Collector.PapaParsed(project_json.all_stims[stim_sheet_name])
-      );
-      proc_stim_loaded[0] = "stimuli";
-      if (proc_stim_loaded.join("-") === "stimuli-procedure") {
-        Project.activate_pipe();
-      }
-      break;
+    });
+  }
+
+  if (CounterbalanceCheck === isCounterbalanceNeeded) {
+    if (project_json.this_condition.counterbalance.length !== 0) {
+      var total_procedures = Object.keys(project_json.all_procs).length;
+    } else {
+      console.log("No counterbalance settings have been entered. Please stop the study and contact the researcher");
+    }
+
+    var url_phpLoader = project_json.this_condition.counterbalance + project_json.this_condition.name + "_loader.php";
+    $.post(url_phpLoader, { 
+      url_txt: url_txt
+      }, function(data){ 
+        // success: function(result){
+          console.log("success!");
+          console.log("The input value was: " + data);
+          levels = parseInt(data);
+          parent.parent.cb_level = levels;
+          if (levels < total_procedures) {
+            console.log("yay 1")
+            suffix = "_" + levels + ".csv";
+            proc_sheet_name = proc_sheet_name + suffix;
+            new_data = levels + 1;
+            // counterbalance(new_data, project_json.this_condition.counterbalance.replace(".txt", ""));
+            counterbalance(new_data);
+            switch_platform ();
+          } else if (levels >= total_procedures) {
+            console.log("yay 2")
+            suffix = "_" + total_procedures + ".csv";
+            proc_sheet_name = proc_sheet_name + suffix;
+            new_data = 1;
+            // counterbalance(new_data, project_json.this_condition.counterbalance.replace(".txt", ""));
+            counterbalance(new_data);
+            switch_platform ();
+          } else {
+            console.log("boo 3")
+            bootbox.alert("Counterbalancing has broken. Please stop the study and contact the researcher");
+            var rand_num = Math.floor( Math.random() * total_procedures + 1 );
+            suffix = "_" + rand_num + ".csv";
+            proc_sheet_name = proc_sheet_name + suffix;
+            switch_platform ();
+          }
+        // }
+      })  
+  } else {
+    proc_sheet_name = project_json.this_condition.procedure.toLowerCase().replace(".csv", "") + ".csv";
+    switch_platform ();
   }
 }
 
@@ -1575,7 +1641,7 @@ function select_condition() {
   project_json.this_condition = project_json.conditions.filter(function (row) {
     return row.name === Project.get_vars.name;
   })[0];
-
+  console.log(project_json.this_condition)
   /*
    * Check if use of mobile devices is off
    */
@@ -1839,21 +1905,12 @@ function start_project() {
         electron_wait = setInterval(function () {
           if (typeof CElectron.fs.read_file !== "undefined") {
             clearInterval(electron_wait);
-            project_json = JSON.parse(
-              CElectron.fs.read_file(
-                "Projects",
-                Project.get_vars.location + ".json"
-              )
+            project_json = JSON.parse(CElectron.fs.read_file("Projects",Project.get_vars.location + ".json")
             );
-
             /*
              * load conditions sheet
              */
-            project_json.conditions = Collector.PapaParsed(
-              CElectron.fs.read_file(
-                "Projects/" + Project.get_vars.location,
-                "conditions.csv"
-              )
+            project_json.conditions = Collector.PapaParsed(CElectron.fs.read_file("Projects/" + Project.get_vars.location,"conditions.csv")
             );
 
             Project.activate_pipe();
@@ -1870,21 +1927,11 @@ function start_project() {
           if (typeof random_code === "undefined") {
             random_code = "";
           }
-          $.get(
-            "../User/Projects/" +
-              Project.get_vars.location +
-              ".json?randomcode=" +
-              random_code,
-            function (result) {
+          $.get("../User/Projects/" + Project.get_vars.location + ".json?randomcode=" + random_code, function (result) {
               project_json = result;
 
-              $.get(
-                "../User/Projects/" +
-                  Project.get_vars.location +
-                  "/conditions.csv",
-                function (conditions_sheet) {
-                  project_json.conditions =
-                    Collector.PapaParsed(conditions_sheet);
+              $.get("../User/Projects/" + Project.get_vars.location + "/conditions.csv", function (conditions_sheet) {
+                  project_json.conditions = Collector.PapaParsed(conditions_sheet);
                   Project.activate_pipe();
                 }
               );
