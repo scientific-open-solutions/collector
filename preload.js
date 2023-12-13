@@ -63,6 +63,12 @@ contextBridge.exposeInMainWorld(
         });
         return file_content;
       },
+      read_dir: function (folder) {
+        console.log("Preload Input: " + folder)
+        return ipc.sendSync("fs_list_project_files", {
+          folder: folder,
+        })
+      },
       read_file: function (user_folder, this_file) {
         file_content = ipc.sendSync("fs_read_file", {
           user_folder: user_folder,

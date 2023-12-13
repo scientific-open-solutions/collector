@@ -224,6 +224,11 @@ ipc.on("fs_read_default", (event, args) => {
   }
 });
 
+ipc.on("fs_list_project_files", (event, args) => { 
+  var project_files = event.returnValue = JSON.stringify(fs.readdirSync(user().current.path + "/User/" + args.folder));
+  event.returnValue = project_files;
+}) 
+
 ipc.on("fs_read_file", (event, args) => {
   /*
    * Security checks - should probably have more
