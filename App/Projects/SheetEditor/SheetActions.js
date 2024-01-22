@@ -356,10 +356,11 @@ $("#new_stim_button").on("click", function () {
 
 $("#open_proj_folder").on("click", function () {
   if (!parent.parent.functionIsRunning) {
+    var location = "User\Project"
     parent.parent.functionIsRunning = true;
     CElectron.open_folder(
       "repo",
-      "User/Projects/" + $("#project_list").val(),
+      "User\\Projects\\" + $("#project_list").val(),
     );
   };
   $("#open_proj_folder").blur(function(){
@@ -398,37 +399,28 @@ $("#rename_proj_btn").on("click", function () {
           } else {
             //proceed
             var original_name = $("#project_list").val();
-            master.projects.projects[new_name] =
-              master.projects.projects[original_name];
+            master.projects.projects[new_name] = master.projects.projects[original_name];
             delete master.projects.projects[original_name];
 
-          CElectron.fs.write_project(
-            new_name,
-            JSON.stringify(master.projects.projects[new_name], null, 2),
-            function (response) {
-              if (response === "success") {
-                CElectron.fs.delete_project(
-                  original_name,
-                  function (response) {
-                    if (response === "success") {
-                      list_projects();
-                      $("#project_list").val(new_name);
-                      $("#project_list").change();
-                    } else {
-                      bootbox.alert(response);
-                    }
-                  }
-                );
-              } else {
-                bootbox.alert(response);
-              }
-            }
-          );
+            $("#project_list").append($("<option>", {text: new_name,}));
+            $("#project_list").val(new_name);
+            console.log("test: " + original_name)
+            $("#project_list option[value='" + original_name + "']").remove();
+
+            // if (Collector.detect_context() === "localhost") {
+              CElectron.fs.delete_project(original_name, function (response) {
+                if (response !== "success") {
+                  console.log("Original project name files removed")
+                }
+              });
+            
+              $('#save_btn').click();
+          }
+            
         }
       }
-    }
-  );
-}
+    )
+  }
 });
 
 $("#rename_proc_button").on("click", function () {
