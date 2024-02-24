@@ -28,6 +28,9 @@
   #save_phasetype_btn{
     display: none;
   }
+  #code_preview_fullscreen {
+    display: none;
+  }
 </style>
 <br /><br />
 
@@ -203,6 +206,8 @@ $("#code_editor-tab").on("click", function () {
     $("#code_preview").prop("src", "about:blank");
     $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");
     $('#code-preview-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
+    // $('#code_preview_fullscreen').prop("disabled", true);
+    $('#code_preview_fullscreen').hide();
   });
 
   //https://stackoverflow.com/a/32100295/4490801
@@ -260,7 +265,8 @@ $("#community_code_btn").on("click", function () {
 $("#code-preview-tab").on("click", function () {
     $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");
     $('#code_editor-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
-
+    // $('#code_preview_fullscreen').prop("disabled", false);
+    $('#code_preview_fullscreen').show();
     /*
      * work out if we're in a graphics editor or code editor file and get the appropriate html
      */

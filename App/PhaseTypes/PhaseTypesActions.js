@@ -72,7 +72,7 @@ function initiate_actions() {
   });
 
   $("#assets_folder_btn").click(function () {
-    CElectron.open_folder("repo", "User/Assets");
+    CElectron.open_folder("repo", "User\\Assets");
   });
   $("#assets_loc_btn").click(function () {
     var text = "../../" + user.current.repo + "/User/Assets/";
