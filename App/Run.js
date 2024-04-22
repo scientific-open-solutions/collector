@@ -345,6 +345,7 @@ Project = {
           data: this_data,
           success: function(result){
             console.log("result");
+            console.log(result);
             if(result.toLowerCase().indexOf("error") !== -1 | result.toLowerCase().indexOf("count") === -1){
               attempt_no++;
               if(attempt_no > 2){
@@ -383,6 +384,7 @@ Project = {
       */
 
 
+      /*
       console.log("just before the ajax");
       $.ajax({
         type: "POST",
@@ -395,6 +397,7 @@ Project = {
           //Phase.submit();
         }
       });
+      */
 
       // Finally, let's just update the repeat instance number
       parent.parent.project_json.repeat_no++;
