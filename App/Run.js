@@ -163,6 +163,10 @@ Project = {
 
     response_data["location"] = Project.get_vars.location;
 
+    if(typeof(Project.get_vars.redcap_id) !== "undefined"){
+      response_data["redcap_id"] = Project.get_vars.redcap_id;
+    }
+
     var org_repo_proj = project_json.location.split("/");
 
     response_data["organization"] = org_repo_proj[0];
@@ -1594,6 +1598,9 @@ function process_welcome() {
       $("#loading_project_json").fadeOut(500);
       $("#researcher_message").fadeIn(2000);
       $("#participant_id_div").show(1000);
+    } else if(pp_id_setting === "redcap"){
+      $("#participant_code").val(Project.get_vars.redcap_id);
+      post_welcome(Project.get_vars.redcap_id, "redcap");
     } else {
       bootbox.alert(
         "It's not clear if the researcher wants you to give them a user id - please contact them before proceeding."
