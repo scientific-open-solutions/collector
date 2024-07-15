@@ -108,7 +108,7 @@ if (typeof settings.tab_hor_vert === "undefined" || settings.tab_hor_vert.toLowe
         .addClass("border-top")
         .addClass("border-primary")
         .css("text-align", "right")
-    );
+    )
 } else if (settings.tab_hor_vert.toLowerCase() === "vertical") {
   $("#" + survey_outline).append(
     $("<table>").append(
@@ -457,6 +457,7 @@ function load_survey(survey, survey_outline) {
 
 function process_question(row, row_no) {
   
+  
   //row.values = row.values == "" ? row.answers : row.values;
   if (row.type === "page_break") {
     page_break_management.breaks_remaining++;
@@ -506,7 +507,7 @@ function process_question(row, row_no) {
 
     var survey_id = survey_prepend + row["item_name"].toLowerCase();
 
-    // This sets up the hidden inputs for each question - Qwerty2
+    // This sets up the hidden inputs for each question
     question_td =
       $("<input>")
         .attr("type", "hidden")
@@ -607,6 +608,7 @@ function process_question(row, row_no) {
 
         break;
     }
+    
 
     if (feedback_array) {
       question_td.append(
@@ -650,8 +652,15 @@ function process_question(row, row_no) {
                 "_question"
             )[0].outerHTML + $("<td>").html(question_td)[0].outerHTML;
       } else {
+
+      
         var row_html =
-          $("<tr>").append($("<td>").attr("colspan", 2).html(row["text"]).attr("class", "text-primary").attr("id", survey_id + "_question"))[0]
+          $("<tr>")
+            .append($("<td>")
+            .attr("colspan", 2)
+            .html(row["text"])
+            .attr("class", "text-primary")
+            .attr("id", survey_id + "_question"))[0]
             .outerHTML +
           $("<tr>").append(
             $("<td>")
@@ -711,6 +720,24 @@ function process_question(row, row_no) {
     } else {
       this_shuffle = row["shuffle_question"];
     }
+
+
+    /* Likely you can delete this code
+    console.log("row");
+    console.log(row);
+    console.log("hi Ant and Chris :-)");
+    console.log(typeof(row["branched"]) !== "undefined");
+
+    
+    if(typeof(row["branched"]) !== "undefined" && row["branched"] !== ""){
+      row_html = row_html.replaceAll("<tr","<tr style='display:none' ");
+    }
+
+
+    console.log("this row_html");
+    console.log(row_html);
+    */
+
     return [row_html, this_shuffle];
   }
 }
@@ -811,7 +838,26 @@ function row_perc(this_rat) {
 }
 
 function response_check(submitted_element) {
-  console.log(submitted_element)
+  console.log("submitted_element");
+  console.log(submitted_element);
+
+
+  console.log("look below");
+
+  var next_item = $("[name='" + submitted_element.name + "']").attr('next_item');
+
+  console.log("next_item");
+  console.log(next_item);
+
+  $("[item_name='" + next_item + "']").show();
+
+
+  //$("[name='" + submitted_element.name + "']").prop('next_item').show();
+
+  
+  // possibly return here once the elements have the branch property qweryt
+
+
   switch (submitted_element.type) {
     case "checkbox":
       var checked_responses = $(
@@ -1257,6 +1303,14 @@ function write(type, row) {
 
     var options = row["answers"].split("|");
     var values = row["values"].split("|");
+    var branch_split;
+    if(typeof(row["branch"]) == "undefined"){
+      branch_split = Array(values.length);
+    } else {
+      branch_split = row["branch"].split("|");
+    }
+    console.log("branch_split");
+    console.log(branch_split);
     for (var i = 0; i < options.length; i++) {
       var this_radio = $("<input>");
       this_radio
@@ -1265,6 +1319,9 @@ function write(type, row) {
         .attr("autocomplete", "off")
         .attr("id", "likert_" + row["row_no"] + "_" + i)
         .attr("onclick", "survey_js.likert_update(this);")
+
+        .attr("next_item", branch_split[i])
+        
         .attr("value", values[i])
         .addClass("btn-check")
       this_div.append(this_radio);
@@ -1394,21 +1451,71 @@ function write_survey(this_survey, this_id) {
     } 
   }
   
+  // seems like the next row might be deletable, but leaving in for now: 
   survey_html += "<tr>";
+
+  /*
+   * add checks for branching
+   */
+  var any_branching = false;
+  for(i =0; i < this_survey.length; i++){
+    //row = this_survey[i];
+    /*
+     * identify that this row is impacted by branching
+     */
+    if(any_branching === true){
+      this_survey[i].branched = "yes";
+    }
+   /*
+     * check if any branching has occurred. If so, then identify this to help with hiding later
+     */
+    if(typeof(this_survey[i].branch) !== "undefined" && this_survey[i].branch !== ""){
+      any_branching = true;
+    }
+
+  }
+
+
   for (i = 0; i < this_survey.length; i++) {
       row = this_survey[i];
       if (row["type"].toLowerCase() === "redcap_pii") {
+        console.log("skipping due to this just being a redcap row");
         // do nothing as we don't want to include any HTML
       } else {
         row_html = process_question(row, i);
-        this_survey_object.content.push(row_html[0]);
+        console.log(row_html);
+        
+        if(typeof(row["branch_id"]) == "undefined"){
+          row["branch_id"] = "";
+        }
+
+        row_html = row_html.map(function(item){
+          return item.replaceAll("<tr","<tr branch='" + row["branch"] + "'")
+        });
+
+        if(typeof(row["branched"]) !== "undefined" && row["branched"] !== ""){
+          row_html = row_html.map(function(item){
+            return item.replaceAll("<tr","<tr style='display:none' item_name='" + row["item_name"] + "'")
+          });
+        }
+        
+        console.log("row_htlm");
+        console.log(row_html);  
+        this_survey_object.content.push(
+          
+          
+          
+          
+          row_html[0]   
+        );
         this_survey_object.shuffle_question.push(row_html[1]);
       }
   }
 
+  //by Camilo Martin on https://stackoverflow.com/questions/1960473/unique-values-in-an-array
   unique_shuffles = this_survey_object.shuffle_question.filter(
     (v, i, a) => a.indexOf(v) === i
-  ); //by Camilo Martin on https://stackoverflow.com/questions/1960473/unique-values-in-an-array
+  ); 
 
   for (var i = 0; i < unique_shuffles.length; i++) {
     if (
@@ -1448,8 +1555,32 @@ function write_survey(this_survey, this_id) {
     }
   }
 
+  /*
 
-  qs_in_order = this_survey_object.content_new_order.join("</tr><tr>");
+    /*
+    * check if the row should be visible or not, e.g. due to previous branching
+    */
+
+
+
+    /*
+    var hide_show = "";
+    for(var i = 0; i < row_no; i++){
+      if(typeof(survey_obj.data[row_no].branching) !== "undefined" && survey_obj.data[row_no].branching !== ""){
+        hide_show = "display:none";
+      }
+    }
+
+    console.log("row");
+    console.log(row);
+
+  */
+
+
+  qs_in_order = this_survey_object.content_new_order.join("");
+
+  // below looks like it should be deleted, but leaving commented out for now
+  //qs_in_order = this_survey_object.content_new_order.join("</tr><tr>");
   qs_in_order += "</tr>";
 
   survey_html += qs_in_order;
