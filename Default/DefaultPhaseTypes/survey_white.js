@@ -837,6 +837,12 @@ function row_perc(this_rat) {
   return [row_ques_perc, row_resp_perc];
 }
 
+function show_block(block_name){
+  console.log("block_name");
+  console.log(block_name);
+  $("[block_name=" + block_name+"]").show();
+}
+
 function response_check(submitted_element) {
   console.log("submitted_element");
   console.log(submitted_element);
@@ -844,12 +850,14 @@ function response_check(submitted_element) {
 
   console.log("look below");
 
-  var next_item = $("[name='" + submitted_element.name + "']").attr('next_item');
+  show_block($("#" + submitted_element.id).attr('block_name'));
+  console.log("just tried to show block");
+  // var next_item = ;
 
-  console.log("next_item");
-  console.log(next_item);
+  // console.log("next_item");
+  // console.log(next_item);
 
-  $("[item_name='" + next_item + "']").show();
+  // $("[item_name='" + next_item + "']").show();
 
 
   //$("[name='" + submitted_element.name + "']").prop('next_item').show();
@@ -1303,14 +1311,14 @@ function write(type, row) {
 
     var options = row["answers"].split("|");
     var values = row["values"].split("|");
-    var branch_split;
+    var branches;
     if(typeof(row["branch"]) == "undefined"){
-      branch_split = Array(values.length);
+      branches = Array(values.length);
     } else {
-      branch_split = row["branch"].split("|");
+      branches = row["branch"].split("|");
     }
-    console.log("branch_split");
-    console.log(branch_split);
+    console.log("branches");
+    console.log(branches);
     for (var i = 0; i < options.length; i++) {
       var this_radio = $("<input>");
       this_radio
@@ -1320,7 +1328,7 @@ function write(type, row) {
         .attr("id", "likert_" + row["row_no"] + "_" + i)
         .attr("onclick", "survey_js.likert_update(this);")
 
-        .attr("next_item", branch_split[i])
+        .attr("block_name", branches[i])
         
         .attr("value", values[i])
         .addClass("btn-check")
@@ -1452,28 +1460,51 @@ function write_survey(this_survey, this_id) {
   }
   
   // seems like the next row might be deletable, but leaving in for now: 
-  survey_html += "<tr>";
+  //survey_html += "<tr>";
 
-  /*
-   * add checks for branching
-   */
+  
+  //
+  // add checks for branching
+  //
   var any_branching = false;
   for(i =0; i < this_survey.length; i++){
-    //row = this_survey[i];
+    
     /*
-     * identify that this row is impacted by branching
-     */
+    //row = this_survey[i];
+     //
+     // identify that this row is impacted by branching
+     
     if(any_branching === true){
       this_survey[i].branched = "yes";
     }
-   /*
-     * check if any branching has occurred. If so, then identify this to help with hiding later
-     */
+    //
+    // check if any branching has occurred. If so, then identify this to help with hiding later
+    //
     if(typeof(this_survey[i].branch) !== "undefined" && this_survey[i].branch !== ""){
       any_branching = true;
     }
 
+    
+    // identifying next question
+    //
+    // make sure we're not on the last question
+    console.log(i);
+    if(i < this_survey.length -1){
+      // check if this row is branching or already has a next question
+      if(this_survey[i].branch !==""){
+        // do nothing
+      } else if(this_survey[i].next_question !== ""){
+        //do nothing
+      } else {
+        // use item_name of next row as the next_question:
+        this_survey[i].next_question = this_survey[i+1].item_name;
+      }
+    }
+    */
   }
+  
+  console.log("this_survey");
+  console.log(this_survey);
 
 
   for (i = 0; i < this_survey.length; i++) {
@@ -1493,9 +1524,17 @@ function write_survey(this_survey, this_id) {
           return item.replaceAll("<tr","<tr branch='" + row["branch"] + "'")
         });
 
+        /* likely can be deleted
         if(typeof(row["branched"]) !== "undefined" && row["branched"] !== ""){
           row_html = row_html.map(function(item){
             return item.replaceAll("<tr","<tr style='display:none' item_name='" + row["item_name"] + "'")
+          });
+        }
+        */
+
+        if(typeof(row["block"]) !== "undefined" && row["block"] !== ""){
+          row_html = row_html.map(function(item){
+            return item.replaceAll("<tr","<tr style='display:none' block_name='" + row["block"] + "'")
           });
         }
         
