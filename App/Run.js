@@ -62,7 +62,7 @@ Project = {
     "detect_exe",
     "get_htmls",
     "get_gets",
-    //"start_restart", {CGD} Turned this off a long time ago, can't really remember why! (Think it was something to do with a double page loading thing)
+    "start_restart", // {CGD} Turned this off a long time ago, can't really remember why! (Think it was something to do with a double page loading thing)
     "start_project",
     "load_phases",
     "select_condition",
@@ -1835,13 +1835,17 @@ function shuffle_start_exp() {
 }
 
 function start_restart() {
+  console.log
   if (isSafari) {
     bootbox.alert(
       "Please do not use Safari to complete this study. It is likely that your data will not save correctly if you do. Please close Safari and use another browser"
     );
-  } else  /* //skipping resume for now if (
+    /*
+    //blocking resume for now
+  } else if(
     (window.localStorage.getItem("project_json") !== null) &
-    (Project.get_vars.platform !== "preview")
+    (Project.get_vars.platform !== "preview") &
+    (project_json.conditions[0].resume == "yes")
   ) {
     bootbox.dialog({
       title: "Resume or Restart?",
@@ -1893,7 +1897,8 @@ function start_restart() {
         },
       },
     });
-  } else */ {
+    */
+  } else  {
     Project.activate_pipe();
   }
 }

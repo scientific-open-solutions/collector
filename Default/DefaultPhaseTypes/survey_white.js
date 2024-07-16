@@ -1,5 +1,5 @@
 /*
- * TDE Survey 3.2.2
+ * Collector Survey 3.2.3
  */
 
 /* 
@@ -219,9 +219,9 @@ $( ".datepicker" ).datepicker({
 
 $("#ExperimentContainer").css("transform", "scale(1,1)");
 $("#proceed_button").on("click", function () {
-  clicks++
-  console.log(clicks + " <----------- clicks")
-  console.log(page_break_management.breaks_remaining + " <------------- breaks remaining")
+  clicks++;
+  //console.log(clicks + " <----------- clicks")
+  //console.log(page_break_management.breaks_remaining + " <------------- breaks remaining")
   var proceed = true;
   var tabs = document.getElementsByClassName("show_tab active");
   if (tabs.length > 0) {
@@ -251,8 +251,14 @@ $("#proceed_button").on("click", function () {
       } else {
         min_resp_length = 0;
       }
-
-      var quest_resp = isJSON($("#" + response_elements[i].id).val());
+      console.log("response_elements[i].id");
+      console.log(response_elements[i].id.replace("_response","_value"));
+      
+      console.log(isJSON($("#" + response_elements[i].id).val()));
+      console.log(isJSON($("#" + response_elements[i].id.replace("_response","_value")).val()));
+      
+      //var quest_resp = isJSON($("#" + response_elements[i].id).val());
+      var quest_resp = isJSON($("#" + response_elements[i].id.replace("_response","_value")).val());
       if (quest_resp.length < min_resp_length) {
         proceed = false;
         $("#" + response_elements[i].id.replace("response", "question")).removeClass("text-dark").removeClass("text-success").addClass("text-danger");
@@ -417,6 +423,16 @@ survey_js.likert_update = function (this_element) {
 
   response_check(this_element);
 };
+
+function hide_blocks(block_names){
+  console.log("block_names");
+  console.log(block_names);
+  if(block_names !== ""){
+    block_names.split(" ").forEach(function(block_name){
+      $("[block_name=" + block_name+"]").hide();
+    });  
+  }
+}
 
 function load_survey(survey, survey_outline) {
   /*
@@ -837,12 +853,6 @@ function row_perc(this_rat) {
   return [row_ques_perc, row_resp_perc];
 }
 
-function show_block(block_name){
-  console.log("block_name");
-  console.log(block_name);
-  $("[block_name=" + block_name+"]").show();
-}
-
 function response_check(submitted_element) {
   console.log("submitted_element");
   console.log(submitted_element);
@@ -851,6 +861,8 @@ function response_check(submitted_element) {
   console.log("look below");
 
   show_block($("#" + submitted_element.id).attr('block_name'));
+  hide_blocks($("#" + submitted_element.id).attr('hide_blocks'));
+  
   console.log("just tried to show block");
   // var next_item = ;
 
@@ -969,6 +981,12 @@ function reveal_answers(this_element) {
         .addClass("btn-outline-info")
         .removeClass("btn-info");
     }
+  }
+}
+
+function show_block(block_name){
+  if(block_name !== ""){
+    $("[block_name=" + block_name+"]").show();
   }
 }
 
@@ -1321,6 +1339,16 @@ function write(type, row) {
     console.log(branches);
     for (var i = 0; i < options.length; i++) {
       var this_radio = $("<input>");
+      
+      // create hide blocks array
+      var hide_blocks = [];
+      for(var j=0; j < branches.length; j++){
+        if(i !== j){
+          hide_blocks.push(branches[j]);
+        }
+      }
+      hide_blocks = hide_blocks.join(" ");
+
       this_radio
         .attr("type", "radio")  
         .attr("name", survey_prepend + row["item_name"])
@@ -1329,7 +1357,8 @@ function write(type, row) {
         .attr("onclick", "survey_js.likert_update(this);")
 
         .attr("block_name", branches[i])
-        
+        .attr("hide_blocks", hide_blocks)
+
         .attr("value", values[i])
         .addClass("btn-check")
       this_div.append(this_radio);
@@ -1460,7 +1489,7 @@ function write_survey(this_survey, this_id) {
   }
   
   // seems like the next row might be deletable, but leaving in for now: 
-  //survey_html += "<tr>";
+  survey_html += "<tr>";
 
   
   //
@@ -1619,7 +1648,7 @@ function write_survey(this_survey, this_id) {
   qs_in_order = this_survey_object.content_new_order.join("");
 
   // below looks like it should be deleted, but leaving commented out for now
-  //qs_in_order = this_survey_object.content_new_order.join("</tr><tr>");
+  qs_in_order = this_survey_object.content_new_order.join("</tr><tr>");
   qs_in_order += "</tr>";
 
   survey_html += qs_in_order;
