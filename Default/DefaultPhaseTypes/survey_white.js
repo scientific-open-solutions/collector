@@ -257,7 +257,9 @@ $("#proceed_button").on("click", function () {
       console.log(isJSON($("#" + response_elements[i].id).val()));
       console.log(isJSON($("#" + response_elements[i].id.replace("_response","_value")).val()));
       
+      // can probably delete the next line as it checks the values, which is not helpful, when it should be checking what the response was
       //var quest_resp = isJSON($("#" + response_elements[i].id).val());
+
       var quest_resp = isJSON($("#" + response_elements[i].id.replace("_response","_value")).val());
       if (quest_resp.length < min_resp_length) {
         proceed = false;
@@ -427,7 +429,7 @@ survey_js.likert_update = function (this_element) {
 function hide_blocks(block_names){
   console.log("block_names");
   console.log(block_names);
-  if(block_names !== ""){
+  if(typeof(block_names) !== "undefined" && block_names !== ""){
     block_names.split(" ").forEach(function(block_name){
       $("[block_name=" + block_name+"]").hide();
     });  
