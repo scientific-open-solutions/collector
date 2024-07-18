@@ -123,7 +123,10 @@ Project = {
     phase_end_ms = new Date().getTime();
     parent.parent.phase_start_time_ms = phase_end_ms;
     phase_inputs = {};
-    $("#experiment_progress").css("width",(100 * project_json.phase_no) / (project_json.parsed_proc.length - 1) + "%");
+
+    
+    
+    // $("#experiment_progress").css("width",(100 * project_json.phase_no) / (project_json.parsed_proc.length - 1) + "%");
 
     for (var i = 0; i < project_json.inputs.length; i++) {
       if (
@@ -585,6 +588,11 @@ Project = {
   },
 
   start_post: function (go_to_info) {
+
+    // use the phase_progress column 
+    if(project_json.phase_no > 0){
+      $("#experiment_progress").css("width",(100 * project_json.parsed_proc[project_json.phase_no].phase_progress) + "%");
+    }
     if (typeof go_to_info !== "undefined") {
       project_json.phase_no = project_json.phase_no;
       console.log("phase.go_to: "+project_json.phase_no)
@@ -1470,6 +1478,14 @@ function parse_current_proc() {
       }) === false
     );
   });
+
+  // add progress here
+  for(var i = 0; i < project_json.parsed_proc.length; i++){
+    project_json.parsed_proc[i].phase_progress = i / project_json.parsed_proc.length;
+  }
+  
+
+
   proc_fill_items();
   proc_apply_repeats();
   Project.activate_pipe();
