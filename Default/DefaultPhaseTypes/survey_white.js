@@ -217,6 +217,8 @@ $( ".datepicker" ).datepicker({
 });
 */
 
+var blocks_obj = {};
+
 $("#ExperimentContainer").css("transform", "scale(1,1)");
 $("#proceed_button").on("click", function () {
   clicks++;
@@ -234,8 +236,10 @@ $("#proceed_button").on("click", function () {
     [row_no, item_name] = retrieve_row_no_item_name(response_elements[i]);
     if (typeof survey_obj.data[row_no].optional !== "undefined") {
       var this_optional = survey_obj.data[row_no].optional.toLowerCase();
-
-      if (this_optional.indexOf("no") !== -1) {
+      var this_block   = survey_obj.data[row_no].block;
+      
+      if (this_optional.indexOf("no") !== -1 & ((this_block) === "" | blocks_obj[this_block] === true)) { //
+        console.log("howdy");
         this_optional = this_optional.split("-"); // find out whether there's a minimal number of responses
         if (this_optional.length === 1) {
           // default is that length needs to be at least 1
@@ -251,12 +255,18 @@ $("#proceed_button").on("click", function () {
       } else {
         min_resp_length = 0;
       }
+
+      
+
       console.log("response_elements[i].id");
       console.log(response_elements[i].id.replace("_response","_value"));
       
       console.log(isJSON($("#" + response_elements[i].id).val()));
       console.log(isJSON($("#" + response_elements[i].id.replace("_response","_value")).val()));
       
+      console.log("min_resp_length");
+      console.log(min_resp_length);
+
       // can probably delete the next line as it checks the values, which is not helpful, when it should be checking what the response was
       //var quest_resp = isJSON($("#" + response_elements[i].id).val());
 
@@ -417,7 +427,6 @@ function isJSON(str) {
 }
 
 survey_js.likert_update = function (this_element) {
-  // qwerty1
   // this_element_label = $('label[for="'+this_element.id+'"]').text();
   [row_no, item_name] = retrieve_row_no_item_name(this_element);
   $(".row_" + row_no).removeClass("active").removeClass("btn-primary").addClass("btn-outline-primary");
@@ -432,6 +441,7 @@ function hide_blocks(block_names){
   if(typeof(block_names) !== "undefined" && block_names !== ""){
     block_names.split(" ").forEach(function(block_name){
       $("[block_name=" + block_name+"]").hide();
+      blocks_obj[block_name] = false;
     });  
   }
 }
@@ -856,16 +866,10 @@ function row_perc(this_rat) {
 }
 
 function response_check(submitted_element) {
-  console.log("submitted_element");
-  console.log(submitted_element);
-
-
-  console.log("look below");
-
+  
   show_block($("#" + submitted_element.id).attr('block_name'));
   hide_blocks($("#" + submitted_element.id).attr('hide_blocks'));
   
-  console.log("just tried to show block");
   // var next_item = ;
 
   // console.log("next_item");
@@ -907,7 +911,7 @@ function response_check(submitted_element) {
     case "email":
     case "radio":
       this_element_label = $('label[for="'+submitted_element.id+'"]').text();
-      //qwerty1
+      
         // $("#" + submitted_element.name + "_response").val(this_element_label);
         // $("#" + submitted_element.name + "_value").val(submitted_element.value);  
         $("#" + submitted_element.name + "_value").val(this_element_label);
@@ -989,6 +993,7 @@ function reveal_answers(this_element) {
 function show_block(block_name){
   if(block_name !== ""){
     $("[block_name=" + block_name+"]").show();
+    blocks_obj[block_name] = true;
   }
 }
 
