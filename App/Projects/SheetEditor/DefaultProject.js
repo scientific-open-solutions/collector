@@ -23,6 +23,7 @@ default_project = {
       "end_message",
       "start_message",
       "buffer",
+      "progress_bar",
       // "scripts",
     ],
     [
@@ -36,7 +37,7 @@ default_project = {
       "",
       "",
       5,
-      "",
+      "row",
     ]
   ],
   all_stims: {
