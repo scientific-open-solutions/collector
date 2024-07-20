@@ -348,7 +348,7 @@ Project = {
             if(result.toLowerCase().indexOf("error") !== -1 | result.toLowerCase().indexOf("count") === -1){
               attempt_no++;
               if(attempt_no > 2){
-                bootbox.alert("⚠ <b class='text-danger'>WARNING</b> ⚠ <br><br>222This data has not submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
+                bootbox.alert("⚠ <b class='text-danger'>WARNING</b> ⚠ <br><br>This data has not submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
                 // console.log("This data may not have been submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
               } else {
                 redcap_post(
