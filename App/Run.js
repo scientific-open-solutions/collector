@@ -62,7 +62,7 @@ Project = {
     "detect_exe",
     "get_htmls",
     "get_gets",
-    //"start_restart", //{CGD} Turned this off a long time ago, can't really remember why! (Think it was something to do with a double page loading thing)
+    "start_restart", // {CGD} Turned this off a long time ago, can't really remember why! (Think it was something to do with a double page loading thing)
     "start_project",
     "load_phases",
     "select_condition",
@@ -123,7 +123,10 @@ Project = {
     phase_end_ms = new Date().getTime();
     parent.parent.phase_start_time_ms = phase_end_ms;
     phase_inputs = {};
-    $("#experiment_progress").css("width",(100 * project_json.phase_no) / (project_json.parsed_proc.length - 1) + "%");
+
+    
+    
+    // $("#experiment_progress").css("width",(100 * project_json.phase_no) / (project_json.parsed_proc.length - 1) + "%");
 
     for (var i = 0; i < project_json.inputs.length; i++) {
       if (
@@ -162,6 +165,10 @@ Project = {
     var post_string = "post_" + project_json.post_no;
 
     response_data["location"] = Project.get_vars.location;
+
+    if(typeof(Project.get_vars.redcap_id) !== "undefined"){
+      response_data["redcap_id"] = Project.get_vars.redcap_id;
+    }
 
     var org_repo_proj = project_json.location.split("/");
 
@@ -330,6 +337,7 @@ Project = {
       // console.log(clean_phase_responses) // Uncomment this if you want to see what variables are submitted during each phase.submit() call
       // this_location.toLowerCase();
 
+      // CGD this one!
       console.log("just before the ajax");
 
       function redcap_post(
@@ -345,10 +353,11 @@ Project = {
           data: this_data,
           success: function(result){
             console.log("result");
+            //console.log(result);
             if(result.toLowerCase().indexOf("error") !== -1 | result.toLowerCase().indexOf("count") === -1){
               attempt_no++;
               if(attempt_no > 2){
-                bootbox.alert("⚠ <b class='text-danger'>WARNING</b> ⚠ <br><br>111This data has not submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
+                bootbox.alert("⚠ <b class='text-danger'>WARNING</b> ⚠ <br><br>This data has not submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
                 // console.log("This data may not have been submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
               } else {
                 redcap_post(
@@ -383,6 +392,7 @@ Project = {
       */
 
 
+      /*
       console.log("just before the ajax");
       $.ajax({
         type: "POST",
@@ -395,6 +405,7 @@ Project = {
           //Phase.submit();
         }
       });
+      */
 
       // Finally, let's just update the repeat instance number
       parent.parent.project_json.repeat_no++;
@@ -578,6 +589,31 @@ Project = {
   },
 
   start_post: function (go_to_info) {
+
+    // use the phase_progress column 
+    
+    if(typeof(project_json.this_condition.progress_bar) !== "undefined"){
+      if(project_json.this_condition.progress_bar == "off"){
+        $("#project_progress_bar").css("display","none");
+      } else if(project_json.this_condition.progress_bar == "phase" | project_json.this_condition.progress_bar == "trial" | project_json.this_condition.progress_bar == "stimuli" | project_json.this_condition.progress_bar == "item"){
+        $("#experiment_progress").css("width",(100 * project_json.phase_no) / (project_json.parsed_proc.length - 1) + "%");
+      } else  if(project_json.this_condition.progress_bar == "row" | project_json.this_condition.progress_bar == "procedure"){
+        $("#experiment_progress").css("width",(100 * project_json.parsed_proc[project_json.phase_no].phase_progress) + "%"); 
+        // the default is to have a progress bar, but for it to move on after each row of the spreadsheet, not after each phase.  
+      } else {
+        $("#experiment_progress").css("width",(100 * project_json.parsed_proc[project_json.phase_no].phase_progress) + "%");
+      }
+      // the default is to have a progress bar, but for it to move on after each row of the spreadsheet, not after each phase.
+    } else {
+      $("#experiment_progress").css("width",(100 * project_json.parsed_proc[project_json.phase_no].phase_progress) + "%");
+
+    }
+
+      
+    
+
+
+
     if (typeof go_to_info !== "undefined") {
       project_json.phase_no = project_json.phase_no;
       console.log("phase.go_to: "+project_json.phase_no)
@@ -1228,7 +1264,7 @@ function load_phases() {
 function parse_sheets() {
   // Counterbalancing
   
-console.log(project_json);
+//console.log(project_json);
 // console.log("--------");
 // console.log(Object.keys(project_json.all_procs).length);
 // console.log("--------");
@@ -1329,11 +1365,9 @@ console.log(project_json);
       }, function(data){ 
         // success: function(result){
           console.log("success!");
-          console.log("The input value was: " + data);
           levels = parseInt(data);
           parent.parent.cb_level = levels;
           if (levels < total_procedures) {
-            console.log("yay 1")
             suffix = "_" + levels + ".csv";
             proc_sheet_name = proc_sheet_name + suffix;
             new_data = levels + 1;
@@ -1341,7 +1375,6 @@ console.log(project_json);
             counterbalance(new_data);
             switch_platform ();
           } else if (levels >= total_procedures) {
-            console.log("yay 2")
             suffix = "_" + total_procedures + ".csv";
             proc_sheet_name = proc_sheet_name + suffix;
             new_data = 1;
@@ -1349,7 +1382,6 @@ console.log(project_json);
             counterbalance(new_data);
             switch_platform ();
           } else {
-            console.log("boo 3")
             bootbox.alert("Counterbalancing has broken. Please stop the study and contact the researcher");
             var rand_num = Math.floor( Math.random() * total_procedures + 1 );
             suffix = "_" + rand_num + ".csv";
@@ -1463,6 +1495,14 @@ function parse_current_proc() {
       }) === false
     );
   });
+
+  // add progress here
+  for(var i = 0; i < project_json.parsed_proc.length; i++){
+    project_json.parsed_proc[i].phase_progress = i / project_json.parsed_proc.length;
+  }
+  
+
+
   proc_fill_items();
   proc_apply_repeats();
   Project.activate_pipe();
@@ -1591,6 +1631,9 @@ function process_welcome() {
       $("#loading_project_json").fadeOut(500);
       $("#researcher_message").fadeIn(2000);
       $("#participant_id_div").show(1000);
+    } else if(pp_id_setting === "redcap"){
+      $("#participant_code").val(Project.get_vars.redcap_id);
+      post_welcome(Project.get_vars.redcap_id, "redcap");
     } else {
       bootbox.alert(
         "It's not clear if the researcher wants you to give them a user id - please contact them before proceeding."
@@ -1825,13 +1868,15 @@ function shuffle_start_exp() {
 }
 
 function start_restart() {
+  console.log
   if (isSafari) {
-    bootbox.alert(
-      "Please do not use Safari to complete this study. It is likely that your data will not save correctly if you do. Please close Safari and use another browser"
-    );
-  } else  /* //skipping resume for now if (
+    bootbox.alert("Please do not use Safari to complete this study. It is likely that your data will not save correctly if you do. Please close Safari and use another browser");
+    /*
+    //blocking resume for now
+  } else if(
     (window.localStorage.getItem("project_json") !== null) &
-    (Project.get_vars.platform !== "preview")
+    (Project.get_vars.platform !== "preview") &
+    (project_json.conditions[0].resume == "yes")
   ) {
     bootbox.dialog({
       title: "Resume or Restart?",
@@ -1883,7 +1928,8 @@ function start_restart() {
         },
       },
     });
-  } else */ {
+    */
+  } else  {
     Project.activate_pipe();
   }
 }

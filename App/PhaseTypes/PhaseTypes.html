@@ -241,16 +241,6 @@ $("#code_preview_fullscreen").on("click", function () {
         element.msRequestFullscreen();
       }
     }
-
-    /*
-  var this_width = window.innerWidth;
-  var this_height = window.innerHeight;
-  $("#code_preview").css("height", this_height);
-  $("#code_preview").css("width",  this_width);
-  $("#code_preview").css("position",  "absolute");
-  $("#code_preview").css("top",  "0px");
-  $("#code_preview").css("left",  "0px");
-  */
   });
 
 $("#graphic_editor").load(collector_map["Graphic.html"]);
@@ -265,48 +255,52 @@ $("#community_code_btn").on("click", function () {
 $("#code-preview-tab").on("click", function () {
     $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");
     $('#code_editor-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
-    // $('#code_preview_fullscreen').prop("disabled", false);
     $('#code_preview_fullscreen').show();
-    /*
-     * work out if we're in a graphics editor or code editor file and get the appropriate html
-     */
+    
+    /* work out if we're in a graphics editor or code editor file and get the appropriate html */
 
     if(parent.parent.graphicObj) {
       required_code_name = $("#phasetype_select").val();
       var iframe_content = master.phasetypes.user[required_code_name];
     } else {
       var iframe_content = editor.getValue();
-      // console.log(iframe_content)
     }    
 
-    /*
-     * find and replace items for developmental piloting
-     */
+    /* * find and replace items for developmental piloting */
     iframe_variables = eval(iframe_content.split("---development---")[1]);
-
-    /*
-     * use ../User folder
-     */
-    home_dir = CElectron.git.locate_repo({org: $("#select_org").val(),repo: $("#select_repo").val(),});
-
-    iframe_content = iframe_content.replaceAll("../User/", home_dir + "/User/");
 
     if (typeof iframe_variables !== "undefined") {
       iframe_variables.forEach(function (row) {
         var this_key = Object.keys(row);
-        if (this_key.length > 1) {
-          bootbox.alert("Error: You have multiple keys:" + this_key);
-        } else if (this_key.length == 0) {
+        if (this_key.length == 0) {
           bootbox.alert("Error: You don't have any keys!");
         } else {
-          iframe_content = iframe_content.replaceAll("{{" + this_key[0] + "}}",row[this_key[0]]);
+          for (i = 0; i < this_key.length; i++) {
+            iframe_content = iframe_content.replaceAll("{{" + this_key[i] + "}}", row[this_key[i]]);
+          }
         }
       });
     }
 
+    /* use ../User folder */
+    home_dir = CElectron.git.locate_repo({org: $("#select_org").val(),repo: $("#select_repo").val(),});
+    iframe_content = iframe_content.replaceAll("../User/", home_dir + "/User/");
+
+    /* change set_timer so it works in the preview */
+    iframe_content = iframe_content.replaceAll("Phase.set_timer(function(){", "setTimeout(function(){");
+
+    /* delay any appropriate_message() call so it works in the preview */
+    var regex = /appropriate_message\(([^)]*)\)/g;
+    iframe_content = iframe_content.replace(regex, function(match) {
+      return `setTimeout(function() { ${match} }, 0)`;
+    });
+
+    /* change set_timer so it works in the preview */
+    iframe_content = iframe_content.replaceAll("Phase.submit()", "appropriate_message('<b>End of Preview</b><br><br>You would now be moved on to the next task/trial if this was a live experiment')");
+
     doc = document.getElementById("code_preview").contentWindow.document;
     doc.open();
-    doc.write(libraries + iframe_content);
+    doc.write(libraries + iframe_content);    
     doc.close();
 });
 

@@ -69,9 +69,7 @@ $("#new_survey_button").on("click", function () {
   if (!parent.parent.functionIsRunning) {
     parent.parent.functionIsRunning = true;
     if ($("#survey_select").val() === null) {
-      bootbox.alert(
-        "Please select a survey that already exists to base the new survey on. To do this, click on the dropdown list that has 'Please select a survey' written in it."
-      );
+      bootbox.alert("Please select a survey that already exists to base the new survey on. To do this, click on the dropdown list that has 'Please select a survey' written in it.");
       parent.parent.functionIsRunning = false;
     } else {
       bootbox.confirm(
@@ -122,15 +120,15 @@ $("#preview_tab_btn").on("click", function () {
   $('#spreadsheet_tab_btn').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
   var this_survey = survey_HoT.getData();
   preview_survey(this_survey);
-  $('#pills-spreadsheet').removeClass("active show");
-  $('#pills-preview').addClass("active show");
+  $('#pills-spreadsheet_survey').removeClass("active show");
+  $('#pills-preview_survey').addClass("active show");
 });
 
 $("#spreadsheet_tab_btn").on("click", function () {
   $(this).removeClass("btn-outline-info").addClass("btn-info");
   $('#preview_tab_btn').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
-  $('#pills-spreadsheet').addClass("active show");
-  $('#pills-preview').removeClass("active show");
+  $('#pills-spreadsheet_survey').addClass("active show");
+  $('#pills-preview_survey').removeClass("active show");
 });
 
 $("#rename_survey_btn").on("click", function () {
@@ -294,8 +292,6 @@ $("#survey_select").on("change", function () {
     create_survey_HoT(master.surveys.user_surveys[this_survey[1]]);
     $("#spreadsheet_preview_tabs").show();
   } else {
-    bootbox.alert(
-      "It's not clear whether this is supposed to be a default or user survey"
-    );
+    bootbox.alert("It's not clear whether this is supposed to be a default or user survey");
   }
 });

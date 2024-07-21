@@ -131,7 +131,7 @@ $("#delete_proc_button").on("click", function () {
                   var project = $("#project_list").val();
                   var proc_file = $("#proc_select").val();
                   var file_path = "Projects" + "/" + project + "/" + proc_file;
-                  console.log(file_path);
+                  //console.log(file_path);
                   delete master.projects.projects[project].all_procs[proc_file];
 
                   // update the lists
@@ -771,7 +771,6 @@ $("#save_btn").on("click", function () {
                 bootbox.alert("The survey <b>" + proc_row.survey + "</b> in your procedure sheet doesn't appear to exist. Please check the spelling of it", function() { 
                   setTimeout(() => {
                     parent.parent.functionIsRunning = false;
-                    console.log("Hello")
                   }, 1500);
                   
                 });

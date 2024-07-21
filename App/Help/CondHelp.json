@@ -51,6 +51,10 @@
     "subtitle": "Which Procedure sheet?",
     "text": "By default, your experiment will use <b>procedure_1.csv</b>, which is a list of the order of trials and settings for each trial. If you want different participants to have different procedures, you will need to create a new procedure sheet, and have separate rows in the condition sheet for each procedure. <br><br> If you are developing your experiments online (e.g. on open-collector.org or ocollector.org) ignore the following. If you are developing the experiment on your computer, you should your procedure sheet in the <b>web/User/Projects/YOUR EXPERIMENT</b> folder."
   },
+  "progress_bar": {
+    "subtitle": "Would you like a progress bar at the top?",
+    "text": "By default, your project will include a progress bar at the top that moves forward after each row within your procedure sheet is complete. However, you can change this setting in a few ways: <br>To make the progress bar go up after each trial or phase, you can change this column to say  <b>phase</b>, <b>trial</b>, <b>stimuli</b>, <b>item</b>. <br><br> If you would like to turn off the progress bar, just change this cell to say <b>off</b>. <br><br> If you would like the progress bar to proceed in proportion to the number of rows (which is the default), then you can write <b>row</b> or <b>procedure</b> in this column."
+  },
   "redcap_url": {
     "subtitle": "PhP file location",
     "text": "<b>redcap_url</b> is the location of the PhP file that acts as the bridge between Collector and REDCap when running a live experiment. Note: when an active link is present, data is sent to REDCap during both 'run' and 'preview' versions."
