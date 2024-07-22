@@ -168,7 +168,7 @@ function create_survey_HoT(this_survey) {
       // thisCellValue =
       //   thisCellValue === null ? (thisCellValue = "") : thisCellValue;
       column = column === null ? (column = "") : column;
-      console.log("column: "+column)
+      console.log("column: " + column)
       
       helperActivate(column, thisCellValue, "survey");
 
@@ -186,9 +186,7 @@ function create_survey_HoT(this_survey) {
         $('#save_survey_btn').hide();
         $('#rename_survey_btn').hide();
         $('#delete_survey_btn').hide();
-        Collector.custom_alert(
-          "These changes will not be saved, as you are editing a <b>default</b> survey. Please click <b>New Survey</b> to create a new survey"
-        );
+        Collector.custom_alert("These changes will not be saved, as you are editing a <b>default</b> survey. Please click <b>New Survey</b> to create a new survey");
       }
 
       var middleColEmpty = 0;
@@ -336,51 +334,26 @@ function list_surveys() {
 
 function preview_survey(this_survey) {
   master.surveys.preview = true;
-  $("#survey_preview").css("height", window.innerHeight - 100);
-  if ($("#help_content").is(":visible")) {
-    var helper_width = parseFloat(
-      $("#help_content").css("width").replace("px", "")
-    );
-
-    if ($("#help_content").is(":visible")) {
-      helper_width = parseFloat(
-        $("#help_content").css("width").replace("px", "")
-      );
-
-      $("#survey_preview").animate(
-        {
-          width: window.innerWidth - helper_width,
-        },
-        500,
-        function () {
-          cell_editor.resize();
-        }
-      );
-    } else {
-      $("#survey_preview").animate(
-        {
-          width: window.innerWidth,
-        },
-        500,
-        function () {
-          cell_editor.resize();
-        }
-      );
-    }
-  } else {
-    $("#survey_preview").css("width", window.innerWidth);
-  }
 
   survey_template = CElectron.fs.read_default(
     "DefaultPhaseTypes",
     "survey.html"
   );
-  survey_template = survey_template.replace(
-    '"{{survey}}"',
-    JSON.stringify(this_survey)
-  );
+  survey_template = survey_template.replace('"{{survey}}"',JSON.stringify(this_survey));
+
+  var regex = /appropriate_message\(([^)]*)\)/g;
+  survey_template = survey_template .replace(regex, function(match) {
+    return `setTimeout(function() { ${match} }, 0)`;
+  });
+
+  /* change set_timer so it works in the preview */
+  
+
+  /* change set_timer so it works in the preview */
+  survey_template = survey_template.replaceAll("Phase.set_timer(function(){", "setTimeout(function(){");
 
   doc = document.getElementById("survey_preview").contentWindow.document;
   doc.open();
   doc.write(libraries + survey_template);
-}
+  doc.close();
+};

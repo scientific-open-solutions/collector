@@ -9,7 +9,7 @@ code_obj = {
     if (!parent.parent.functionIsRunning) {
       parent.parent.functionIsRunning = true;
       var deleted_phasetype = $("#phasetype_select").val();
-      console.log(deleted_phasetype);
+      //console.log(deleted_phasetype);
       master.phasetypes.file = $("#phasetype_select").val();
       var this_file = master.phasetypes.file;
       bootbox.confirm({

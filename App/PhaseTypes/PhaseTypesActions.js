@@ -371,7 +371,7 @@ function initiate_actions() {
     }
   });
   $("#phasetype_select").on("change", function () {
-    console.log(master.phasetypes.graphic.files)
+    //console.log(master.phasetypes.graphic.files)
     first_view = true; // This is just a reset flag for the graphics editor, you can ignore it
     master.phasetypes.graphic.files = {};
     var code_file = master.phasetypes.file;

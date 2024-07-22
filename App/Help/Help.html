@@ -167,15 +167,8 @@
         editor.resize();
       }
     );
-    $("#survey_preview").animate(
-      {
-        width: window.innerWidth - helper_width,
-      },
-      500,
-      function () {
-        cell_editor.resize();
-      }
-    );
+    //$("#survey_preview").animate({width: window.innerWidth - helper_width + 200,},500,function () {cell_editor.resize();});
+    //$("#pills-tabContent_survey").animate({width: "75vw",},500,function () {cell_editor.resize();});
   }
   load_help(Object.keys(help_dictionary));
 
@@ -405,15 +398,8 @@
           cell_editor.resize();
         }
       );
-      $("#survey_preview").animate(
-        {
-          width: window.innerWidth,
-        },
-        500,
-        function () {
-          cell_editor.resize();
-        }
-      );
+      // $("#survey_preview").animate({width: window.innerWidth,},500,function () {cell_editor.resize();});
+      $("#pills-tabContent_survey").animate({width: "98vw",},500,function () {cell_editor.resize();});
     } else {
       $("#help_area").show(500);
       $("#help_btn").css("font-weight", "bold");
@@ -447,15 +433,8 @@
           cell_editor.resize();
         }
       );
-      $("#survey_preview").animate(
-        {
-          width: window.innerWidth - helper_width,
-        },
-        500,
-        function () {
-          cell_editor.resize();
-        }
-      );
+      //$("#survey_preview").animate({width: window.innerWidth - helper_width + 200,},500,function () {cell_editor.resize();});
+      $("#pills-tabContent_survey").animate({width: "81vw",},500,function () {cell_editor.resize();});
     }
   });
 

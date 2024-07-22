@@ -353,6 +353,7 @@ Project = {
           success: function(result){
             console.log("result");
             console.log(result);
+            //console.log(result);
             if(result.toLowerCase().indexOf("error") !== -1 | result.toLowerCase().indexOf("count") === -1){
               attempt_no++;
               if(attempt_no > 2){
@@ -1876,6 +1877,10 @@ function start_restart() {
     bootbox.alert(
       "Please do not use Safari to complete this study. It is likely that your data will not save correctly if you do. Please close Safari and use another browser"
     );
+    /*
+    //blocking resume for now
+  } else if(
+    bootbox.alert("Please do not use Safari to complete this study. It is likely that your data will not save correctly if you do. Please close Safari and use another browser");
     /*
     //blocking resume for now
   } else if(

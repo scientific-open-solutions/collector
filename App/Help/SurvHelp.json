@@ -3,6 +3,10 @@
     "subtitle": "Answers the participant can choose",
     "text": "A single answer or list of answers the participant can choose. Put a pipe character ( | ) between each possible answer. If you're having problems finding the pipe key, you can highlight the pipe in the brackets and then copy and paste it."
   },
+  "branching": {
+    "subtitle": "Allows you to show or hide questions within the survey based on previous survey responses",
+    "text": "Just making this a holding page for Ant"
+  },  
   "btn_width": {
     "subtitle": "How wide each button will be (likert scale)",
     "text": "This is for likert questions only - you can set it so that each button has the same width as each other by setting a specific width (e.g. 200px)"
@@ -31,6 +35,10 @@
     "subtitle": "Default is 50%",
     "text": "You can control how wide the question is relative to the responses. This can be particularly useful if you are just presenting a series of statements for the user to agree to, so don't need to give the response side much space"
   },
+  "reversed": {
+    "subtitle": "Used in conjunction with score:",
+    "text": "Tells collector that this item contains a reversed scored item."
+  },
   "shuffle_question": {
     "subtitle": "randomise order of items",
     "text": "In this column, if you want to randomise the order of questions, you can either simply write <b>'on'</b> in the items you want randomised, or you can use a different words for different groups of items you want randomised together. For example, if you wanted the first and second half of your items shuffled, you could write 'first' in the shuffle column for each of the first half of the items, and 'second' for each of the second half of the items. The order of items is preserved otherwise, so any items without a word in the shuffle column will not be shuffled. If you write 'off' in this column, the item will <b>not</b> be shuffled."
@@ -57,6 +65,7 @@
     "instruct": "Allows you to type in instructions. ",
     "likert": "Participants can click on one of the options that they want. ",
     "number": "Only allows participants to type in a number. ",
+    "page_break": "Splits the survey into multiple pages visually. Note: the item_name must be different for each page.",
     "para": "Gives the participant a large text box to write in their answer. ",
     "radio": "Allows the participant to only select one option in a list (unlike checkboxes). Use radio_horizontal if wish to change the direction of the radio list",
     "text": "Gives the participant a text box to write in their answer."
