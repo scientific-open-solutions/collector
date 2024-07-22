@@ -239,6 +239,7 @@ for (var i = 0; i < response_elements.length; i++) {
     var this_block   = survey_obj.data[row_no].block;
     
     if (this_optional.indexOf("no") !== -1 & ((this_block) === "" | blocks_obj[this_block] === true)) { //
+      console.log("howdy");
       this_optional = this_optional.split("-"); // find out whether there's a minimal number of responses
       if (this_optional.length === 1) {
         // default is that length needs to be at least 1
@@ -258,13 +259,13 @@ for (var i = 0; i < response_elements.length; i++) {
     
 
     console.log("response_elements[i].id");
-    //console.log(response_elements[i].id.replace("_response","_value"));
+    console.log(response_elements[i].id.replace("_response","_value"));
     
-    //console.log(isJSON($("#" + response_elements[i].id).val()));
-    //console.log(isJSON($("#" + response_elements[i].id.replace("_response","_value")).val()));
+    console.log(isJSON($("#" + response_elements[i].id).val()));
+    console.log(isJSON($("#" + response_elements[i].id.replace("_response","_value")).val()));
     
     console.log("min_resp_length");
-    //console.log(min_resp_length);
+    console.log(min_resp_length);
 
     // can probably delete the next line as it checks the values, which is not helpful, when it should be checking what the response was
     //var quest_resp = isJSON($("#" + response_elements[i].id).val());
@@ -436,7 +437,7 @@ response_check(this_element);
 
 function hide_blocks(block_names){
 console.log("block_names");
-//console.log(block_names);
+console.log(block_names);
 if(typeof(block_names) !== "undefined" && block_names !== ""){
   block_names.split(" ").forEach(function(block_name){
     $("[block_name=" + block_name+"]").hide();
@@ -1342,7 +1343,7 @@ if(typeof(row["item_name_old"]) !== "undefined"){
     branches = row["branch"].split("|");
   }
   console.log("branches");
-  //console.log(branches);
+  console.log(branches);
   for (var i = 0; i < options.length; i++) {
     var this_radio = $("<input>");
     
@@ -1539,7 +1540,7 @@ for(i =0; i < this_survey.length; i++){
 }
 
 console.log("this_survey");
-//console.log(this_survey);
+console.log(this_survey);
 
 
 for (i = 0; i < this_survey.length; i++) {
@@ -1549,7 +1550,7 @@ for (i = 0; i < this_survey.length; i++) {
       // do nothing as we don't want to include any HTML
     } else {
       row_html = process_question(row, i);
-      //console.log(row_html);
+      console.log(row_html);
       
       if(typeof(row["branch_id"]) == "undefined"){
         row["branch_id"] = "";
@@ -1573,8 +1574,8 @@ for (i = 0; i < this_survey.length; i++) {
         });
       }
       
-      console.log("row_html");
-      //console.log(row_html);  
+      console.log("row_htlm");
+      console.log(row_html);  
       this_survey_object.content.push(
         
         

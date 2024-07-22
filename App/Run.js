@@ -337,7 +337,6 @@ Project = {
       // console.log(clean_phase_responses) // Uncomment this if you want to see what variables are submitted during each phase.submit() call
       // this_location.toLowerCase();
 
-      // CGD this one!
       console.log("just before the ajax");
 
       function redcap_post(
@@ -353,6 +352,7 @@ Project = {
           data: this_data,
           success: function(result){
             console.log("result");
+            console.log(result);
             //console.log(result);
             if(result.toLowerCase().indexOf("error") !== -1 | result.toLowerCase().indexOf("count") === -1){
               attempt_no++;
@@ -1264,7 +1264,7 @@ function load_phases() {
 function parse_sheets() {
   // Counterbalancing
   
-//console.log(project_json);
+console.log(project_json);
 // console.log("--------");
 // console.log(Object.keys(project_json.all_procs).length);
 // console.log("--------");
@@ -1365,9 +1365,11 @@ function parse_sheets() {
       }, function(data){ 
         // success: function(result){
           console.log("success!");
+          console.log("The input value was: " + data);
           levels = parseInt(data);
           parent.parent.cb_level = levels;
           if (levels < total_procedures) {
+            console.log("yay 1")
             suffix = "_" + levels + ".csv";
             proc_sheet_name = proc_sheet_name + suffix;
             new_data = levels + 1;
@@ -1375,6 +1377,7 @@ function parse_sheets() {
             counterbalance(new_data);
             switch_platform ();
           } else if (levels >= total_procedures) {
+            console.log("yay 2")
             suffix = "_" + total_procedures + ".csv";
             proc_sheet_name = proc_sheet_name + suffix;
             new_data = 1;
@@ -1382,6 +1385,7 @@ function parse_sheets() {
             counterbalance(new_data);
             switch_platform ();
           } else {
+            console.log("boo 3")
             bootbox.alert("Counterbalancing has broken. Please stop the study and contact the researcher");
             var rand_num = Math.floor( Math.random() * total_procedures + 1 );
             suffix = "_" + rand_num + ".csv";
@@ -1870,6 +1874,12 @@ function shuffle_start_exp() {
 function start_restart() {
   console.log
   if (isSafari) {
+    bootbox.alert(
+      "Please do not use Safari to complete this study. It is likely that your data will not save correctly if you do. Please close Safari and use another browser"
+    );
+    /*
+    //blocking resume for now
+  } else if(
     bootbox.alert("Please do not use Safari to complete this study. It is likely that your data will not save correctly if you do. Please close Safari and use another browser");
     /*
     //blocking resume for now
