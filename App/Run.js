@@ -352,7 +352,7 @@ Project = {
           data: this_data,
           success: function(result){
             console.log("result");
-            //console.log(result);
+            console.log(result);
             //console.log(result);
             if(result.toLowerCase().indexOf("error") !== -1 | result.toLowerCase().indexOf("count") === -1){
               attempt_no++;

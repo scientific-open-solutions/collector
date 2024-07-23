@@ -17,15 +17,15 @@ var item_name;
 * detect if testing or not
 */
 if (typeof module !== "undefined") {
-// give message to developer during testing
-function appropriate_message(this_message) {
-  console.log(appropriate_message);
-}
+  // give message to developer during testing
+  function appropriate_message(this_message) {
+    console.log(this_message);
+  }
 } else {
-// give message to participant
-function appropriate_message(this_message) {
-  bootbox.alert(this_message);
-}
+  // give message to participant
+  function appropriate_message(this_message) {
+    bootbox.alert(this_message);
+  }
 }
 
 var home_dir = "";
@@ -543,7 +543,7 @@ if (row.type === "page_break") {
     $("<input>")
       .attr("type", "hidden")
       .prop("id", survey_id + "_value")
-      .prop("name", survey_id + "_value")
+      //.prop("name", survey_id + "_value")
       .val("")[0].outerHTML;
 
   /*

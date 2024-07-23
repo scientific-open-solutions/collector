@@ -1,6 +1,7 @@
 function load_default_surveys() {
   var default_survey_files = [
     "autism_quotient.csv",
+    "big_five_inventory.csv",
     "consent_sheet_uor.csv",
     "demographics.csv",
     "empathy_quotient_40.csv",
