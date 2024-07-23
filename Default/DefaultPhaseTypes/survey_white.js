@@ -1,5 +1,6 @@
 /*
- * Collector Survey 3.2.4
+ *  Collector Survey 3.2.4
+    Authors: Dr. Anthony Haffey & Chris Dobson
  */
 
 /* 
@@ -1402,8 +1403,28 @@ if(typeof(row["item_name_old"]) !== "undefined"){
     var this_label = $("<label>");
     this_label[0].htmlFor = row["item_name"] + i;
     this_label.addClass("custom-control-label").addClass("radioLabelHolder");
-    this_label.html(options[i]);
-    this_div.append(this_input).append(this_label).append(feedback_string);
+    //this_label.html(options[i]);
+    
+    this_label.append(
+      $("<input>")
+        .prop("type", "radio")
+        .prop("id", row["item_name"] + i)
+        .prop("value", values[i])
+        .prop("name", survey_prepend + row["item_name"])
+        .addClass("custom-control-input")
+        .addClass(row["this_class"])
+        .addClass("custom-control")
+        .addClass("custom-radio")
+        .addClass("response")
+        .addClass("option-input radio")
+        .addClass(row["item_name"] + "_item_row_" + row["row_no"])
+    )
+    .append(
+      $("<span>").html(options[i])
+    );
+    this_div
+      .append(this_label)
+      .append(feedback_string);
     this_html += this_div[0].outerHTML;
   }
 } else if (type === "text") {
