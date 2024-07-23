@@ -1498,8 +1498,25 @@ function parse_current_proc() {
   });
 
   // add progress here
+  // check if there are weight 0 rows:
+  var weight_0s = 0;
+  var weight_1s = 0;
   for(var i = 0; i < project_json.parsed_proc.length; i++){
-    project_json.parsed_proc[i].phase_progress = i / project_json.parsed_proc.length;
+    if(project_json.parsed_proc[i].weight == 0){
+      weight_0s++;
+    } else {
+      weight_1s++;
+    }
+  }
+
+  var this_progress = 0;
+  for(var i = 0; i < project_json.parsed_proc.length; i++){
+    if(project_json.parsed_proc[i].weight == 0){
+      // do nothing
+    } else {
+      this_progress++;
+      project_json.parsed_proc[i].phase_progress = this_progress / weight_1s;
+    }
   }
   
 
