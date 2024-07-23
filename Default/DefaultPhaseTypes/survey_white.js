@@ -323,7 +323,7 @@ $("#proceed_button").on("click", function () {
 
   if ($('.table_break_tabs').length > 0) {
     if (next_table_no === tableCount) {
-      $("#proceed_button").text("Submit");
+      $("#proceed_button").text("Proceed");
     } else {
       $("#proceed_button").text("Next Page");
     }  
