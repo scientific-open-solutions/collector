@@ -591,7 +591,13 @@ Project = {
   start_post: function (go_to_info) {
 
     // use the phase_progress column 
-    
+    if(project_json.this_condition.progress_bar == "off"){
+      $("#project_progress_bar").css("display","none");
+    } else {
+      $("#experiment_progress").css("width",(100 * project_json.parsed_proc[project_json.phase_no].phase_progress) + "%");
+    }
+
+    /*
     if(typeof(project_json.this_condition.progress_bar) !== "undefined"){
       if(project_json.this_condition.progress_bar == "off"){
         $("#project_progress_bar").css("display","none");
@@ -606,13 +612,8 @@ Project = {
       // the default is to have a progress bar, but for it to move on after each row of the spreadsheet, not after each phase.
     } else {
       $("#experiment_progress").css("width",(100 * project_json.parsed_proc[project_json.phase_no].phase_progress) + "%");
-
     }
-
-      
-    
-
-
+    */
 
     if (typeof go_to_info !== "undefined") {
       project_json.phase_no = project_json.phase_no;
@@ -987,6 +988,7 @@ function final_phase() {
     case "localhost":
     case "preview":
     case "onlinepreview":
+      $("#experiment_progress").css("width",("100%"));
       online_data_obj.finished_and_stored = true;
       $("#project_div").html(download_data_text);
       $("#download_json").on("click", function () {
@@ -1497,6 +1499,46 @@ function parse_current_proc() {
     );
   });
 
+  if(typeof(project_json.this_condition.progress_bar) === "undefined" | project_json.this_condition.progress_bar == "row" | project_json.this_condition.progress_bar == "procedure" | project_json.this_condition.progress_bar == ""){
+    add_phase_progress(project_json.parsed_proc);
+  }
+
+  /*
+    $("#experiment_progress").css("width",(100 * project_json.phase_no) / (project_json.parsed_proc.length - 1) + "%");
+    } else  if(project_json.this_condition.progress_bar == "row" | project_json.this_condition.progress_bar == "procedure"){
+      $("#experiment_progress").css("width",(100 * project_json.parsed_proc[project_json.phase_no].phase_progress) + "%"); 
+      // the default is to have a progress bar, but for it to move on after each row of the spreadsheet, not after each phase.  
+    } else {
+      $("#experiment_progress").css("width",(100 * project_json.parsed_proc[project_json.phase_no].phase_progress) + "%");
+    }
+    // the default is to have a progress bar, but for it to move on after each row of the spreadsheet, not after each phase.
+  } 
+  else {
+    $("#experiment_progress").css("width",(100 * project_json.parsed_proc[project_json.phase_no].phase_progress) + "%");
+
+  }
+    add_phase_progress(project_json.parsed_proc);
+  }
+  */
+
+  proc_fill_items();
+  proc_apply_repeats();
+
+
+  if(project_json.this_condition.progress_bar == "stimuli" | project_json.this_condition.progress_bar == "item"){
+    add_phase_progress(project_json.parsed_proc);
+  }
+
+  /*
+  if(project_json.this_cond === ){
+    
+  }
+  */
+
+  Project.activate_pipe();
+}
+
+function add_phase_progress(this_proc){
   // add progress here
   // check if there are weight 0 rows:
   var weight_0s = 0;
@@ -1515,15 +1557,9 @@ function parse_current_proc() {
       // do nothing
     } else {
       this_progress++;
-      project_json.parsed_proc[i].phase_progress = this_progress / weight_1s;
+      project_json.parsed_proc[i].phase_progress = (this_progress-1) / weight_1s;
     }
   }
-  
-
-
-  proc_fill_items();
-  proc_apply_repeats();
-  Project.activate_pipe();
 }
 
 function participant_backup() {
