@@ -57,6 +57,7 @@ function load_default_surveys() {
  * Survey functions
  */
 var columnHeader;
+var survey_HoT;
 function create_survey_HoT(this_survey) {
   var container = document.getElementById("survey_HoT");
   $("#survey_HoT").html("");
@@ -172,7 +173,9 @@ function create_survey_HoT(this_survey) {
       console.log("column: " + column)
       
       helperActivate(column, thisCellValue, "survey");
-
+      console.log(thisCellValue)
+      checkTable();
+      checkBranchAndType();
     },
     afterChange: function () {
       /*
@@ -181,9 +184,7 @@ function create_survey_HoT(this_survey) {
 
       var current_survey = $("#survey_select").val().split("|")[1];
 
-      if (
-        typeof master.surveys.default_surveys[current_survey] !== "undefined"
-      ) {
+      if (typeof master.surveys.default_surveys[current_survey] !== "undefined") {
         $('#save_survey_btn').hide();
         $('#rename_survey_btn').hide();
         $('#delete_survey_btn').hide();
@@ -341,20 +342,187 @@ function preview_survey(this_survey) {
     "survey.html"
   );
   survey_template = survey_template.replace('"{{survey}}"',JSON.stringify(this_survey));
-
-  var regex = /appropriate_message\(([^)]*)\)/g;
-  survey_template = survey_template .replace(regex, function(match) {
-    return `setTimeout(function() { ${match} }, 0)`;
-  });
-
-  /* change set_timer so it works in the preview */
-  
-
-  /* change set_timer so it works in the preview */
-  survey_template = survey_template.replaceAll("Phase.set_timer(function(){", "setTimeout(function(){");
-
   doc = document.getElementById("survey_preview").contentWindow.document;
   doc.open();
   doc.write(libraries + survey_template);
   doc.close();
 };
+
+function checkTable() {
+  const headers = survey_HoT.getDataAtRow(0);
+  const itemNameIndex = headers.indexOf('item_name');
+  const typeIndex = headers.indexOf('type');
+  const blockIndex = headers.indexOf('block');
+
+  if (itemNameIndex === -1 || typeIndex === -1) {
+      console.error("Could not find required columns in the table header.");
+      return;
+  }
+
+  let pageBreakExists = false;
+  const rowCount = survey_HoT.countRows();
+
+  for (let rowIndex = 1; rowIndex < rowCount; rowIndex++) { // Start from 1 to skip the header row
+      const itemNameCell = survey_HoT.getDataAtCell(rowIndex, itemNameIndex);
+      const typeCell = survey_HoT.getDataAtCell(rowIndex, typeIndex);
+
+      if (itemNameCell === 'page_break' || typeCell === 'page_break') {
+          pageBreakExists = true;
+          break;
+      }
+  }
+
+  if (pageBreakExists) {
+      if (blockIndex === -1) {
+        console.log("All good: 'block' column does not exist.");
+      } else {
+        bootbox.alert("Warning: At the moment you cannot use page breakes when branching the survey. We've deleted the row automatically for you.");
+        deletePageBreakRows();
+        $("#save_btn").click();
+      }
+  } else {
+      console.log("No 'page_break' found.");
+  }
+}
+
+function deletePageBreakRows() {
+  const headers = survey_HoT.getDataAtRow(0);
+  const itemNameIndex = headers.indexOf('item_name');
+  const typeIndex = headers.indexOf('type');
+  const rowCount = survey_HoT.countRows();
+
+  for (let rowIndex = rowCount - 1; rowIndex > 0; rowIndex--) { // Iterate in reverse order to avoid index shifting issues
+      const itemNameCell = survey_HoT.getDataAtCell(rowIndex, itemNameIndex);
+      const typeCell = survey_HoT.getDataAtCell(rowIndex, typeIndex);
+
+      if (itemNameCell === 'page_break' || typeCell === 'page_break') {
+        survey_HoT.alter('remove_row', rowIndex);
+      }
+  }
+  
+};
+
+function checkBranchAndType() {
+  const headers = survey_HoT.getDataAtRow(0);
+  const branchIndex = headers.indexOf('branch');
+  const typeIndex = headers.indexOf('type');
+
+  if (branchIndex === -1) {
+      console.log("'branch' column does not exist.");
+      return;
+  }
+
+  const allowedTypes = ['likert', 'dropdown', 'radio', 'radio_horizontal'];
+  const rowCount = survey_HoT.countRows();
+
+  for (let rowIndex = 1; rowIndex < rowCount; rowIndex++) { // Start from 1 to skip the header row
+      const branchCell = survey_HoT.getDataAtCell(rowIndex, branchIndex);
+      const typeCell = survey_HoT.getDataAtCell(rowIndex, typeIndex);
+
+      if (branchCell && branchCell.trim() !== '' && !allowedTypes.includes(typeCell)) {
+          bootbox.prompt({
+              title: "Invalid type value. Please select a new type:",
+              message: "<em>Sorry. You can only branch from likert, dropdown, or radio types.</em><br>",
+              inputType: 'radio',
+              inputOptions: [
+                  { text: 'Likert', value: 'likert' },
+                  { text: 'Dropdown', value: 'dropdown' },
+                  { text: 'Horizontal Radio', value: 'radio_horizontal' },
+                  { text: 'Vertical Radio', value: 'radio' }
+              ],
+              callback: function(result) {
+                  if (result) {
+                      survey_HoT.setDataAtCell(rowIndex, typeIndex, result);
+                      setTimeout(() => {
+                        $("#save_btn").click();
+                      }, 10);
+                  }
+              }
+          });
+      }
+  }
+}
+
+
+// Functions for "add item" button QWERTY
+
+// function handleButtonPress(buttonPressed) {
+//   console.log('Button pressed:', buttonPressed);
+  
+//   function addColumn() {
+//     var totalColumns = survey_HoT.countCols();
+//     survey_HoT.alter('insert_col', totalColumns, 1);
+//     //return totalColumns;
+//   }
+
+//   function addRow() {
+//     var totalRows = survey_HoT.countRows();
+//     survey_HoT.alter('insert_row', totalRows, 1);
+//     //return totalRows;
+//   }
+
+//   // Additional logic based on the button pressed
+//   switch(buttonPressed) {
+//     case 'branching':
+      
+//       var firstRowCells = $('.htCore tr:first td');
+
+//       var branchExists = firstRowCells.filter(':contains("branch")').length > 0;
+//       var blockExists = firstRowCells.filter(':contains("block")').length > 0;
+
+//       if (branchExists) {
+//           // do nothing
+//       } else {
+//         addColumn();
+//         setTimeout(() => {firstRowCells.last().before('<td class="htNoWrap">branch</td>');}, 0);
+//       }
+
+//       if (blockExists) {
+//           // do nothing
+//       } else {
+//         addColumn();
+//         setTimeout(() => {firstRowCells.last().before('<td class="htNoWrap">block</td>');}, 0);
+//       }
+//       break;
+//     case 'likert':
+//       addRow();
+//       var firstRowCells = $('.htCore tr:first td');
+//       var side_by_side_exists = firstRowCells.filter(':contains("side_by_side")').length > 0;
+
+//       if (!side_by_side_exists) {
+//         addColumn();
+//         setTimeout(() => {firstRowCells.last().before('<td class="htNoWrap">side_by_side</td>');}, 0);
+//       }
+
+//       setTimeout(() => {
+//         var targetColumns = ["item_name", "text", "type","side_by_side"];
+//         var valuesToAdd = ["Likert_row", "Replace this with the likert question", "likert","yes"];
+
+//         var columnIndices = [];
+//         $('.htCore tr:first td').each(function(index) {
+//           var columnName = $(this).text().trim();
+//           if (targetColumns.includes(columnName)) {
+//             columnIndices.push(index);
+//           }
+//         });
+
+//         var secondToLastRow = $('.htCore tr').eq(-2);
+//         secondToLastRow.find('td').each(function(index) {
+//             if (columnIndices.includes(index)) {
+//               var valueToAdd = valuesToAdd[columnIndices.indexOf(index)];
+//               if (valueToAdd === "Likert_row") {
+//                 valueToAdd += secondToLastRow.index(); // Add row number
+//               }
+//               $(this).text(valueToAdd);
+//             }
+//         });
+//       },10);
+      
+//       break;
+//     case 'ok':
+//       console.log('Custom OK clicked');
+//       break;
+//     default:
+//       console.log('Unknown button');
+//   }
+// }

@@ -3,9 +3,13 @@
     "subtitle": "Answers the participant can choose",
     "text": "A single answer or list of answers the participant can choose. Put a pipe character ( | ) between each possible answer. If you're having problems finding the pipe key, you can highlight the pipe in the brackets and then copy and paste it."
   },
-  "branching": {
+  "branch": {
     "subtitle": "Allows you to show or hide questions within the survey based on previous survey responses",
-    "text": "Just making this a holding page for Ant"
+    "text": "<b>You must branch from a 'Likert', 'Dropdown' or 'Radio' type.</b><br><br>This works by setting up the names of the blocks that each responses will show or hide. It needs to be used in conjunction with a 'block' column. For example, if you have two response options, left response hides a set of questions and the right response shows them, you'd simply enter |X and then enter X into the 'block' column for the questions to hide/show based on this response."
+  }, 
+  "block": {
+    "subtitle": "This is used in conjunction with the 'branch' column",
+    "text": "Once you have set a value in the branch column for the questions that can be hidden/show, you need to use that value to mark the questions within that block in this column."
   },  
   "btn_width": {
     "subtitle": "How wide each button will be (likert scale)",
@@ -60,7 +64,7 @@
     "text": "This will be presented on the left side of the survey. This is useful if you have a question with responses for this item. If you want to have no text for this row of the survey, create a column <b>no_text</b> in your sheet, and turn it on. If you want the text to take up the whole row, then under the <b>type</b> header, choose 'instruct'"
   },
   "type": {
-    "checkbox": "If you want the participant to be able to select multiple options, use a checkbox. If you only want them to be able to select one option, use a 'Radio'",
+    "checkbox": "If you want the participant to be able to select multiple options, use a checkbox. If you only want them to be able to select one option, use a 'Radio'. You can display the checkboxes vertically using checkbox_vertical or horizontally using checkbox_horizontal",
     "dropdown": "A standard dropdown list. ",
     "instruct": "Allows you to type in instructions. ",
     "likert": "Participants can click on one of the options that they want. ",
@@ -68,6 +72,7 @@
     "page_break": "Splits the survey into multiple pages visually. Note: the item_name must be different for each page.",
     "para": "Gives the participant a large text box to write in their answer. ",
     "radio": "Allows the participant to only select one option in a list (unlike checkboxes). Use radio_horizontal if wish to change the direction of the radio list",
+    "redcap_pii": "this allows you to change the value of the 'Form Name' in the dictionary so that REDCap stores the data in a different instrument. This allows you to separate out personally identifiable information from experimental information. The item_name becomes the instrument name and must be lowercase. ",
     "text": "Gives the participant a text box to write in their answer."
   },
   "values": {
