@@ -27,6 +27,7 @@ var isolation_map = {
     Default: {
       DefaultSurveys: {
         "autism_quotient.csv": "file",
+        "big_five_inventory.csv": "file",
         "demographics.csv": "file",
         "empathy_quotient_40.csv": "file",
         "info_sheet.csv": "file",
