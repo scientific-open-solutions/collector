@@ -3,6 +3,41 @@
  * Survey actions (i.e. element triggers)
  */
 
+// $("#add_item_btn").on("click", function () {
+//   bootbox.dialog({
+//   title: 'A custom dialog with buttons and callbacks',
+//   message: "<p>This dialog has buttons. Each button has it's own callback function.</p>",
+//     size: 'large',
+//     buttons: {
+//       branching: {
+//         label: "Add Branching",
+//         className: 'btn-primary',
+//         callback: function(){
+//           var buttonPressed = 'branching';
+//           handleButtonPress(buttonPressed);
+//           return;
+//         }
+//       },
+//       noclose: {
+//         label: "Add a Likert Row",
+//         className: 'btn-primary',
+//         callback: function() {
+//           var buttonPressed = 'likert';
+//           handleButtonPress(buttonPressed);
+//           return;
+//         }
+//       },
+//       ok: {
+//         label: "I'm an OK button!",
+//         className: 'btn-info',
+//         callback: function() {
+//           console.log('Custom OK clicked');
+//         }
+//       }
+//     }
+//   })
+// });
+
 $("#delete_survey_btn").on("click", function () {
   if (!parent.parent.functionIsRunning) {
     parent.parent.functionIsRunning = true;
@@ -122,6 +157,7 @@ $("#preview_tab_btn").on("click", function () {
   preview_survey(this_survey);
   $('#pills-spreadsheet_survey').removeClass("active show");
   $('#pills-preview_survey').addClass("active show");
+  // $("#add_item_btn").hide();
 });
 
 $("#spreadsheet_tab_btn").on("click", function () {
@@ -129,6 +165,7 @@ $("#spreadsheet_tab_btn").on("click", function () {
   $('#preview_tab_btn').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
   $('#pills-spreadsheet_survey').addClass("active show");
   $('#pills-preview_survey').removeClass("active show");
+  // $("#add_item_btn").show();
 });
 
 $("#rename_survey_btn").on("click", function () {
@@ -253,9 +290,10 @@ $("#save_survey_btn").on("click", function () {
 });
 
 $("#survey_select").on("change", function () {
-  $("#save_survey_btn").show()
-  $("#rename_survey_btn").show()
-  $("#delete_survey_btn").show()
+  $("#save_survey_btn, rename_survey_btn, #delete_survey_btn").show()
+  // $("#rename_survey_btn").show()
+  // $("#delete_survey_btn").show()
+  // $("#add_item_btn").show()
   $('#new_survey_button').removeClass('btn-outline-primary')
   $('#new_survey_button').addClass('btn-primary')
   /*
@@ -295,3 +333,5 @@ $("#survey_select").on("change", function () {
     bootbox.alert("It's not clear whether this is supposed to be a default or user survey");
   }
 });
+
+

@@ -303,12 +303,17 @@
         item_type_html += "<div id='mod_help'></div>";
         $("#help_text").html(item_type_html);
       } else {
-        if (typeof help_obj.surv[help_title] !== "undefined") {
+        if (help_obj.surv.hasOwnProperty(help_title)) {
           $("#help_subtitle").html(help_obj.surv[help_title].subtitle);
           $("#help_text").html(help_obj.surv[help_title].text);
+        } else if (help_title){
+          $("#help_subtitle").html("Unknown Column Header");
+          $("#help_text").html("You have entered an unknown column header, please check that it is correct.");
         } else {
-          $("#help_subtitle").html("Unknown");
-          $("#help_text").html("Unknown");
+          $("#help_subtitle").html("The following header names are accepted:");
+          var keys = Object.keys(help_obj.surv);
+          var commaSeparatedKeys = keys.join(', ');
+          $("#help_text").html(commaSeparatedKeys);
         }
       }
     }
