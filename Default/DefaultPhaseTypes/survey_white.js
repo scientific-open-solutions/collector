@@ -882,6 +882,7 @@ switch (submitted_element.type) {
   case "text":
   case "textarea":
     $("#" + submitted_element.name + "_response").val(submitted_element.value);
+    console.log("hello")
     break;
 }
 update_score();
