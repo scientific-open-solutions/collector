@@ -3,40 +3,115 @@
  * Survey actions (i.e. element triggers)
  */
 
-// $("#add_item_btn").on("click", function () {
-//   bootbox.dialog({
-//   title: 'A custom dialog with buttons and callbacks',
-//   message: "<p>This dialog has buttons. Each button has it's own callback function.</p>",
-//     size: 'large',
-//     buttons: {
-//       branching: {
-//         label: "Add Branching",
-//         className: 'btn-primary',
-//         callback: function(){
-//           var buttonPressed = 'branching';
-//           handleButtonPress(buttonPressed);
-//           return;
-//         }
-//       },
-//       noclose: {
-//         label: "Add a Likert Row",
-//         className: 'btn-primary',
-//         callback: function() {
-//           var buttonPressed = 'likert';
-//           handleButtonPress(buttonPressed);
-//           return;
-//         }
-//       },
-//       ok: {
-//         label: "I'm an OK button!",
-//         className: 'btn-info',
-//         callback: function() {
-//           console.log('Custom OK clicked');
-//         }
-//       }
-//     }
-//   })
-// });
+$("#add_item_btn").on("click", function () {
+  function checkBranchColumn() {
+    var currentData = survey_HoT.getData();
+    var firstRow = currentData[0];
+    return firstRow.includes('branch');
+  }
+
+  var modalContent = `
+    <div id="additemGrid" class="container">
+      <div class="row">
+        <div class="col-sm-4 mb-4">
+          <div class="card" onclick="handleButtonPress('checkbox')">
+            <div id="checkbox" class="card-header">Checkbox</div>
+            <div class="card-body">
+              <p class="card-text">Allows participants to select multiple responses from a list.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 mb-4">
+          <div class="card" onclick="handleButtonPress('dropdown')">
+            <div id="dropdown" class="card-header">Dropdown</div>
+            <div class="card-body">
+              <p class="card-text">A standard dropdown list from which participants can select one option.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 mb-4">
+          <div class="card" onclick="handleButtonPress('instruct')">
+            <div id="instructions" class="card-header">Instructions</div>
+            <div class="card-body">
+              <p class="card-text">Displays non-editable text set by the researcher. Use for task instructions.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 mb-4">
+          <div class="card" onclick="handleButtonPress('likert')">
+            <div id="likert" class="card-header">Likert</div>
+            <div class="card-body">
+              <p class="card-text">Horizontal response buttons which allow a single participant response.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 mb-4">
+          <div class="card" onclick="handleButtonPress('number')">
+            <div id="number" class="card-header">Number</div>
+            <div class="card-body">
+              <p class="card-text">Creates a single line text box that only accepts numeric values.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 mb-4">
+          <div class="card" onclick="handleButtonPress('page_break')" id="page_break_card">
+            <div id="page_break" class="card-header">Page Break</div>
+            <div class="card-body">
+              <p class="card-text">Splits a surveys into multiple pages. <em>(Cannot be used with branching).</em></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 mb-4">
+          <div class="card" onclick="handleButtonPress('text')">
+            <div id="text_box" class="card-header">Text Box</div>
+            <div class="card-body">
+              <p class="card-text">Allows participants to write text responses via a single- or multi-line textbox. </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 mb-4">
+          <div class="card" onclick="handleButtonPress('radio')">
+            <div id="radio" class="card-header">Radio Buttons</div>
+            <div class="card-body">
+              <p class="card-text">Allows participants to select a single response from a list.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 mb-4">
+          <div class="card" onclick="handleButtonPress('redcap_pii')">
+            <div id="personal_info" class="card-header">P.I.I. Flag</div>
+            <div class="card-body">
+              <p class="card-text">Marks the survey as containing personal information. <em>(REDCap Only)</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  bootbox.dialog({
+      title: "Please select an item to add:",
+      message: modalContent,
+      closeButton: true,
+      size: 'large',
+      buttons: {
+          close: {
+              label: "Close",
+              className: 'btn-secondary',
+              callback: function(){
+                  // Custom code for close button if needed
+              }
+          }
+      }
+  })
+
+   // Check for the presence of 'branch' column and hide/show 'page_break' card
+  if (checkBranchColumn()) {
+    $('#page_break_card').hide();
+  } else {
+    $('#page_break_card').show();
+  }
+  add_items_icons();
+});
 
 $("#delete_survey_btn").on("click", function () {
   if (!parent.parent.functionIsRunning) {
@@ -157,7 +232,7 @@ $("#preview_tab_btn").on("click", function () {
   preview_survey(this_survey);
   $('#pills-spreadsheet_survey').removeClass("active show");
   $('#pills-preview_survey').addClass("active show");
-  // $("#add_item_btn").hide();
+  $("#add_item_btn, #branching_btn, #scoring_btn").hide();
 });
 
 $("#spreadsheet_tab_btn").on("click", function () {
@@ -165,7 +240,7 @@ $("#spreadsheet_tab_btn").on("click", function () {
   $('#preview_tab_btn').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
   $('#pills-spreadsheet_survey').addClass("active show");
   $('#pills-preview_survey').removeClass("active show");
-  // $("#add_item_btn").show();
+  $("#add_item_btn, #branching_btn, #scoring_btn").show();
 });
 
 $("#rename_survey_btn").on("click", function () {
@@ -291,9 +366,7 @@ $("#save_survey_btn").on("click", function () {
 
 $("#survey_select").on("change", function () {
   $("#save_survey_btn, rename_survey_btn, #delete_survey_btn").show()
-  // $("#rename_survey_btn").show()
-  // $("#delete_survey_btn").show()
-  // $("#add_item_btn").show()
+  $("#add_item_btn, #branching_btn, #scoring_btn").show()
   $('#new_survey_button').removeClass('btn-outline-primary')
   $('#new_survey_button').addClass('btn-primary')
   /*

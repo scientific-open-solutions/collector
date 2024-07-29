@@ -162,20 +162,16 @@ function create_survey_HoT(this_survey) {
     observeChanges: true,
     afterSelectionEnd: function () {
       thisCellValue = this.getValue();
-
-      //clearTimeout(disable_cell_timeout);
       var coords = this.getSelected();
       var column = this.getDataAtCell(0, coords[0][1]);
-      // var thisCellValue = this.getDataAtCell(coords[0], coords[1]);
-      // thisCellValue =
-      //   thisCellValue === null ? (thisCellValue = "") : thisCellValue;
       column = column === null ? (column = "") : column;
       console.log("column: " + column)
       
       helperActivate(column, thisCellValue, "survey");
-      console.log(thisCellValue)
       checkTable();
       checkBranchAndType();
+      checkItemNameSpaces();
+      checkPipeSpaces();
     },
     afterChange: function () {
       /*
@@ -185,9 +181,7 @@ function create_survey_HoT(this_survey) {
       var current_survey = $("#survey_select").val().split("|")[1];
 
       if (typeof master.surveys.default_surveys[current_survey] !== "undefined") {
-        $('#save_survey_btn').hide();
-        $('#rename_survey_btn').hide();
-        $('#delete_survey_btn').hide();
+        $('#save_survey_btn, #rename_survey_btn, #delete_survey_btn, #add_item_btn, #branching_btn, #scoring_btn').hide();
         Collector.custom_alert("These changes will not be saved, as you are editing a <b>default</b> survey. Please click <b>New Survey</b> to create a new survey");
       }
 
@@ -216,10 +210,7 @@ function create_survey_HoT(this_survey) {
         }
 
 
-        if (
-          col_header.indexOf("score") !== -1 &&
-          col_header.indexOf(" ") !== -1
-        ) {
+        if (col_header.indexOf("score") !== -1 && col_header.indexOf(" ") !== -1) {
           this.setDataAtCell(0, k, col_header.replaceAll(" ", ""));
         }
 
@@ -359,6 +350,7 @@ function checkTable() {
       return;
   }
 
+  // Check if page breaks exist
   let pageBreakExists = false;
   const rowCount = survey_HoT.countRows();
 
@@ -372,19 +364,21 @@ function checkTable() {
       }
   }
 
-  if (pageBreakExists) {
-      if (blockIndex === -1) {
-        console.log("All good: 'block' column does not exist.");
-      } else {
-        bootbox.alert("Warning: At the moment you cannot use page breakes when branching the survey. We've deleted the row automatically for you.");
-        deletePageBreakRows();
-        $("#save_btn").click();
-      }
+  // Check if the block column exists when page_breaks are being used.
+  if (pageBreakExists) { //CHRISDOBSON
+      // if (blockIndex === -1) {
+      //   console.log("All good: 'block' column does not exist.");
+      // } else {
+      //   bootbox.alert("Warning: At the moment you cannot use page breakes when branching the survey. We've deleted the row automatically for you.");
+      //   // deletePageBreakRows();
+      //   // $("#save_btn").click();
+      // }
   } else {
       console.log("No 'page_break' found.");
   }
-}
+};
 
+// This funtion is used to remove page break rows if someone sets up branching so they don't clash
 function deletePageBreakRows() {
   const headers = survey_HoT.getDataAtRow(0);
   const itemNameIndex = headers.indexOf('item_name');
@@ -402,6 +396,7 @@ function deletePageBreakRows() {
   
 };
 
+// Function to check that people are only trying to use fields that can branch to brach
 function checkBranchAndType() {
   const headers = survey_HoT.getDataAtRow(0);
   const branchIndex = headers.indexOf('branch');
@@ -443,86 +438,42 @@ function checkBranchAndType() {
   }
 }
 
+// check if item_name has a space in it
+function checkItemNameSpaces() {
+  const headers = survey_HoT.getDataAtRow(0);
+  const itemNameIndex = headers.indexOf('item_name');
+  const rowCount = survey_HoT.countRows();
 
-// Functions for "add item" button QWERTY
+  for (let rowIndex = 1; rowIndex < rowCount; rowIndex++) { // Start from 1 to skip the header row
+      let itemNameCell = survey_HoT.getDataAtCell(rowIndex, itemNameIndex);
+      if (itemNameCell && itemNameCell.trim() !== '' && itemNameCell.includes(" ")) {      
+        const updatedItemNameCell = itemNameCell.replace(/\s+/g, '_');
+        survey_HoT.setDataAtCell(rowIndex, itemNameIndex, updatedItemNameCell);
+        bootbox.alert("<b>Sorry. Item name's cannot contain spaces.</b><br><br>The item name: " + itemNameCell + " has been automatically converted to " + updatedItemNameCell);
+        setTimeout(() => {$("#save_btn").click();}, 10);
+      }
+  }
+};
 
-// function handleButtonPress(buttonPressed) {
-//   console.log('Button pressed:', buttonPressed);
-  
-//   function addColumn() {
-//     var totalColumns = survey_HoT.countCols();
-//     survey_HoT.alter('insert_col', totalColumns, 1);
-//     //return totalColumns;
-//   }
+function checkPipeSpaces() {
+  const headers = survey_HoT.getDataAtRow(0);
+  const rowCount = survey_HoT.countRows();
+  const answersColIndex = headers.indexOf('answers');
+  const valuesColIndex = headers.indexOf('values');
 
-//   function addRow() {
-//     var totalRows = survey_HoT.countRows();
-//     survey_HoT.alter('insert_row', totalRows, 1);
-//     //return totalRows;
-//   }
-
-//   // Additional logic based on the button pressed
-//   switch(buttonPressed) {
-//     case 'branching':
+  for (let rowIndex = 1; rowIndex < rowCount; rowIndex++) { // Start from 1 to skip the header row
+      let answersCell = survey_HoT.getDataAtCell(rowIndex, answersColIndex);
+      if (answersCell && answersColIndex !== -1 && / \| |\| | \|/.test(answersCell)) {
+        const updatedAnswersCell = answersCell.replace(/\s*\|\s*/g, '|');
+        survey_HoT.setDataAtCell(rowIndex, answersColIndex, updatedAnswersCell);
+        setTimeout(() => {$("#save_btn").click();}, 10);
+      } 
       
-//       var firstRowCells = $('.htCore tr:first td');
-
-//       var branchExists = firstRowCells.filter(':contains("branch")').length > 0;
-//       var blockExists = firstRowCells.filter(':contains("block")').length > 0;
-
-//       if (branchExists) {
-//           // do nothing
-//       } else {
-//         addColumn();
-//         setTimeout(() => {firstRowCells.last().before('<td class="htNoWrap">branch</td>');}, 0);
-//       }
-
-//       if (blockExists) {
-//           // do nothing
-//       } else {
-//         addColumn();
-//         setTimeout(() => {firstRowCells.last().before('<td class="htNoWrap">block</td>');}, 0);
-//       }
-//       break;
-//     case 'likert':
-//       addRow();
-//       var firstRowCells = $('.htCore tr:first td');
-//       var side_by_side_exists = firstRowCells.filter(':contains("side_by_side")').length > 0;
-
-//       if (!side_by_side_exists) {
-//         addColumn();
-//         setTimeout(() => {firstRowCells.last().before('<td class="htNoWrap">side_by_side</td>');}, 0);
-//       }
-
-//       setTimeout(() => {
-//         var targetColumns = ["item_name", "text", "type","side_by_side"];
-//         var valuesToAdd = ["Likert_row", "Replace this with the likert question", "likert","yes"];
-
-//         var columnIndices = [];
-//         $('.htCore tr:first td').each(function(index) {
-//           var columnName = $(this).text().trim();
-//           if (targetColumns.includes(columnName)) {
-//             columnIndices.push(index);
-//           }
-//         });
-
-//         var secondToLastRow = $('.htCore tr').eq(-2);
-//         secondToLastRow.find('td').each(function(index) {
-//             if (columnIndices.includes(index)) {
-//               var valueToAdd = valuesToAdd[columnIndices.indexOf(index)];
-//               if (valueToAdd === "Likert_row") {
-//                 valueToAdd += secondToLastRow.index(); // Add row number
-//               }
-//               $(this).text(valueToAdd);
-//             }
-//         });
-//       },10);
-      
-//       break;
-//     case 'ok':
-//       console.log('Custom OK clicked');
-//       break;
-//     default:
-//       console.log('Unknown button');
-//   }
-// }
+      let valuesCell = survey_HoT.getDataAtCell(rowIndex, valuesColIndex);
+      if (valuesCell && valuesColIndex !== -1 && / \| |\| | \|/.test(valuesCell)) {
+        const updatedValuesCell = valuesCell.replace(/\s*\|\s*/g, '|');
+        survey_HoT.setDataAtCell(rowIndex, valuesColIndex, updatedValuesCell);
+        setTimeout(() => {$("#save_btn").click();}, 10);
+      }
+  }
+};
