@@ -592,7 +592,14 @@ Project = {
     // use the phase_progress column 
     if(project_json.this_condition.progress_bar == "off"){
       $("#project_progress_bar").css("display","none");
+    } else if(project_json.parsed_proc[project_json.phase_no].no_progress === "yes"){
+      $("#project_progress_bar").css("display","none");
     } else {
+      console.log("howdy");
+      
+      $("#project_progress_bar").css("display","flex");
+      
+      
       $("#experiment_progress").css("width",(100 * project_json.parsed_proc[project_json.phase_no].phase_progress) + "%");
     }
 
