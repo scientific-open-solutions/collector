@@ -1,6 +1,6 @@
 {
   "name": "Collector",
-  "version": "3.2.4",
+  "version": "3.3.0",
   "description": "An open-source package for creating interactive websites",
   "main": "main.js",
   "jest": {
