@@ -67,6 +67,8 @@ function create_survey_HoT(this_survey) {
     minSpareRows: 1,
     rowHeaders: false,
     colHeaders: false,
+    autoRowSize: true,
+    autoColumnSize: true,
     contextMenu: {
       items: {
         about: {
@@ -86,13 +88,7 @@ function create_survey_HoT(this_survey) {
             $("#cell_editor_div").fadeIn();
             this_selection = selection;
 
-            cell_editor.setValue(
-              this_sheet.getDataAtCell(
-                selection[0].start.row,
-                selection[0].start.col
-              ),
-              -1
-            );
+            cell_editor.setValue(this_sheet.getDataAtCell(selection[0].start.row,selection[0].start.col),-1);
 
             if ($("#help_content").is(":visible")) {
               var helper_width = parseFloat(
@@ -160,6 +156,20 @@ function create_survey_HoT(this_survey) {
     rowHeights: 1,
     wordWrap: false,
     observeChanges: true,
+    cells: function (row, col, prop) {
+      var cellProperties = {};
+      if (row === 0) {
+        cellProperties.renderer = firstRowRenderer;
+      } else {
+        var thisHeader = this.instance.getDataAtCell(0, col);
+
+        if(thisHeader !== null){
+          thisHeader = thisHeader.toLowerCase();
+        }
+        cellProperties.renderer = Handsontable.renderers.TextRenderer;
+      }
+      return cellProperties;
+    },
     afterSelectionEnd: function () {
       thisCellValue = this.getValue();
       var coords = this.getSelected();
@@ -182,6 +192,7 @@ function create_survey_HoT(this_survey) {
 
       if (typeof master.surveys.default_surveys[current_survey] !== "undefined") {
         $('#save_survey_btn, #rename_survey_btn, #delete_survey_btn, #add_item_btn, #branching_btn, #scoring_btn').hide();
+        $("#dm_h6_text").show();
         Collector.custom_alert("These changes will not be saved, as you are editing a <b>default</b> survey. Please click <b>New Survey</b> to create a new survey");
       }
 
@@ -477,3 +488,5 @@ function checkPipeSpaces() {
       }
   }
 };
+
+

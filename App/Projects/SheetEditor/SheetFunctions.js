@@ -294,44 +294,33 @@ function update_handsontables() {
     }
   }
 
-  var conditions_sheet = CElectron.fs.read_file(
-    "Projects/" + $("#project_list").val(),
-    "conditions.csv"
-  );
+  var conditions_sheet = CElectron.fs.read_file("Projects/" + $("#project_list").val(),"conditions.csv");
 
   if (conditions_sheet == "") {
-    var this_cond_sheet =
-      master.projects.projects[$("#project_list").val()].conditions;
-    if (typeof this_cond_sheet == "object")
+    var this_cond_sheet = master.projects.projects[$("#project_list").val()].conditions;
+    if (typeof this_cond_sheet == "object") {
       conditions_sheet = Papa.unparse(this_cond_sheet);
+    }
   }
-  load_spreadsheet(
-    "Conditions",
-    "conditions.csv",
-    "conditions",
-    conditions_sheet
-  );
+    load_spreadsheet(
+      "Conditions",
+      "conditions.csv",
+      "conditions",
+      conditions_sheet
+    );
 
-  var stim_sheet = CElectron.fs.read_file(
-    "Projects/" + $("#project_list").val(),
-    stim_file
-  );
-  if (stim_sheet == "") {
-    stim_sheet =
-      master.projects.projects[$("#project_list").val()].all_stims[stim_file];
-  }
-  load_spreadsheet("Stimuli", stim_file, "all_stims[sheet_name]", stim_sheet);
+    var stim_sheet = CElectron.fs.read_file("Projects/" + $("#project_list").val(),stim_file);
+    if (stim_sheet == "") {
+      stim_sheet = master.projects.projects[$("#project_list").val()].all_stims[stim_file];
+    }
+    load_spreadsheet("Stimuli", stim_file, "all_stims[sheet_name]", stim_sheet);
 
-  var proc_sheet = CElectron.fs.read_file(
-    "Projects/" + $("#project_list").val(),
-    proc_file
-  );
-  if (proc_sheet == "") {
-    proc_sheet =
-      master.projects.projects[$("#project_list").val()].all_procs[proc_file];
-  }
-  load_spreadsheet("Procedure", proc_file, "all_procs[sheet_name]", proc_sheet);
-  $("#project_inputs").show();
+    var proc_sheet = CElectron.fs.read_file("Projects/" + $("#project_list").val(),proc_file);
+    if (proc_sheet == "") {
+      proc_sheet = master.projects.projects[$("#project_list").val()].all_procs[proc_file];
+    }
+    load_spreadsheet("Procedure", proc_file, "all_procs[sheet_name]", proc_sheet);
+    $("#project_inputs").show();
 }
 
 function upload_exp_contents(these_contents, this_filename) {

@@ -974,3 +974,9 @@ function copyToClipboard_url_input_preview() {
     Collector.custom_alert('Oops, unable to copy');
   }
 };
+
+$("#conditions_settings_btn").on("click", function () {
+  var current_sheet = 'conditions'
+  console.log(get_HoT_data(current_sheet))
+  
+});
