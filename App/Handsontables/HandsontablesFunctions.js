@@ -401,7 +401,7 @@ function createHoT(container, data, sheet_name) {
         },
       },
     },
-    rowHeaders: false,
+    rowHeaders: true,
 
   });
   return table;
