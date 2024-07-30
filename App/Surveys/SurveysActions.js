@@ -232,7 +232,7 @@ $("#preview_tab_btn").on("click", function () {
   preview_survey(this_survey);
   $('#pills-spreadsheet_survey').removeClass("active show");
   $('#pills-preview_survey').addClass("active show");
-  $("#add_item_btn, #branching_btn, #scoring_btn").hide();
+  $("#add_item_btn, #branching_btn, #scoring_btn, dm_h6_text").hide();
 });
 
 $("#spreadsheet_tab_btn").on("click", function () {
@@ -240,7 +240,7 @@ $("#spreadsheet_tab_btn").on("click", function () {
   $('#preview_tab_btn').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
   $('#pills-spreadsheet_survey').addClass("active show");
   $('#pills-preview_survey').removeClass("active show");
-  $("#add_item_btn, #branching_btn, #scoring_btn").show();
+  $("#add_item_btn, #branching_btn, #scoring_btn, dm_h6_text").show();
 });
 
 $("#rename_survey_btn").on("click", function () {
@@ -365,10 +365,14 @@ $("#save_survey_btn").on("click", function () {
 });
 
 $("#survey_select").on("change", function () {
-  $("#save_survey_btn, rename_survey_btn, #delete_survey_btn").show()
-  $("#add_item_btn, #branching_btn, #scoring_btn").show()
-  $('#new_survey_button').removeClass('btn-outline-primary')
-  $('#new_survey_button').addClass('btn-primary')
+  $('#new_survey_button_td').removeClass("cell_spacer");
+  $("#survey_HoT").css("min-height","0px");
+  $("#save_survey_btn, rename_survey_btn, #delete_survey_btn").show();
+  $("#add_item_btn, #branching_btn, #scoring_btn").show();
+  $("#dm_h6_text").hide();
+  $('#new_survey_button')
+    .removeClass('btn-outline-primary')
+    .addClass('btn-primary');
   /*
    * use code from trialtypes to save previously edited survey
    */
@@ -389,22 +393,54 @@ $("#survey_select").on("change", function () {
 
   var this_survey = $("#survey_select").val().split("|");
   if (this_survey[0] === "default") {
-    $("#survey_select").removeClass("bg-light");
-    $("#survey_select").addClass("bg-info");
-    $("#survey_select").addClass("text-white");
-
+    $("#survey_select")
+      .removeClass("bg-light")
+      .addClass("bg-info")
+      .addClass("text-white");
     create_survey_HoT(master.surveys.default_surveys[this_survey[1]]);
     $("#spreadsheet_preview_tabs").show();
   } else if (this_survey[0] === "user") {
-    $("#survey_select").removeClass("bg-info");
-    $("#survey_select").removeClass("text-white");
-    $("#survey_select").addClass("bg-light");
-
+    $("#survey_select")
+      .removeClass("bg-info")
+      .removeClass("text-white")
+      .addClass("bg-light");
     create_survey_HoT(master.surveys.user_surveys[this_survey[1]]);
     $("#spreadsheet_preview_tabs").show();
   } else {
     bootbox.alert("It's not clear whether this is supposed to be a default or user survey");
   }
+
+  const navHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height'));
+  const offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--offset'));
+  var availableHeight = window.innerHeight - navHeight - offset;
+  var tableHeight = $("#survey_HoT").height();
+  
+  console.log(tableHeight)
+  console.log(availableHeight)
+if (tableHeight > availableHeight) {
+  $("#survey_HoT").css("min-height","110vh")
+  console.log("hello")
+} else {
+  $("#pills-spreadsheet_survey").css("min-height","50vh")
+  console.log("goodbye")
+}
+setTimeout(() => {
+  const navHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height'));
+  const offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--offset'));
+  var availableHeight = window.innerHeight - navHeight - offset;
+  var tableHeight = $("#survey_HoT").height();
+  
+  console.log(tableHeight)
+  console.log(availableHeight)
+  console.log("Bon jour")
+  if (tableHeight > availableHeight) {
+    $("#survey_HoT").css("min-height","110vh")
+    console.log("hello")
+  } else {
+    $("#pills-spreadsheet_survey").css("min-height","50vh")
+    console.log("goodbye")
+  }
+}, 0);
 });
 
 

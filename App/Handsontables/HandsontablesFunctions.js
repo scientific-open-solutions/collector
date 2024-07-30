@@ -159,6 +159,9 @@ function createHoT(container, data, sheet_name) {
         }
         // checking for invalid item number (i.e. one)
         if (this.getDataAtCell(0, k).toLowerCase() === "item") {
+          if (this.isEmptyCol()) {
+            console.log("hello")
+          }
           // loop through each row
           for (m = 0; m < this.countRows(); m++) {
             // if the value in the row is one
@@ -173,13 +176,21 @@ function createHoT(container, data, sheet_name) {
             if (this.getDataAtCell(m, k) !== null) {
               // check if the user is using a ":" (deprecated)
               if (this.getDataAtCell(m, k).indexOf(":") !== -1) {
-                this.setDataAtCell(
-                  m,
-                  k,
-                  this.getDataAtCell(m, k).replace(":", " to ")
-                );
+                var to = this.getDataAtCell(m, k).replace(":", " to ");
+                this.setDataAtCell(m,k,to);
               }
+              if (this.getDataAtCell(m, k).indexOf("-") !== -1) {
+                var to = this.getDataAtCell(m, k).replace("-", " to ");
+                this.setDataAtCell(m,k,to);
+              }
+            } 
+            // this doesn't work yet. It needs to reset m to ignore the last empty row but it still doesn't work. Not sure why.
+            if (isEmptyColIgnoringLastRow(this, k)) {
+              console.log("hello");
+              var to = this.getDataAtCell(m, k).replace("-", " to ");
+              this.setDataAtCell(m,k,to);
             }
+            
           }
         }
         // if this is an empty middle column
@@ -397,7 +408,7 @@ function createHoT(container, data, sheet_name) {
         },
       },
     },
-    rowHeaders: true,
+    rowHeaders: false,
 
   });
   return table;
@@ -419,4 +430,20 @@ function insertAtCaret(areaId, text) {
   txtarea.selectionEnd = caretPos;
   txtarea.focus();
   txtarea.scrollTop = scrollPos;
+}
+
+function isEmptyColIgnoringLastRow(hotInstance, colIndex) {
+  // Get the total number of rows
+  const rowCount = hotInstance.countRows();
+
+  // Iterate over all rows except the last one
+  for (let rowIndex = 0; rowIndex < rowCount - 1; rowIndex++) {
+    const cellValue = hotInstance.getDataAtCell(rowIndex, colIndex);
+    // If any cell in the column except the last row is not empty, return false
+    if (cellValue !== null && cellValue !== undefined && cellValue !== '') {
+      return false;
+    }
+  }
+  // If all cells in the column except the last row are empty, return true
+  return true;
 }

@@ -29,6 +29,11 @@
   margin-right: 5px;
   margin-bottom: 5px;
 }
+#Conditions h3, #Conditions button {
+  display: inline-block;
+  vertical-align: middle; /* Align elements vertically in the middle */
+  margin: 0; /* Optional: Remove default margin */
+}
 </style>
 
 <br /><br /><br />
@@ -36,7 +41,7 @@
   <tr>
     <td align="left" class="exp_table_cells">
       <div id="Conditions" class="hide_show_elements">
-        <h3>Conditions</h3>
+        <h3>Conditions</h3><button class="btn-sm btn-success bi bi-gear" id="conditions_settings_btn" style="margin-left: 10px;display:none;">Settings</button>
         <div id="conditionsArea"></div>
       </div>
     </td>

@@ -2,67 +2,75 @@
 <!-- App/Surveys/Surveys.html -->
 <!-- ------------------------ -->
 <style>
+  :root {
+            --nav-height: 100px; /* Set the height of the nav element */
+            --offset: 10px; /* Additional offset if needed */
+        }
   #survey_interface {
     padding: 5px;
   }
-  #save_survey_btn, #rename_survey_btn, #delete_survey_btn, #spreadsheet_preview_tabs, #add_item_btn, #branching_btn, #scoring_btn {
+  #save_survey_btn, #rename_survey_btn, #delete_survey_btn, #spreadsheet_preview_tabs, #add_item_btn, #branching_btn, #scoring_btn, #dm_h6_text {
     display: none;
   }
   #pills-tabContent_survey {
-      height: 85vh;
-      width: 81vw; 
-      display: flex;
-      flex-direction: column;
-      margin-top: 10vh;
-      margin-left: 10px;
-    }
+    height: 85vh;
+    width: 81vw; 
+    display: flex;
+    flex-direction: column;
+    padding: 20px 10px;
+    margin-top: calc(var(--nav-height) + var(--offset));
+  }
  
-    #pills-preview_survey {
-      flex: 1;
-    }
+  #pills-preview_survey {
+    flex: 1;
+  }
 
-    /* Make the iframe fill its parent div */
-    #pills-preview_survey iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    #datamanipulations {
-      padding-top: 5px;
-    }
-    /* Controls the hover changes needed in the add item popup menu */
-    #additemGrid .card:hover {
-      cursor: pointer;
-    }
-    #additemGrid .card:hover .card-header {
-      background-color: #007bff; /* Bootstrap primary blue */
-      color: white;
-    }
-    #additemGrid .add_item_card_icon {
-      fill: #000;
-    }
-    #additemGrid .card:hover .add_item_card_icon {
-      fill: #fff;
-    }
-    button.btn-sm {
-      box-shadow: none !important;
-      border-style: none;
-    }
-    #detailsForm .form-group {
-      padding-bottom: 10px;
-    }
+  /* Make the iframe fill its parent div */
+  #pills-preview_survey iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  #datamanipulations {
+    padding-top: 5px;
+    height: 40px;
+  }
+  #dm_h6_text{
+    margin-top: 10px;
+  }
+  /* Controls the hover changes needed in the add item popup menu */
+  #additemGrid .card:hover {
+    cursor: pointer;
+  }
+  #additemGrid .card:hover .card-header {
+    background-color: #007bff; /* Bootstrap primary blue */
+    color: white;
+  }
+  #additemGrid .add_item_card_icon {
+    fill: #000;
+  }
+  #additemGrid .card:hover .add_item_card_icon {
+    fill: #fff;
+  }
+  button.btn-sm {
+    box-shadow: none !important;
+    border-style: none;
+  }
+  #detailsForm .form-group {
+    padding-bottom: 10px;
+  }
+  .nav_survey_header {
+    height: var(--nav-height);
+  }
+  .cell_spacer {
+    width: 38%;
+  }
 </style>
 
-<script type="text/javascript" src="Surveys/wysiwyg/addItem.js"></script>
-<script type="text/javascript" src="Surveys/wysiwyg/branching.js"></script>
-<script type="text/javascript" src="Surveys/wysiwyg/scoring.js"></script>
-<script type="text/javascript" src="Surveys/wysiwyg/icons.js"></script>
-<script type="text/javascript" src="Surveys/SurveysFunctions.js"></script>
-
-<nav class="navbar navbar-primary bg-white fixed-top fixed-top-2"">
+<nav class="navbar navbar-primary bg-white fixed-top fixed-top-2 nav_survey_header">
   <table style="max-width: 100%">
     <tr>
-      <td>
+      <td id="new_survey_button_td" class="cell_spacer">
         <button class="btn btn-outline-primary bi bi-file-earmark-plus" type="button" id="new_survey_button" title="Will create a new survey based on the one you have selected. Please select one of the existing surveys if you haven't already to be able to create a new survey based on it.">
           New Survey
         </button>
@@ -85,7 +93,8 @@
       </td>
     </tr>
     <tr>
-      <td id="datamanipulations" colspan="2">
+      <td id="datamanipulations" colspan="5">
+        <h6 class="text-primary" id = "dm_h6_text">This is a default survey. Any changes you make will not be saved</h6>
         <button id="branching_btn" class="btn-sm btn-success" onclick="handleButtonPress('branching')">Branching</button>
         <button id="scoring_btn" class="btn-sm btn-success" onclick="handleButtonPress('scoring')">Scoring</button>
         <button id="add_item_btn" class="btn-sm btn-success">Add Item</button>
@@ -104,6 +113,11 @@
   </div>
 </div>
 
+<script type="text/javascript" src="Surveys/wysiwyg/addItem.js"></script>
+<script type="text/javascript" src="Surveys/wysiwyg/branching.js"></script>
+<script type="text/javascript" src="Surveys/wysiwyg/scoring.js"></script>
+<script type="text/javascript" src="Surveys/wysiwyg/icons.js"></script>
+<script type="text/javascript" src="Surveys/SurveysFunctions.js"></script>
 <script>
   var survey_HoT;
   var branching = 'branching';

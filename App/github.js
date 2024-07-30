@@ -501,3 +501,34 @@ function valid_repository_name(repo) {
   return repo;
 }
 loading_scripts("github.js");
+
+// Update User App Folder
+$('#refresh_online_app').on('click',function() {
+  update = {
+    files: [
+      "ParticipantCountry.html",
+      "Run.html",
+      "Run.js",
+      "Welcome.html",
+      "PhaseFunctions.js",
+      "iframe_library.js",
+    ],
+    folders: ["App/libraries", "App/Quality", "Default", "logos"]
+  };
+
+  // This stuff should be in ElectronModules/git.js at it throws a 'fs is not defined' error here. 
+  var user = JSON.parse(fs.readFileSync(root_dir + "/User.json"));
+  user.current.path = result.filePaths[0] + "/" + args.repo;
+
+  // update files
+  update.files.forEach(function (this_file) {
+    fs.copySync("extra/App/" + this_file, user.current.path + "/" + "App" + "/" + this_file);
+  });
+
+  // update folders
+  update.folders.forEach(function (this_folder) {
+    fs.copySync("extra/" + this_folder,user.current.path + "/" + this_folder,{recursive: true,});
+  });
+
+  // Add a pop up letting the user know that the foler has updated.
+});
