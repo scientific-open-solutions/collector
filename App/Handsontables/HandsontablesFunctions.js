@@ -183,14 +183,7 @@ function createHoT(container, data, sheet_name) {
                 var to = this.getDataAtCell(m, k).replace("-", " to ");
                 this.setDataAtCell(m,k,to);
               }
-            } 
-            // this doesn't work yet. It needs to reset m to ignore the last empty row but it still doesn't work. Not sure why.
-            if (isEmptyColIgnoringLastRow(this, k)) {
-              console.log("hello");
-              var to = this.getDataAtCell(m, k).replace("-", " to ");
-              this.setDataAtCell(m,k,to);
-            }
-            
+            }            
           }
         }
         // if this is an empty middle column
@@ -430,20 +423,4 @@ function insertAtCaret(areaId, text) {
   txtarea.selectionEnd = caretPos;
   txtarea.focus();
   txtarea.scrollTop = scrollPos;
-}
-
-function isEmptyColIgnoringLastRow(hotInstance, colIndex) {
-  // Get the total number of rows
-  const rowCount = hotInstance.countRows();
-
-  // Iterate over all rows except the last one
-  for (let rowIndex = 0; rowIndex < rowCount - 1; rowIndex++) {
-    const cellValue = hotInstance.getDataAtCell(rowIndex, colIndex);
-    // If any cell in the column except the last row is not empty, return false
-    if (cellValue !== null && cellValue !== undefined && cellValue !== '') {
-      return false;
-    }
-  }
-  // If all cells in the column except the last row are empty, return true
-  return true;
 }
