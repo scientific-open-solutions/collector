@@ -76,6 +76,9 @@
   ::-webkit-scrollbar-thumb:hover {
     background-color: #a8bbbf;
   }
+  #zoomLevel_btn {
+    cursor: help;
+  }
 
 </style>
 
@@ -91,11 +94,7 @@
   <!--
   	Publicly available css packages
   -->
-  <link
-    rel="stylesheet"
-    type="text/css"
-    href="libraries/bootstrapCollector.css"
-  />
+  <link rel="stylesheet" type="text/css" href="libraries/bootstrapCollector.css"/>
   <link rel="stylesheet" type="text/css" href="libraries/bootbox.fix.css" />
   <link rel="stylesheet" type="text/css" href="libraries/bootstrap-icons.css" />
 
@@ -106,11 +105,7 @@
   <script>
     $("#handsontable_html").load("Handsontables/CellEditor.html");
   </script>
-  <link
-    rel="stylesheet"
-    type="text/css"
-    href="Handsontables/handsontables.full.css"
-  />
+  <link rel="stylesheet" type="text/css" href="Handsontables/handsontables.full.css" />
 
   <!--
   	Collector specific files
@@ -134,23 +129,16 @@
   </script>
   <link rel="stylesheet" type="text/css" href="Style.css" />
 
-  <nav
-    class="navbar fixed-top navbar-light bg-primary navbar-expand-lg"
-    id="top_navbar"
-  >
+  <nav class="navbar fixed-top navbar-light bg-primary navbar-expand-lg" id="top_navbar">
     <div id="logo_div"></div>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav mr-auto">
         <div id="page_selected"></div>
       </ul>
     </div>
+    <button class="top_icon btn btn-primary" id="zoomLevel_btn" style="font-size: 20px">Current Zoom: 100%</button>
 
-
-    <button
-      class="top_icon btn btn-primary bi-x-square"
-      id="reset_collector_btn"
-      style="font-size: 20px"
-    >
+    <button class="top_icon btn btn-primary bi-x-square" id="reset_collector_btn" style="font-size: 20px">
       <span class="content_name">Reset Collector</span>
     </button>
 
@@ -184,32 +172,16 @@
       <span class='content_name'>Security - encryption and attack vectors??</span>
     </button>
   -->
-    <button
-      class="top_icon btn btn-primary bi-heart"
-      id="show_contributors"
-      style="font-size: 20px"
-    >
+    <button class="top_icon btn btn-primary bi-heart" id="show_contributors" style="font-size: 20px">
       <span class="content_name">Contributors</span>
     </button>
-    <button
-      class="top_icon btn btn-primary bi-geo-alt"
-      id="show_maps"
-      style="font-size: 20px"
-    >
+    <button class="top_icon btn btn-primary bi-geo-alt" id="show_maps" style="font-size: 20px">
       <span class="content_name">Maps</span>
     </button>
-    <button
-      class="top_icon btn btn-primary bi-chat-square-quote"
-      id="show_citations"
-      style="font-size: 20px"
-    >
+    <button class="top_icon btn btn-primary bi-chat-square-quote" id="show_citations" style="font-size: 20px">
       <span class="content_name">Citations</span>
     </button>
-    <button
-      class="top_icon btn btn-outline-primary bg-white bi-life-preserver text-primary"
-      id="help_btn"
-      style="margin: 2px; font-weight: bold"
-    >
+    <button class="top_icon btn btn-outline-primary bg-white bi-life-preserver text-primary" id="help_btn" style="margin: 2px; font-weight: bold">
       <span class="content_name">Help</span>
     </button>
     <button class="top_icon btn btn-primary bi-github" id="github_logo">
@@ -228,5 +200,5 @@
 </div>
 
 <script src="Tests/RunTests.js"></script>
-
+<script src="icons.js"></script>
 <script src="index.js"></script>
