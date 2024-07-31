@@ -207,17 +207,17 @@ function create_survey_HoT(this_survey) {
 
           var row_count = this.countRows();
 
+// This is meant to change anyone putting a . in a name to a _ to ensure nothing breaks, but it breaks stuff itself. I'll fix later {CGD}
+          // for(var m = 1; m < row_count - 1; m++){
+          //   var this_item = this.getDataAtCell(m, k);
 
-          for(var m = 1; m < row_count - 1; m++){
-            var this_item = this.getDataAtCell(m, k);
-
-            /*
-             * replace "." with "_" to prevent errors from "."s
-             */
-            if(this_item.indexOf(".") !== -1){
-              this.setDataAtCell(m, k, this_item.replaceAll(".", "_"));
-            }
-          }
+          //   /*
+          //    * replace "." with "_" to prevent errors from "."s
+          //    */
+          //   // if(this_item.indexOf(".") !== -1){
+          //   //   this.setDataAtCell(m, k, this_item.replaceAll(".", "_"));
+          //   // }
+          // }
         }
 
 

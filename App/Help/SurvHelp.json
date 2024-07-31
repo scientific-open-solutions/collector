@@ -27,6 +27,10 @@
     "subtitle": "Column name in data sheet",
     "text": "The <b>item_name</b> will be what the column header is in your data sheet. So make sure it's unique!"
   },
+  "lock_after_feedback": {
+    "subtitle": "Can participants change a response post-feedback?",
+    "text": "Set a value of 'yes' if you want to stop participants being able to change their response to an item after checking their feedback. Leave the value blank to allow participants to change their response."
+  },
   "no_text": {
     "subtitle": "No text on left side of survey",
     "text": "If you have an item, in which you want the content that would normally be on the right side of the survey to take who whole width of it, put <b>'on'</b> in this column."

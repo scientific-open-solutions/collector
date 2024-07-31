@@ -53,7 +53,7 @@ function createInsertRowOption() {
             <label for="specific_row">Insert after specific row?</label>
             <input type="checkbox" id="specific_row" onchange="toggleRowSelect()">
         </div>
-        <div class="form-group" id="row_select_container" style="display: none;">
+        <div class="form-group" id="row_select_container" style="display: none;margin-left: 20px;">
             <label for="row_select">Select Row</label>
             <select id="row_select" class="form-control form-select"></select>
         </div>
@@ -100,16 +100,34 @@ function addCheckboxOptions(callback) {
                 <input type="text" class="form-control" id="values" required>
             </div>
             <div class="form-group">
-                <label for="optional">Make this item optional?</label>
-                <input type="checkbox" id="optional">
-            </div>
-            <div class="form-group">
                 <label for="direction">Display the checkboxes vertically?</label>
                 <input type="checkbox" id="direction">
             </div>
             <div class="form-group">
+                <label for="optional">Make this item optional?</label>
+                <input type="checkbox" id="optional">
+            </div>
+            <div class="form-group">
                 <label for="shuffle_question">Shuffle the question?</label>
                 <input type="checkbox" id="shuffle_question">
+            </div>
+            <div class="form-group">
+                <label for="provide_feedback">Provide feedback?</label>
+                <input type="checkbox" id="provide_feedback">
+            </div>
+            <div id="feedback_fields" style="display:none;margin-left: 20px;">
+                <div class="form-group">
+                    <label for="feedback_answers">Please enter the text that should be displayed for each response (e.g., Incorrect|Correct → separate with |)<span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="feedback_answers">
+                </div>
+                <div class="form-group">
+                    <label for="feedback_color">Please specicy colours for each piece of feedback (e.g., red|green → separate with |)) <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="feedback_color">
+                </div>
+                <div class="form-group">
+                    <label for="lock_feedback">Lock responses after providing feedback?</label>
+                    <input type="checkbox" id="lock_feedback">
+                </div>
             </div>
             ${createInsertRowOption()}
         </form>
@@ -128,12 +146,21 @@ function addCheckboxOptions(callback) {
                     var shuffleQuestion = $('#shuffle_question').is(':checked') ? 'on' : 'off';
                     var specificRow = $('#specific_row').is(':checked');
                     var rowIndex = $('#row_select').val();
+                    var provideFeedback = $('#provide_feedback').is(':checked');
+                    var lockFeedback = $('#lock_feedback').is(':checked') ? 'yes' : '';
 
                     var missingFields = [];
                     if (!itemName) missingFields.push('Checkbox item name');
                     if (!text) missingFields.push('Question text');
                     if (!answers) missingFields.push('Answers');
                     if (!values) missingFields.push('Values');
+                    
+                    if (provideFeedback) {
+                        var feedbackAnswers = $('#feedback_answers').val().replace(/\s*\|\s*/g, '|');
+                        var feedbackColor = $('#feedback_color').val().replace(/\s*\|\s*/g, '|').toLowerCase();
+                        if (!feedbackAnswers) missingFields.push('Feedback Answers');
+                        if (!feedbackColor) missingFields.push('Feedback Color');
+                    }
 
                     if (missingFields.length > 0) {
                         bootbox.alert("The following fields are missing: " + missingFields.join(', '));
@@ -147,7 +174,18 @@ function addCheckboxOptions(callback) {
                         return false;
                     }
 
-                    callback(itemName, text, answers, values, optional, direction, shuffleQuestion, specificRow ? parseInt(rowIndex) + 1 : null);
+                    var feedbackAnswersArray = feedbackAnswers.split('|');
+                    var feedbackColorArray = feedbackColor.split('|');
+                    if (answersArray.length !== feedbackAnswersArray.length) {
+                        bootbox.alert("The number of values in 'answers' does not match the number of values in 'feedback answers'. Please ensure they match.");
+                        return false;
+                    }
+                    if (feedbackColorArray.length !== feedbackAnswersArray.length) {
+                        bootbox.alert("The number of values in 'feedback answers' does not match the number of values in 'feedback colours'. Please ensure they match.");
+                        return false;
+                    }
+
+                    callback(itemName, text, answers, values, optional, direction, shuffleQuestion, specificRow ? parseInt(rowIndex) + 1 : null, feedbackAnswers, feedbackColor, lockFeedback);
                     return true;
                 }
             },
@@ -162,17 +200,29 @@ function addCheckboxOptions(callback) {
         }
     });
 
+    $('#provide_feedback').change(function() {
+        if ($(this).is(':checked')) {
+            $('#feedback_fields').show();
+            $('#feedback_answers').prop('required', true);
+            $('#feedback_color').prop('required', true);
+        } else {
+            $('#feedback_fields').hide();
+            $('#feedback_answers').prop('required', false);
+            $('#feedback_color').prop('required', false);
+        }
+    });
+
     window.toggleRowSelect = toggleRowSelect;
 }
 
 function addCheckboxRow() {
-    addCheckboxOptions(function (itemName, text, answers, values, optional, direction, shuffleQuestion, insertAfterRow) {
+    addCheckboxOptions(function (itemName, text, answers, values, optional, direction, shuffleQuestion, insertAfterRow, feedbackAnswers, feedbackColor, lockFeedback) {
 
         var currentData = survey_HoT.getData();
         var colCount = survey_HoT.countCols();
         var firstRow = currentData[0] || []; // Ensure firstRow is an array
 
-        var columnNames = ['item_name', 'text', 'type', 'answers', 'values', 'optional', 'shuffle_question'];
+        var columnNames = ['item_name', 'text', 'type', 'answers', 'values', 'optional', 'shuffle_question','feedback','feedback_color', 'lock_after_feedback'];
 
         var columnIndices = {};
 
@@ -229,6 +279,9 @@ function addCheckboxRow() {
             if (columnIndices['values'] !== undefined) newRow[columnIndices['values']] = values;
             if (columnIndices['optional'] !== undefined) newRow[columnIndices['optional']] = optional;
             if (columnIndices['shuffle_question'] !== undefined) newRow[columnIndices['shuffle_question']] = shuffleQuestion;
+            if (columnIndices['feedback'] !== undefined) newRow[columnIndices['feedback']] = feedbackAnswers;
+            if (columnIndices['feedback_color'] !== undefined) newRow[columnIndices['feedback_color']] = feedbackColor;
+            if (columnIndices['lock_after_feedback'] !== undefined) newRow[columnIndices['lock_after_feedback']] = lockFeedback;
 
             if (insertAfterRow !== null) {
                 survey_HoT.alter('insert_row', insertAfterRow);
@@ -277,6 +330,24 @@ function addDropdownOptions(callback) {
                 <label for="shuffle_question">Shuffle the question?</label>
                 <input type="checkbox" id="shuffle_question">
             </div>
+            <div class="form-group">
+                <label for="provide_feedback">Provide feedback?</label>
+                <input type="checkbox" id="provide_feedback">
+            </div>
+            <div id="feedback_fields" style="display:none;margin-left: 20px;">
+                <div class="form-group">
+                    <label for="feedback_answers">Please enter the text that should be displayed for each response (e.g., Incorrect|Correct → separate with |)<span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="feedback_answers">
+                </div>
+                <div class="form-group">
+                    <label for="feedback_color">Please specicy colours for each piece of feedback (e.g., red|green → separate with |)) <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="feedback_color">
+                </div>
+                <div class="form-group">
+                    <label for="lock_feedback">Lock responses after providing feedback?</label>
+                    <input type="checkbox" id="lock_feedback">
+                </div>
+            </div>
             ${createInsertRowOption()}
         </form>
         `,
@@ -293,6 +364,8 @@ function addDropdownOptions(callback) {
                     var shuffleQuestion = $('#shuffle_question').is(':checked') ? 'on' : 'off';
                     var specificRow = $('#specific_row').is(':checked');
                     var rowIndex = $('#row_select').val();
+                    var provideFeedback = $('#provide_feedback').is(':checked');
+                    var lockFeedback = $('#lock_feedback').is(':checked') ? 'yes' : '';
 
                     var missingFields = [];
                     if (!itemName) missingFields.push('Dropdown item name');
@@ -305,6 +378,13 @@ function addDropdownOptions(callback) {
                         return false;
                     }
 
+                    if (provideFeedback) {
+                        var feedbackAnswers = $('#feedback_answers').val().replace(/\s*\|\s*/g, '|');
+                        var feedbackColor = $('#feedback_color').val().replace(/\s*\|\s*/g, '|').toLowerCase();
+                        if (!feedbackAnswers) missingFields.push('Feedback Answers');
+                        if (!feedbackColor) missingFields.push('Feedback Color');
+                    }
+
                     var answersArray = answers.split('|');
                     var valuesArray = values.split('|');
                     if (answersArray.length !== valuesArray.length) {
@@ -312,7 +392,18 @@ function addDropdownOptions(callback) {
                         return false;
                     }
 
-                    callback(itemName, text, answers, values, optional, shuffleQuestion, specificRow ? parseInt(rowIndex) + 1 : null);
+                    var feedbackAnswersArray = feedbackAnswers.split('|');
+                    var feedbackColorArray = feedbackColor.split('|');
+                    if (answersArray.length !== feedbackAnswersArray.length) {
+                        bootbox.alert("The number of values in 'answers' does not match the number of values in 'feedback answers'. Please ensure they match.");
+                        return false;
+                    }
+                    if (feedbackColorArray.length !== feedbackAnswersArray.length) {
+                        bootbox.alert("The number of values in 'feedback answers' does not match the number of values in 'feedback colours'. Please ensure they match.");
+                        return false;
+                    }
+
+                    callback(itemName, text, answers, values, optional, shuffleQuestion, specificRow ? parseInt(rowIndex) + 1 : null, feedbackAnswers, feedbackColor, lockFeedback);
                     return true;
                 }
             },
@@ -327,17 +418,29 @@ function addDropdownOptions(callback) {
         }
     });
 
+    $('#provide_feedback').change(function() {
+        if ($(this).is(':checked')) {
+            $('#feedback_fields').show();
+            $('#feedback_answers').prop('required', true);
+            $('#feedback_color').prop('required', true);
+        } else {
+            $('#feedback_fields').hide();
+            $('#feedback_answers').prop('required', false);
+            $('#feedback_color').prop('required', false);
+        }
+    });
+
     window.toggleRowSelect = toggleRowSelect;
 }
 
 function addDropdownRow() {
-    addDropdownOptions(function (itemName, text, answers, values, optional, shuffleQuestion, insertAfterRow) {
+    addDropdownOptions(function (itemName, text, answers, values, optional, shuffleQuestion, insertAfterRow, feedbackAnswers, feedbackColor, lockFeedback) {
 
         var currentData = survey_HoT.getData();
         var colCount = survey_HoT.countCols();
         var firstRow = currentData[0] || []; // Ensure firstRow is an array
 
-        var columnNames = ['item_name', 'text', 'type', 'answers', 'values', 'optional', 'shuffle_question'];
+        var columnNames = ['item_name', 'text', 'type', 'answers', 'values', 'optional', 'shuffle_question','feedback','feedback_color', 'lock_after_feedback'];
 
         var columnIndices = {};
 
@@ -394,6 +497,9 @@ function addDropdownRow() {
             if (columnIndices['values'] !== undefined) newRow[columnIndices['values']] = values;
             if (columnIndices['optional'] !== undefined) newRow[columnIndices['optional']] = optional;
             if (columnIndices['shuffle_question'] !== undefined) newRow[columnIndices['shuffle_question']] = shuffleQuestion;
+            if (columnIndices['feedback'] !== undefined) newRow[columnIndices['feedback']] = feedbackAnswers;
+            if (columnIndices['feedback_color'] !== undefined) newRow[columnIndices['feedback_color']] = feedbackColor;
+            if (columnIndices['lock_after_feedback'] !== undefined) newRow[columnIndices['lock_after_feedback']] = lockFeedback;
 
             if (insertAfterRow !== null) {
                 survey_HoT.alter('insert_row', insertAfterRow);
@@ -593,6 +699,24 @@ function addLikertOptions(callback) {
                 <label for="shuffle_question">Shuffle the question?</label>
                 <input type="checkbox" id="shuffle_question">
             </div>
+            <div class="form-group">
+                <label for="provide_feedback">Provide feedback?</label>
+                <input type="checkbox" id="provide_feedback">
+            </div>
+            <div id="feedback_fields" style="display:none;margin-left: 20px;">
+                <div class="form-group">
+                    <label for="feedback_answers">Please enter the text that should be displayed for each response (e.g., Incorrect|Correct → separate with |)<span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="feedback_answers">
+                </div>
+                <div class="form-group">
+                    <label for="feedback_color">Please specicy colours for each piece of feedback (e.g., red|green → separate with |)) <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="feedback_color">
+                </div>
+                <div class="form-group">
+                    <label for="lock_feedback">Lock responses after providing feedback?</label>
+                    <input type="checkbox" id="lock_feedback">
+                </div>
+            </div>
             ${createInsertRowOption()}
         </form>
         `,
@@ -615,12 +739,21 @@ function addLikertOptions(callback) {
                     var shuffleQuestion = $('#shuffle_question').is(':checked') ? 'on' : 'off';
                     var specificRow = $('#specific_row').is(':checked');
                     var rowIndex = $('#row_select').val();
+                    var provideFeedback = $('#provide_feedback').is(':checked');
+                    var lockFeedback = $('#lock_feedback').is(':checked') ? 'yes' : '';
 
                     var missingFields = [];
                     if (!itemName) missingFields.push('Likert item name');
                     if (!text) missingFields.push('Question text');
                     if (!answers) missingFields.push('Answers');
                     if (!values) missingFields.push('Values');
+                    
+                    if (provideFeedback) {
+                        var feedbackAnswers = $('#feedback_answers').val().replace(/\s*\|\s*/g, '|');
+                        var feedbackColor = $('#feedback_color').val().replace(/\s*\|\s*/g, '|').toLowerCase();
+                        if (!feedbackAnswers) missingFields.push('Feedback Answers');
+                        if (!feedbackColor) missingFields.push('Feedback Color');
+                    }
 
                     if (missingFields.length > 0) {
                         bootbox.alert("The following fields are missing: " + missingFields.join(', '));
@@ -634,7 +767,18 @@ function addLikertOptions(callback) {
                         return false;
                     }
 
-                    callback(itemName, text, answers, values, optional, btnWidth, sideByside, shuffleQuestion, anchors, specificRow ? parseInt(rowIndex) + 1 : null);
+                    var feedbackAnswersArray = feedbackAnswers.split('|');
+                    var feedbackColorArray = feedbackColor.split('|');
+                    if (answersArray.length !== feedbackAnswersArray.length) {
+                        bootbox.alert("The number of values in 'answers' does not match the number of values in 'feedback answers'. Please ensure they match.");
+                        return false;
+                    }
+                    if (feedbackColorArray.length !== feedbackAnswersArray.length) {
+                        bootbox.alert("The number of values in 'feedback answers' does not match the number of values in 'feedback colours'. Please ensure they match.");
+                        return false;
+                    }
+
+                    callback(itemName, text, answers, values, optional, btnWidth, sideByside, shuffleQuestion, anchors, specificRow ? parseInt(rowIndex) + 1 : null, feedbackAnswers, feedbackColor, lockFeedback);
                     return true;
                 }
             },
@@ -649,17 +793,29 @@ function addLikertOptions(callback) {
         }
     });
 
+    $('#provide_feedback').change(function() {
+        if ($(this).is(':checked')) {
+            $('#feedback_fields').show();
+            $('#feedback_answers').prop('required', true);
+            $('#feedback_color').prop('required', true);
+        } else {
+            $('#feedback_fields').hide();
+            $('#feedback_answers').prop('required', false);
+            $('#feedback_color').prop('required', false);
+        }
+    });
+
     window.toggleRowSelect = toggleRowSelect;
 }
 
 function addLikertRow() {
-    addLikertOptions(function (itemName, text, answers, values, optional, btnWidth, sideByside, shuffleQuestion, anchors, insertAfterRow) {
+    addLikertOptions(function (itemName, text, answers, values, optional, btnWidth, sideByside, shuffleQuestion, anchors, insertAfterRow, feedbackAnswers, feedbackColor, lockFeedback) {
 
         var currentData = survey_HoT.getData();
         var colCount = survey_HoT.countCols();
         var firstRow = currentData[0] || []; // Ensure firstRow is an array
 
-        var columnNames = ['item_name', 'text', 'type', 'answers', 'values', 'side_text', 'optional', 'btn_width', 'side_by_side', 'shuffle_question'];
+        var columnNames = ['item_name', 'text', 'type', 'answers', 'values', 'side_text', 'optional', 'btn_width', 'side_by_side', 'shuffle_question','feedback','feedback_color', 'lock_after_feedback'];
 
         var columnIndices = {};
 
@@ -719,6 +875,9 @@ function addLikertRow() {
             if (columnIndices['side_by_side'] !== undefined) newRow[columnIndices['side_by_side']] = sideByside;
             if (columnIndices['shuffle_question'] !== undefined) newRow[columnIndices['shuffle_question']] = shuffleQuestion;
             if (columnIndices['side_text'] !== undefined) newRow[columnIndices['side_text']] = anchors;
+            if (columnIndices['feedback'] !== undefined) newRow[columnIndices['feedback']] = feedbackAnswers;
+            if (columnIndices['feedback_color'] !== undefined) newRow[columnIndices['feedback_color']] = feedbackColor;
+            if (columnIndices['lock_after_feedback'] !== undefined) newRow[columnIndices['lock_after_feedback']] = lockFeedback;
 
             if (insertAfterRow !== null) {
                 survey_HoT.alter('insert_row', insertAfterRow);
@@ -1177,12 +1336,30 @@ function addRadioOptions(callback) {
                 <input type="text" class="form-control" id="values" required>
             </div>
             <div class="form-group">
+                <label for="direction">Display the radio buttons vertically?</label>
+                <input type="checkbox" id="direction">
+            </div>
+            <div class="form-group">
                 <label for="optional">Make this item optional?</label>
                 <input type="checkbox" id="optional">
             </div>
             <div class="form-group">
-                <label for="direction">Display the radio buttons vertically?</label>
-                <input type="checkbox" id="direction">
+                <label for="provide_feedback">Provide feedback?</label>
+                <input type="checkbox" id="provide_feedback">
+            </div>
+            <div id="feedback_fields" style="display:none;margin-left: 20px;">
+                <div class="form-group">
+                    <label for="feedback_answers">Please enter the text that should be displayed for each response (e.g., Incorrect|Correct → separate with |)<span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="feedback_answers">
+                </div>
+                <div class="form-group">
+                    <label for="feedback_color">Please specicy colours for each piece of feedback (e.g., red|green → separate with |)) <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="feedback_color">
+                </div>
+                <div class="form-group">
+                    <label for="lock_feedback">Lock responses after providing feedback?</label>
+                    <input type="checkbox" id="lock_feedback">
+                </div>
             </div>
             <div class="form-group">
                 <label for="shuffle_question">Shuffle the question?</label>
@@ -1205,12 +1382,23 @@ function addRadioOptions(callback) {
                     var shuffleQuestion = $('#shuffle_question').is(':checked') ? 'on' : 'off';
                     var specificRow = $('#specific_row').is(':checked');
                     var rowIndex = $('#row_select').val();
+                    var provideFeedback = $('#provide_feedback').is(':checked');
+                    var lockFeedback = $('#lock_feedback').is(':checked') ? 'yes' : '';
+
 
                     var missingFields = [];
                     if (!itemName) missingFields.push('Radio item name');
                     if (!text) missingFields.push('Question text');
                     if (!answers) missingFields.push('Answers');
                     if (!values) missingFields.push('Values');
+
+                    if (provideFeedback) {
+                        var feedbackAnswers = $('#feedback_answers').val().replace(/\s*\|\s*/g, '|');
+                        var feedbackColor = $('#feedback_color').val().replace(/\s*\|\s*/g, '|').toLowerCase();
+                        if (!feedbackAnswers) missingFields.push('Feedback Answers');
+                        if (!feedbackColor) missingFields.push('Feedback Color');
+                    }
+
 
                     if (missingFields.length > 0) {
                         bootbox.alert("The following fields are missing: " + missingFields.join(', '));
@@ -1224,7 +1412,18 @@ function addRadioOptions(callback) {
                         return false;
                     }
 
-                    callback(itemName, text, answers, values, optional, direction, shuffleQuestion, specificRow ? parseInt(rowIndex) + 1 : null);
+                    var feedbackAnswersArray = feedbackAnswers.split('|');
+                    var feedbackColorArray = feedbackColor.split('|');
+                    if (answersArray.length !== feedbackAnswersArray.length) {
+                        bootbox.alert("The number of values in 'answers' does not match the number of values in 'feedback answers'. Please ensure they match.");
+                        return false;
+                    }
+                    if (feedbackColorArray.length !== feedbackAnswersArray.length) {
+                        bootbox.alert("The number of values in 'feedback answers' does not match the number of values in 'feedback colours'. Please ensure they match.");
+                        return false;
+                    }
+
+                    callback(itemName, text, answers, values, optional, direction, shuffleQuestion, specificRow ? parseInt(rowIndex) + 1 : null, feedbackAnswers, feedbackColor, lockFeedback);
                     return true;
                 }
             },
@@ -1239,17 +1438,29 @@ function addRadioOptions(callback) {
         }
     });
 
+    $('#provide_feedback').change(function() {
+        if ($(this).is(':checked')) {
+            $('#feedback_fields').show();
+            $('#feedback_answers').prop('required', true);
+            $('#feedback_color').prop('required', true);
+        } else {
+            $('#feedback_fields').hide();
+            $('#feedback_answers').prop('required', false);
+            $('#feedback_color').prop('required', false);
+        }
+    });
+
     window.toggleRowSelect = toggleRowSelect;
 }
 
 function addRadioRow() {
-    addRadioOptions(function (itemName, text, answers, values, optional, direction, shuffleQuestion, insertAfterRow) {
+    addRadioOptions(function (itemName, text, answers, values, optional, direction, shuffleQuestion, insertAfterRow, feedbackAnswers, feedbackColor, lockFeedback) {
 
         var currentData = survey_HoT.getData();
         var colCount = survey_HoT.countCols();
         var firstRow = currentData[0] || []; // Ensure firstRow is an array
 
-        var columnNames = ['item_name', 'text', 'type', 'answers', 'values', 'optional', 'shuffle_question'];
+        var columnNames = ['item_name', 'text', 'type', 'answers', 'values', 'optional', 'shuffle_question','feedback','feedback_color', 'lock_after_feedback'];
 
         var columnIndices = {};
 
@@ -1306,6 +1517,9 @@ function addRadioRow() {
             if (columnIndices['values'] !== undefined) newRow[columnIndices['values']] = values;
             if (columnIndices['optional'] !== undefined) newRow[columnIndices['optional']] = optional;
             if (columnIndices['shuffle_question'] !== undefined) newRow[columnIndices['shuffle_question']] = shuffleQuestion;
+            if (columnIndices['feedback'] !== undefined) newRow[columnIndices['feedback']] = feedbackAnswers;
+            if (columnIndices['feedback_color'] !== undefined) newRow[columnIndices['feedback_color']] = feedbackColor;
+            if (columnIndices['lock_after_feedback'] !== undefined) newRow[columnIndices['lock_after_feedback']] = lockFeedback;
 
             if (insertAfterRow !== null) {
                 survey_HoT.alter('insert_row', insertAfterRow);
