@@ -259,7 +259,8 @@ $("#code-preview-tab").on("click", function () {
     
     /* work out if we're in a graphics editor or code editor file and get the appropriate html */
 
-    if(parent.parent.graphicObj) {
+    if(typeof(master.phasetypes.graphic.files[required_code_name]) !== "undefined") {
+    //if(parent.parent.graphicObj) {
       required_code_name = $("#phasetype_select").val();
       var iframe_content = master.phasetypes.user[required_code_name];
     } else {

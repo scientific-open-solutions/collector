@@ -89,12 +89,14 @@ code_obj = {
     var this_file = master.phasetypes.file;
 
     //python load if localhost
+    /*
     switch (Collector.detect_context()) {
       case "localhost":
         cleaned_code = this_file.toLowerCase().replace(".html", "") + ".html";
         this_content = CElectron.fs.read_file("PhaseTypes",cleaned_code);
         try {
           this_graphic = CElectron.fs.read_file("Graphics",cleaned_code);
+
           parent.parent.graphicObj = this_graphic;
         } catch(e) {
           console.log(e + "<-------"); // error in the above string (in this case, yes)!
@@ -110,6 +112,7 @@ code_obj = {
         editor.setValue(content);
         break;
     }
+    */
   },
   save: function (content, name, new_old, graphic_code) {
     if (new_old === "new") {

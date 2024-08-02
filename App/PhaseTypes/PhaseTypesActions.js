@@ -373,7 +373,7 @@ function initiate_actions() {
   $("#phasetype_select").on("change", function () {
     //console.log(master.phasetypes.graphic.files)
     first_view = true; // This is just a reset flag for the graphics editor, you can ignore it
-    master.phasetypes.graphic.files = {};
+    //master.phasetypes.graphic.files = {};
     var code_file = master.phasetypes.file;
 
     // Note: do not alter the two Settimeout functions, they build the delay needed to load the files before populating the graphics editor object. The graphics editor breaks without them.
@@ -405,66 +405,59 @@ function initiate_actions() {
       $('#save_phasetype_btn').hide();
       $('#delete_phasetypes_button').hide();
     }
-    // setTimeout(() => {
-      if(parent.parent.graphicObj) {
-        phasetype_object = JSON.parse(parent.parent.graphicObj);
+    console.log("code_file");
+    console.log(code_file);
+      
+    if(typeof(master.phasetypes.graphic.files[code_file]) !== "undefined"){
+    
+      // editor.textInput.getElement().onkeydown = graphic_editor_obj.graphic_warning; // I'm keeping this incase someone gets to the code editor (as it's just hidden) but is slightly redundant now
+
+      // setup canvas with required html elements
+      graphic_editor_obj.load_canvas(master.phasetypes.graphic.files[code_file].elements);
+        // graphic_editor_obj.clean_canvas();
+
+      // load_code_mods();
+      $('#code_editor-tab').removeAttr('disabled'); // activate the editor button
+      $('#code-preview-tab').removeAttr('disabled'); // activate the preview button
+      $("#ACE_editor").hide(); // Hide the Code Editor
+      $("#ACE_citation").html("<br>").show(); // Hide the Code Editor Citation
+      $("#editor_theme_select").hide(); // Hide the code editor themes dropdown
+      // $("#view_graphic_code_btn").show(); // Show the graphic editor current code button
+      $("#convert_to_code_btn").show(); // Show the graphic editor current code button
+      $("#graphic_editor").show(); // Show the graphics editor
+      $("#delete_phasetypes_button").show(); // Show the delete phasetype button
+      $("#save_phasetype_btn").show(); // Show the save phasetype button
+
+    } else {
+      $('#code_editor-tab').removeAttr('disabled'); // activate the editor button
+      $('#code-preview-tab').removeAttr('disabled'); // activate the preview button
+      $('#ACE_citation').show(); // show the code editor citation
+      $("#view_code_btn").removeClass("btn-outline-primary");
+      $("#view_code_btn").addClass("btn-primary");
+      editor.setOption("readOnly", false);
+      // $("#view_graphic_code_btn").hide(); // Hide the graphic editor current code button
+      $("#convert_to_code_btn").hide(); // Hide the graphic editor current code button
+      $("#graphic_editor").hide(); // Hide the graphic editor
+      $("#view_graphic_btn").hide() // hide the graphic editor button
+      // $("#view_graphic_btn").removeClass("btn-primary");
+      // $("#view_graphic_btn").addClass("btn-outline-primary");
+      editor.textInput.getElement().onkeydown = "";
+      $("#ACE_editor").show();
+
+      $("#phasetype_select").removeClass("user_code");
+      $("#phasetype_select").removeClass("default_code_file");
+      if (user_default === "user") {
+        $("#phasetype_select").addClass("user_code");
       } else {
-        phasetype_object = null;
+        $("#phasetype_select").addClass("default_code_file");
       }
+      $("#delete_phasetypes_button").show();
+      $("#save_phasetype_btn").show();
+      $("#editor_theme_select").show();
 
-      // First we deal with files were created in the graphic editor
-      master.phasetypes.graphic.files[code_file] = phasetype_object;
-      if (phasetype_object != null) {      
-        master.phasetypes.file = code_file;
-
-        // editor.textInput.getElement().onkeydown = graphic_editor_obj.graphic_warning; // I'm keeping this incase someone gets to the code editor (as it's just hidden) but is slightly redundant now
-
-        // setup canvas with required html elements
-        graphic_editor_obj.load_canvas(master.phasetypes.graphic.files[code_file].elements);
-          // graphic_editor_obj.clean_canvas();
-
-        // load_code_mods();
-        $('#code_editor-tab').removeAttr('disabled'); // activate the editor button
-        $('#code-preview-tab').removeAttr('disabled'); // activate the preview button
-        $("#ACE_editor").hide(); // Hide the Code Editor
-        $("#ACE_citation").html("<br>").show(); // Hide the Code Editor Citation
-        $("#editor_theme_select").hide(); // Hide the code editor themes dropdown
-        // $("#view_graphic_code_btn").show(); // Show the graphic editor current code button
-        $("#convert_to_code_btn").show(); // Show the graphic editor current code button
-        $("#graphic_editor").show(); // Show the graphics editor
-        $("#delete_phasetypes_button").show(); // Show the delete phasetype button
-        $("#save_phasetype_btn").show(); // Show the save phasetype button
-
-      } else {
-        $('#code_editor-tab').removeAttr('disabled'); // activate the editor button
-        $('#code-preview-tab').removeAttr('disabled'); // activate the preview button
-        $('#ACE_citation').show(); // show the code editor citation
-        $("#view_code_btn").removeClass("btn-outline-primary");
-        $("#view_code_btn").addClass("btn-primary");
-        editor.setOption("readOnly", false);
-        // $("#view_graphic_code_btn").hide(); // Hide the graphic editor current code button
-        $("#convert_to_code_btn").hide(); // Hide the graphic editor current code button
-        $("#graphic_editor").hide(); // Hide the graphic editor
-        $("#view_graphic_btn").hide() // hide the graphic editor button
-        // $("#view_graphic_btn").removeClass("btn-primary");
-        // $("#view_graphic_btn").addClass("btn-outline-primary");
-        editor.textInput.getElement().onkeydown = "";
-        $("#ACE_editor").show();
-
-        $("#phasetype_select").removeClass("user_code");
-        $("#phasetype_select").removeClass("default_code_file");
-        if (user_default === "user") {
-          $("#phasetype_select").addClass("user_code");
-        } else {
-          $("#phasetype_select").addClass("default_code_file");
-        }
-        $("#delete_phasetypes_button").show();
-        $("#save_phasetype_btn").show();
-        $("#editor_theme_select").show();
-
-        // code_obj.load_file(user_default);
-      }
-    // }, 150);
+      // code_obj.load_file(user_default);
+    }
+  // }, 150);
  
   });
 
