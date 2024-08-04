@@ -357,7 +357,6 @@ Project = {
               attempt_no++;
               if(attempt_no > 2){
                 bootbox.alert("⚠ <b class='text-danger'>WARNING</b> ⚠ <br><br>This data has not submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
-                // console.log("This data may not have been submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
               } else {
                 redcap_post(
                   this_url,
@@ -907,11 +906,7 @@ function final_phase() {
         typeof project_json.this_condition.end_message !== "undefined" &&
         project_json.this_condition.end_message !== ""
       ) {
-        $("#project_div").html(
-          "<h3 class='text-primary'>" +
-            project_json.this_condition.end_message +
-            "</h3>"
-        );
+        $("#project_div").html("<h3 class='text-primary'>" +project_json.this_condition.end_message +"</h3>");
       } else {
         $("#project_div").html("");
       }
@@ -948,16 +943,8 @@ function final_phase() {
             online_data_obj.finished_and_stored = true;
             $("#google_progress").css("width", "100%");
             setTimeout(function () {
-              if (
-                typeof project_json.this_condition.forward_at_end !==
-                  "undefined" &&
-                project_json.this_condition.forward_at_end !== ""
-              ) {
-                bootbox.alert(
-                  "The researcher would like you to now go to " +
-                    project_json.this_condition.forward_at_end +
-                    " please copy the link into a new window to proceed there."
-                );
+              if (typeof project_json.this_condition.forward_at_end !== "undefined" && project_json.this_condition.forward_at_end !== "") {
+                bootbox.alert("The researcher would like you to now go to " + project_json.this_condition.forward_at_end + " please copy the link into a new window to proceed there.");
               }
               $("#project_div").html(download_data_text
                 // "<h1>Thank you for participating. If you'd like to download your raw data <span id='download_json'>click here</span></h1>"
@@ -1270,11 +1257,6 @@ function load_phases() {
 function parse_sheets() {
   // Counterbalancing
   
-//console.log(project_json);
-// console.log("--------");
-// console.log(Object.keys(project_json.all_procs).length);
-// console.log("--------");
-  
   var proc_sheet_name;
   var levels;
   var suffix;
@@ -1512,7 +1494,6 @@ function parse_current_proc() {
       weight_0s++;
     } else if (parseInt(project_json.parsed_proc[i].weight) > 1) {
       weight_1s += parseInt(project_json.parsed_proc[i].weight);
-      console.log(weight_1s)
     } else {
       weight_1s++;
     }
@@ -1659,9 +1640,7 @@ function process_welcome() {
       $("#participant_code").val(Project.get_vars.redcap_id);
       post_welcome(Project.get_vars.redcap_id, "redcap");
     } else {
-      bootbox.alert(
-        "It's not clear if the researcher wants you to give them a user id - please contact them before proceeding."
-      );
+      bootbox.alert("It's not clear if the researcher wants you to give them a user id - please contact them before proceeding.");
     }
 
     if (project_json.this_condition.start_message !== "") {
@@ -1892,7 +1871,6 @@ function shuffle_start_exp() {
 }
 
 function start_restart() {
-  console.log
   if (isSafari) {
     bootbox.alert(
       "Please do not use Safari to complete this study. It is likely that your data will not save correctly if you do. Please close Safari and use another browser"

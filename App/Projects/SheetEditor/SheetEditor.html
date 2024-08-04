@@ -4,6 +4,11 @@
 
 <!-- <script src="Projects/SheetEditor/SheetFunctions.js"></script>
 <script src="Projects/SheetEditor/SheetActions.js"></script> -->
+<script type="text/javascript" src="Projects/SheetEditor/wysiwyg/cond_addItem.js"></script>
+<script type="text/javascript" src="Projects/SheetEditor/wysiwyg/cond_counterbalance.js"></script>
+<script type="text/javascript" src="Projects/SheetEditor/wysiwyg/proc_addItem.js"></script>
+<script type="text/javascript" src="Projects/SheetEditor/wysiwyg/proc_shuffle.js"></script>
+<script type="text/javascript" src="Projects/SheetEditor/wysiwyg/icons.js"></script>
 <link rel="stylesheet" href="../App/style.css">
 <style>
 .handsontable td {
@@ -23,9 +28,9 @@
 }
 #exp_data_table{
   display:none;
+  margin-top:75px;
 }
-#procedure_inputs > *,
-#stimuli_inputs > * {
+#procedure_inputs > *, #stimuli_inputs > * {
   margin-right: 5px;
   margin-bottom: 5px;
 }
@@ -34,42 +39,37 @@
   vertical-align: middle; /* Align elements vertically in the middle */
   margin: 0; /* Optional: Remove default margin */
 }
+#wysiwyg_button {
+  margin-bottom: 5px;
+}
 </style>
 
-<br /><br /><br />
-<table id="exp_data_table" style="margin-top: 10px;">
+<table id="exp_data_table">
   <tr>
     <td align="left" class="exp_table_cells">
       <div id="Conditions" class="hide_show_elements">
-        <h3>Conditions</h3><button class="btn-sm btn-success bi bi-gear" id="conditions_settings_btn" style="margin-left: 10px;display:none;">Settings</button>
+        <h3>Conditions</h3>
+        <div id="wysiwyg_button">
+          <button class="btn-sm btn-success" id="cond_addRow_btn" >Add Row</button>
+          <button class="btn-sm btn-success" id="cond_counterbalance_btn" >Counterbalance</button>
+        </div>
         <div id="conditionsArea"></div>
       </div>
     </td>
     <td></td>
   </tr>
   <tr>
-    <td
-      id="Procedure"
-      class="hide_show_elements exp_table_cells"
-      align="left"
-      valign="top"
-    >
+    <td id="Procedure" class="hide_show_elements exp_table_cells" align="left" valign="top">
       <h3>Procedure</h3>
       <div class="form-inline" id="procedure_inputs">
-        <select
-          id="proc_select"
-          class="form-select"
-          style="width: auto"
-        ></select>
-        <button type="button" id="new_proc_button" class="btn btn-primary bi bi-file-earmark-plus">
-          New
-        </button>
-        <button type="button" id="rename_proc_button" class="btn btn-primary bi bi-pencil-fill">
-          Rename
-        </button>
-        <button type="button" id="delete_proc_button" class="btn btn-primary bi bi-trash">
-          Delete
-        </button>
+        <select id="proc_select" class="form-select" style="width: auto"></select>
+        <button type="button" id="new_proc_button" class="btn btn-primary bi bi-file-earmark-plus">New</button>
+        <button type="button" id="rename_proc_button" class="btn btn-primary bi bi-pencil-fill">Rename</button>
+        <button type="button" id="delete_proc_button" class="btn btn-primary bi bi-trash">Delete</button>
+      </div>
+      <div id="wysiwyg_button">
+        <button class="btn-sm btn-success" id="proc_addRow_btn" >Add Row</button>
+        <button class="btn-sm btn-success" id="proc_shuffle_btn">Shuffle</button>
       </div>
       <span id="procsArea">
         <div id="procSheetTable"></div>
@@ -83,31 +83,14 @@
     </td>
   </tr>
   <tr>
-    <td
-      id="Stimuli"
-      class="hide_show_elements exp_table_cells"
-      align="left"
-      valign="top"
-    >
+    <td id="Stimuli" class="hide_show_elements exp_table_cells" align="left" valign="top">
       <h3>Stimuli</h3>
       <div class="form-inline" id="stimuli_inputs">
-        <select
-          id="stim_select"
-          class="form-select"
-          style="width: auto"
-        ></select>
-        <button type="button" id="new_stim_button" class="btn btn-primary bi bi-file-earmark-plus">
-          New
-        </button>
-        <button type="button" id="rename_stim_button" class="btn btn-primary bi bi-pencil-fill">
-          Rename
-        </button>
-        <button type="button" id="delete_stim_button" class="btn btn-primary bi bi-trash">
-          Delete
-        </button>
-        <button type="button" id="stim_folder_button" class="btn btn-primary bi bi-folder">
-          User Folder
-        </button>
+        <select id="stim_select" class="form-select" style="width: auto"></select>
+        <button type="button" id="new_stim_button" class="btn btn-primary bi bi-file-earmark-plus">New</button>
+        <button type="button" id="rename_stim_button" class="btn btn-primary bi bi-pencil-fill">Rename</button>
+        <button type="button" id="delete_stim_button" class="btn btn-primary bi bi-trash">Delete</button>
+        <button type="button" id="stim_folder_button" class="btn btn-primary bi bi-folder">User Folder</button>
       </div>
       <span id="stimsArea">
         <div id="stimsheetTable"></div>

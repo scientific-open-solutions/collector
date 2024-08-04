@@ -23,10 +23,7 @@ var this_selection;
 function isPhaseTypeHeader(colHeader) {
   var isPhaseTypeCol = false;
   if (colHeader === "phasetype") isPhaseTypeCol = true;
-  if (
-    colHeader.substr(0, 5).toLowerCase() === "post " &&
-    colHeader.substr(-11) === " trial type"
-  ) {
+  if (colHeader.substr(0, 5).toLowerCase() === "post " && colHeader.substr(-11) === " trial type") {
     postN = colHeader.substr(5, colHeader.length - 16);
     postN = parseInt(postN);
     if (!isNaN(postN) && postN !== 0) {
@@ -77,15 +74,7 @@ function shuffleRenderer(instance, td, row, col, prop, value, cellProperties) {
     td.style.background = "#DDD";
   }
 }
-function trialTypesRenderer(
-  instance,
-  td,
-  row,
-  col,
-  prop,
-  value,
-  cellProperties
-) {
+function trialTypesRenderer(instance,td,row,col,prop,value,cellProperties) {
   Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
   if (value === "Nothing" || value === "") {
     if (instance.getDataAtCell(0, col) === "trial type") {
@@ -96,17 +85,44 @@ function trialTypesRenderer(
   }
 }
 
-function createHoT(container, data, sheet_name) {
+// Used to monitor the number of tables created
+var tables = {}; // Global object to store Handsontable instances
+const nonDeletableColumns_proj = ['item', 'phasetype', 'max_time', 'shuffle_1', 'name', 'stimuli','procedure','participant_id']; // QWERTY - Add any required columns to this list for projects' tables.
+var savedValues = {}; // Object to save the values of protected cells
+
+function createHoT(container, data, sheet_name, tableId) {
+  // Create the Handsontable instance
   var table = new Handsontable(container, {
     data: data,
     minSpareCols: 1,
     minSpareRows: 1,
 
-
     /*
      * Functions
-     */
+    */
+    beforeChange: function (changes, source) {
+      changes.forEach(([row, col, oldValue, newValue]) => {
+          if (nonDeletableColumns_proj.includes(oldValue) && newValue === '') {
+              // Save the current value to restore it later if needed
+              savedValues[`${row}_${col}`] = oldValue;
+          }
+      });
+    },
     afterChange: function (changes, source) {
+      if (!changes) return;
+      changes.forEach(([row, col, oldValue, newValue]) => {
+        const cellKey = `${row}_${col}`;
+        if (nonDeletableColumns_proj.includes(oldValue) && newValue === '' && savedValues[cellKey]) {
+          // Restore the saved value
+          this.setDataAtCell(row, col, savedValues[cellKey]);
+          bootbox.alert({
+            title: 'Required Column',
+            message: 'Sorry, you cannot delete this column as it is required for Collector to run your experiment.',
+            buttons: { ok: { label: '<i class="fa fa-times"></i> Cancel' } }
+          });
+        }
+      });
+
       var middleColEmpty = 0;
       var middleRowEmpty = 0;
       var postEmptyCol = 0; //identify if there is a used col after empty one
@@ -128,7 +144,7 @@ function createHoT(container, data, sheet_name) {
             } else {
               // otherwise we assume it's matching a previous header
               this.setDataAtCell(0, k, this.getDataAtCell(0, k) + "*"); // add a star to the title to avoid identical titles
-              Collector.custom_alert(
+              alert(
                 "You have identical headers for two columns '" + // let the user know the change has happened
                   this.getDataAtCell(0, k) +
                   "', we have added a * to address this"
@@ -137,6 +153,9 @@ function createHoT(container, data, sheet_name) {
           }
         }
       }
+
+      
+
       // go through each column
       for (var k = 0; k < this.countCols() - 1; k++) {
         // if the loop has gone past the last column then stop looping through the columns
@@ -160,13 +179,12 @@ function createHoT(container, data, sheet_name) {
         // checking for invalid item number (i.e. one)
         if (this.getDataAtCell(0, k).toLowerCase() === "item") {
           if (this.isEmptyCol()) {
-            console.log("hello")
           }
           // loop through each row
-          for (m = 0; m < this.countRows(); m++) {
+          for (m = 0; m < this.countRows() -1; m++) {
             // if the value in the row is one
             if (this.getDataAtCell(m, k) === 1) {
-              bootbox.alert(
+              alert(
                 "Warning: 1 does not refer to any row in the Stimuli sheet! The first row is row 2 (as row 1 is the header). Fix row " +
                   (m + 1) +
                   "in your Procedure's Item column."
@@ -185,9 +203,16 @@ function createHoT(container, data, sheet_name) {
               }
             }            
           }
+          for (var m = 1; m < this.countRows() - 1; m++) {  // Skip the first and last row
+            let cellValue = this.getDataAtCell(m, k);
+            if (cellValue === "") {
+              this.setDataAtCell(m, k, "0");
+            }
+          }
         }
+
         // if this is an empty middle column
-        if (this.isEmptyCol(k)) {
+        if (this.isEmptyCol(k) && !nonDeletableColumns_proj.includes(this.getDataAtCell(0, k))) {
           // remove this empty middle column
           this.alter("remove_col", k);
           // and then check this column number again
@@ -234,7 +259,6 @@ function createHoT(container, data, sheet_name) {
     afterRemoveCol: function () {
 
     },
-
     afterSelectionEnd: function () {
       thisCellValue = this.getValue();
 
@@ -247,14 +271,18 @@ function createHoT(container, data, sheet_name) {
       window["Current HoT Coordinates"] = coords;
       helperActivate(column, thisCellValue, sheet_name);
     },
-
     cells: function (row, col, prop) {
       var cellProperties = {};
       if (row === 0) {
+        cellProperties.type = 'autocomplete';
+        cellProperties.source = [
+          /* Condition */'item','code','description','freq','frequency','phase','max_time','no_progress','notes','repeat','phasetype','shuffle_1','shuffle_2','text','timer_style','weight',
+          /* Procedure */'age_check','buffer','counterbalance','description','download_at_end','end_message','forward_at_end','fullscreen','mobile','name','notes','participant_id','procedure','progress_bar','redcap_url','skip_quality','start_message','stimuli','zoom_check'];
+        cellProperties.strict = false;
+
         cellProperties.renderer = firstRowRenderer;
       } else {
         var thisHeader = this.instance.getDataAtCell(0, col);
-
         if(thisHeader !== null){
           thisHeader = thisHeader.toLowerCase();
         }
@@ -274,7 +302,6 @@ function createHoT(container, data, sheet_name) {
               }
             );
             cellProperties.trimDropdown = false;
-            //cellProperties.renderer = trialTypesRenderer;
           } else if(isSurveyHeader(thisHeader)){
             cellProperties.type = "dropdown";
             cellProperties.visibleRows = 10;
@@ -288,7 +315,6 @@ function createHoT(container, data, sheet_name) {
               }
             );
             cellProperties.trimDropdown = false;
-            //cellProperties.renderer = trialTypesRenderer;
           } else {
             cellProperties.type = "text";
             if (isNumericHeader(thisHeader)) {
@@ -305,7 +331,6 @@ function createHoT(container, data, sheet_name) {
       }
       return cellProperties;
     },
-
     wordWrap: false,
     contextMenu: {
       items: {
@@ -321,7 +346,6 @@ function createHoT(container, data, sheet_name) {
             return this.getSelectedLast()[0] === 0; // `this` === hot3
           },
           callback: function (key, selection, clickEvent) {
-            // Callback for specific option
             this_sheet = this;
             $("#cell_editor_div").fadeIn();
             this_selection = selection;
@@ -402,8 +426,42 @@ function createHoT(container, data, sheet_name) {
       },
     },
     rowHeaders: true,
-
+    colHeaders: false,
+    beforeRemoveCol: function (index, amount) {
+      for (let i = 0; i < amount; i++) {
+        const colHeader = this.getDataAtCell(0, index + i);
+        if (nonDeletableColumns_proj.includes(colHeader)) {
+          bootbox.alert({
+            title: 'Required Column',
+            message: 'Sorry, you cannot delete this column as it is required for Collector to run your experiment.',
+            buttons: {
+              ok: {
+                label: '<i class="fa fa-times"></i> Cancel'
+              }
+            }
+          });
+          return false; // Prevent the deletion
+        }
+      }
+    },
+    beforeRemoveRow: function (index, amount) {
+      if (index === 0) {
+        bootbox.alert({
+          title: 'Required Row',
+          message: 'Sorry, you cannot delete this row as it is required by Collector.',
+          buttons: {
+            ok: {
+              label: '<i class="fa fa-times"></i> Cancel'
+            }
+          }
+        });
+        return false; // Prevent the deletion of the first row
+      }
+    }
   });
+
+  // Store the table instance in the global object
+  tables[tableId] = table;
   return table;
 }
 //https://stackoverflow.com/a/28353499/4490801
