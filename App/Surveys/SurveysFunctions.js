@@ -178,7 +178,6 @@ function create_survey_HoT(this_survey) {
       var coords = this.getSelected();
       var column = this.getDataAtCell(0, coords[0][1]);
       column = column === null ? (column = "") : column;
-      console.log("column: " + column)
       
       helperActivate(column, thisCellValue, "survey");
       checkTable();
@@ -429,13 +428,13 @@ function checkTable() {
 
   // Check if the block column exists when page_breaks are being used.
   if (pageBreakExists) { //CHRISDOBSON
-      // if (blockIndex === -1) {
-      //   console.log("All good: 'block' column does not exist.");
-      // } else {
-      //   bootbox.alert("Warning: At the moment you cannot use page breakes when branching the survey. We've deleted the row automatically for you.");
-      //   // deletePageBreakRows();
-      //   // $("#save_btn").click();
-      // }
+      if (blockIndex === -1) {
+        console.log("All good: 'block' column does not exist.");
+      } else {
+        bootbox.alert("Warning: At the moment you cannot use page breakes when branching the survey. We've deleted the row automatically for you.");
+        deletePageBreakRows();
+        $("#save_btn").click();
+      }
   } else {
       console.log("No 'page_break' found.");
   }

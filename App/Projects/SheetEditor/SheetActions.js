@@ -69,7 +69,9 @@ $("#delete_proj_btn").on("click", function () {
                         }
                       }
                     );
-                    $('#save_btn').click();
+                    setTimeout(() => {
+                      $('#save_btn').click();
+                    }, 100);
                   }
                 }
               }
@@ -131,7 +133,6 @@ $("#delete_proc_button").on("click", function () {
                   var project = $("#project_list").val();
                   var proc_file = $("#proc_select").val();
                   var file_path = "Projects" + "/" + project + "/" + proc_file;
-                  //console.log(file_path);
                   delete master.projects.projects[project].all_procs[proc_file];
 
                   // update the lists
@@ -149,7 +150,9 @@ $("#delete_proc_button").on("click", function () {
                       Collector.custom_alert(this_response);
                     }
                   }
-                  $("#save_btn").click();
+                  setTimeout(() => {
+                    $('#save_btn').click();
+                  }, 100);
                 }
               }
             });
@@ -279,7 +282,7 @@ $("#new_proc_button").on("click", function () {
           if (current_procs.indexOf(new_proc_name) !== -1) {
             bootbox.alert("You already have a procedure sheet with that name");
           } else {
-            new_proc_name = new_proc_name.replace(".csv", "") + ".csv";
+            new_proc_name = new_proc_name.replace(/ /g, "_").replace(".csv", "") + ".csv";
             this_proj.all_procs[new_proc_name] = proc_template;
             $("#proc_select").append(
               $("<option>", {
@@ -292,7 +295,9 @@ $("#new_proc_button").on("click", function () {
               "procedure",
               new_proc_name
             ); 
-            $('#save_btn').click();
+            setTimeout(() => {
+              $('#save_btn').click();
+            }, 100);
           }
         }
       }
@@ -315,7 +320,9 @@ $("#new_project_button").on("click", function () {
           } else {
             $("#exp_data_table").show();
             new_project(result);
-            $("#save_btn").click();
+            setTimeout(() => {
+              $('#save_btn').click();
+            }, 100);
           }
         }
       }
@@ -340,13 +347,15 @@ $("#new_stim_button").on("click", function () {
               "You already have a <b>Stimuli</b> sheet with that name"
             );
           } else {
-            new_sheet_name = new_sheet_name.replace(".csv", "") + ".csv";
+            new_sheet_name = new_sheet_name.replace(/ /g, "_").replace(".csv", "") + ".csv";
             this_proj.all_stims[new_sheet_name] = stim_template;
             $("#stim_select").append($("<option>", {text: new_sheet_name,}));
             $("#stim_select").val(new_sheet_name);
 
             createExpEditorHoT(this_proj.all_stims[new_sheet_name],"stimuli",new_sheet_name);
-            $('#save_btn').click();
+            setTimeout(() => {
+              $('#save_btn').click();
+            }, 100);
           }
         }
       }
@@ -368,16 +377,17 @@ $("#open_proj_folder").on("click", function () {
   });
 });
 
-
+var hasRunProjectPageIcons = false;
 $("#project_list").on("change", function () {
   $('#hide_show_table_span button').removeClass("btn-outline-primary").addClass("btn-primary");
   $("#exp_data_table").show();
   project_json = master.projects.projects[this.value];
   clean_conditions();
   $("#project_inputs").show();
-  // update_handsontables(); This isn't needed as it's called within the clean_conditions() function
-  // update_server_table();
-  // $("#save_btn").click();
+  if (!hasRunProjectPageIcons) {
+    project_page_icons();
+    hasRunProjectPageIcons = true;
+  }
 });
 
 $("#proc_select").on("change", function () {
@@ -404,7 +414,6 @@ $("#rename_proj_btn").on("click", function () {
 
             $("#project_list").append($("<option>", {text: new_name,}));
             $("#project_list").val(new_name);
-            console.log("test: " + original_name)
             $("#project_list option[value='" + original_name + "']").remove();
 
             // if (Collector.detect_context() === "localhost") {
@@ -414,7 +423,9 @@ $("#rename_proj_btn").on("click", function () {
                 }
               });
             
+                          setTimeout(() => {
               $('#save_btn').click();
+            }, 100);
           }
             
         }
@@ -442,7 +453,7 @@ $("#rename_proc_button").on("click", function () {
           if (current_procs.indexOf(new_proc_name) !== -1) {
             bootbox.alert("You already have a procedure sheet with that name");
           } else {
-            new_proc_name = new_proc_name.replace(".csv", "") + ".csv";
+            new_proc_name = new_proc_name.replace(/ /g, "_").replace(".csv", "") + ".csv";
             master.projects.projects[project].all_procs[new_proc_name] = current_proc_sheet;
 
             delete master.projects.projects[project].all_procs[current_proc];
@@ -454,7 +465,9 @@ $("#rename_proc_button").on("click", function () {
             $("#proc_select").val(new_proc_name);
             $('#proc_select option[value="' + current_proc + '"]').remove();
             createExpEditorHoT(this_proj.all_procs[new_proc_name],"procedure",new_proc_name);
-            $('#save_btn').click();
+            setTimeout(() => {
+              $('#save_btn').click();
+            }, 100);
           }
         }
       }
@@ -483,7 +496,7 @@ $("#rename_stim_button").on("click", function () {
           if (current_stims.indexOf(new_sheet_name) !== -1) {
             bootbox.alert("You already have a <b>Stimuli</b> sheet with that name");
           } else {
-            new_sheet_name = new_sheet_name.replace(".csv", "") + ".csv";
+            new_sheet_name = new_sheet_name.replace(/ /g, "_").replace(".csv", "") + ".csv";
             master.projects.projects[project].all_stims[new_sheet_name] = current_stim_sheet;
 
             delete master.projects.projects[project].all_stims[current_stim];
@@ -495,7 +508,9 @@ $("#rename_stim_button").on("click", function () {
             $("#stim_select").val(new_sheet_name);
             $('#stim_select option[value="' + current_stim + '"]').remove();
             createExpEditorHoT(this_proj.all_stims[new_sheet_name],"stimuli",new_sheet_name);
-            $('#save_btn').click();
+            setTimeout(() => {
+              $('#save_btn').click();
+            }, 100);
           }
         }
       }
@@ -850,7 +865,6 @@ $("#save_btn").on("click", function () {
       this_proj.stims_csv = {};
 
       this_proj = JSON.stringify(this_proj, null, 2);
-      // console.log(this_proj)
       CElectron.fs.write_project(
         project,
         this_proj,
@@ -975,8 +989,15 @@ function copyToClipboard_url_input_preview() {
   }
 };
 
-$("#conditions_settings_btn").on("click", function () {
-  var current_sheet = 'conditions'
-  console.log(get_HoT_data(current_sheet))
+$("#conditions_btn").on("click", function () {
+  var conditionTable = tables['handsOnTable_conditions'];
+  bootbox.prompt("Enter the name for the new column:", function(columnName) {
+    if (columnName !== null) {
+      // Add a new column to the Handsontable instance
+      conditionTable.alter('insert_col', conditionTable.countCols());
   
+      // Insert the value into the first row of the new column
+      conditionTable.setDataAtCell(0, conditionTable.countCols() - 1, columnName);
+  }
+  });
 });

@@ -183,10 +183,8 @@
             const rowIndex = $(this).data('row-index');
             if ($(this).hasClass('within-block-input')) {
                 const withinValue = $(this).val().trim();
-                console.log(`Within Block Value for Row ${rowIndex}: ${withinValue}`);
             } else if ($(this).hasClass('between-block-input')) {
                 const betweenValue = $(this).val().trim();
-                console.log(`Between Block Value for Row ${rowIndex}: ${betweenValue}`);
             }
         });
     

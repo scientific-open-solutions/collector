@@ -116,7 +116,7 @@ $("#add_item_btn").on("click", function () {
 $("#delete_survey_btn").on("click", function () {
   if (!parent.parent.functionIsRunning) {
     parent.parent.functionIsRunning = true;
-    var survey_name = $("#survey_select").val().split("|")[1].toLowerCase().replace(".csv", "") + ".csv";
+    var survey_name = $("#survey_select").val().split("|")[1].toLowerCase().replace(/ /g, "_").replace(".csv", "") + ".csv";
     bootbox.confirm({
       message: 'Are you sure you want to delete the <b>' + survey_name + '</b> survey?',
       buttons: {
@@ -148,11 +148,11 @@ $("#delete_survey_btn").on("click", function () {
             callback: function (result) {
               parent.parent.functionIsRunning = false;
               if (result) {
-                var survey_name = $("#survey_select").val().split("|")[1].toLowerCase().replace(".csv", "") + ".csv";
+                var survey_name = $("#survey_select").val().split("|")[1].toLowerCase().replace(/ /g, "_").replace(".csv", "") + ".csv";
                 delete master.surveys.user_surveys[survey_name];
 
                 //need to use electron to delete here
-                var response = CElectron.fs.delete_file("Surveys/" + survey_name.replace(".csv", "") + ".csv");
+                var response = CElectron.fs.delete_file("Surveys/" + survey_name.replace(/ /g, "_").replace(".csv", "") + ".csv");
                 if (response === "success") {
                   Collector.custom_alert("Succesfully deleted <b>" + survey_name + "</b>");
                   $('#survey_select option[value="' + $("#survey_select").val() + '"]').remove();
@@ -191,7 +191,7 @@ $("#new_survey_button").on("click", function () {
               title: "What yould you like to name the new <b>Survey</b>?",
               callback: function (survey_name) {
                 if (survey_name) {
-                  survey_name = survey_name.toLowerCase().replaceAll(".csv", "") + ".csv";
+                  survey_name = survey_name.toLowerCase().replace(/ /g, "_").replace(".csv", "") + ".csv";
                   if (typeof master.surveys.user_surveys[survey_name] === 'undefined') {
                   var survey_content = survey_HoT.getData();
                   master.surveys.user_surveys[survey_name] = JSON.parse(JSON.stringify(survey_content));
@@ -262,7 +262,7 @@ $("#rename_survey_btn").on("click", function () {
           parent.parent.functionIsRunning = false;
           if (new_survey_name) {
             new_survey_name =
-              new_survey_name.toLowerCase().replace(".csv", "") + ".csv";
+              new_survey_name.toLowerCase().replace(/ /g, "_").replace(".csv", "") + ".csv";
             if (
               typeof master.surveys.default_surveys[new_survey_name] !==
               "undefined"
@@ -281,9 +281,7 @@ $("#rename_survey_btn").on("click", function () {
               if (write_response === "success") {
                 master.surveys.user_surveys[new_survey_name] =
                   master.surveys.user_surveys[old_survey_name];
-                var delete_response = CElectron.fs.delete_file(
-                  "Surveys/" + old_survey_name.replace(".csv", "") + ".csv"
-                );
+                var delete_response = CElectron.fs.delete_file("Surveys/" + old_survey_name.replace(/ /g, "_").replace(".csv", "") + ".csv");
 
                 if (delete_response !== "success") {
                   bootbox.alert(delete_response);
@@ -352,7 +350,7 @@ $("#save_survey_btn").on("click", function () {
     // create_survey_HoT(survey_data);
 
 
-      var survey_name = $("#survey_select").val().split("|")[1].replace(".csv", "") + ".csv";
+      var survey_name = $("#survey_select").val().split("|")[1].replace(/ /g, "_").replace(".csv", "") + ".csv";
       var this_survey = $("#survey_select").val().split("|");
       create_survey_HoT(master.surveys.user_surveys[this_survey[1]]);
       var survey_content = Papa.unparse(survey_HoT.getData());
@@ -385,7 +383,7 @@ $("#survey_select").on("change", function () {
     Object.keys(master.surveys.default_surveys).indexOf(old_survey) === -1
   ) {
     // not a default trialtype
-    old_survey = old_survey.split("|")[1].replace(".csv", "") + ".csv";
+    old_survey = old_survey.split("|")[1].replace(/ /g, "_").replace(".csv", "") + ".csv";
 
     var survey_content = Papa.unparse(survey_HoT.getData());
     survey_obj.save(old_survey, survey_content);

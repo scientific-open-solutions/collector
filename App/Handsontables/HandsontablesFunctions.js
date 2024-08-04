@@ -23,7 +23,10 @@ var this_selection;
 function isPhaseTypeHeader(colHeader) {
   var isPhaseTypeCol = false;
   if (colHeader === "phasetype") isPhaseTypeCol = true;
-  if (colHeader.substr(0, 5).toLowerCase() === "post " && colHeader.substr(-11) === " trial type") {
+  if (
+    colHeader.substr(0, 5).toLowerCase() === "post " &&
+     colHeader.substr(-11) === " trial type"
+    ) {
     postN = colHeader.substr(5, colHeader.length - 16);
     postN = parseInt(postN);
     if (!isNaN(postN) && postN !== 0) {
@@ -74,7 +77,15 @@ function shuffleRenderer(instance, td, row, col, prop, value, cellProperties) {
     td.style.background = "#DDD";
   }
 }
-function trialTypesRenderer(instance,td,row,col,prop,value,cellProperties) {
+function trialTypesRenderer(
+  instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties
+) {
   Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
   if (value === "Nothing" || value === "") {
     if (instance.getDataAtCell(0, col) === "trial type") {
@@ -96,6 +107,7 @@ function createHoT(container, data, sheet_name, tableId) {
     data: data,
     minSpareCols: 1,
     minSpareRows: 1,
+
 
     /*
      * Functions
@@ -144,7 +156,7 @@ function createHoT(container, data, sheet_name, tableId) {
             } else {
               // otherwise we assume it's matching a previous header
               this.setDataAtCell(0, k, this.getDataAtCell(0, k) + "*"); // add a star to the title to avoid identical titles
-              alert(
+              Collector.custom_alert(
                 "You have identical headers for two columns '" + // let the user know the change has happened
                   this.getDataAtCell(0, k) +
                   "', we have added a * to address this"
@@ -152,10 +164,7 @@ function createHoT(container, data, sheet_name, tableId) {
             }
           }
         }
-      }
-
-      
-
+      }     
       // go through each column
       for (var k = 0; k < this.countCols() - 1; k++) {
         // if the loop has gone past the last column then stop looping through the columns
@@ -178,13 +187,11 @@ function createHoT(container, data, sheet_name, tableId) {
         }
         // checking for invalid item number (i.e. one)
         if (this.getDataAtCell(0, k).toLowerCase() === "item") {
-          if (this.isEmptyCol()) {
-          }
           // loop through each row
           for (m = 0; m < this.countRows() -1; m++) {
             // if the value in the row is one
             if (this.getDataAtCell(m, k) === 1) {
-              alert(
+              bootbox.alert(
                 "Warning: 1 does not refer to any row in the Stimuli sheet! The first row is row 2 (as row 1 is the header). Fix row " +
                   (m + 1) +
                   "in your Procedure's Item column."
@@ -194,23 +201,28 @@ function createHoT(container, data, sheet_name, tableId) {
             if (this.getDataAtCell(m, k) !== null) {
               // check if the user is using a ":" (deprecated)
               if (this.getDataAtCell(m, k).indexOf(":") !== -1) {
-                var to = this.getDataAtCell(m, k).replace(":", " to ");
-                this.setDataAtCell(m,k,to);
+                this.setDataAtCell(
+                  m,
+                  k,
+                  this.getDataAtCell(m, k).replace(":", " to ")
+                );
               }
               if (this.getDataAtCell(m, k).indexOf("-") !== -1) {
-                var to = this.getDataAtCell(m, k).replace("-", " to ");
-                this.setDataAtCell(m,k,to);
+                this.setDataAtCell(
+                  m,
+                  k,
+                  this.getDataAtCell(m, k).replace("-", " to ")
+                );
               }
             }            
           }
           for (var m = 1; m < this.countRows() - 1; m++) {  // Skip the first and last row
-            let cellValue = this.getDataAtCell(m, k);
+            var cellValue = this.getDataAtCell(m, k);
             if (cellValue === "") {
               this.setDataAtCell(m, k, "0");
             }
           }
         }
-
         // if this is an empty middle column
         if (this.isEmptyCol(k) && !nonDeletableColumns_proj.includes(this.getDataAtCell(0, k))) {
           // remove this empty middle column
@@ -259,6 +271,7 @@ function createHoT(container, data, sheet_name, tableId) {
     afterRemoveCol: function () {
 
     },
+
     afterSelectionEnd: function () {
       thisCellValue = this.getValue();
 
@@ -271,18 +284,14 @@ function createHoT(container, data, sheet_name, tableId) {
       window["Current HoT Coordinates"] = coords;
       helperActivate(column, thisCellValue, sheet_name);
     },
+
     cells: function (row, col, prop) {
       var cellProperties = {};
       if (row === 0) {
-        cellProperties.type = 'autocomplete';
-        cellProperties.source = [
-          /* Condition */'item','code','description','freq','frequency','phase','max_time','no_progress','notes','repeat','phasetype','shuffle_1','shuffle_2','text','timer_style','weight',
-          /* Procedure */'age_check','buffer','counterbalance','description','download_at_end','end_message','forward_at_end','fullscreen','mobile','name','notes','participant_id','procedure','progress_bar','redcap_url','skip_quality','start_message','stimuli','zoom_check'];
-        cellProperties.strict = false;
-
         cellProperties.renderer = firstRowRenderer;
       } else {
         var thisHeader = this.instance.getDataAtCell(0, col);
+
         if(thisHeader !== null){
           thisHeader = thisHeader.toLowerCase();
         }
@@ -302,6 +311,7 @@ function createHoT(container, data, sheet_name, tableId) {
               }
             );
             cellProperties.trimDropdown = false;
+            //cellProperties.renderer = trialTypesRenderer;
           } else if(isSurveyHeader(thisHeader)){
             cellProperties.type = "dropdown";
             cellProperties.visibleRows = 10;
@@ -315,6 +325,7 @@ function createHoT(container, data, sheet_name, tableId) {
               }
             );
             cellProperties.trimDropdown = false;
+            //cellProperties.renderer = trialTypesRenderer;
           } else {
             cellProperties.type = "text";
             if (isNumericHeader(thisHeader)) {
@@ -331,6 +342,7 @@ function createHoT(container, data, sheet_name, tableId) {
       }
       return cellProperties;
     },
+
     wordWrap: false,
     contextMenu: {
       items: {
@@ -346,6 +358,7 @@ function createHoT(container, data, sheet_name, tableId) {
             return this.getSelectedLast()[0] === 0; // `this` === hot3
           },
           callback: function (key, selection, clickEvent) {
+            // Callback for specific option
             this_sheet = this;
             $("#cell_editor_div").fadeIn();
             this_selection = selection;

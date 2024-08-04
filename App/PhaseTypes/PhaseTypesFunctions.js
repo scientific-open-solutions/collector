@@ -5,8 +5,6 @@
 $.ajaxSetup({ cache: false }); // prevents caching, which disrupts $.get calls
 
 function listSmarties() {
-  console.log(handsOnTable_Procedure);
-  console.log("handsOnTable_Procedure");
   if (handsOnTable_Procedure !== null) {
     var excludedValues = ['item', 'phasetype', 'survey', 'max_time', 'weight', 'no_progress', ''];
     var rowData = handsOnTable_Procedure.getDataAtRow(0);
@@ -29,7 +27,6 @@ code_obj = {
     if (!parent.parent.functionIsRunning) {
       parent.parent.functionIsRunning = true;
       var deleted_phasetype = $("#phasetype_select").val();
-      //console.log(deleted_phasetype);
       master.phasetypes.file = $("#phasetype_select").val();
       var this_file = master.phasetypes.file;
       bootbox.confirm({

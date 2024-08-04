@@ -11,29 +11,20 @@
     color: #ffffff;
   }
   #cell_editor_div {
-    width: 90%;
-    position: fixed;
-    display: in-line;
+    width: 100vw!important;
+    height: 100vh!important;
     padding: 5%;
-    /* margin-left:30px; */
+    margin-left: 30px;
     margin-top: 100px;
-    margin-bottom: 100px;
-    border-style: solid;
-    border-color: #006688;
-    border-width: 10px;
-    border-radius: 10px;
-    z-index: 1000;
+    z-index: 999!important;
     background-color: #ffffff;
     display: none;
   }
-  #close_cell_editor {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    margin: 2px;
-  }
   #cell_select_color {
-    display: none;
+    height: 38px;
+    width: 38px;
+    border: 1px solid var(--collector_blue)!important;
+    border-radius: 5px 0 0 5px;
   }
   #cell_text_size {
     width: 70px;
@@ -41,79 +32,65 @@
   .cell_button {
     margin: 2px;
   }
+  .ace_content {
+    height: 360px!important;
+    border: 1px solid grey;
+    z-index: 9000;
+  }
 </style>
 
-<div id="cell_editor_div">
-  <button id="close_cell_editor" class="btn btn-primary">X</button>
-  <table style="width: 100%; height: 100%">
-    <tr>
-      <td>
-        <button class="btn btn-primary cell_button" id="cell_add_brs">
-          Add &lt;br&gt;s
-        </button>
-        <div class="btn-group" role="group">
-          <button class="btn btn-primary cell_button" id="cell_make_bold">
-            <b>B</b>
-          </button>
-          <button class="btn btn-primary cell_button" id="cell_make_italic">
-            <em>I</em>
-          </button>
-          <button class="btn btn-primary cell_button" id="cell_make_underline">
-            <u>U</u>
-          </button>
-        </div>
-        <button class="btn btn-primary cell_button" id="cell_make_header">
-          <u>H</u>
-        </button>
-        <div class="btn-group" role="group">
-          <button class="btn" id="cell_apply_color"></button>
-          <input type="color" id="cell_select_color" value="#000000" />
-          <button class="btn btn-primary" id="cell_select_color_activate">
-            ↓
-          </button>
-        </div>
-        <button class="btn btn-primary cell_button" id="cell_text_size_btn">
-          Size
-        </button>
-      </td>
-      <td>
-        <div style="width: 100%; height: 100%">
-          Auto-Preview (light):
-          <div class="btn-group" role="group" aria-label="Basic example">
-            <button
-              type="button"
-              id="cell_auto_preview_on"
-              class="cell_preview_on_off btn btn-primary"
-            >
-              On
-            </button>
-            <button
-              type="button"
-              id="cell_auto_preview_off"
-              class="cell_preview_on_off btn btn-outline-primary"
-            >
-              Off
-            </button>
-          </div>
-          <button class="btn btn-primary" id="cell_full_preview_btn">
-            Full Preview
-          </button>
-          <button class="btn btn-primary" id="cell_undo_btn">Undo All</button>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td style="width: 50%; height: 100%">
-        <div id="ace_cell"></div>
-      </td>
-      <td style="width: 50%; height: 100%">
-        <iframe
-          id="cell_preview_iframe"
-          style="width: 100%; height: 100%"
-        ></iframe>
-      </td>
-    </tr>
-  </table>
+<div id="cell_editor_div" class="modal show" tabindex="-1" role="dialog" aria-labelledby="cellEditorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document" style="left: 20%;position: absolute;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cellEditorModalLabel">Cell Editor</h5>
+      </div>
+      <div class="modal-body">
+        <table style="width: 100%; height: 100%">
+          <tr>
+            <td style="width: 66.67%; transform: translateY(-8px);">
+              <button class="btn btn-primary cell_button" id="cell_add_brs">Break</button>
+              <div class="btn-group" role="group">
+                <button class="btn btn-primary cell_button" id="cell_make_bold"><b>B</b></button>
+                <button class="btn btn-primary cell_button" id="cell_make_italic"><em>I</em></button>
+                <button class="btn btn-primary cell_button" id="cell_make_underline"><u>U</u></button>
+              </div>
+                <button class="btn btn-primary cell_button" id="cell_make_header">H₂</button>
+              </div>
+              <div class="btn-group" role="group">
+                <input type="color" id="cell_select_color" value="#000000" />
+                <button class="btn btn-primary" id="cell_select_color_activate">↓</button>
+              </div>
+              <button class="btn btn-primary cell_button" id="cell_text_size_btn">Size</button>
+            </td>
+            <td style="width: 33.33%;padding-left: 15px;">
+              <div style="width: 100%; height: 100%">
+                Preview:
+                <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                  <button type="button" id="cell_auto_preview_off" class="cell_preview_on_off btn btn-primary">Off</button>
+                  <button type="button" id="cell_auto_preview_on" class="cell_preview_on_off btn btn-outline-primary">Auto</button>
+                  <button type="button" id="cell_full_preview_btn" class="cell_preview_on_off btn btn-outline-primary">Full</button>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 66.67%; height: 100%">
+              <div id="ace_cell"></div>
+            </td>
+            <td style="width: 33.33%; height: 100%; padding-left: 15px;">
+              <iframe id="cell_preview_iframe" style="width: 100%; height: 100%"></iframe>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cell_undo_btn">Undo All</button>
+        <button type="button" class="btn btn-secondary" id="close_cell_editor">Close</button>
+        <button type="button" class="btn btn-primary" id="saveChanges">Save changes</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -147,20 +124,29 @@
 
   $("#cell_auto_preview_off").on("click", function () {
     //turn off the automatic previewing of the simple version of the text (i.e. without all the libraries)
-    $("#cell_auto_preview_off").removeClass("btn-outline-primary");
-    $("#cell_auto_preview_off").addClass("btn-primary");
-    $("#cell_auto_preview_on").removeClass("btn-primary");
-    $("#cell_auto_preview_on").addClass("btn-outline-primary");
+    $("#cell_auto_preview_off").removeClass("btn-outline-primary").addClass("btn-primary");
+    $("#cell_auto_preview_on").removeClass("btn-primary").addClass("btn-outline-primary");
+    $("#cell_full_preview_btn").removeClass("btn-primary").addClass("btn-outline-primary");
   });
   $("#cell_auto_preview_on").on("click", function () {
     //turn off the automatic previewing of the simple version of the text (i.e. without all the libraries)
-    $("#cell_auto_preview_on").removeClass("btn-outline-primary");
-    $("#cell_auto_preview_on").addClass("btn-primary");
-    $("#cell_auto_preview_off").removeClass("btn-primary");
-    $("#cell_auto_preview_off").addClass("btn-outline-primary");
+    $("#cell_auto_preview_on").removeClass("btn-outline-primary").addClass("btn-primary");
+    $("#cell_auto_preview_off").removeClass("btn-primary").addClass("btn-outline-primary");
+    $("#cell_full_preview_btn").removeClass("btn-primary").addClass("btn-outline-primary");
   });
 
   $("#cell_full_preview_btn").on("click", function () {
+    //turn on full preview and change button classes
+    $("#cell_auto_preview_on").removeClass("btn-primary").addClass("btn-outline-primary");
+    $("#cell_auto_preview_off").removeClass("btn-primary").addClass("btn-outline-primary");
+    $("#cell_full_preview_btn").removeClass("btn-outline-primary").addClass("btn-primary");
+    
+    setTimeout(function() {
+      $("#cell_auto_preview_off").removeClass("btn-outline-primary").addClass("btn-primary");
+      $("#cell_auto_preview_on").removeClass("btn-primary").addClass("btn-outline-primary");
+      $("#cell_full_preview_btn").removeClass("btn-primary").addClass("btn-outline-primary");
+    }, 500);
+
     //generate a preview of how the code should actually look in Collector
     doc = document.getElementById("cell_preview_iframe").contentWindow.document;
     doc.open();
@@ -170,6 +156,35 @@
 
   $("#cell_undo_btn").on("click", function () {
     cell_editor.setValue(cell_editor_obj.content_before);
+  });
+
+  $("#cell_select_color_activate").on("click", function (event) {
+    $("#cell_select_color").css({
+      display: "block",
+      top: "2vh",
+      left: "0vw"
+    }).focus();
+  });
+
+  // Remove blur event to keep color picker visible
+  // $("#cell_select_color").on("blur", function() {
+  //   $(this).css("display", "none");
+  // });
+
+  // Insert <br> tag at the current cursor position when the button is clicked
+  $("#cell_add_brs").on("click", function () {
+    cell_editor.insert("<br>");
+  });
+
+  $("#cell_make_header").on("click", function () {
+    cell_wrap_tag(cell_editor, "<h2>", "</h2>", true); // this is partially to reduce confusion between the number 1 and the letter l
+  });
+
+  // Insert header tag at the current cursor position when a header option is clicked
+  $(".header-option").on("click", function (event) {
+    event.preventDefault();
+    var header = $(this).data("header");
+    cell_editor.insert("<" + header + "></" + header + ">");
   });
 
   //automatically update the preview with simplified version (if auto-preview is switched on
@@ -190,7 +205,8 @@
 	*/
 
     if ($("#cell_auto_preview_on").hasClass("btn-primary")) {
-      doc = document.getElementById("cell_preview_iframe").contentWindow
+      doc = document.getElementById("cell_preview_iframe")
+        .contentWindow
         .document;
       doc.open();
       doc.write(cell_contents);
@@ -220,18 +236,18 @@
     },
   });
 
-  $("#cell_add_brs").on("click", function () {
-    // This is for users who have copied and pasted from a document, and need to add the line breaks
-    var cell_contents = cell_editor
-      .getValue()
-      .replaceAll("<br>\n", "\n")
-      .replaceAll("\n<br>", "\n")
-      .replaceAll("\n", "<br>\n");
-    cell_editor.setValue(cell_contents);
-    cell_editor.setValue(cell_editor.getValue(), -1);
+  $("#close_cell_editor").on("click", function () {
+    cell_editor.setValue(cell_editor_obj.content_before);
+    // Close and save changes
+    this_sheet.setDataAtCell(
+      this_selection[0].start.row,
+      this_selection[0].start.col,
+      cell_editor.getValue()
+    );
+    $("#cell_editor_div").fadeOut();
   });
 
-  $("#close_cell_editor").on("click", function () {
+  $("#saveChanges").on("click", function () {
     // Close and save changes
     this_sheet.setDataAtCell(
       this_selection[0].start.row,

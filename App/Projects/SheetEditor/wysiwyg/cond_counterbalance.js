@@ -30,7 +30,10 @@ $('#cond_counterbalance_btn').on('click', function () {
     const conditions = getColumnValues('name');
     const counterbalanceValues = getColumnValues('counterbalance');
 
-    let tableHtml = `<p>This modal allows you to set up counterbalancing across the conditions within the experiment.</p>
+    let tableHtml = `<p>This system allows you to set up counterbalancing of procedure sheets within a specified condition. You can select more than one condition and can set up different procedure sheet balancing for different conditions. 
+    To use the system, simply select the conditions that require, a PHP File Location input will appear in which you place the full link of the PHP file related to that condition. To generate the required PHP filed, follw the instructions under this table.
+    Having created and linked to the PHP file, you also need to generate a CSV list of the procedure sheets you wish to counterbalance within the condition. Click the respective 'Generate' button and follow the instructions that appear in the new window.
+    <br><br><b>Note: </b>The counterbalancing runs without replacement, so a participant withdraws it will not automatically rest. If the system fails, it fallbacks to the default procedure sheet you listed in the procedure column.</p>
                      <table class="table table-bordered" style="table-layout: fixed; width: 100%;">
                         <thead style="background-color: #f7f7f7; color: var(--collector_blue);">
                             <tr>
@@ -55,7 +58,8 @@ $('#cond_counterbalance_btn').on('click', function () {
     });
 
     tableHtml += `</tbody></table>
-                  <p>You can generate the PHP file required by clicking the button below. The PHP file will contain the words "hello user!"</p>
+                  <p>You need to download a prepopualted PHP file that handles counterbalancing procedure order when a participant runs your experiment. You can generate this PHP file by clicking the button below. You may call the file whatever you like, just ensure the file name matches the name in the relevant input above.
+                  <br><br><b>Note: </b> You need to open the PHP file and edit the CSV file location at the top of the file.</p>
                   <button id="generate_php_file_btn" class="btn btn-secondary">Generate PHP File</button>`;
 
     const mainModal = bootbox.dialog({
@@ -150,15 +154,26 @@ $('#cond_counterbalance_btn').on('click', function () {
     $('#generate_php_file_btn').on('click', function () {
         const projectListValue = $('#project_list').val();
         const phpFileName = `counterbalance_${projectListValue}.php`;
-        const phpContent = "hello user!";
-
-        const blob = new Blob([phpContent], { type: 'text/php' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = phpFileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const filePath = '../App/Projects/counterbalance.php';
+    
+        fetch(filePath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = phpFileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
     });
 });
 
@@ -191,7 +206,7 @@ $(document).on('click', '.proc-button', function () {
 
     const proceduresModalHtml = `
         <div>
-            <p class="text-left">Please select the procedure sheets that you wish to counterbalance. If you want to include more instances of one procedure compared to another, increase the weighting. When ready, click 'Save' to save the .csv file to your computer. Please do not rename it.</p>
+            <p class="text-left">Please select the procedure sheets that you wish to counterbalance. If you want to include more instances of one procedure compared to another, increase the weighting. When ready, click 'Save' to save the .csv file to your computer. You can call the file anything you like as you will update the PHP file to link to it.</p>
             <table class="table table-bordered" style="table-layout: fixed; width: 100%;">
                 <thead style="background-color: #f7f7f7; color: var(--collector_blue);">
                     <tr>
@@ -239,6 +254,7 @@ $(document).on('click', '.proc-button', function () {
 
     // Save selected procedures
     $(document).on('click', '#save_procedures_btn', function () {
+        const projectListValue = $('#project_list').val();
         const selectedProcedures = $('.proc-checkbox:checked').map(function () {
             const row = $(this).closest('tr');
             const weight = parseInt(row.find('.weight-input').val(), 10);
@@ -251,7 +267,7 @@ $(document).on('click', '.proc-button', function () {
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement('a');
         link.setAttribute('href', encodedUri);
-        link.setAttribute('download', 'selected_procedures.csv');
+        link.setAttribute('download', 'selected_procedures_' + projectListValue + '.csv');
         document.body.appendChild(link); // Required for FF
 
         link.click();
