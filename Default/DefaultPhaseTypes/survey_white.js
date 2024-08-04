@@ -872,7 +872,6 @@ function response_check(submitted_element) {
     case "text":
     case "textarea":
       $("#" + submitted_element.name + "_response").val(submitted_element.value);
-      console.log("hello")
       break;
   }
 

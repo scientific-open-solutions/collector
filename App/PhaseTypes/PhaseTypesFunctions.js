@@ -4,6 +4,26 @@
  */
 $.ajaxSetup({ cache: false }); // prevents caching, which disrupts $.get calls
 
+function listSmarties() {
+  console.log(handsOnTable_Procedure);
+  console.log("handsOnTable_Procedure");
+  if (handsOnTable_Procedure !== null) {
+    var excludedValues = ['item', 'phasetype', 'survey', 'max_time', 'weight', 'no_progress', ''];
+    var rowData = handsOnTable_Procedure.getDataAtRow(0);
+    var output = [];
+
+    rowData.forEach(function(value) {
+        if (!excludedValues.includes(value) && !value.includes('shuffle_')) {
+            output.push(`{{${value}}}`);
+        }
+    });
+
+    $('#ACE_citation').html('Available variables: ' + output.join(', '));
+  } else {
+    $('#ACE_citation').html('<em>ACE (https://ace.c9.io/)</em> is used for editing code');
+  }
+};
+
 code_obj = {
   delete_phasetypes: function () {
     if (!parent.parent.functionIsRunning) {
