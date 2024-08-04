@@ -8,32 +8,36 @@
     "text": "Using the Code editor <b></></b> above you can create files that control what happens during each trial. You can either write web-code or use the graphic (user interface; GUI) editor to create your code."
   },
   "description": {
-    "subtitle": "deprecated",
-    "text": "please change this column header to <b>name</b>."
+    "subtitle": "Deprecated",
+    "text": "Please change this column header to <b>name</b>."
   },
   "freq": {
-    "subtitle": "How many repetitions?",
-    "text": "<b>Weight</b> (or <b>freq</b> or <b>frequency</b> or <b>repeat</b>) sets how many occurrences of a trial you will have. By default, you will only have one occurrence of a unique trial (see Item for how to refer to multiple rows in the stimuli sheet). If you set the weight to 2, then you would have twice as many occurrences of the trial(s) as normal. If you set the weight to 0, then you will skip that row in the procedure sheet. This can be useful for piloting parts of your task."
+    "subtitle": "Deprecated",
+    "text": "Please change this column header to <b>Weight</b>."
   },
   "frequency": {
-    "subtitle": "How many repetitions?",
-    "text": "<b>Weight</b> (or <b>freq</b> or <b>frequency</b> or <b>repeat</b>) sets how many occurrences of a trial you will have. By default, you will only have one occurrence of a unique trial (see Item for how to refer to multiple rows in the stimuli sheet). If you set the weight to 2, then you would have twice as many occurrences of the trial(s) as normal. If you set the weight to 0, then you will skip that row in the procedure sheet. This can be useful for piloting parts of your task."
+    "subtitle": "Deprecated",
+    "text": "Please change this column header to <b>Weight</b>."
   },
   "phase": {
-    "subtitle": "Which trialtype do you want?",
-    "text": "Specify one of the trialtypes out of the trialtypes listed below."
+    "subtitle": "Deprecated",
+    "text": "Please change this column header to <b>phasetype</b>."
   },
   "max_time": {
     "subtitle": "In Seconds",
     "text": "<b>User</b> will leave the trial going as long as it takes the participant to complete it. You can specify a time limit in <b>seconds</b> though. Be careful when specifying this. This will start from when the trial is presented to the participant. Unless you are presenting a very simple trial, you may want to use a <b>Phase.start_timer()</b> within the trialtype code in the experiment."
+  },
+  "no_progress": {
+    "subtitle": "Allows you to hide the progress bar from a trial row",
+    "text": "Simply include 'yes' in the rows that you do not wish the progress bar to be displayed and it will be hidden from the particpant. If you wish to hide it across the entire experiment please use the main Conditions table."
   },
   "notes": {
     "subtitle": "Just for you",
     "text": "This doesn't do anything in the experiment, but you might find it useful for adding any notes you need for each task in your study. You can actually access this column within your phasetype code using {{notes}}"
   },
   "repeat": {
-    "subtitle": "How many repetitions?",
-    "text": "<b>Weight</b> (or <b>freq</b> or <b>frequency</b> or <b>repeat</b>) sets how many occurrences of a trial you will have. By default, you will only have one occurrence of a unique trial (see Item for how to refer to multiple rows in the stimuli sheet). If you set the weight to 2, then you would have twice as many occurrences of the trial(s) as normal. If you set the weight to 0, then you will skip that row in the procedure sheet. This can be useful for piloting parts of your task."
+    "subtitle": "Deprecated",
+    "text": "Please change this column header to <b>Weight</b>."
   },
   "phasetype": {
     "subtitle": "Which PhaseType is required",

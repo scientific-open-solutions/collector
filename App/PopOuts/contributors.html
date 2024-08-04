@@ -87,6 +87,7 @@
       "Dr. Anthony Haffey",
       "Dr. Kristian Tempelmans Plat",
       "Nico Biagi",
+      "Chris Dobson",
     ];
 
     var table_data = Papa.parse(result, {
@@ -102,18 +103,9 @@
         tr_class = "";
       }
       table_html +=
-        "<tr " +
-        tr_class +
-        ">" +
-        "<td><img class='ppimg' style='width:100px; height:100px;' src='../" +
-        row.photo +
-        "'/></td>" +
-        "<td>" +
-        row.Name +
-        "</td>" +
-        "<td>" +
-        row.Blurb +
-        "</td>" +
+        "<tr " + tr_class + ">" +
+          "<td><img class='ppimg' style='width:100px; height:100px;' src='../" + row.photo +"'/></td>" +
+          "<td>" + row.Name + "</td>" + "<td>" + row.Blurb + "</td>" +
         "</tr>";
     });
     table_html += "</tbody></table>";

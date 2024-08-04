@@ -147,20 +147,13 @@ function addCheckboxOptions(callback) {
                     var specificRow = $('#specific_row').is(':checked');
                     var rowIndex = $('#row_select').val();
                     var provideFeedback = $('#provide_feedback').is(':checked');
-                    var lockFeedback = $('#lock_feedback').is(':checked') ? 'yes' : '';
+
 
                     var missingFields = [];
                     if (!itemName) missingFields.push('Checkbox item name');
                     if (!text) missingFields.push('Question text');
                     if (!answers) missingFields.push('Answers');
                     if (!values) missingFields.push('Values');
-                    
-                    if (provideFeedback) {
-                        var feedbackAnswers = $('#feedback_answers').val().replace(/\s*\|\s*/g, '|');
-                        var feedbackColor = $('#feedback_color').val().replace(/\s*\|\s*/g, '|').toLowerCase();
-                        if (!feedbackAnswers) missingFields.push('Feedback Answers');
-                        if (!feedbackColor) missingFields.push('Feedback Color');
-                    }
 
                     if (missingFields.length > 0) {
                         bootbox.alert("The following fields are missing: " + missingFields.join(', '));
@@ -174,15 +167,24 @@ function addCheckboxOptions(callback) {
                         return false;
                     }
 
-                    var feedbackAnswersArray = feedbackAnswers.split('|');
-                    var feedbackColorArray = feedbackColor.split('|');
-                    if (answersArray.length !== feedbackAnswersArray.length) {
-                        bootbox.alert("The number of values in 'answers' does not match the number of values in 'feedback answers'. Please ensure they match.");
-                        return false;
-                    }
-                    if (feedbackColorArray.length !== feedbackAnswersArray.length) {
-                        bootbox.alert("The number of values in 'feedback answers' does not match the number of values in 'feedback colours'. Please ensure they match.");
-                        return false;
+                    if (provideFeedback) {
+                        var feedbackAnswers = $('#feedback_answers').val().replace(/\s*\|\s*/g, '|');
+                        var feedbackColor = $('#feedback_color').val().replace(/\s*\|\s*/g, '|').toLowerCase();
+                        if (!feedbackAnswers) missingFields.push('Feedback Answers');
+                        if (!feedbackColor) missingFields.push('Feedback Color');
+
+                        var lockFeedback = $('#lock_feedback').is(':checked') ? 'yes' : '';
+                        var feedbackAnswersArray = feedbackAnswers.split('|');
+                        var feedbackColorArray = feedbackColor.split('|');
+
+                        if (answersArray.length !== feedbackAnswersArray.length) {
+                            bootbox.alert("The number of values in 'answers' does not match the number of values in 'feedback answers'. Please ensure they match.");
+                            return false;
+                        }
+                        if (feedbackColorArray.length !== feedbackAnswersArray.length) {
+                            bootbox.alert("The number of values in 'feedback answers' does not match the number of values in 'feedback colours'. Please ensure they match.");
+                            return false;
+                        }
                     }
 
                     callback(itemName, text, answers, values, optional, direction, shuffleQuestion, specificRow ? parseInt(rowIndex) + 1 : null, feedbackAnswers, feedbackColor, lockFeedback);
@@ -193,7 +195,6 @@ function addCheckboxOptions(callback) {
                 label: 'Cancel',
                 className: 'btn-secondary',
                 callback: function () {
-                    console.log('Cancelled');
                     $("#add_item_btn").click();
                 }
             }
@@ -365,7 +366,6 @@ function addDropdownOptions(callback) {
                     var specificRow = $('#specific_row').is(':checked');
                     var rowIndex = $('#row_select').val();
                     var provideFeedback = $('#provide_feedback').is(':checked');
-                    var lockFeedback = $('#lock_feedback').is(':checked') ? 'yes' : '';
 
                     var missingFields = [];
                     if (!itemName) missingFields.push('Dropdown item name');
@@ -378,13 +378,6 @@ function addDropdownOptions(callback) {
                         return false;
                     }
 
-                    if (provideFeedback) {
-                        var feedbackAnswers = $('#feedback_answers').val().replace(/\s*\|\s*/g, '|');
-                        var feedbackColor = $('#feedback_color').val().replace(/\s*\|\s*/g, '|').toLowerCase();
-                        if (!feedbackAnswers) missingFields.push('Feedback Answers');
-                        if (!feedbackColor) missingFields.push('Feedback Color');
-                    }
-
                     var answersArray = answers.split('|');
                     var valuesArray = values.split('|');
                     if (answersArray.length !== valuesArray.length) {
@@ -392,15 +385,24 @@ function addDropdownOptions(callback) {
                         return false;
                     }
 
-                    var feedbackAnswersArray = feedbackAnswers.split('|');
-                    var feedbackColorArray = feedbackColor.split('|');
-                    if (answersArray.length !== feedbackAnswersArray.length) {
-                        bootbox.alert("The number of values in 'answers' does not match the number of values in 'feedback answers'. Please ensure they match.");
-                        return false;
-                    }
-                    if (feedbackColorArray.length !== feedbackAnswersArray.length) {
-                        bootbox.alert("The number of values in 'feedback answers' does not match the number of values in 'feedback colours'. Please ensure they match.");
-                        return false;
+                    if (provideFeedback) {
+                        var feedbackAnswers = $('#feedback_answers').val().replace(/\s*\|\s*/g, '|');
+                        var feedbackColor = $('#feedback_color').val().replace(/\s*\|\s*/g, '|').toLowerCase();
+                        if (!feedbackAnswers) missingFields.push('Feedback Answers');
+                        if (!feedbackColor) missingFields.push('Feedback Color');
+
+                        var lockFeedback = $('#lock_feedback').is(':checked') ? 'yes' : '';
+                        var feedbackAnswersArray = feedbackAnswers.split('|');
+                        var feedbackColorArray = feedbackColor.split('|');
+
+                        if (answersArray.length !== feedbackAnswersArray.length) {
+                            bootbox.alert("The number of values in 'answers' does not match the number of values in 'feedback answers'. Please ensure they match.");
+                            return false;
+                        }
+                        if (feedbackColorArray.length !== feedbackAnswersArray.length) {
+                            bootbox.alert("The number of values in 'feedback answers' does not match the number of values in 'feedback colours'. Please ensure they match.");
+                            return false;
+                        }
                     }
 
                     callback(itemName, text, answers, values, optional, shuffleQuestion, specificRow ? parseInt(rowIndex) + 1 : null, feedbackAnswers, feedbackColor, lockFeedback);
@@ -568,7 +570,6 @@ function addInstructOptions(callback) {
                 label: 'Cancel',
                 className: 'btn-secondary',
                 callback: function () {
-                    console.log('Cancelled');
                     $("#add_item_btn").click();
                 }
             }
@@ -740,20 +741,13 @@ function addLikertOptions(callback) {
                     var specificRow = $('#specific_row').is(':checked');
                     var rowIndex = $('#row_select').val();
                     var provideFeedback = $('#provide_feedback').is(':checked');
-                    var lockFeedback = $('#lock_feedback').is(':checked') ? 'yes' : '';
+
 
                     var missingFields = [];
                     if (!itemName) missingFields.push('Likert item name');
                     if (!text) missingFields.push('Question text');
                     if (!answers) missingFields.push('Answers');
                     if (!values) missingFields.push('Values');
-                    
-                    if (provideFeedback) {
-                        var feedbackAnswers = $('#feedback_answers').val().replace(/\s*\|\s*/g, '|');
-                        var feedbackColor = $('#feedback_color').val().replace(/\s*\|\s*/g, '|').toLowerCase();
-                        if (!feedbackAnswers) missingFields.push('Feedback Answers');
-                        if (!feedbackColor) missingFields.push('Feedback Color');
-                    }
 
                     if (missingFields.length > 0) {
                         bootbox.alert("The following fields are missing: " + missingFields.join(', '));
@@ -767,15 +761,24 @@ function addLikertOptions(callback) {
                         return false;
                     }
 
-                    var feedbackAnswersArray = feedbackAnswers.split('|');
-                    var feedbackColorArray = feedbackColor.split('|');
-                    if (answersArray.length !== feedbackAnswersArray.length) {
-                        bootbox.alert("The number of values in 'answers' does not match the number of values in 'feedback answers'. Please ensure they match.");
-                        return false;
-                    }
-                    if (feedbackColorArray.length !== feedbackAnswersArray.length) {
-                        bootbox.alert("The number of values in 'feedback answers' does not match the number of values in 'feedback colours'. Please ensure they match.");
-                        return false;
+                    if (provideFeedback) {
+                        var feedbackAnswers = $('#feedback_answers').val().replace(/\s*\|\s*/g, '|');
+                        var feedbackColor = $('#feedback_color').val().replace(/\s*\|\s*/g, '|').toLowerCase();
+                        if (!feedbackAnswers) missingFields.push('Feedback Answers');
+                        if (!feedbackColor) missingFields.push('Feedback Color');
+
+                        var lockFeedback = $('#lock_feedback').is(':checked') ? 'yes' : '';
+                        var feedbackAnswersArray = feedbackAnswers.split('|');
+                        var feedbackColorArray = feedbackColor.split('|');
+
+                        if (answersArray.length !== feedbackAnswersArray.length) {
+                            bootbox.alert("The number of values in 'answers' does not match the number of values in 'feedback answers'. Please ensure they match.");
+                            return false;
+                        }
+                        if (feedbackColorArray.length !== feedbackAnswersArray.length) {
+                            bootbox.alert("The number of values in 'feedback answers' does not match the number of values in 'feedback colours'. Please ensure they match.");
+                            return false;
+                        }
                     }
 
                     callback(itemName, text, answers, values, optional, btnWidth, sideByside, shuffleQuestion, anchors, specificRow ? parseInt(rowIndex) + 1 : null, feedbackAnswers, feedbackColor, lockFeedback);
@@ -950,7 +953,6 @@ function addNumberOptions(callback) {
                 label: 'Cancel',
                 className: 'btn-secondary',
                 callback: function () {
-                    console.log('Cancelled');
                     $("#add_item_btn").click();
                 }
             }
@@ -1223,7 +1225,6 @@ function addTextOptions(callback) {
                 label: 'Cancel',
                 className: 'btn-secondary',
                 callback: function () {
-                    console.log('Cancelled');
                     $("#add_item_btn").click();
                 }
             }
@@ -1383,22 +1384,12 @@ function addRadioOptions(callback) {
                     var specificRow = $('#specific_row').is(':checked');
                     var rowIndex = $('#row_select').val();
                     var provideFeedback = $('#provide_feedback').is(':checked');
-                    var lockFeedback = $('#lock_feedback').is(':checked') ? 'yes' : '';
-
 
                     var missingFields = [];
                     if (!itemName) missingFields.push('Radio item name');
                     if (!text) missingFields.push('Question text');
                     if (!answers) missingFields.push('Answers');
                     if (!values) missingFields.push('Values');
-
-                    if (provideFeedback) {
-                        var feedbackAnswers = $('#feedback_answers').val().replace(/\s*\|\s*/g, '|');
-                        var feedbackColor = $('#feedback_color').val().replace(/\s*\|\s*/g, '|').toLowerCase();
-                        if (!feedbackAnswers) missingFields.push('Feedback Answers');
-                        if (!feedbackColor) missingFields.push('Feedback Color');
-                    }
-
 
                     if (missingFields.length > 0) {
                         bootbox.alert("The following fields are missing: " + missingFields.join(', '));
@@ -1412,15 +1403,24 @@ function addRadioOptions(callback) {
                         return false;
                     }
 
-                    var feedbackAnswersArray = feedbackAnswers.split('|');
-                    var feedbackColorArray = feedbackColor.split('|');
-                    if (answersArray.length !== feedbackAnswersArray.length) {
-                        bootbox.alert("The number of values in 'answers' does not match the number of values in 'feedback answers'. Please ensure they match.");
-                        return false;
-                    }
-                    if (feedbackColorArray.length !== feedbackAnswersArray.length) {
-                        bootbox.alert("The number of values in 'feedback answers' does not match the number of values in 'feedback colours'. Please ensure they match.");
-                        return false;
+                    if (provideFeedback) {
+                        var feedbackAnswers = $('#feedback_answers').val().replace(/\s*\|\s*/g, '|');
+                        var feedbackColor = $('#feedback_color').val().replace(/\s*\|\s*/g, '|').toLowerCase();
+                        if (!feedbackAnswers) missingFields.push('Feedback Answers');
+                        if (!feedbackColor) missingFields.push('Feedback Color');
+
+                        var lockFeedback = $('#lock_feedback').is(':checked') ? 'yes' : '';
+                        var feedbackAnswersArray = feedbackAnswers.split('|');
+                        var feedbackColorArray = feedbackColor.split('|');
+
+                        if (answersArray.length !== feedbackAnswersArray.length) {
+                            bootbox.alert("The number of values in 'answers' does not match the number of values in 'feedback answers'. Please ensure they match.");
+                            return false;
+                        }
+                        if (feedbackColorArray.length !== feedbackAnswersArray.length) {
+                            bootbox.alert("The number of values in 'feedback answers' does not match the number of values in 'feedback colours'. Please ensure they match.");
+                            return false;
+                        }
                     }
 
                     callback(itemName, text, answers, values, optional, direction, shuffleQuestion, specificRow ? parseInt(rowIndex) + 1 : null, feedbackAnswers, feedbackColor, lockFeedback);
@@ -1431,7 +1431,6 @@ function addRadioOptions(callback) {
                 label: 'Cancel',
                 className: 'btn-secondary',
                 callback: function () {
-                    console.log('Cancelled');
                     $("#add_item_btn").click();
                 }
             }
@@ -1576,7 +1575,6 @@ function addRedcapPiiOptions(callback) {
                 label: 'Cancel',
                 className: 'btn-secondary',
                 callback: function () {
-                    console.log('Cancelled');
                     $("#add_item_btn").click();
                 }
             }

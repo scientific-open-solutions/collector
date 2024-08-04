@@ -414,33 +414,24 @@ $("#survey_select").on("change", function () {
   const offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--offset'));
   var availableHeight = window.innerHeight - navHeight - offset;
   var tableHeight = $("#survey_HoT").height();
-  
-  console.log(tableHeight)
-  console.log(availableHeight)
-if (tableHeight > availableHeight) {
-  $("#survey_HoT").css("min-height","110vh")
-  console.log("hello")
-} else {
-  $("#pills-spreadsheet_survey").css("min-height","50vh")
-  console.log("goodbye")
-}
-setTimeout(() => {
-  const navHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height'));
-  const offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--offset'));
-  var availableHeight = window.innerHeight - navHeight - offset;
-  var tableHeight = $("#survey_HoT").height();
-  
-  console.log(tableHeight)
-  console.log(availableHeight)
-  console.log("Bon jour")
+
   if (tableHeight > availableHeight) {
     $("#survey_HoT").css("min-height","110vh")
-    console.log("hello")
   } else {
     $("#pills-spreadsheet_survey").css("min-height","50vh")
-    console.log("goodbye")
   }
-}, 0);
+  setTimeout(() => {
+    const navHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height'));
+    const offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--offset'));
+    var availableHeight = window.innerHeight - navHeight - offset;
+    var tableHeight = $("#survey_HoT").height();
+
+    if (tableHeight > availableHeight) {
+      $("#survey_HoT").css("min-height","110vh")
+    } else {
+      $("#pills-spreadsheet_survey").css("min-height","50vh")
+    }
+  }, 0);
 });
 
 
