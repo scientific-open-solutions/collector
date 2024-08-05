@@ -257,7 +257,7 @@ function addNewProcRow() {
 
         var columnNames = ['item', 'phasetype', 'max_time', 'shuffle_1', 'weight'];
         if (dynamicText) columnNames.push('text');
-        if (surveySheet) columnNames.push('surveySheet');
+        if (surveySheet) columnNames.push('survey');
         if (notes) columnNames.push('notes');
         if (hideTimer) columnNames.push('timer_style');
         if (hideProgressBar) columnNames.push('no_progress');

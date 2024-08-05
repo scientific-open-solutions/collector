@@ -558,37 +558,44 @@ Project = {
   },
 
   go_to: function (go_to_info) {
-
     // The Phase.go_to() function allows a user to jump forward/back a set number of phases or to a specific phase of their choice
     // It can be useful when you need to have participants restart trials based on task performance or branch participant based on responses
 
-    var goTo_input = go_to_info;
-    
-    if (typeof go_to_info == "string") {
-      console.log("They inputted a string with a +/-");
-      if (goTo_input.indexOf('+') != -1) {
-        // this is employed when people ask to move forward via a +
-        goTo_input = goTo_input.replace('+', '');
-        console.log("The asked to move forward: " + goTo_input + " phases")  
-        go_to_info = (project_json.phase_no + 1) + parseInt(goTo_input);
-      } else {
-        // this is employed when people ask to move back via a -
-        goTo_input = goTo_input.replace('-', '');
-        console.log("The asked to move back: " + goTo_input + " phases")  
-        go_to_info = (project_json.phase_no + 1) - parseInt(goTo_input);
+    // Leave this console.log live, it allows you to run Phase.go_to() function to see specific row numbers if including stimuli trials
+    console.log(project_json.parsed_proc)
+
+    var proc_length = project_json.parsed_proc.length
+    if (go_to_info === 0 || go_to_info > (proc_length - 1)) {
+      bootbox.alert("Please let the researcher know the study is attempting to move beyond bounds and cannot continue");
+    } else {
+
+      var goTo_input = go_to_info;
+      
+      if (typeof go_to_info == "string") {
+        console.log("They inputted a string with a +/-");
+        if (goTo_input.indexOf('+') != -1) {
+          // this is employed when people ask to move forward via a +
+          goTo_input = goTo_input.replace('+', '');
+          console.log("The asked to move forward: " + goTo_input + " phases")  
+          go_to_info = (project_json.phase_no + 1) + parseInt(goTo_input);
+        } else {
+          // this is employed when people ask to move back via a -
+          goTo_input = goTo_input.replace('-', '');
+          console.log("The asked to move back: " + goTo_input + " phases")  
+          go_to_info = (project_json.phase_no + 1) - parseInt(goTo_input);
+        } 
+      } else  {
+        // this allows people to select a specific procedure procedure row number to load
+        console.log("They inputted a number");
+        console.log("They want to go to phase: " + go_to_info)  
       } 
-    } else  {
-      // this allows people to select a specific procedure procedure row number to load
-      console.log("They inputted a number");
-      console.log("They want to go to phase: " + go_to_info)  
-    } 
-    console.log("Jumping to phase: " + go_to_info)
-    parent.parent.project_json.inputs = jQuery("[name]");
-    Project.finish_phase(go_to_info);
+      console.log("Jumping to phase: " + go_to_info)
+      parent.parent.project_json.inputs = jQuery("[name]");
+      Project.finish_phase(go_to_info);
+    }
   },
 
   start_post: function (go_to_info) {
-
     // use the phase_progress column 
     
     if(typeof(project_json.this_condition.progress_bar) !== "undefined"){
@@ -708,7 +715,6 @@ Project = {
         var this_post_no = project_json.post_no;
         Project.phase_timer = new Collector.timer(function () {
           if (this_phase_no === project_json.phase_no && this_post_no === project_json.post_no) {
-            // Project.finish_phase();
             project_json.inputs = jQuery("[name]");
             Project.finish_phase();
           }
@@ -1127,12 +1133,23 @@ function insert_start() {
     });
   }
 
+  if (Project.get_vars.platform === "preview") {
+    console.log("We're previewing the experiment!")
+    if (typeof project_json.this_condition.redcap_url !== "undefined") {
+      console.log("Switching off REDCap to avoid sending data.")
+      project_json.this_condition.redcap_url = "";
+    } else {
+      //skipp this
+    }
+  }
+
   var this_proc = project_json.parsed_proc;
   if (
     Project.get_vars.platform === "preview" ||
     (typeof project_json.this_condition.skip_quality !== "undefined" &&
       project_json.this_condition.skip_quality.toLowerCase() === "yes")
   ) {
+
     this_proc = add_to_start(this_proc, "quality_preview_start");
     load_quality_checks([
       {
@@ -1709,25 +1726,170 @@ function removeItemAll(arr, value) {
   return arr;
 }
 
-function shuffle_start_exp() {
-  //perhaps also have "shuffle" works as shuffle_1
-  //perhaps also have "block shuffle_1" as shuffle_2, etc.
+// THIS IS THE ORIGINAL SHUFFLE CODE : JUST LEAVING IN PLACE IN CASE THE NEW CODE DOESN'T QUITE WORK PROPERLY
+// function shuffle_start_exp() {
+//   //perhaps also have "shuffle" works as shuffle_1
+//   //perhaps also have "block shuffle_1" as shuffle_2, etc.
 
+//   var shuffle_levels = Object.keys(project_json.parsed_proc[0]).filter(
+//     (item) => item.indexOf("shuffle") !== -1
+//   );
+//   shuffle_levels = shuffle_levels.sort().reverse();
+
+//   shuffle_levels.forEach(function (shuffle_level) {
+//     for (var i = 0; i < project_json.parsed_proc.length; i++) {
+//       if (project_json.parsed_proc[i][shuffle_level] === "") {
+//         project_json.parsed_proc[i][shuffle_level] = "off";
+//       }
+//     }
+
+//     if (shuffle_level !== "shuffle_1") {
+//       //split project_json.parsed_proc into chunks based on this_level
+//       //off rows don't change their order
+//       var shuffle_block_names = [project_json.parsed_proc[0][shuffle_level]];
+//       var shuffle_block_rows = [[project_json.parsed_proc[0]]];
+
+//       for (let i = 1; i < project_json.parsed_proc.length; i++) {
+//         if (
+//           project_json.parsed_proc[i][shuffle_level] !==
+//             project_json.parsed_proc[i - 1][shuffle_level] ||
+//           project_json.parsed_proc[i][shuffle_level] === "off"
+//         ) {
+//           shuffle_block_names.push(project_json.parsed_proc[i][shuffle_level]);
+//           shuffle_block_rows.push([project_json.parsed_proc[i]]);
+//         } else {
+//           shuffle_block_rows[shuffle_block_rows.length - 1].push(
+//             project_json.parsed_proc[i]
+//           );
+//         }
+//       }
+//       var shuffled_block_names = JSON.parse(
+//         JSON.stringify(shuffle_block_names)
+//       );
+
+//       //create a list of names to be randomised
+//       unique_shuffle_block_names = Array.from(new Set(shuffle_block_names));
+//       unique_shuffle_block_names = removeItemAll(
+//         unique_shuffle_block_names,
+//         "off"
+//       );
+
+//       //randomise order of unique_shuffle_block_names;
+
+//       //replace original index with numbers
+//       unique_shuffle_block_names.forEach(function (this_name, name_no) {
+//         shuffled_block_names.forEach(function (item, item_no) {
+//           if (item === this_name) {
+//             shuffled_block_names[item_no] = name_no;
+//           }
+//         });
+//       });
+
+//       shuffled_unique_shuffle_block_names = unique_shuffle_block_names.sort(
+//         function () {
+//           return 0.5 - Math.random();
+//         }
+//       );
+
+//       unique_shuffle_block_names.forEach(function (this_name, name_no) {
+//         shuffled_block_names.forEach(function (item, item_no) {
+//           if (item === name_no) {
+//             shuffled_block_names[item_no] = this_name;
+//           }
+//         });
+//       });
+
+//       var shuffled_row_blocks = [];
+//       //now loop through the shuffled_block_names to reorder the blocks
+//       shuffled_block_names.forEach(function (this_name, row_no) {
+//         shuffled_row_blocks[row_no] =
+//           shuffle_block_rows[shuffle_block_names.indexOf(this_name)];
+//       });
+
+//       var all_rows = [];
+//       shuffled_row_blocks.forEach(function (block) {
+//         block.forEach(function (row) {
+//           all_rows.push(row);
+//         });
+//       });
+
+//       project_json.parsed_proc.forEach(function (row, row_no) {
+//         if (row[shuffle_level] !== "off") {
+//           project_json.parsed_proc[row_no] = all_rows[row_no];
+//         }
+//       });
+//     }
+//   });
+
+//   shuffle_array = {};
+//   project_json.parsed_proc.forEach(function (row, index) {
+//     var this_shuffle = row["shuffle_1"];
+//     if (typeof shuffle_array[this_shuffle] === "undefined") {
+//       shuffle_array[this_shuffle] = [index];
+//     } else {
+//       shuffle_array[this_shuffle].push(index);
+//     }
+//   });
+//   delete shuffle_array.off;
+//   Object.keys(shuffle_array).forEach(function (key) {
+//     shuffleArray(shuffle_array[key]);
+//   });
+//   //apply shuffle to project_json.parsed_proc
+//   new_proc = project_json.parsed_proc.map(function (row, original_index) {
+//     if ((row["shuffle_1"] !== "off") & (row["shuffle_1"] !== "")) {
+//       this_shuffle = row["shuffle_1"];
+//       var this_pos = shuffle_array[this_shuffle].pop();
+//       return project_json.parsed_proc[this_pos];
+//     }
+//     if (row["shuffle_1"] === "off") {
+//       return project_json.parsed_proc[original_index];
+//     }
+//   });
+//   project_json.parsed_proc = new_proc;
+//   if (typeof project_json.responses === "undefined") {
+//     project_json.responses = [];
+//   }
+
+//   project_json.wait_to_proc = false;
+//   Project.activate_pipe();
+// }
+
+function shuffle_start_exp() {
+  // Get the shuffle levels
   var shuffle_levels = Object.keys(project_json.parsed_proc[0]).filter(
     (item) => item.indexOf("shuffle") !== -1
   );
-  shuffle_levels = shuffle_levels.sort().reverse();
+  shuffle_levels = shuffle_levels.sort();
 
-  shuffle_levels.forEach(function (shuffle_level) {
-    for (var i = 0; i < project_json.parsed_proc.length; i++) {
-      if (project_json.parsed_proc[i][shuffle_level] === "") {
-        project_json.parsed_proc[i][shuffle_level] = "off";
+  // Perform within-block shuffling for shuffle_1
+  var shuffle_array = {};
+  project_json.parsed_proc.forEach(function (row, index) {
+    var this_shuffle = row["shuffle_1"];
+    if (this_shuffle && this_shuffle !== "off") {
+      if (!shuffle_array[this_shuffle]) {
+        shuffle_array[this_shuffle] = [index];
+      } else {
+        shuffle_array[this_shuffle].push(index);
       }
     }
+  });
+  Object.keys(shuffle_array).forEach(function (key) {
+    shuffleArray(shuffle_array[key]);
+  });
 
+  var new_proc = project_json.parsed_proc.map(function (row, original_index) {
+    if ((row["shuffle_1"] !== "off") && (row["shuffle_1"] !== "")) {
+      var this_shuffle = row["shuffle_1"];
+      var this_pos = shuffle_array[this_shuffle].shift();
+      return project_json.parsed_proc[this_pos];
+    }
+    return project_json.parsed_proc[original_index];
+  });
+  project_json.parsed_proc = new_proc;
+
+  // Perform between-block shuffling for shuffle_2 and beyond
+  shuffle_levels.forEach(function (shuffle_level, level_index) {
     if (shuffle_level !== "shuffle_1") {
-      //split project_json.parsed_proc into chunks based on this_level
-      //off rows don't change their order
       var shuffle_block_names = [project_json.parsed_proc[0][shuffle_level]];
       var shuffle_block_rows = [[project_json.parsed_proc[0]]];
 
@@ -1745,44 +1907,27 @@ function shuffle_start_exp() {
           );
         }
       }
-      var shuffled_block_names = JSON.parse(
-        JSON.stringify(shuffle_block_names)
-      );
 
-      //create a list of names to be randomised
-      unique_shuffle_block_names = Array.from(new Set(shuffle_block_names));
+      var unique_shuffle_block_names = Array.from(new Set(shuffle_block_names));
       unique_shuffle_block_names = removeItemAll(
         unique_shuffle_block_names,
         "off"
       );
 
-      //randomise order of unique_shuffle_block_names;
-
-      //replace original index with numbers
-      unique_shuffle_block_names.forEach(function (this_name, name_no) {
-        shuffled_block_names.forEach(function (item, item_no) {
-          if (item === this_name) {
-            shuffled_block_names[item_no] = name_no;
-          }
-        });
-      });
-
-      shuffled_unique_shuffle_block_names = unique_shuffle_block_names.sort(
+      var shuffled_unique_shuffle_block_names = unique_shuffle_block_names.sort(
         function () {
           return 0.5 - Math.random();
         }
       );
 
-      unique_shuffle_block_names.forEach(function (this_name, name_no) {
-        shuffled_block_names.forEach(function (item, item_no) {
-          if (item === name_no) {
-            shuffled_block_names[item_no] = this_name;
-          }
-        });
+      var shuffled_block_names = shuffle_block_names.map(function (name) {
+        if (name !== "off") {
+          return shuffled_unique_shuffle_block_names.shift();
+        }
+        return name;
       });
 
       var shuffled_row_blocks = [];
-      //now loop through the shuffled_block_names to reorder the blocks
       shuffled_block_names.forEach(function (this_name, row_no) {
         shuffled_row_blocks[row_no] =
           shuffle_block_rows[shuffle_block_names.indexOf(this_name)];
@@ -1803,37 +1948,53 @@ function shuffle_start_exp() {
     }
   });
 
-  shuffle_array = {};
-  project_json.parsed_proc.forEach(function (row, index) {
-    var this_shuffle = row["shuffle_1"];
-    if (typeof shuffle_array[this_shuffle] === "undefined") {
-      shuffle_array[this_shuffle] = [index];
-    } else {
-      shuffle_array[this_shuffle].push(index);
-    }
-  });
-  delete shuffle_array.off;
-  Object.keys(shuffle_array).forEach(function (key) {
-    shuffleArray(shuffle_array[key]);
-  });
-  //apply shuffle to project_json.parsed_proc
-  new_proc = project_json.parsed_proc.map(function (row, original_index) {
-    if ((row["shuffle_1"] !== "off") & (row["shuffle_1"] !== "")) {
-      this_shuffle = row["shuffle_1"];
-      var this_pos = shuffle_array[this_shuffle].pop();
-      return project_json.parsed_proc[this_pos];
-    }
-    if (row["shuffle_1"] === "off") {
-      return project_json.parsed_proc[original_index];
-    }
-  });
-  project_json.parsed_proc = new_proc;
   if (typeof project_json.responses === "undefined") {
     project_json.responses = [];
   }
 
   project_json.wait_to_proc = false;
+
+  /*
+   * Adjusthing the order of 'phase_progress' to account for the fact we just shuffled the parsed_proc array
+   * (this ensures that the progress bar still displays correctly if used)
+  */
+
+  // Extract the 'phase_progress' values, ignoring the first row
+  var phaseProgressValues = project_json.parsed_proc.slice(1).map(function(item) {
+      return item.phase_progress;
+  });
+
+  // Sort the 'phase_progress' values
+  phaseProgressValues.sort(function(a, b) {
+      return a - b;
+  });
+
+  // Place the sorted values back into the array, ignoring the first row
+  var index = 0;
+  for (var i = 1; i < project_json.parsed_proc.length; i++) {
+      project_json.parsed_proc[i].phase_progress = phaseProgressValues[index++];
+  }
+
   Project.activate_pipe();
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function removeItemAll(arr, value) {
+  var i = 0;
+  while (i < arr.length) {
+    if (arr[i] === value) {
+      arr.splice(i, 1);
+    } else {
+      ++i;
+    }
+  }
+  return arr;
 }
 
 function start_restart() {

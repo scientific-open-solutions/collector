@@ -423,9 +423,9 @@ $("#rename_proj_btn").on("click", function () {
                 }
               });
             
-                          setTimeout(() => {
+            setTimeout(() => {
               $('#save_btn').click();
-            }, 100);
+            }, 250);
           }
             
         }
@@ -464,16 +464,42 @@ $("#rename_proc_button").on("click", function () {
             $("#proc_select").append($("<option>", {text: new_proc_name,}));
             $("#proc_select").val(new_proc_name);
             $('#proc_select option[value="' + current_proc + '"]').remove();
+            
+            // Update handsontable
+            var handsOnTableInstance = tables['handsOnTable_Conditions'];
+
+            for (var row = 1; row < handsOnTableInstance.countRows(); row++) {
+              for (var col = 0; col < handsOnTableInstance.countCols(); col++) {
+                var cellValue = handsOnTableInstance.getDataAtCell(row, col);
+                if (cellValue === current_stim) {
+                  handsOnTableInstance.setDataAtCell(row, col, new_sheet_name);
+                }
+              }
+            }
+
+            handsOnTableInstance.render();
+
+            for (let i = 0; i < handsOnTableInstance.countCols(); i++) {
+              const colHeader = this.getDataAtCell(0, index + i);
+              if (colHeader.toLowerCase().indexOf("counterbalance") !== -1) {
+                bootbox.dialog({
+                  title: "Counterbalance Conflict",
+                  message: "You may have counterbalancing setup on a Conditions row. Please check whether this rename will effect an existing CSV files you may be using."
+                });
+              }
+            }
+
             createExpEditorHoT(this_proj.all_procs[new_proc_name],"procedure",new_proc_name);
             setTimeout(() => {
               $('#save_btn').click();
-            }, 100);
+            }, 250);
           }
         }
       }
     );
-  };
+  }
 });
+
 
 $("#rename_stim_button").on("click", function () {
   if (!parent.parent.functionIsRunning) {
@@ -507,10 +533,26 @@ $("#rename_stim_button").on("click", function () {
             $("#stim_select").append($("<option>", {text: new_sheet_name,}));
             $("#stim_select").val(new_sheet_name);
             $('#stim_select option[value="' + current_stim + '"]').remove();
+
+            // Update handsontable
+            var handsOnTableInstance = tables['handsOnTable_Conditions'];
+            console.log(handsOnTableInstance.countRows());
+
+            for (var row = 1; row < handsOnTableInstance.countRows(); row++) {
+              for (var col = 0; col < handsOnTableInstance.countCols(); col++) {
+                var cellValue = handsOnTableInstance.getDataAtCell(row, col);
+                if (cellValue === current_stim) {
+                  handsOnTableInstance.setDataAtCell(row, col, new_sheet_name);
+                }
+              }
+            }
+
+            handsOnTableInstance.render();
+            
             createExpEditorHoT(this_proj.all_stims[new_sheet_name],"stimuli",new_sheet_name);
             setTimeout(() => {
               $('#save_btn').click();
-            }, 100);
+            }, 250);
           }
         }
       }
@@ -989,15 +1031,15 @@ function copyToClipboard_url_input_preview() {
   }
 };
 
-$("#conditions_btn").on("click", function () {
-  var conditionTable = tables['handsOnTable_conditions'];
-  bootbox.prompt("Enter the name for the new column:", function(columnName) {
-    if (columnName !== null) {
-      // Add a new column to the Handsontable instance
-      conditionTable.alter('insert_col', conditionTable.countCols());
+// $("#conditions_btn").on("click", function () {
+//   var conditionTable = tables['handsOnTable_conditions'];
+//   bootbox.prompt("Enter the name for the new column:", function(columnName) {
+//     if (columnName !== null) {
+//       // Add a new column to the Handsontable instance
+//       conditionTable.alter('insert_col', conditionTable.countCols());
   
-      // Insert the value into the first row of the new column
-      conditionTable.setDataAtCell(0, conditionTable.countCols() - 1, columnName);
-  }
-  });
-});
+//       // Insert the value into the first row of the new column
+//       conditionTable.setDataAtCell(0, conditionTable.countCols() - 1, columnName);
+//   }
+//   });
+// });

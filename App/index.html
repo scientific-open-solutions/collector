@@ -136,7 +136,7 @@
         <div id="page_selected"></div>
       </ul>
     </div>
-    <button class="top_icon btn btn-primary" id="zoomLevel_btn" style="font-size: 20px">Current Zoom: 100%</button>
+    <button class="top_icon btn btn-primary" id="zoomLevel_btn" style="font-size: 20px">Current Zoom: ???%</button>
 
     <button class="top_icon btn btn-primary bi-x-square" id="reset_collector_btn" style="font-size: 20px">
       <span class="content_name">Reset Collector</span>
@@ -202,3 +202,12 @@
 <script src="Tests/RunTests.js"></script>
 <script src="icons.js"></script>
 <script src="index.js"></script>
+<script>
+  var checkExist = setInterval(function() {
+    if ($('#zoomLevel_btn').length) {
+      console.log('Element exists!');
+      updateZoomLevel();
+      clearInterval(checkExist);
+    }
+  }, 100); // Check every 100 milliseconds
+</script>

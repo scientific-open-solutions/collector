@@ -20,13 +20,20 @@
 var thisCellValue;
 var this_sheet;
 var this_selection;
+function isStimuliHeader(colHeader) {
+  var isStimuliCol = false;
+  if (colHeader === "stimuli") isStimuliCol = true;
+  return isStimuliCol;
+}
+function isProcedureHeader(colHeader) {
+  var isProcedureCol = false;
+  if (colHeader === "procedure") isProcedureCol = true;
+  return isProcedureCol;
+}
 function isPhaseTypeHeader(colHeader) {
   var isPhaseTypeCol = false;
   if (colHeader === "phasetype") isPhaseTypeCol = true;
-  if (
-    colHeader.substr(0, 5).toLowerCase() === "post " &&
-     colHeader.substr(-11) === " trial type"
-    ) {
+  if (colHeader.substr(0, 5).toLowerCase() === "post " && colHeader.substr(-11) === " trial type") {
     postN = colHeader.substr(5, colHeader.length - 16);
     postN = parseInt(postN);
     if (!isNaN(postN) && postN !== 0) {
@@ -108,24 +115,58 @@ function createHoT(container, data, sheet_name, tableId) {
     minSpareCols: 1,
     minSpareRows: 1,
 
-
     /*
      * Functions
     */
     beforeChange: function (changes, source) {
       changes.forEach(([row, col, oldValue, newValue]) => {
-          if (nonDeletableColumns_proj.includes(oldValue) && newValue === '') {
-              // Save the current value to restore it later if needed
-              savedValues[`${row}_${col}`] = oldValue;
-          }
+        if (nonDeletableColumns_proj.includes(oldValue) && newValue === '') {
+          // Save the current value to restore it later if needed
+          savedValues[`${row}_${col}`] = oldValue;
+        }
       });
     },
     afterChange: function (changes, source) {
       if (!changes) return;
+
+      // Function to check for duplicates in row 1 of another table
+      function checkForDuplicates(newValue, otherTable) {
+        if (newValue === '') {
+          return false; // Exclude empty values
+        }
+
+        // Ignore the last column of the tables
+        if ($(otherTable.container).is(":visible")) {
+          for (let col = 0; col < otherTable.countCols() - 1; col++) {
+            if (otherTable.getDataAtCell(0, col) === newValue) {
+              console.log(`Duplicate found in ${otherTable === proceduresTable ? 'handsOnTable_Procedure' : 'handsOnTable_Stimuli'} at column ${col}`);
+              return true;
+            }
+          }
+        }
+        return false;
+      }
+
+      // Function to log row 1 values
+      function logRow1Values(table1, table2) {
+        if ($(table1.container).is(":visible")) {
+          console.log("handsOnTable_Procedure row 1 values: ", table1.getDataAtRow(0));
+        }
+        if ($(table2.container).is(":visible")) {
+          console.log("handsOnTable_Stimuli row 1 values: ", table2.getDataAtRow(0));
+        }
+      }
+
+      // Get references to the other tables
+      var proceduresTable = tables['handsOnTable_Procedure'];
+      var stimuliTable = tables['handsOnTable_Stimuli'];
+
       changes.forEach(([row, col, oldValue, newValue]) => {
+        console.log(`Change detected at row ${row}, col ${col}: ${oldValue} -> ${newValue}`);
         const cellKey = `${row}_${col}`;
         if (nonDeletableColumns_proj.includes(oldValue) && newValue === '' && savedValues[cellKey]) {
           // Restore the saved value
+          console.log(`Restoring saved value for cell ${cellKey}: ${savedValues[cellKey]}`);
           this.setDataAtCell(row, col, savedValues[cellKey]);
           bootbox.alert({
             title: 'Required Column',
@@ -133,8 +174,35 @@ function createHoT(container, data, sheet_name, tableId) {
             buttons: { ok: { label: '<i class="fa fa-times"></i> Cancel' } }
           });
         }
+
+        // Check for duplicates if the change is in the first row
+        if (row === 0) {
+          logRow1Values(proceduresTable, stimuliTable); // Logging current state
+          if (this === proceduresTable && checkForDuplicates(newValue, stimuliTable)) {
+            bootbox.prompt({
+              title: 'Duplicate Name',
+              message: 'The name already exists in the first row of the Stimuli table. Please enter a new name:',
+              callback: function (result) {
+                if (result) {
+                  table.setDataAtCell(row, col, result);
+                }
+              }
+            });
+          } else if (this === stimuliTable && checkForDuplicates(newValue, proceduresTable)) {
+            bootbox.prompt({
+              title: 'Duplicate Name',
+              message: 'The name already exists in the first row of the Procedures table. Please enter a new name:',
+              callback: function (result) {
+                if (result) {
+                  table.setDataAtCell(row, col, result);
+                }
+              }
+            });
+          }
+        }
       });
 
+      // Existing code logic
       var middleColEmpty = 0;
       var middleRowEmpty = 0;
       var postEmptyCol = 0; //identify if there is a used col after empty one
@@ -269,7 +337,36 @@ function createHoT(container, data, sheet_name, tableId) {
 
     },
     afterRemoveCol: function () {
+      // This just forces a change into the table to ensure that the removal sticks after saving, as you need a cell change to re-render the table
+      const totalColumns = this.countCols();
 
+      if (totalColumns > 0) {
+        const rowIndex = 0;
+
+        const colIndex = totalColumns - 1;
+
+        this.setDataAtCell(rowIndex, colIndex, '');
+
+        setTimeout(() => {
+          this.setDataAtCell(rowIndex, colIndex, null);
+        }, 1);  
+      }
+    },
+    afterRemoveRow: function () {
+      // This just forces a change into the table to ensure that the removal sticks after saving, as you need a cell change to re-render the table
+      const totalColumns = this.countCols();
+
+      if (totalColumns > 0) {
+        const rowIndex = 0;
+
+        const colIndex = totalColumns - 1;
+
+        this.setDataAtCell(rowIndex, colIndex, '');
+
+        setTimeout(() => {
+          this.setDataAtCell(rowIndex, colIndex, null);
+        }, 1);  
+      }
     },
 
     afterSelectionEnd: function () {
@@ -300,7 +397,31 @@ function createHoT(container, data, sheet_name, tableId) {
             thisHeader = "phasetype";
             this.instance.setDataAtCell(0, col, thisHeader);
           }
-          if (isPhaseTypeHeader(thisHeader)) {
+          if (isProcedureHeader(thisHeader)) {
+            cellProperties.type = "dropdown";
+            cellProperties.visibleRows = 10;
+            cellProperties.source = $.map(
+              $("#proc_select option"), function(option){
+                if(option.value.toLowerCase() !== "select a procedure"){
+                  return option.value;
+                }
+              }
+            );
+            cellProperties.trimDropdown = false;
+            //cellProperties.renderer = trialTypesRenderer;
+          } else if (isStimuliHeader(thisHeader)) {
+            cellProperties.type = "dropdown";
+            cellProperties.visibleRows = 10;
+            cellProperties.source = $.map(
+              $("#stim_select option"), function(option){
+                if(option.value.toLowerCase() !== "select a stimuli"){
+                  return option.value;
+                }
+              }
+            );
+            cellProperties.trimDropdown = false;
+            //cellProperties.renderer = trialTypesRenderer;
+          } else if (isPhaseTypeHeader(thisHeader)) {
             cellProperties.type = "dropdown";
             cellProperties.visibleRows = 10;
             cellProperties.source = $.map(
@@ -477,6 +598,8 @@ function createHoT(container, data, sheet_name, tableId) {
   tables[tableId] = table;
   return table;
 }
+
+
 //https://stackoverflow.com/a/28353499/4490801
 function insertAtCaret(areaId, text) {
   var txtarea = document.getElementById(areaId);

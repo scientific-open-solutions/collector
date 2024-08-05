@@ -68,7 +68,7 @@ function create_survey_HoT(this_survey) {
     data: this_survey,
     minSpareCols: 1,
     minSpareRows: 1,
-    rowHeaders: false,
+    rowHeaders: true,
     colHeaders: false,
     autoRowSize: true,
     autoColumnSize: true,
