@@ -412,32 +412,32 @@ function checkTable() {
       return;
   }
 
-  // Check if page breaks exist
-  let pageBreakExists = false;
-  const rowCount = survey_HoT.countRows();
+  // // Check if page breaks exist
+  // let pageBreakExists = false;
+  // const rowCount = survey_HoT.countRows();
 
-  for (let rowIndex = 1; rowIndex < rowCount; rowIndex++) { // Start from 1 to skip the header row
-      const itemNameCell = survey_HoT.getDataAtCell(rowIndex, itemNameIndex);
-      const typeCell = survey_HoT.getDataAtCell(rowIndex, typeIndex);
+  // for (let rowIndex = 1; rowIndex < rowCount; rowIndex++) { // Start from 1 to skip the header row
+  //     const itemNameCell = survey_HoT.getDataAtCell(rowIndex, itemNameIndex);
+  //     const typeCell = survey_HoT.getDataAtCell(rowIndex, typeIndex);
 
-      if (itemNameCell === 'page_break' || typeCell === 'page_break') {
-          pageBreakExists = true;
-          break;
-      }
-  }
+  //     if (itemNameCell === 'page_break' || typeCell === 'page_break') {
+  //         pageBreakExists = true;
+  //         break;
+  //     }
+  // }
 
-  // Check if the block column exists when page_breaks are being used.
-  if (pageBreakExists) { //CHRISDOBSON
-      if (blockIndex === -1) {
-        console.log("All good: 'block' column does not exist.");
-      } else {
-        bootbox.alert("Warning: At the moment you cannot use page breakes when branching the survey. We've deleted the row automatically for you.");
-        deletePageBreakRows();
-        $("#save_btn").click();
-      }
-  } else {
-      console.log("No 'page_break' found.");
-  }
+  // // Check if the block column exists when page_breaks are being used.
+  // if (pageBreakExists) { //CHRISDOBSON
+  //     if (blockIndex === -1) {
+  //       console.log("All good: 'block' column does not exist.");
+  //     } else {
+  //       bootbox.alert("Warning: At the moment you cannot use page breakes when branching the survey. We've deleted the row automatically for you.");
+  //       deletePageBreakRows();
+  //       $("#save_btn").click();
+  //     }
+  // } else {
+  //     console.log("No 'page_break' found.");
+  // }
 };
 
 // This funtion is used to remove page break rows if someone sets up branching so they don't clash

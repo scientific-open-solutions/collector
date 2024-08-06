@@ -157,6 +157,34 @@ function createHoT(container, data, sheet_name, tableId) {
         }
       }
 
+      // Function to ensure shuffle columns are sequential
+      function ensureSequentialShuffleColumns(instance) {
+        let maxShuffleNum = 0;
+        const shuffleCols = [];
+
+        for (let col = 0; col < instance.countCols(); col++) {
+          const header = instance.getDataAtCell(0, col);
+          const match = header && header.toLowerCase().match(/^shuffle_(\d+)$/);
+
+          if (match) {
+            const num = parseInt(match[1], 10);
+            if (num > maxShuffleNum) {
+              maxShuffleNum = num;
+            }
+            shuffleCols.push({ col, num });
+          }
+        }
+
+        shuffleCols.sort((a, b) => a.num - b.num);
+
+        shuffleCols.forEach((shuffleCol, index) => {
+          const expectedNum = index + 1;
+          if (shuffleCol.num !== expectedNum) {
+            instance.setDataAtCell(0, shuffleCol.col, `shuffle_${expectedNum}`);
+          }
+        });
+      }
+
       // Get references to the other tables
       var proceduresTable = tables['handsOnTable_Procedure'];
       var stimuliTable = tables['handsOnTable_Stimuli'];
@@ -201,6 +229,9 @@ function createHoT(container, data, sheet_name, tableId) {
           }
         }
       });
+
+      // Ensure shuffle columns are sequential
+      ensureSequentialShuffleColumns(this);
 
       // Existing code logic
       var middleColEmpty = 0;
@@ -341,12 +372,9 @@ function createHoT(container, data, sheet_name, tableId) {
       const totalColumns = this.countCols();
 
       if (totalColumns > 0) {
-        const rowIndex = 0;
-
+        const rowIndex = 1;
         const colIndex = totalColumns - 1;
-
         this.setDataAtCell(rowIndex, colIndex, '');
-
         setTimeout(() => {
           this.setDataAtCell(rowIndex, colIndex, null);
         }, 1);  
@@ -357,12 +385,9 @@ function createHoT(container, data, sheet_name, tableId) {
       const totalColumns = this.countCols();
 
       if (totalColumns > 0) {
-        const rowIndex = 0;
-
+        const rowIndex = 1;
         const colIndex = totalColumns - 1;
-
         this.setDataAtCell(rowIndex, colIndex, '');
-
         setTimeout(() => {
           this.setDataAtCell(rowIndex, colIndex, null);
         }, 1);  
@@ -371,12 +396,8 @@ function createHoT(container, data, sheet_name, tableId) {
 
     afterSelectionEnd: function () {
       thisCellValue = this.getValue();
-
       var coords = this.getSelected();
       var column = this.getDataAtCell(0, coords[0][1]);
-
-      // thisCellValue =
-      //   thisCellValue === null ? (thisCellValue = "") : thisCellValue;
       column = column === null ? (column = "") : column;
       window["Current HoT Coordinates"] = coords;
       helperActivate(column, thisCellValue, sheet_name);

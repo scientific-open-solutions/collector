@@ -49,7 +49,7 @@
   },
   "shuffle_2": {
     "subtitle": "Randomise trial order (between block)",
-    "text": "If you would like a group of trials shuffled together, write the same word next to the group of trials you want randomised together. For example, if I wanted to randomise whether a participant completed tasks 1-3 or 4-6 first, I would write 'TasksA' next to tasks 1-3 and 'TasksB' next to tasks 4-6 in this column. If you require within block shuffling, use the 'shuffle_2' column"
+    "text": "If you would like a group of trials shuffled together, write the same word next to the group of trials you want randomised together. For example, if you want to randomise whether a participant completed tasks 1-3 or tasks 4-6 first, write 'TasksA' next to tasks 1-3 and 'TasksB' next to tasks 4-6 in this column. You can create further shuffle groups within groups by using shuffle_3, shuffle_3 etc. Shuffle_1 performs within block shuffling"
   },
   "text": {
     "subtitle": "Mainly for instruct trialtypes",
