@@ -1,4 +1,4 @@
-$.getScript( "libraries/collector/redcap_dropped_fields.js")
+$.getScript("libraries/collector/redcap_dropped_fields.js");
 project_json = {};
 var home_dir;
 
@@ -1696,6 +1696,7 @@ function shuffle_start_exp() {
   // Shuffle each block within shuffle_1
   Object.keys(shuffle_array).forEach(function (key) {
     shuffleArray(shuffle_array[key]);
+    shuffleArray(shuffle_array[key]); // I'm doing a second shuffle because I wasn't happy with how "random" things appeared even though they were!
   });
 
   // Create a new procedure array preserving the position of 'off' and blank rows

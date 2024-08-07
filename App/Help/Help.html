@@ -309,7 +309,7 @@
         } else {
           $("#help_subtitle").html("The following header names are accepted:");
           var keys = Object.keys(help_obj.surv);
-          var commaSeparatedKeys = keys.join(', ');
+          var commaSeparatedKeys = keys.join(',<br>');
           $("#help_text").html(commaSeparatedKeys);
         }
       }
