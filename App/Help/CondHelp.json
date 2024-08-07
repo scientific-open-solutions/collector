@@ -9,7 +9,7 @@
   },
   "counterbalance": {
     "subtitle": "This allows you to use multiple 'Procedure' sheets, presented sequentially, from one 'Conditions' row",
-    "text": "It selects the next, sequential procedure sheet to the one previously used each time the study starts (resetting when all procedure sheets have been presented, restarting the cycle). If anything goes wrong (e.g., connection cannot be made to the required files to know which procedure sheet is next) procedure sheet order is randomised instead, and participant(s) prompted to inform you that counterbalancing failed. <br><br><b>Implementation: </b>You need to call the 'Conditions' row: counterbalance, before creating a php file, called 'counterbalance.php' with the following code: <pre>&lt;?php<br>$newData = $_POST['new_data'];<br>$url = $_POST['url_txt'];<br>$myfile = fopen($url, 'w') or die('Unable to open file!');<br>fwrite($myfile, $newData);<br>fclose($myfile);<br>?></pre> and a text file, containing just the number: 1, named with the following convention: the project name followed by _counterbalance (e.g., <em>myproject_counterbalance.txt</em>). You then need to upload both the PHP and text filed to the same location on an external webhost (e.g., the UoR cPanel hosting). Within this counterbalance column, enter the web address of the folder you just uploaded files to. Your procedure sheets must have a shared 'named',  differentiated by adding _1, _2, _3 after each (e.g., procedure_1, procedure_2 etc.). This order is the order the sheets are cycled through."
+    "text": "It cycles through a list of procedure sheets to select the required the procedure sheet each time the study starts (resetting when all sheets have been presented, restarting the cycle). If anything goes wrong (e.g., connection cannot be made to the required files) it loads in the sheet listed in the 'procedure' column of the Conditions sheet (with participant(s) prompted to inform you that counterbalancing failed). The system counterbalances without replacement, so cannot adjust for participants who withdraw. <br><br><b>Implementation:</b> click <em>Counterbalance</em> above the Conditions sheet (visible when there are 2+ procedure sheets). This will guide you through creating the PHP and CSV files required. Once generated and updated, upload both files to an external webhost (e.g., the <a href='https://research.reading.ac.uk/act/knowledgebase/php-web-hosting-on-cpanel/' target='_blank'>UoR cPanel hosting</a>) and add the full URL of the PHP file to this column."
   },
   "description": {
     "subtitle": "deprecated",
@@ -53,7 +53,7 @@
   },
   "progress_bar": {
     "subtitle": "Would you like a progress bar at the top?",
-    "text": "By default, your project will include a progress bar at the top that moves forward after each row within your procedure sheet is complete. However, you can change this setting in a few ways: <br>To make the progress bar go up after each trial or phase, you can change this column to say  <b>phase</b>, <b>trial</b>, <b>stimuli</b>, <b>item</b>. <br><br> If you would like to turn off the progress bar, just change this cell to say <b>off</b>. <br><br> If you would like the progress bar to proceed in proportion to the number of rows (which is the default), then you can write <b>row</b> or <b>procedure</b> in this column."
+    "text": "By default, your project will include a progress bar at the top that moves forward after each row within your procedure sheet is complete. However, you can change this setting in a few ways: <br>To make the progress bar go up after each trial or phase, you can change this column to say  <b>phase</b>, <b>trial</b>, <b>stimuli</b>, <b>item</b>. <br><br> If you would like to turn off the progress bar, just change this cell to say <b>off</b>. <br><br> If you would like the progress bar to proceed in proportion to the number of rows (which is the default), then you can write <b>row</b> in this column."
   },
   "redcap_url": {
     "subtitle": "PhP file location",
@@ -70,10 +70,6 @@
   "stimuli": {
     "subtitle": "Which Stimuli sheet?",
     "text": "Stimuli sheets can used as a list of words or media files (images, audio, pictures) that your experiment will use. If you want different lists of stimuli, you need to create a new stimuli sheet. <br><br> If you are developing your experiments online (e.g. on open-collector.org or ocollector.org) ignore the following. If you are developing the experiment on your computer, you should your stimuli sheet in the <b>web/User/Projects/YOUR EXPERIMENT</b> folder."
-  },
-  "welcome": {
-    "subtitle": "Unknown",
-    "text": "This may do something, I'm not sure!"
   },
   "zoom_check": {
     "subtitle": "Do you want the user to adjust the zoom in their browser to make it consistent between users?",

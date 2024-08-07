@@ -98,38 +98,37 @@ function createExpEditorHoT(sheet, selected_handsonTable, sheet_name) {
     "<span class='sheet_name' style='display: none'>" + sheet_name + "</span>"
   );
   var container = $("<div>").appendTo(area)[0];
-  window[table_name] = createHoT(container, Papa.parse(sheet).data, sheet_name);
+  window[table_name] = createHoT(container, Papa.parse(sheet).data, sheet_name,table_name);
 }
-function get_HoT_data(current_sheet) {
-  console.dir(current_sheet);
-  var data = JSON.parse(JSON.stringify(current_sheet.getData()));
+// function get_HoT_data(current_sheet) {
+//   console.dir(current_sheet);
+//   var data = JSON.parse(JSON.stringify(current_sheet.getData()));
 
-  // remove last column and last row
-  data.pop();
+//   // remove last column and last row
+//   data.pop();
 
-  for (var i = 0; i < data.length; ++i) {
-    data[i].pop();
+//   for (var i = 0; i < data.length; ++i) {
+//     data[i].pop();
 
-    for (var j = 0; j < data[i].length; ++j) {
-      if (data[i][j] === null) {
-        data[i][j] = "";
-      }
-    }
-  }
+//     for (var j = 0; j < data[i].length; ++j) {
+//       if (data[i][j] === null) {
+//         data[i][j] = "";
+//       }
+//     }
+//   }
 
-  // check for unique headers
-  var unique_headers = [];
+//   // check for unique headers
+//   var unique_headers = [];
 
-  for (var i = 0; i < data[0].length; ++i) {
-    while (unique_headers.indexOf(data[0][i]) > -1) {
-      data[0][i] += "*";
-    }
+//   for (var i = 0; i < data[0].length; ++i) {
+//     while (unique_headers.indexOf(data[0][i]) > -1) {
+//       data[0][i] += "*";
+//     }
 
-    unique_headers.push(data[0][i]);
-  }
-
-  return data;
-}
+//     unique_headers.push(data[0][i]);
+//   }
+//   return data;
+// }
 function list_projects() {
   var local_projects = CElectron.fs.list_projects();
   local_projects.forEach(function (project) {

@@ -457,17 +457,19 @@ $( "nav" ).click(function() {
 
 // Updating Zoom Level
 function getZoomLevel() {
-  return Math.round((window.outerWidth / window.innerWidth) * 100);
+    console.log("get zoom")
+    const outerWidth = window.outerWidth;
+    const innerWidth = window.innerWidth;
+    const zoomLevel = (outerWidth / innerWidth)*100;
+    return zoomLevel.toFixed();
 }
 
 function updateZoomLevel() {
+  console.log("update zoom")
   let zoomLevel = getZoomLevel();
   console.log($('#zoomLevel_btn .content_name').html('Current Zoom: ' + zoomLevel + '%'))
   $('#zoomLevel_btn .content_name').html('Current Zoom: ' + zoomLevel + '%');
 }
-
-// Initial zoom level
-updateZoomLevel();
 
 // Event listener for zoom changes
 $(window).on('resize', function() {

@@ -32,11 +32,8 @@ $("#cell_make_header").on("click", function () {
 
 function cell_wrap_tag(editor, tag_open, tag_close, focus_editor) {
   var current_range = editor.selection.getRange();
-  if (
-    JSON.stringify(current_range.start) == JSON.stringify(current_range.end)
-  ) {
-    editor.session.insert(
-      editor.getCursorPosition(),
+  if (JSON.stringify(current_range.start) == JSON.stringify(current_range.end)) {
+    editor.session.insert(editor.getCursorPosition(),
       tag_open + "--------------------DELETE ME-------------" + tag_close
     );
     editor.find("--------------------DELETE ME-------------");
@@ -50,30 +47,17 @@ function cell_wrap_tag(editor, tag_open, tag_close, focus_editor) {
   if (focus_editor) {
     cell_editor.focus();
   }
-  this_sheet.setDataAtCell(
-    this_selection.start.row,
-    this_selection.start.col,
-    cell_editor.getValue()
-  );
+    // this_sheet.setDataAtCell(this_selection.start.row,this_selection.start.col,cell_editor.getValue());
+    // The line above doesn't do anything except throw an error?!? 08/24
 }
 
 $("#cell_apply_color").on("click", function () {
-  cell_wrap_tag(
-    cell_editor,
-    "<span style='color:" + $("#cell_select_color").val() + "'>",
-    "</span>",
-    true
-  );
+  cell_wrap_tag(cell_editor,"<span style='color:" + $("#cell_select_color").val() + "'>","</span>",true);
 });
 
 $("#cell_select_color").on("change", function () {
   $("#cell_apply_color").css("background-color", this.value);
-  cell_wrap_tag(
-    cell_editor,
-    "<span style='color:" + this.value + "'>",
-    "</span>",
-    true
-  );
+  cell_wrap_tag(cell_editor,"<span style='color:" + this.value + "'>","</span>",true);
 });
 
 $("#cell_select_color_activate").on("click", function () {
@@ -81,17 +65,18 @@ $("#cell_select_color_activate").on("click", function () {
 });
 
 $("#cell_text_size_btn").on("click", function () {
-  bootbox.prompt(
-    "What size do you want the selected text to be?",
-    function (response) {
-      cell_wrap_tag(
-        cell_editor,
-        "<span style='font-size:" + response + "'>",
-        "</span>",
-        false
-      );
+  bootbox.prompt({
+    title: "What size do you want the selected text to be?",
+    callback: function (response) {
+      if (response !== null) {
+        try {
+          cell_wrap_tag(cell_editor, "<span style='font-size:" + response + "pt'>", "</span>", true);
+        } catch (error) {
+          console.error("Error wrapping cell value: ", error);
+        }
+      }
     }
-  );
+  });
 });
 
 cell_editor.commands.addCommand({

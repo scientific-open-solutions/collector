@@ -339,11 +339,7 @@ Project = {
 
       console.log("just before the ajax");
 
-      function redcap_post(
-        this_url,
-        this_data,
-        attempt_no
-      ){
+      function redcap_post(this_url,this_data,attempt_no){
         console.log("attempt number " + attempt_no);
         $.ajax({
           type: "POST",
@@ -356,7 +352,6 @@ Project = {
               attempt_no++;
               if(attempt_no > 2){
                 bootbox.alert("⚠ <b class='text-danger'>WARNING</b> ⚠ <br><br>This data has not submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
-                // console.log("This data may not have been submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
               } else {
                 redcap_post(
                   this_url,
@@ -558,37 +553,44 @@ Project = {
   },
 
   go_to: function (go_to_info) {
-
     // The Phase.go_to() function allows a user to jump forward/back a set number of phases or to a specific phase of their choice
     // It can be useful when you need to have participants restart trials based on task performance or branch participant based on responses
 
-    var goTo_input = go_to_info;
-    
-    if (typeof go_to_info == "string") {
-      console.log("They inputted a string with a +/-");
-      if (goTo_input.indexOf('+') != -1) {
-        // this is employed when people ask to move forward via a +
-        goTo_input = goTo_input.replace('+', '');
-        console.log("The asked to move forward: " + goTo_input + " phases")  
-        go_to_info = (project_json.phase_no + 1) + parseInt(goTo_input);
-      } else {
-        // this is employed when people ask to move back via a -
-        goTo_input = goTo_input.replace('-', '');
-        console.log("The asked to move back: " + goTo_input + " phases")  
-        go_to_info = (project_json.phase_no + 1) - parseInt(goTo_input);
+    // Leave this console.log live, it wont run unless you use the Phase.go_to() function, but it's very useful if you do to work out specific row numbers if including stimuli trials
+    console.log(project_json.parsed_proc)
+
+    var proc_length = project_json.parsed_proc.length
+    if (go_to_info === 0 || go_to_info > (proc_length - 1)) {
+      bootbox.alert("Please let the researcher know the study is attempting to move beyond bounds and cannot continue");
+    } else {
+
+      var goTo_input = go_to_info;
+      
+      if (typeof go_to_info == "string") {
+        console.log("They inputted a string with a +/-");
+        if (goTo_input.indexOf('+') != -1) {
+          // this is employed when people ask to move forward via a +
+          goTo_input = goTo_input.replace('+', '');
+          console.log("The asked to move forward: " + goTo_input + " phases")  
+          go_to_info = (project_json.phase_no + 1) + parseInt(goTo_input);
+        } else {
+          // this is employed when people ask to move back via a -
+          goTo_input = goTo_input.replace('-', '');
+          console.log("The asked to move back: " + goTo_input + " phases")  
+          go_to_info = (project_json.phase_no + 1) - parseInt(goTo_input);
+        } 
+      } else  {
+        // this allows people to select a specific procedure procedure row number to load
+        console.log("They inputted a number");
+        console.log("They want to go to phase: " + go_to_info)  
       } 
-    } else  {
-      // this allows people to select a specific procedure procedure row number to load
-      console.log("They inputted a number");
-      console.log("They want to go to phase: " + go_to_info)  
-    } 
-    console.log("Jumping to phase: " + go_to_info)
-    parent.parent.project_json.inputs = jQuery("[name]");
-    Project.finish_phase(go_to_info);
+      console.log("Jumping to phase: " + go_to_info)
+      parent.parent.project_json.inputs = jQuery("[name]");
+      Project.finish_phase(go_to_info);
+    }
   },
 
   start_post: function (go_to_info) {
-
     // use the phase_progress column 
     
     if(typeof(project_json.this_condition.progress_bar) !== "undefined"){
@@ -614,16 +616,11 @@ Project = {
 
     }
 
-      
-    
-
-
-
     if (typeof go_to_info !== "undefined") {
       project_json.phase_no = project_json.phase_no;
-      console.log("phase.go_to: "+project_json.phase_no)
+      console.log("phase.go_to: "+ project_json.phase_no)
     }
-    console.log("phase.submit: "+project_json.phase_no)
+    console.log("phase.submit: "+ project_json.phase_no)
     if (typeof project_json.responses[project_json.phase_no] === "undefined") {
       project_json.responses[project_json.phase_no] = {};
     }
@@ -708,7 +705,6 @@ Project = {
         var this_post_no = project_json.post_no;
         Project.phase_timer = new Collector.timer(function () {
           if (this_phase_no === project_json.phase_no && this_post_no === project_json.post_no) {
-            // Project.finish_phase();
             project_json.inputs = jQuery("[name]");
             Project.finish_phase();
           }
@@ -906,11 +902,7 @@ function final_phase() {
         typeof project_json.this_condition.end_message !== "undefined" &&
         project_json.this_condition.end_message !== ""
       ) {
-        $("#project_div").html(
-          "<h3 class='text-primary'>" +
-            project_json.this_condition.end_message +
-            "</h3>"
-        );
+        $("#project_div").html("<h3 class='text-primary'>" +project_json.this_condition.end_message +"</h3>");
       } else {
         $("#project_div").html("");
       }
@@ -947,16 +939,8 @@ function final_phase() {
             online_data_obj.finished_and_stored = true;
             $("#google_progress").css("width", "100%");
             setTimeout(function () {
-              if (
-                typeof project_json.this_condition.forward_at_end !==
-                  "undefined" &&
-                project_json.this_condition.forward_at_end !== ""
-              ) {
-                bootbox.alert(
-                  "The researcher would like you to now go to " +
-                    project_json.this_condition.forward_at_end +
-                    " please copy the link into a new window to proceed there."
-                );
+              if (typeof project_json.this_condition.forward_at_end !== "undefined" && project_json.this_condition.forward_at_end !== "") {
+                bootbox.alert("The researcher would like you to now go to " + project_json.this_condition.forward_at_end + " please copy the link into a new window to proceed there.");
               }
               $("#project_div").html(download_data_text
                 // "<h1>Thank you for participating. If you'd like to download your raw data <span id='download_json'>click here</span></h1>"
@@ -1139,12 +1123,18 @@ function insert_start() {
     });
   }
 
+  if (Project.get_vars.platform === "preview") {
+    console.log("We're previewing the experiment!")
+    if (typeof project_json.this_condition.redcap_url !== "undefined") {
+      console.log("Switching off REDCap to avoid sending data.")
+      project_json.this_condition.redcap_url = "";
+    } else {
+      //skipp this
+    }
+  }
+
   var this_proc = project_json.parsed_proc;
-  if (
-    Project.get_vars.platform === "preview" ||
-    (typeof project_json.this_condition.skip_quality !== "undefined" &&
-      project_json.this_condition.skip_quality.toLowerCase() === "yes")
-  ) {
+  if (Project.get_vars.platform === "preview" || (typeof project_json.this_condition.skip_quality !== "undefined" && project_json.this_condition.skip_quality.toLowerCase() === "yes")) {
     this_proc = add_to_start(this_proc, "quality_preview_start");
     load_quality_checks([
       {
@@ -1267,25 +1257,8 @@ function load_phases() {
 }
 
 function parse_sheets() {
-  // Counterbalancing
   
-//console.log(project_json);
-// console.log("--------");
-// console.log(Object.keys(project_json.all_procs).length);
-// console.log("--------");
-  
-  var proc_sheet_name;
-  var levels;
-  var suffix;
-  var new_data;
-  // var folder = "../User/Projects/" + Project.get_vars.location;
   var proc_sheet_name = project_json.this_condition.procedure.toLowerCase().split('_')[0];
-  var data_url = project_json.this_condition.counterbalance + Project.get_vars.location + "_" + project_json.this_condition.name + ".txt";
-  var url_txt = Project.get_vars.location + "_" + project_json.this_condition.name + ".txt";
-  var isCounterbalanceNeeded = Project.get_vars.location + " counterbalance";
-  var CounterbalanceCheck = Project.get_vars.location + " " + project_json.this_condition.name;
-  parent.parent.cb_new;
-  parent.parent.cb_total;
 
   // This is the original code that loads the stim sheets in and then activates the rest of the Collector pipeline
   function switch_platform () {
@@ -1339,66 +1312,44 @@ function parse_sheets() {
     }
   }
 
-  // This function updates the counterbalancing data value (+1 or reset) ready for the next time the study is run
-  function counterbalance (new_data) {
-    var url_php = project_json.this_condition.counterbalance + project_json.this_condition.name + ".php";
-    console.log("url php:" + url_php);
-    var url_txt = Project.get_vars.location + "_" + project_json.this_condition.name + ".txt";
-    console.log("url text:" + url_txt);
-    console.log("the counterbalance function fired");
+  function counterbalance(action) {
+    // NOTE: There's a copy of this as 'Phase.Counterbalance' that allows you to reset things if needed.
+    phpFileURL = project_json.this_condition.counterbalance;
     $.ajax({
-      type: "POST",
-      url: url_php,
-      crossDomain: true,
-      data: {new_data: new_data, url_txt: url_txt},
-      success: function(result){
-        console.log("success!");
-      }
+        type: 'POST',
+        url: phpFileURL,
+        data: { action: action },
+        success: function(response) {
+            if (action == 'location') {
+                console.log("Location Response: " + response);
+                proc_sheet_name = response;
+                switch_platform();
+            } else if (action == 'reset') {
+                console.log("Reset Response: " + response);
+            }
+        },
+        error: function() {
+            bootbox.alert("An error has occured with the counterbalancing system, please contact the researcher before continuing.")
+            proc_sheet_name = project_json.this_condition.procedure.toLowerCase().replace(".csv", "") + ".csv";
+            switch_platform();
+        }
     });
   }
-
-  if (CounterbalanceCheck === isCounterbalanceNeeded) {
-    if (project_json.this_condition.counterbalance.length !== 0) {
-      var total_procedures = Object.keys(project_json.all_procs).length;
+  
+  if (typeof project_json.this_condition.counterbalance !== 'undefined') {
+    if (project_json.this_condition.counterbalance !== '') {
+      parent.parent.counterbalancing = true;
+      counterbalance('location');
     } else {
-      console.log("No counterbalance settings have been entered. Please stop the study and contact the researcher");
+      parent.parent.counterbalancing = false;
+      proc_sheet_name = project_json.this_condition.procedure.toLowerCase();
+      proc_sheet_name = project_json.this_condition.procedure.toLowerCase().replace(".csv", "") + ".csv";
+      switch_platform();
     }
-
-    var url_phpLoader = project_json.this_condition.counterbalance + project_json.this_condition.name + "_loader.php";
-    $.post(url_phpLoader, { 
-      url_txt: url_txt
-      }, function(data){ 
-        // success: function(result){
-          console.log("success!");
-          console.log("The input value was: " + data);
-          levels = parseInt(data);
-          parent.parent.cb_level = levels;
-          if (levels < total_procedures) {
-            suffix = "_" + levels + ".csv";
-            proc_sheet_name = proc_sheet_name + suffix;
-            new_data = levels + 1;
-            // counterbalance(new_data, project_json.this_condition.counterbalance.replace(".txt", ""));
-            counterbalance(new_data);
-            switch_platform ();
-          } else if (levels >= total_procedures) {
-            suffix = "_" + total_procedures + ".csv";
-            proc_sheet_name = proc_sheet_name + suffix;
-            new_data = 1;
-            // counterbalance(new_data, project_json.this_condition.counterbalance.replace(".txt", ""));
-            counterbalance(new_data);
-            switch_platform ();
-          } else {
-            bootbox.alert("Counterbalancing has broken. Please stop the study and contact the researcher");
-            var rand_num = Math.floor( Math.random() * total_procedures + 1 );
-            suffix = "_" + rand_num + ".csv";
-            proc_sheet_name = proc_sheet_name + suffix;
-            switch_platform ();
-          }
-        // }
-      })  
   } else {
+    parent.parent.counterbalancing = false;
     proc_sheet_name = project_json.this_condition.procedure.toLowerCase().replace(".csv", "") + ".csv";
-    switch_platform ();
+    switch_platform();
   }
 }
 
@@ -1511,7 +1462,6 @@ function parse_current_proc() {
       weight_0s++;
     } else if (parseInt(project_json.parsed_proc[i].weight) > 1) {
       weight_1s += parseInt(project_json.parsed_proc[i].weight);
-      console.log(weight_1s)
     } else {
       weight_1s++;
     }
@@ -1658,9 +1608,7 @@ function process_welcome() {
       $("#participant_code").val(Project.get_vars.redcap_id);
       post_welcome(Project.get_vars.redcap_id, "redcap");
     } else {
-      bootbox.alert(
-        "It's not clear if the researcher wants you to give them a user id - please contact them before proceeding."
-      );
+      bootbox.alert("It's not clear if the researcher wants you to give them a user id - please contact them before proceeding.");
     }
 
     if (project_json.this_condition.start_message !== "") {
@@ -1724,31 +1672,129 @@ function select_condition() {
   }
 }
 
-//by Laurens Holst on https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+function shuffle_start_exp() {
+
+  // Get the shuffle levels
+  var shuffle_levels = Object.keys(project_json.parsed_proc[0]).filter(
+    (item) => item.indexOf("shuffle") !== -1
+  );
+  shuffle_levels = shuffle_levels.sort((a, b) => b.localeCompare(a, undefined, { numeric: true })); // Sort in descending order
+
+  // Perform within-block shuffling for shuffle_1
+  var shuffle_array = {};
+  project_json.parsed_proc.forEach(function (row, index) {
+    var this_shuffle = row["shuffle_1"];
+    if (this_shuffle && this_shuffle !== "off") {
+      if (!shuffle_array[this_shuffle]) {
+        shuffle_array[this_shuffle] = [index];
+      } else {
+        shuffle_array[this_shuffle].push(index);
+      }
+    }
+  });
+
+  // Shuffle each block within shuffle_1
+  Object.keys(shuffle_array).forEach(function (key) {
+    shuffleArray(shuffle_array[key]);
+  });
+
+  // Create a new procedure array preserving the position of 'off' and blank rows
+  var new_proc = Array(project_json.parsed_proc.length).fill(null);
+  var non_shuffled_indices = [];
+
+  project_json.parsed_proc.forEach(function (row, original_index) {
+    if (row["shuffle_1"] === "off" || row["shuffle_1"] === "") {
+      new_proc[original_index] = row;
+      non_shuffled_indices.push(original_index);
+    } else {
+      var this_shuffle = row["shuffle_1"];
+      var this_pos = shuffle_array[this_shuffle].shift();
+      new_proc[this_pos] = project_json.parsed_proc[original_index];
+    }
+  });
+
+  // Perform between-block shuffling for shuffle_2 and beyond
+  shuffle_levels.forEach(function (shuffle_level) {
+    if (shuffle_level !== "shuffle_1") {
+        var block_groups = {};
+        var non_shuffled_indices = [];
+        
+        // Group rows by shuffle_level value
+        new_proc.forEach(function (row, index) {
+            var block_value = row[shuffle_level];
+            if (block_value === "off" || block_value === "") {
+                non_shuffled_indices.push(index);
+            }
+            if (!block_groups[block_value]) {
+                block_groups[block_value] = [];
+            }
+            block_groups[block_value].push(row);
+        });
+
+        // Shuffle the keys and concatenate the rows
+        var shuffled_keys = Object.keys(block_groups).filter(key => key !== "off" && key !== "").sort(() => Math.random() - 0.5);
+
+        var new_proc_order = [];
+        shuffled_keys.forEach(function (key) {
+            new_proc_order = new_proc_order.concat(block_groups[key]);
+        });
+
+        // Add non-shuffled rows back to their original positions
+        non_shuffled_indices.forEach(function (index) {
+            new_proc_order.splice(index, 0, new_proc[index]);
+        });
+
+        // Update new_proc with the correctly ordered rows
+        new_proc = new_proc_order.concat(new_proc.filter(row => row !== null && !new_proc_order.includes(row)));
+    }
+  });
+
+  // Finalise the shuffled array with all non-null values
+  var final_proc = new_proc.filter(row => row !== null);
+
+  project_json.parsed_proc = final_proc;
+
+  if (typeof project_json.responses === "undefined") {
+    project_json.responses = [];
+  }
+
+  project_json.wait_to_proc = false;
+
+  /*
+   * Adjusting the order of 'phase_progress' to account for the fact we just shuffled the parsed_proc array
+   * (this ensures that the progress bar still displays correctly if used)
+  */
+
+  // Extract the 'phase_progress' values, ignoring the first row
+  var phaseProgressValues = project_json.parsed_proc.slice(1).map(function(item) {
+      return item.phase_progress;
+  });
+
+  // Sort the 'phase_progress' values
+  phaseProgressValues.sort(function(a, b) {
+      return a - b;
+  });
+
+  // Place the sorted values back into the array, ignoring the first row
+  var index = 0;
+  for (var i = 1; i < project_json.parsed_proc.length; i++) {
+    if (project_json.parsed_proc[i] !== null) {
+      project_json.parsed_proc[i].phase_progress = phaseProgressValues[index++];
+    }
+  }
+
+  Project.activate_pipe();
+}
+
+
+// by Laurens Holst on https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]]; // eslint-disable-line no-param-reassign
+    [array[i], array[j]] = [array[j], array[i]];
   }
+  return array;
 }
-
-/* Some code that suggests the above shuffleArray function is NOT biased
-freq_object = {
-  1:[0,0,0,0],
-  2:[0,0,0,0],
-  3:[0,0,0,0],
-  4:[0,0,0,0]
-}
-for(var i = 0; i < 100000; i++){
-  a = [1,2,3,4]
-  shuffleArray(a)
-  freq_object[a[0]][0]++;
-  freq_object[a[1]][1]++;
-  freq_object[a[2]][2]++;
-  freq_object[a[3]][3]++;
-}
-console.dir(freq_object)
-*/
 
 //solution by Tom Wadley at https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array
 function removeItemAll(arr, value) {
@@ -1763,135 +1809,7 @@ function removeItemAll(arr, value) {
   return arr;
 }
 
-function shuffle_start_exp() {
-  //perhaps also have "shuffle" works as shuffle_1
-  //perhaps also have "block shuffle_1" as shuffle_2, etc.
-
-  var shuffle_levels = Object.keys(project_json.parsed_proc[0]).filter(
-    (item) => item.indexOf("shuffle") !== -1
-  );
-  shuffle_levels = shuffle_levels.sort().reverse();
-
-  shuffle_levels.forEach(function (shuffle_level) {
-    for (var i = 0; i < project_json.parsed_proc.length; i++) {
-      if (project_json.parsed_proc[i][shuffle_level] === "") {
-        project_json.parsed_proc[i][shuffle_level] = "off";
-      }
-    }
-
-    if (shuffle_level !== "shuffle_1") {
-      //split project_json.parsed_proc into chunks based on this_level
-      //off rows don't change their order
-      var shuffle_block_names = [project_json.parsed_proc[0][shuffle_level]];
-      var shuffle_block_rows = [[project_json.parsed_proc[0]]];
-
-      for (let i = 1; i < project_json.parsed_proc.length; i++) {
-        if (
-          project_json.parsed_proc[i][shuffle_level] !==
-            project_json.parsed_proc[i - 1][shuffle_level] ||
-          project_json.parsed_proc[i][shuffle_level] === "off"
-        ) {
-          shuffle_block_names.push(project_json.parsed_proc[i][shuffle_level]);
-          shuffle_block_rows.push([project_json.parsed_proc[i]]);
-        } else {
-          shuffle_block_rows[shuffle_block_rows.length - 1].push(
-            project_json.parsed_proc[i]
-          );
-        }
-      }
-      var shuffled_block_names = JSON.parse(
-        JSON.stringify(shuffle_block_names)
-      );
-
-      //create a list of names to be randomised
-      unique_shuffle_block_names = Array.from(new Set(shuffle_block_names));
-      unique_shuffle_block_names = removeItemAll(
-        unique_shuffle_block_names,
-        "off"
-      );
-
-      //randomise order of unique_shuffle_block_names;
-
-      //replace original index with numbers
-      unique_shuffle_block_names.forEach(function (this_name, name_no) {
-        shuffled_block_names.forEach(function (item, item_no) {
-          if (item === this_name) {
-            shuffled_block_names[item_no] = name_no;
-          }
-        });
-      });
-
-      shuffled_unique_shuffle_block_names = unique_shuffle_block_names.sort(
-        function () {
-          return 0.5 - Math.random();
-        }
-      );
-
-      unique_shuffle_block_names.forEach(function (this_name, name_no) {
-        shuffled_block_names.forEach(function (item, item_no) {
-          if (item === name_no) {
-            shuffled_block_names[item_no] = this_name;
-          }
-        });
-      });
-
-      var shuffled_row_blocks = [];
-      //now loop through the shuffled_block_names to reorder the blocks
-      shuffled_block_names.forEach(function (this_name, row_no) {
-        shuffled_row_blocks[row_no] =
-          shuffle_block_rows[shuffle_block_names.indexOf(this_name)];
-      });
-
-      var all_rows = [];
-      shuffled_row_blocks.forEach(function (block) {
-        block.forEach(function (row) {
-          all_rows.push(row);
-        });
-      });
-
-      project_json.parsed_proc.forEach(function (row, row_no) {
-        if (row[shuffle_level] !== "off") {
-          project_json.parsed_proc[row_no] = all_rows[row_no];
-        }
-      });
-    }
-  });
-
-  shuffle_array = {};
-  project_json.parsed_proc.forEach(function (row, index) {
-    var this_shuffle = row["shuffle_1"];
-    if (typeof shuffle_array[this_shuffle] === "undefined") {
-      shuffle_array[this_shuffle] = [index];
-    } else {
-      shuffle_array[this_shuffle].push(index);
-    }
-  });
-  delete shuffle_array.off;
-  Object.keys(shuffle_array).forEach(function (key) {
-    shuffleArray(shuffle_array[key]);
-  });
-  //apply shuffle to project_json.parsed_proc
-  new_proc = project_json.parsed_proc.map(function (row, original_index) {
-    if ((row["shuffle_1"] !== "off") & (row["shuffle_1"] !== "")) {
-      this_shuffle = row["shuffle_1"];
-      var this_pos = shuffle_array[this_shuffle].pop();
-      return project_json.parsed_proc[this_pos];
-    }
-    if (row["shuffle_1"] === "off") {
-      return project_json.parsed_proc[original_index];
-    }
-  });
-  project_json.parsed_proc = new_proc;
-  if (typeof project_json.responses === "undefined") {
-    project_json.responses = [];
-  }
-
-  project_json.wait_to_proc = false;
-  Project.activate_pipe();
-}
-
 function start_restart() {
-  console.log
   if (isSafari) {
     bootbox.alert(
       "Please do not use Safari to complete this study. It is likely that your data will not save correctly if you do. Please close Safari and use another browser"

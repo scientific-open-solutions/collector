@@ -1,5 +1,5 @@
 Name,photo,Blurb
-Mikey Garcia,photos/MikeyGarcia.png,The creator of the <a href=”https://github.com/gikeymarcia/Collector”> Original Collector</a>
+Mikey Garcia,photos/MikeyGarcia.png,The creator of the <a href="https://github.com/gikeymarcia/Collector" target="_blank"> Original Collector</a>
 Dr. Nate Kornell,photos/NateKornell.jpg,"""Without Nate there would be no Collector. Many years ago Nate taught me how to use the tool he had created for himself, Generic, and that code inspired me to write Collector. Most of the core ideas and design decision at the heart of this project are either directly lifted from Nate's program or were based on adaptations of what he had created."" - Mikey Garcia"
 Tyson Kerr,photos/TysonKerr.jpg,"""Many of the best ideas/solutions in Collector have come from the mind of Tyson. Tyson's contributions are so wide that it is hard to think of a piece of the code he hasn't been involved with at this point."" - Mikey Garcia "
 Dr. Adam Blake,photos/AdamBlake.jpg,"""Completely reorganized the collector.js code to be object oriented. Is responsible for the current look of Collector because he redid nearly all of the CSS to make it much prettier than I initially could."" - Mikey Garcia"
@@ -11,7 +11,8 @@ Dr. Kristian Tempelmans Plat,photos/Kris.jpg,Co-Developed online Moustracker wit
 Prasannajeet Mane,photos/PM.jpg,"Co-Developed original battery of tasks in FORTA  His role involved development, optimisation, and setting up a data analysis pipeline for an emotion recognition task. He is currently implementing machine learning to search for the set of images most predictive of autistic traits; the main aim is to reduce the duration of the experiment and improve scalability."
 Lucas Urry,photos/LucasUrry.jpg,Has given guidance on database management
 Chris Branch,photos/ChrisBranch.jpg,Guidance on encryption of data
-Dr. Lily Fitzgibbon,,Contributed to first implementation of online eye-tracking in Collector
-Rebecca Borcsok,,Designed first online eyetracking study in Collector
-Joe Forrest,,Designed data quality check for participant commitment
+Dr. Lily Fitzgibbon,photos/LilyFitz.jpg,Contributed to first implementation of online eye-tracking in Collector
+Rebecca Borcsok,photos/RebeccaBorcsok.jpg,Designed first online eyetracking study in Collector
+Joe Forrest,photos/JoeForrest.jpg,Designed data quality check for participant commitment
 Nico Biagi,photos/nico.png,Developer in Scientific Open Solutions
+Chris Dobson,photos/ChrisDobson.jpg,Joined the Collector development team in 2022

@@ -58,6 +58,9 @@ function load_default_surveys() {
  */
 var columnHeader;
 var survey_HoT;
+const nonDeletableColumns_sur = ['item_name', 'text', 'answers', 'values'];
+var savedValues = {}; // Object to save the values of protected cells
+
 function create_survey_HoT(this_survey) {
   var container = document.getElementById("survey_HoT");
   $("#survey_HoT").html("");
@@ -65,7 +68,7 @@ function create_survey_HoT(this_survey) {
     data: this_survey,
     minSpareCols: 1,
     minSpareRows: 1,
-    rowHeaders: false,
+    rowHeaders: true,
     colHeaders: false,
     autoRowSize: true,
     autoColumnSize: true,
@@ -175,7 +178,6 @@ function create_survey_HoT(this_survey) {
       var coords = this.getSelected();
       var column = this.getDataAtCell(0, coords[0][1]);
       column = column === null ? (column = "") : column;
-      console.log("column: " + column)
       
       helperActivate(column, thisCellValue, "survey");
       checkTable();
@@ -183,53 +185,71 @@ function create_survey_HoT(this_survey) {
       checkItemNameSpaces();
       checkPipeSpaces();
     },
-    afterChange: function () {
+    beforeChange: function (changes, source) {
+      changes.forEach(([row, col, oldValue, newValue]) => {
+          if (nonDeletableColumns_sur.includes(oldValue) && newValue === '') {
+              // Save the current value to restore it later if needed
+              savedValues[`${row}_${col}`] = oldValue;
+          }
+      });
+    },
+    afterChange: function (changes, source) {
       /*
        * Check if they have just made a change to a default survey
        */
-
+      if (!changes) return;
+      changes.forEach(([row, col, oldValue, newValue]) => {
+        const cellKey = `${row}_${col}`;
+        if (nonDeletableColumns_sur.includes(oldValue) && newValue === '' && savedValues[cellKey]) {
+          // Restore the saved value
+          this.setDataAtCell(row, col, savedValues[cellKey]);
+          bootbox.alert({
+            title: 'Required Column',
+            message: 'Sorry, you cannot delete this column as it is required for Collector to run your experiment.',
+            buttons: { ok: { label: '<i class="fa fa-times"></i> Cancel' } }
+          });
+        }
+      });
+    
       var current_survey = $("#survey_select").val().split("|")[1];
-
+    
       if (typeof master.surveys.default_surveys[current_survey] !== "undefined") {
         $('#save_survey_btn, #rename_survey_btn, #delete_survey_btn, #add_item_btn, #branching_btn, #scoring_btn').hide();
         $("#dm_h6_text").show();
         Collector.custom_alert("These changes will not be saved, as you are editing a <b>default</b> survey. Please click <b>New Survey</b> to create a new survey");
       }
-
+    
       var middleColEmpty = 0;
       var middleRowEmpty = 0;
       var postEmptyCol = 0;
       var postEmptyRow = 0;
-
+    
       for (var k = 0; k < this.countCols() - 1; k++) {
         var col_header = this.getDataAtCell(0, k).toLowerCase();
-        if(col_header.toLowerCase() === "item_name") {
-
+        if (col_header.toLowerCase() !== "text") {
+    
           var row_count = this.countRows();
-
-// This is meant to change anyone putting a . in a name to a _ to ensure nothing breaks, but it breaks stuff itself. I'll fix later {CGD}
-          // for(var m = 1; m < row_count - 1; m++){
-          //   var this_item = this.getDataAtCell(m, k);
-
-          //   /*
-          //    * replace "." with "_" to prevent errors from "."s
-          //    */
-          //   // if(this_item.indexOf(".") !== -1){
-          //   //   this.setDataAtCell(m, k, this_item.replaceAll(".", "_"));
-          //   // }
-          // }
+    
+          for (var m = 1; m < row_count - 1; m++) {
+            var this_item = this.getDataAtCell(m, k);
+    
+            /*
+            * replace "." with "_" to prevent errors from "."s
+            */
+            if (typeof this_item === 'string' && this_item.includes('.')) {
+              this.setDataAtCell(m, k, this_item.replace(/\./g, '_'));
+            }
+          }
         }
-
-
+    
         if (col_header.indexOf("score") !== -1 && col_header.indexOf(" ") !== -1) {
           this.setDataAtCell(0, k, col_header.replaceAll(" ", ""));
         }
-
+    
         if (col_header === "shuffle") {
           this.setDataAtCell(0, k, "shuffle_question");
         }
-
-
+    
         //Removing Empty middle columns
         if (this.isEmptyCol(k)) {
           if (middleColEmpty === 0) {
@@ -243,7 +263,7 @@ function create_survey_HoT(this_survey) {
           middleColEmpty = 0;
         }
       }
-
+    
       //Same thing for rows
       for (var k = 0; k < this.countRows() - 1; k++) {
         if (this.isEmptyRow(k)) {
@@ -268,6 +288,37 @@ function create_survey_HoT(this_survey) {
         }
       }
     },
+    beforeRemoveCol: function (index, amount) {
+      for (let i = 0; i < amount; i++) {
+        const colHeader = this.getDataAtCell(0, index + i);
+        if (nonDeletableColumns_sur.includes(colHeader)) {
+          bootbox.alert({
+            title: 'Required Column',
+            message: 'Sorry, you cannot delete this column as it is required for Collector to run your experiment.',
+            buttons: {
+              ok: {
+                label: '<i class="fa fa-times"></i> Cancel'
+              }
+            }
+          });
+          return false; // Prevent the deletion
+        }
+      }
+    },
+    beforeRemoveRow: function (index, amount) {
+      if (index === 0) {
+        bootbox.alert({
+          title: 'Required Row',
+          message: 'Sorry, you cannot delete this row as it is required by Collector.',
+          buttons: {
+            ok: {
+              label: '<i class="fa fa-times"></i> Cancel'
+            }
+          }
+        });
+        return false; // Prevent the deletion of the first row
+      }
+    }
   });
   preview_survey(this_survey);
 }
@@ -361,32 +412,32 @@ function checkTable() {
       return;
   }
 
-  // Check if page breaks exist
-  let pageBreakExists = false;
-  const rowCount = survey_HoT.countRows();
+  // // Check if page breaks exist
+  // let pageBreakExists = false;
+  // const rowCount = survey_HoT.countRows();
 
-  for (let rowIndex = 1; rowIndex < rowCount; rowIndex++) { // Start from 1 to skip the header row
-      const itemNameCell = survey_HoT.getDataAtCell(rowIndex, itemNameIndex);
-      const typeCell = survey_HoT.getDataAtCell(rowIndex, typeIndex);
+  // for (let rowIndex = 1; rowIndex < rowCount; rowIndex++) { // Start from 1 to skip the header row
+  //     const itemNameCell = survey_HoT.getDataAtCell(rowIndex, itemNameIndex);
+  //     const typeCell = survey_HoT.getDataAtCell(rowIndex, typeIndex);
 
-      if (itemNameCell === 'page_break' || typeCell === 'page_break') {
-          pageBreakExists = true;
-          break;
-      }
-  }
+  //     if (itemNameCell === 'page_break' || typeCell === 'page_break') {
+  //         pageBreakExists = true;
+  //         break;
+  //     }
+  // }
 
-  // Check if the block column exists when page_breaks are being used.
-  if (pageBreakExists) { //CHRISDOBSON
-      // if (blockIndex === -1) {
-      //   console.log("All good: 'block' column does not exist.");
-      // } else {
-      //   bootbox.alert("Warning: At the moment you cannot use page breakes when branching the survey. We've deleted the row automatically for you.");
-      //   // deletePageBreakRows();
-      //   // $("#save_btn").click();
-      // }
-  } else {
-      console.log("No 'page_break' found.");
-  }
+  // // Check if the block column exists when page_breaks are being used.
+  // if (pageBreakExists) { //CHRISDOBSON
+  //     if (blockIndex === -1) {
+  //       console.log("All good: 'block' column does not exist.");
+  //     } else {
+  //       bootbox.alert("Warning: At the moment you cannot use page breakes when branching the survey. We've deleted the row automatically for you.");
+  //       deletePageBreakRows();
+  //       $("#save_btn").click();
+  //     }
+  // } else {
+  //     console.log("No 'page_break' found.");
+  // }
 };
 
 // This funtion is used to remove page break rows if someone sets up branching so they don't clash
