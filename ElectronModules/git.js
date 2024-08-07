@@ -626,6 +626,27 @@ ipc.on("git_undo", (event, args) => {
   }
 });
 
+
+ipc.on("git_update_folder", (event, args) => {
+  if (fs.existsSync("App")) {
+    update.files.forEach(function (this_file) {
+      fs.copySync("App/" + this_file, user().current.path + "/" + "App" + "/" + this_file);
+      fs.copySync("App/" + this_file, "extra/App/" + this_file);
+    });
+
+    update.folders.forEach(function (this_folder) {
+      fs.copySync(this_folder, user().current.path + "/" + this_folder, {
+        recursive: true,
+      });
+      fs.copySync(this_folder, "extra/" + this_folder, {
+        recursive: true,
+      });
+    });
+  }
+
+  event.returnValue = "Repository App Folder Updated";
+});
+
 ipc.on("git_valid_org", (event, args) => {
   var auth_token = fs.readFileSync(git_token_location, "utf8");
   const octokit = new Octokit({

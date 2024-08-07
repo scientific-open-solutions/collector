@@ -29,7 +29,7 @@ if (typeof Phase !== "undefined") {
 
     // If we have a REDCap URL set do the following....
    if(typeof(parent.parent.project_json.this_condition.redcap_url) !== "undefined"){
-
+      console.log("redcap url exists");
        var phase_responses = response_obj;
        var clean_phase_responses = {};
 
@@ -76,23 +76,73 @@ if (typeof Phase !== "undefined") {
       clean_phase_responses['redcap_repeat_instrument'] = "main";
 
        console.log("just before the ajax");
-       function redcap_post(this_url,this_data){
-        $.ajax({
-          type: "POST",
-          url: this_url,
-          crossDomain: true,
-          data: this_data,
+    //    function redcap_post(this_url,this_data){
+    //     $.ajax({
+    //       type: "POST",
+    //       url: this_url,
+    //       crossDomain: true,
+    //       data: this_data,
 
-         success: function(result){
-           console.log("Add_Response Sent");
-         }
-       });
-     };
-     redcap_post(parent.parent.project_json.this_condition.redcap_url,clean_phase_responses);
+    //      success: function(result){
+    //        console.log("Add_Response Sent");
+    //      }
+    //    });
+    //  };
+
+    function redcap_post(
+      this_url,
+      this_data,
+      attempt_no
+    ){
+      console.log("attempt number " + attempt_no);
+      $.ajax({
+        type: "POST",
+        url: this_url,
+        crossDomain: true,
+        data: this_data,
+        success: function(result){
+          console.log("result");
+          //console.log(result);
+          if(result.toLowerCase().indexOf("error") !== -1 | result.toLowerCase().indexOf("count") === -1){
+            attempt_no++;
+            if(attempt_no > 2){
+              bootbox.alert("⚠ <b class='text-danger'>WARNING</b> ⚠ <br><br>This data has not submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
+              // console.log("This data may not have been submitted, despite 3 attempts to do so. Please pause your participation and contact the researcher");
+            } else {
+              
+              redcap_post(
+                this_url,
+                this_data,
+                attempt_no
+              );
+            }
+          }
+        }
+      });
+    };
+     console.log("sending to redcap")
+     redcap_post(parent.parent.project_json.this_condition.redcap_url,clean_phase_responses, 0);
   };
   };
-  Phase.counterbalance = function(){
-    counterbalance('reset');
+  Phase.counterbalance = function(action){
+    phpFileURL = parent.parent.project_json.this_condition.counterbalance;
+    $.ajax({
+        type: 'POST',
+        url: phpFileURL,
+        data: { action: action },
+        success: function(response) {
+            if (action == 'location') {
+                console.log("Location Response: " + response);
+                proc_sheet_name = response;
+                switch_platform();
+            } else if (action == 'reset') {
+                console.log("Reset Response: " + response);
+            }
+        },
+        error: function() {
+            bootbox.alert("An error has occured with the counterbalancing system, please contact the researcher before continuing.")
+        }
+    });
   };
   Phase.elapsed = function () {
     alert("Don't use this function, as it has an average lag of 10-20ms. This code hasn't been deleted as this might be addressed in the future. Instead, you can use something like \n\n Phase.set_timer(function(){\nbaseline_time_manual = (new Date()).getTime();\n},0);\n\n to capture the time the phase started.");
