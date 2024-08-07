@@ -471,20 +471,29 @@ $("#rename_proc_button").on("click", function () {
             for (var row = 1; row < handsOnTableInstance.countRows(); row++) {
               for (var col = 0; col < handsOnTableInstance.countCols(); col++) {
                 var cellValue = handsOnTableInstance.getDataAtCell(row, col);
-                if (cellValue === current_stim) {
-                  handsOnTableInstance.setDataAtCell(row, col, new_sheet_name);
+                if (cellValue === current_proc) {
+                  handsOnTableInstance.setDataAtCell(row, col, new_proc_name);
                 }
               }
             }
 
             handsOnTableInstance.render();
-
+            var index = 0;
             for (let i = 0; i < handsOnTableInstance.countCols(); i++) {
-              const colHeader = this.getDataAtCell(0, index + i);
+              const colHeader = handsOnTableInstance.getDataAtCell(0, index + i);
               if (colHeader.toLowerCase().indexOf("counterbalance") !== -1) {
                 bootbox.dialog({
                   title: "Counterbalance Conflict",
-                  message: "You may have counterbalancing setup on a Conditions row. Please check whether this rename will effect an existing CSV files you may be using."
+                  message: "You may have counterbalancing setup on a Conditions row. Please check whether this rename will effect any existing CSV files you may be using.",
+                  buttons: {
+                    ok: {
+                      label: "OK",
+                      className: 'btn-primary',
+                      callback: function () {
+                        // This will close the modal
+                      }
+                    }
+                  }
                 });
               }
             }

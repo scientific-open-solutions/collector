@@ -504,6 +504,7 @@ loading_scripts("github.js");
 
 // Update User App Folder
 $('#refresh_online_app').on('click',function() {
+  // This is the list of files and folders that need updating
   update = {
     files: [
       "ParticipantCountry.html",
@@ -516,19 +517,11 @@ $('#refresh_online_app').on('click',function() {
     folders: ["App/libraries", "App/Quality", "Default", "logos"]
   };
 
-  // This stuff should be in ElectronModules/git.js at it throws a 'fs is not defined' error here. 
-  var user = JSON.parse(fs.readFileSync(root_dir + "/User.json"));
-  user.current.path = result.filePaths[0] + "/" + args.repo;
+  // Have a look at how it updates stuff in the 'push' to work out what needs to be done.
+  // CElectron.git.update_folder();
 
-  // update files
-  update.files.forEach(function (this_file) {
-    fs.copySync("extra/App/" + this_file, user.current.path + "/" + "App" + "/" + this_file);
-  });
+  // Pop up to let the user know that the folder has updated.
+  Collector.custom_alert("Repository App Folder Updated");
 
-  // update folders
-  update.folders.forEach(function (this_folder) {
-    fs.copySync("extra/" + this_folder,user.current.path + "/" + this_folder,{recursive: true,});
-  });
-
-  // Add a pop up letting the user know that the foler has updated.
+  $('#github_dialog').fadeOut(750);
 });
