@@ -49,7 +49,7 @@ describe("Running projects", function () {
       path.resolve(__dirname, "../Default/DefaultSurveys/autism_quotient.csv"),
       "utf8"
     );
-console.log("Error Message");
+// console.log("Error Message");
     aq_survey = Papa.parse(aq_survey, {
       beforeFirstChunk: function (chunk) {
         var rows = chunk.split(/\r\n|\r|\n/);
@@ -175,7 +175,7 @@ console.log("Error Message");
     // console.log($('#survey_aq1_response').val())
     
     var aq_total = $("input[name=score_aq_test]").val();
-    console.log("AQ total = " +aq_total)
+    console.log("AQ total = " + aq_total)
     expect(aq_total).toStrictEqual("20");
 
     var soc_sk_total = $("input[name=score_social_skill]").val();

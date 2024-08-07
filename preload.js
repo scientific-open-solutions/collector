@@ -157,6 +157,9 @@ contextBridge.exposeInMainWorld(
       undo: function (undo_info) {
         return ipc.sendSync("git_undo", undo_info);
       },
+      update_folder: function() {
+        return ipc.sendSync("git_update_folder");
+      },
       valid_org: function (repo_info) {
         return ipc.sendSync("git_valid_org", repo_info);
       },
