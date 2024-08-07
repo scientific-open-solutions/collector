@@ -18,7 +18,7 @@
     right: 12px;
     top: 60px;
     bottom: 0;
-    z-index: 9998;
+    z-index: 1050;
     overflow-y: hidden;
 
   }
@@ -84,6 +84,7 @@
     if ( $( "#top_tab_PhaseTypes" ).hasClass('text-primary') ) {
       console.log("Phasetypes page open");
       resetHelp();
+      listSmarties();
       $("#mainHelpHeader").html("<i class='bi bi-code-slash'></i> PhaseTypes specific help");
       $(".card-footer").html("<b class='text-danger'>Note 1:</b> Please do not use <em>Phase.elapsed()</em> it suffers from a 10-20ms delay making it an unreliable measure.<br><br><b class='text-danger'>Note 2:</b> Do not name <xmp style='margin: 0;display: inline;'><inputs></xmp> using uppercase letters. REDCap uses lowercase field names and is case sensitve. Your data wont be stored.");
       $('#help_container').css('top','60px');
@@ -260,12 +261,7 @@
 
     // give Condition advice
     ////////////////////////
-    /*
-	console.dir("help_type");
-	console.dir(help_type);
-	console.dir("help_title");
-	console.dir(help_title);
-	*/
+  
     if (help_type.toLowerCase() == "conditions.csv") {
       if (help_title == "") {
         $("#help_subtitle").html("Blank header");

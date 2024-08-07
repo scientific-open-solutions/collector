@@ -132,6 +132,7 @@ function initiate_actions() {
                   $("#graphic_editor").hide(); // Hide the graphic editor
                   $("#view_graphic_btn").hide() // hide the graphic editor button
                   $('#ACE_citation').show(); // show the code editor citation
+                  listSmarties();
                   $("#editor_theme_select").show();
                   $("#ACE_editor").show();
                   editor.textInput.getElement().onkeydown = "";
@@ -184,6 +185,7 @@ function initiate_actions() {
                   $("#save_phasetype_btn").show();
                   $("#editor_theme_select").show();
                   $('#ACE_citation').show(); // show the code editor citation
+                  listSmarties();
                   // $("#view_graphic_code_btn").hide(); // Show the graphic editor current code button
                   $("#convert_to_code_btn").hide(); // Show the graphic editor current code button
                   $("#view_graphic_btn").hide();
@@ -302,7 +304,6 @@ function initiate_actions() {
               
               if (response === "success") {
                 if (master.phasetypes.graphic.files[original_name]){
-                  console.log(original_name)
                   var graphic_objcontent = JSON.stringify(master.phasetypes.graphic.files[original_name]);
                   var write_newGraphicObj = CElectron.fs.write_file("Graphics/",new_name.replace(".html", "") + ".html",graphic_objcontent);
                   console.log("Create new graphic object: " + write_newGraphicObj)
@@ -371,7 +372,6 @@ function initiate_actions() {
     }
   });
   $("#phasetype_select").on("change", function () {
-    //console.log(master.phasetypes.graphic.files)
     first_view = true; // This is just a reset flag for the graphics editor, you can ignore it
     //master.phasetypes.graphic.files = {};
     var code_file = master.phasetypes.file;
@@ -454,11 +454,7 @@ function initiate_actions() {
       $("#delete_phasetypes_button").show();
       $("#save_phasetype_btn").show();
       $("#editor_theme_select").show();
-
-      // code_obj.load_file(user_default);
     }
-  // }, 150);
- 
   });
 
   $("#view_code_btn").on("click", function () {

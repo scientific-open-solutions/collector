@@ -263,7 +263,6 @@ function addBranching(callback) {
                                 <option value="none" selected>No branching: always display</option>`
         
                 for (var k = 0; k < branchValues.length ; k++) {
-                    console.log(branchValues)
                     if (branchValues[k]) {
                         dropdown += `<option value="${branchValues[k]}" data-letter="${branchValues[k]}">Display upon: ${answersValues[k]}</option>`;
                     }

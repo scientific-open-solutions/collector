@@ -23,7 +23,7 @@ const run_html = fs.readFileSync(
   "utf8"
 );
 const run_js = require("../App/Run.js");
-const survey_js = require("../Default/DefaultPhaseTypes/survey.js");
+const survey_js = require("../Default/DefaultPhaseTypes/survey_white.js");
 
 
 
