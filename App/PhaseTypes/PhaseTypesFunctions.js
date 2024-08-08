@@ -106,7 +106,7 @@ code_obj = {
     var this_file = master.phasetypes.file;
 
     //python load if localhost
-    /*
+    
     switch (Collector.detect_context()) {
       case "localhost":
         cleaned_code = this_file.toLowerCase().replace(".html", "") + ".html";
@@ -129,7 +129,7 @@ code_obj = {
         editor.setValue(content);
         break;
     }
-    */
+    
   },
   save: function (content, name, new_old, graphic_code) {
     if (new_old === "new") {

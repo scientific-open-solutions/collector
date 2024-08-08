@@ -374,8 +374,7 @@ function initiate_actions() {
   $("#phasetype_select").on("change", function () {
     first_view = true; // This is just a reset flag for the graphics editor, you can ignore it
     //master.phasetypes.graphic.files = {};
-    var code_file = master.phasetypes.file;
-
+    
     // Note: do not alter the two Settimeout functions, they build the delay needed to load the files before populating the graphics editor object. The graphics editor breaks without them.
 
     $('#code_editor-tab').removeClass("btn-outline-info").addClass("btn-info");
