@@ -23,11 +23,13 @@
 
 <script type="text/javascript">
   var editor_grape = grapesjs.init({
+      allowScripts: 1,
       container : '#gjs',
       components: '<div class="txt-red">Hello world!</div>',
       style: '.txt-red{color: red}',
       blockManager: {
         appendTo: '#blocks',
+        storageManager: false,
         blocks: [
           {
             id: 'section', // id is mandatory
@@ -56,6 +58,52 @@
         ]
       },
   });
+
+/*
+btnEdit.innerHTML = 'Edit';
+btnEdit.className = pfx + 'btn-prim ' + pfx + 'btn-import';
+btnEdit.onclick = function() {
+    var code = codeViewer.editor_grape.getValue();
+    editor_grape.DomComponents.getWrapper().set('content', '');
+    editor_grape.setComponents(code.trim());
+    modal.close();
+};
+
+cmdm.add('html-edit', {
+    run: function(editor_grape, sender) {
+        sender && sender.set('active', 0);
+        var viewer = codeViewer.editor_grape;
+        modal.setTitle('Edit code');
+        if (!viewer) {
+            var txtarea = document.createElement('textarea');
+            container.appendChild(txtarea);
+            container.appendChild(btnEdit);
+            codeViewer.init(txtarea);
+            viewer = codeViewer.editor_grape;
+        }
+        var InnerHtml = editor_grape.getHtml();
+        var Css = editor_grape.getCss();
+        modal.setContent('');
+        modal.setContent(container);
+        codeViewer.setContent(InnerHtml + "<style>" + Css + '</style>');
+        modal.open();
+        viewer.refresh();
+    }
+});
+
+pnm.addButton('options',
+    [
+        {
+            id: 'edit',
+            className: 'fa fa-edit',
+            command: 'html-edit',
+            attributes: {
+                title: 'Edit'
+            }
+        }
+    ]
+);
+*/
 </script>
 
 <!-- THE TWO THINGS BELOW ARE OLD GRAPHICS THAT BREAKS COLLECTOR IF REMOVED -->

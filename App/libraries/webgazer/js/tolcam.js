@@ -2,7 +2,7 @@
     This code from OSF repository https://osf.io/jmz79/ accompanies the publication "Online webcam-based eye tracking in cognitive science: a first look" by Semmelmann & Weigelt, published in Behavior Research Methods in 2017. Please find the abstract and information about the code, analyses, and data below. This work is intended for scientific use only.
     Written by Kilian Semmelmann, tolcam@ksemmelm.de, 2017
 
-    Minor updates by Anthony Haffey (a.haffey@reading.ac.uk) 2020
+    Minor updates by Anthony Haffey 2020
 **/
 
 

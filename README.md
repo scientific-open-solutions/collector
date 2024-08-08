@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 
-Kitten/Cat release (2019-21) author: Dr. Anthony Haffey (a.haffey@reading.ac.uk)
+Kitten/Cat release (2019-21) author: Dr. Anthony Haffey
 
 Documentation can be found at: https://docs.google.com/document/d/1SKYIJF1dAjMDS6EHUIwfZm2KQVOzx17S6LbU_oSGxdE/edit?usp=sharing
 

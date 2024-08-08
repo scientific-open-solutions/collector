@@ -404,9 +404,10 @@ function initiate_actions() {
       $('#save_phasetype_btn').hide();
       $('#delete_phasetypes_button').hide();
     }
-    console.log("code_file");
-    console.log(code_file);
-      
+
+    
+
+    
     if(typeof(master.phasetypes.graphic.files[code_file]) !== "undefined"){
     
       // editor.textInput.getElement().onkeydown = graphic_editor_obj.graphic_warning; // I'm keeping this incase someone gets to the code editor (as it's just hidden) but is slightly redundant now

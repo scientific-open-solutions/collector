@@ -121,6 +121,7 @@ code_obj = {
         if (this_content === "") {
           editor.setValue(master.phasetypes[user_default][this_file]);
         } else {
+          editor_grape.setComponents(this_content);
           editor.setValue(this_content);
         }
         break;
