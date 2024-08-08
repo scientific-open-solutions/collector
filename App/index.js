@@ -423,10 +423,7 @@ function loading_scripts(script_url) {
   script.onload = () => {
   */
   loaded_scripts[script_url] = true;
-  if (
-    Object.keys(loaded_scripts).filter((row) => loaded_scripts[row] === false)
-      .length === 0
-  ) {
+  if (Object.keys(loaded_scripts).filter((row) => loaded_scripts[row] === false).length === 0) {
     Collector.start();
   }
     // script has loaded, you can now use it safely
@@ -438,7 +435,6 @@ function loading_scripts(script_url) {
 var loaded_scripts = {
   "github.js": false,
   "SheetFunctions.js": false, //for projects
-  "Graphic.js": false,        //for phasetypes
 };
 
 // This loads in the custom navbar button icons

@@ -1,9 +1,3 @@
-/*
- * Code Editor PhaseTypes Functions.js
- * PhaseTypes functions (i.e. element subroutines)
- */
-$.ajaxSetup({ cache: false }); // prevents caching, which disrupts $.get calls
-
 function listSmarties() {
   if (handsOnTable_Procedure !== null) {
     var excludedValues = ['item', 'phasetype', 'survey', 'max_time', 'weight', 'no_progress', ''];
@@ -93,7 +87,7 @@ code_obj = {
     }
   },
   load_file: function (user_default) {
-    $("#ACE_editor").show();
+    $("#graphic_editor").show();
     $("#new_code_button").show();
     $("#rename_phasetypes_button").show();
     if (user_default === "default") {
@@ -106,14 +100,12 @@ code_obj = {
     var this_file = master.phasetypes.file;
 
     //python load if localhost
-    
     switch (Collector.detect_context()) {
       case "localhost":
         cleaned_code = this_file.toLowerCase().replace(".html", "") + ".html";
         this_content = CElectron.fs.read_file("PhaseTypes",cleaned_code);
         try {
           this_graphic = CElectron.fs.read_file("Graphics",cleaned_code);
-
           parent.parent.graphicObj = this_graphic;
         } catch(e) {
           console.log(e + "<-------"); // error in the above string (in this case, yes)!
@@ -121,7 +113,6 @@ code_obj = {
         if (this_content === "") {
           editor.setValue(master.phasetypes[user_default][this_file]);
         } else {
-          editor_grape.setComponents(this_content);
           editor.setValue(this_content);
         }
         break;
@@ -130,7 +121,6 @@ code_obj = {
         editor.setValue(content);
         break;
     }
-    
   },
   save: function (content, name, new_old, graphic_code) {
     if (new_old === "new") {
@@ -152,11 +142,11 @@ code_obj = {
       $("#phasetype_select").val(name);
       $("#phasetype_select")[0].className = $("#phasetype_select")[0].className.replace("default_","user_");
 
-      if (graphic_code === "code") {
-        $("#ACE_editor").show();
-      } else if (graphic_code === "graphic") {
-        $("#graphic_editor").show();
-      }
+      // if (graphic_code === "code") {
+      //   $("#ACE_editor").show();
+      // } else if (graphic_code === "graphic") {
+      //   $("#graphic_editor").show();
+      // }
       $("#trial_type_file_select").show();
       Collector.custom_alert("success - " + name + " created");
     } else {
@@ -167,14 +157,14 @@ code_obj = {
       if (write_response !== "success") {
         bootbox.alert(write_response);
       }
-      console.log(master.phasetypes.graphic.files[name])
-      if (master.phasetypes.graphic.files[name] != null) {
-        graphic_objcontent = JSON.stringify(master.phasetypes.graphic.files[name]);
-        var write_graphic = CElectron.fs.write_file("Graphics",name.toLowerCase().replace(".html", "") + ".html",graphic_objcontent);
-        if (write_graphic !== "success") {
-          bootbox.alert(write_graphic);
-        }
-      }
+      // console.log(master.phasetypes.graphic.files[name])
+      // if (master.phasetypes.graphic.files[name] != null) {
+      //   graphic_objcontent = JSON.stringify(master.phasetypes.graphic.files[name]);
+      //   var write_graphic = CElectron.fs.write_file("Graphics",name.toLowerCase().replace(".html", "") + ".html",graphic_objcontent);
+      //   if (write_graphic !== "success") {
+      //     bootbox.alert(write_graphic);
+      //   }
+      // }
     }
   },
 };

@@ -157,9 +157,7 @@ function list_projects() {
     /*
      * add "Select a project" option
      */
-    var default_option =
-      "<option hidden disabled selected>Select a project</option>";
-
+    var default_option = "<option disabled selected>Select a project</option>";
     $("#add_project_pathway_select").append(default_option);
     $("#project_list").append(default_option);
     $("#code_project_select").append(default_option);

@@ -420,7 +420,6 @@ Collector.start = function(){
     correct_user();
     list_repos();
     list_projects();
-    list_graphics();
     list_phasetypes();
     initiate_actions();
     list_keys();

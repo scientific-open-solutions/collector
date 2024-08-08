@@ -1,13 +1,21 @@
+
 <!-- ------------------------------ -->
 <!-- App/PhaseTypes/PhaseTypes.html -->
 <!-- ------------------------------ -->
 <!-- <link rel="stylesheet" href="../App/style.css"> -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="libraries/grapes.0.21.12.min.js"></script>
+<link rel="stylesheet" href="libraries/grapes.0.21.12.min.css">
 <style>
   .user_code {
     background-color: PaleGreen;
   }
   .default_code {
     background-color: LightSkyBlue;
+  }
+  .form-select {
+    display: inline;
+    vertical-align: middle;
   }
   #code_preview {
     width: 100%;
@@ -31,200 +39,110 @@
   #code_preview_fullscreen {
     display: none;
   }
+  #gjs {
+    width: 78vw!important;
+    margin-left: 10px;
+  }
+  #top_row_btn {
+    padding: 4vh 0 10px 10px;
+  }
+  #code_preview_fullscreen {
+    margin-left:5px;
+  }
+  #code_editor-tab, #graphic_editor-tab, #code-preview-tab {
+    display: none;
+  }
 </style>
-<br /><br />
-
+<!-- HTML BELOW -->
 <div id="PhaseType" class="hide_show_elements">
-  <table>
-    <tr>
-      <td>
-        <div class="row">
-          <!--
-          <div class="col-md-1">
-            <button class="btn btn-primary" id="community_code_btn">Community</button>
-          </div>
-          -->
-          <div class="col-md-3">
-            <select id="phasetype_select" class="form-select" previousValue=""></select>
-          </div>
-          <div class="col-md-9">
-            <button id="new_code_button" class="btn btn-primary bi bi-file-earmark-plus">New</button>
-            <button id="save_phasetype_btn" class="btn btn-primary">Save</button>
-            <button id="rename_phasetypes_button" class="btn btn-primary bi bi-pencil-fill" style="display: none">Rename</button>
-            <button id="delete_phasetypes_button" class="btn btn-primary bi bi-trash" style="display: none">Delete</button>
-            <button id="view_code_btn" class="btn btn-outline-primary bi bi bi-toggles" style="display: none">Code</button>
-            <button id="view_graphic_btn" class="btn btn-outline-primary bi bi-toggles" style="display: none;">Graphic</button>    
-            <div class="btn-group" role="group" aria-label="Basic example">
-              <button id="assets_folder_btn" class="btn btn-outline-primary bi bi-folder">Assets</button>
-              <button id="assets_loc_btn" class="btn btn-outline-primary bi bi-files" title="Copy Asset folder location to clipboard"></button>
-            </div>
-            <button id="convert_to_code_btn" class="btn btn-outline-primary bi bi-shuffle" style="display: none">Convert to Code File</button>
-            <select id="editor_theme_select" class="form-select">
-              <option disabled selected hidden>Code Editor Themes</option>
-              <option disabled>--- Light ---</option>
-              <option>Chrome (Default)</option>
-              <option>Clouds</option>
-              <option>Crimson Editor</option>
-              <option>Dawn</option>
-              <option>Dreamweaver</option>
-              <option>Eclipse</option>
-              <option>Github</option>
-              <option>IPlastic</option>
-              <option>KatzenMilch</option>
-              <option>Kuroir</option>
-              <option>Solarized Light</option>
-              <option>SQL Server</option>
-              <option>TextMate</option>
-              <option>Tomorrow</option>
-              <option>XCode</option>
-              <option disabled>--- Dark ----</option>
-              <option>Ambiance</option>
-              <option>Chaos</option>
-              <option>Clouds Midnight</option>
-              <option>Cobalt</option>
-              <option>Dracula</option>
-              <option>Green on Black</option>
-              <option>Gruvbox</option>
-              <option>Idle Fingers</option>
-              <option>KrTheme</option>
-              <option>Merbivore</option>
-              <option>Mono Industrial</option>
-              <option>Monokai</option>
-              <option>Nord Dark</option>
-              <option>Pastel on Dark</option>
-              <option>Solarized Dark</option>
-              <option>Terminal</option>
-              <option>Tomorrow Night</option>
-              <option>Tomorrow Night Blue</option>
-              <option>Tomorrow Night Bright</option>
-              <option>Tomorrow Night 80s</option>
-              <option>Twilight</option>
-              <option>Vibrant Ink</option>
-            </select>
-          </div>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <ul class="nav nav-pills" role="tablist">
-          <div class="btn-group" role="group" >
-              <button disabled type="button" id="code_editor-tab" class="btn btn-outline-info bi bi-file-text" data-bs-toggle="pill" data-bs-target="#code_editor" role="tab" aria-controls="code_editor" aria-selected="false">Editor</button>
-              <button disabled type="button" id="graphic_editor-tab" class="btn btn-outline-info bi bi-file-text" data-bs-toggle="pill" data-bs-target="#graphic_editor" role="tab" aria-controls="graphic_editor" aria-selected="false">GUI</button>
-              <button disabled type="button" id="code-preview-tab" class="btn btn-outline-info bi bi-eye" data-bs-toggle="pill" data-bs-target="#code-preview" type="button" role="tab" aria-controls="pills-contact" aria-selected="false" >Preview</button>
-          </div>
-        </ul>
-      <td>
- 
-        <!-- <select id="code_project_select" class="form-select" style="margin:2px">
-          <option disabled selected>Project (optional)</option>
-          <option>None</option>
-        </select>
-      </td> -->
-      <!-- <td>
-        <select id="code_procedure_select" class="form-select" style="margin: 2px; display: none">
-          <option disabled selected>Procedure sheet (optional)</option>
-          <option>None</option>
-        </select>
-      </td>
-      <td>
-        <input
-          class="form-control"
-          type="number"
-          placeholder="row"
-          style="margin: 2px; width: 100px; display: none"
-        />
-        <select
-          id="code_stimuli_select"
-          class="form-select"
-          style="margin: 2px; display: none"
-        >
-          <option disabled selected>Stimuli sheet (optional)</option>
-          <option>None</option>
-        </select>
-      </td> -->
-      <td>
-        <button id="code_preview_fullscreen" class="btn btn-primary bi bi-arrows-fullscreen">Fullscreen</button>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2">
-        <div class="tab-content" id="pills-tabContent" style="top: 100px; width: 1000px; height: 800px; position: absolute">
-          <div class="tab-pane fade show active" id="code_editor" role="tabpanel" aria-labelledby="pills-spreadsheet-tab">
-            <br />
-            
-
-            <!-- <h6 id="ACE_citation" style="display: none"><em>ACE (https://ace.c9.io/)</em> is used for editing code</h6> -->
-            <h6 id="ACE_citation" style="display: none; margin-top:5px;"></h6>
-            <div id="ace_div">
-              <!--
-                This is to allow the ace editor width to change when the helper is shown (or not)
-              -->
-              <div id="ACE_editor" style="display: none; width: 98%">No PhaseType selected</div>
-            </div>
-            <!-- 
-            <div id="graphic_editor" style="display: none"></div>
-            -->
-          </div>
-
-          <div class="tab-pane fade show active" id="graphic_editor" role="tabpanel" aria-labelledby="pills-spreadsheet-tab">
-
-            <link rel="stylesheet" href="libraries/grapes.0.21.12.min.css">
-            <script src="libraries/grapes.0.21.12.min.js"></script>
-            
-            <div id="gjs"></div>
-            <div id="blocks"></div>
-            
-<script type="text/javascript">
-  
-  var editor_grape = grapesjs.init({
-      allowScripts: 1,
-      container : '#gjs',
-      components: '<div class="txt-red">Hello world!</div>',
-      style: '.txt-red{color: red}',
-      blockManager: {
-        appendTo: '#blocks',
-        storageManager: false,
-        blocks: [
-          {
-            id: 'section', // id is mandatory
-            label: '<b>Section</b>', // You can use HTML/SVG inside labels
-            attributes: { class:'gjs-block-section' },
-            content: `<section>
-              <h1>This is a simple title</h1>
-              <div>This is just a Lorem text: Lorem ipsum dolor sit amet</div>
-            </section>`,
-          }, {
-            id: 'text',
-            label: 'Text',
-            content: '<div data-gjs-type="text">Insert your text here</div>',
-          }, {
-            id: 'image',
-            label: 'Image',
-            // Select the component once it's dropped
-            select: true,
-            // You can pass components as a JSON instead of a simple HTML string,
-            // in this case we also use a defined component type `image`
-            content: { type: 'image' },
-            // This triggers `active` event on dropped components and the `image`
-            // reacts by opening the AssetManager
-            activate: true,
-          }
-        ]
-      },
-  });
-</script>
-
-          </div>
-
-          <div class="tab-pane fade" id="code-preview" role="tabpanel" aria-labelledby="code-preview-tab" style="height: 130%;width: 150%;">
-            <iframe id="code_preview"></iframe>
-          </div>
-        </div>
-      </td>
-    </tr>
-  </table>
+  <!-- Top Row Elements -->
+  <div id="top_row_btn">
+    <select id="phasetype_select" class="form-select" previousValue="" style="width:15%;"></select>
+    <button id="new_code_button" class="btn btn-primary bi bi-file-earmark-plus">New</button>
+    <button id="save_phasetype_btn" class="btn btn-primary">Save</button>
+    <button id="rename_phasetypes_button" class="btn btn-primary bi bi-pencil-fill" style="display: none">Rename</button>
+    <button id="delete_phasetypes_button" class="btn btn-primary bi bi-trash" style="display: none">Delete</button>
+    <button id="view_code_btn" class="btn btn-outline-primary bi bi bi-toggles" style="display: none">Code</button>
+    <button id="view_graphic_btn" class="btn btn-outline-primary bi bi-toggles" style="display: none;">Graphic</button>    
+    <div class="btn-group" role="group" aria-label="Basic example">
+      <button id="assets_folder_btn" class="btn btn-outline-primary bi bi-folder">Assets</button>
+      <button id="assets_loc_btn" class="btn btn-outline-primary bi bi-files" title="Copy Asset folder location to clipboard"></button>
+    </div>
+    <select id="editor_theme_select" class="form-select">
+      <option disabled selected hidden>Code Editor Themes</option>
+      <option disabled>--- Light ---</option>
+      <option>Chrome (Default)</option>
+      <option>Clouds</option>
+      <option>Crimson Editor</option>
+      <option>Dawn</option>
+      <option>Dreamweaver</option>
+      <option>Eclipse</option>
+      <option>Github</option>
+      <option>IPlastic</option>
+      <option>KatzenMilch</option>
+      <option>Kuroir</option>
+      <option>Solarized Light</option>
+      <option>SQL Server</option>
+      <option>TextMate</option>
+      <option>Tomorrow</option>
+      <option>XCode</option>
+      <option disabled>--- Dark ----</option>
+      <option>Ambiance</option>
+      <option>Chaos</option>
+      <option>Clouds Midnight</option>
+      <option>Cobalt</option>
+      <option>Dracula</option>
+      <option>Green on Black</option>
+      <option>Gruvbox</option>
+      <option>Idle Fingers</option>
+      <option>KrTheme</option>
+      <option>Merbivore</option>
+      <option>Mono Industrial</option>
+      <option>Monokai</option>
+      <option>Nord Dark</option>
+      <option>Pastel on Dark</option>
+      <option>Solarized Dark</option>
+      <option>Terminal</option>
+      <option>Tomorrow Night</option>
+      <option>Tomorrow Night Blue</option>
+      <option>Tomorrow Night Bright</option>
+      <option>Tomorrow Night 80s</option>
+      <option>Twilight</option>
+      <option>Vibrant Ink</option>
+    </select>
+  </div>
+  <!-- Second Row Elements -->
+  <div style="margin-left: 10px;">
+    <ul class="nav nav-pills" role="tablist">
+      <div class="btn-group" role="group" >
+        <button type="button" id="graphic_editor-tab" class="btn btn-outline-info bi bi-brush" data-bs-toggle="pill" data-bs-target="#graphic_editor" role="tab" aria-controls="graphic_editor" aria-selected="false">GUI</button>
+        <button type="button" id="code_editor-tab" class="btn btn-outline-info bi bi-file-text" data-bs-toggle="pill" data-bs-target="#code_editor" role="tab" aria-controls="code_editor" aria-selected="false">Editor</button>
+        <button type="button" id="code-preview-tab" class="btn btn-outline-info bi bi-eye" data-bs-toggle="pill" data-bs-target="#code-preview" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Preview</button>
+      </div>
+      <button id="code_preview_fullscreen" class="btn btn-primary bi bi-arrows-fullscreen">Fullscreen</button>
+    </ul>
+  </div>
+  <!-- Citation / Variable Text -->
+  <h6 id="ACE_citation" style="display: none; margin:5px 0 0 10px;">H</h6>
+  <!-- Code Editor -->
+  <div id="ace_div" style="margin:5px 0 0 10px;">
+    <div id="ACE_editor" style="display: none; width: 98%">No PhaseType selected</div>
+  </div>
+  <!-- Graphics Editor -->
+  <div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade" id="code_editor" role="tabpanel" aria-labelledby="code_editor-tab">
+    </div>
+    <div class="tab-pane fade" id="graphic_editor" role="tabpanel" aria-labelledby="graphic_editor-tab">
+      <div id="gjs"></div>
+      <div id="blocks"></div>
+    </div>
+    <div class="tab-pane fade" id="code-preview" role="tabpanel" aria-labelledby="code-preview-tab">
+      <iframe id="code_preview" style="width: 78vw;height: 75vh;border: 1px solid grey; transform: translate(-18px, -20px);"></iframe>
+    </div>
+  </div>
 </div>
+
+<!-- JAVASCRIPT BELOW -->
 
 <script src="iframe_library.js"></script>
 <script>
@@ -232,7 +150,7 @@
  * This is just an empty variable that is filled via the PhaseTypeActions if PhaseTypes were created in the graphics editor
  * It's needed to allow us to check whether a file should be able to be opened in the graphics editor or just the code editor 
 */
-var graphics_file; 
+// var graphics_file; 
 
 // ACE Theme Swap
 $("#editor_theme_select").on("change", function () {
@@ -262,15 +180,6 @@ $("#code_select").change(function () {
   }
 });
 
-$("#code_editor-tab").on("click", function () {
-    $("#code_preview").prop("src", "about:blank");
-    $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");
-    $('#code-preview-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
-    // $('#code_preview_fullscreen').prop("disabled", true);
-    $('#code_preview_fullscreen').hide();
-  });
-
-  //https://stackoverflow.com/a/32100295/4490801
 $("#code_preview_fullscreen").on("click", function () {
     // if already full screen; exit
     // else go fullscreen
@@ -301,35 +210,47 @@ $("#code_preview_fullscreen").on("click", function () {
         element.msRequestFullscreen();
       }
     }
+});
+
+$("#code_editor-tab").on("click", function () {
+    $("#code_preview").prop("src", "about:blank");
+    $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");
+    $('#code-preview-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
+    $('#graphic_editor-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
+    $('#code_preview_fullscreen').hide();
+    $('#code_editor').addClass('show active').siblings().removeClass('show active');
+    $("#ACE_editor").show();
+    $("#graphic_editor").hide();
+    $("#code_preview").hide();
+    $("#editor_theme_select").show();
   });
 
-$("#graphic_editor").load(collector_map["Graphic.html"]);
-
-$("#community_code_btn").on("click", function () {
-    var win = window.open(
-      "https://github.com/scientific-open-solutions/collector/discussions/categories/code",
-      "_blank"
-    );
+$("#graphic_editor-tab").on("click", function () {
+    $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");
+    $('#code_editor-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
+    $('#code-preview-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
+    $('#code_preview_fullscreen').hide();
+    $('#graphic_editor').addClass('show active').siblings().removeClass('show active');
+    $("#ACE_editor").hide();
+    $("#graphic_editor").show();
+    $("#code_preview").hide();
+    $("#editor_theme_select").hide();
   });
 
 $("#code-preview-tab").on("click", function () {
     $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");
     $('#code_editor-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
+    $('#graphic_editor-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
     $('#code_preview_fullscreen').show();
-    
-    /* work out if we're in a graphics editor or code editor file and get the appropriate html */
+    $('#code-preview').addClass('show active').siblings().removeClass('show active');
+    $("#ACE_editor").hide();
+    $("#graphic_editor").hide();
+    $("#code_preview").show();
 
-    if(typeof(master.phasetypes.graphic.files[required_code_name]) !== "undefined") {
-    //if(parent.parent.graphicObj) {
-      required_code_name = $("#phasetype_select").val();
-      var iframe_content = master.phasetypes.user[required_code_name];
-    } else {
-      var iframe_content = editor.getValue();
-    }    
-
+    var iframe_content;
+    iframe_content = editor.getValue();
     /* * find and replace items for developmental piloting */
     iframe_variables = eval(iframe_content.split("---development---")[1]);
-
     if (typeof iframe_variables !== "undefined") {
       iframe_variables.forEach(function (row) {
         var this_key = Object.keys(row);
@@ -342,26 +263,21 @@ $("#code-preview-tab").on("click", function () {
         }
       });
     }
-
     /* use ../User folder */
     home_dir = CElectron.git.locate_repo({org: $("#select_org").val(),repo: $("#select_repo").val(),});
     iframe_content = iframe_content.replaceAll("../User/", home_dir + "/User/");
-
     /* change set_timer so it works in the preview */
     iframe_content = iframe_content.replaceAll("Phase.set_timer(function(){", "setTimeout(function(){");
-
     /* delay any appropriate_message() call so it works in the preview */
     var regex = /appropriate_message\(([^)]*)\)/g;
     iframe_content = iframe_content.replace(regex, function(match) {
       return `setTimeout(function() { ${match} }, 0)`;
     });
-
     /* change set_timer so it works in the preview */
     iframe_content = iframe_content.replaceAll("Phase.submit()", "appropriate_message('<b>End of Preview</b><br><br>You would now be moved on to the next task/trial if this was a live experiment')");
-
     doc = document.getElementById("code_preview").contentWindow.document;
     doc.open();
-    doc.write(libraries + iframe_content);    
+      doc.write(libraries + iframe_content);    
     doc.close();
 });
 
@@ -435,10 +351,11 @@ editor.completers.push({
   });
 
   // This adds the custom 'save' icons
-$('#save_phasetype_btn').prepend('<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 15 15" fill="#fff" style="margin-right: 8px;transform: translateY(-1px);">'+
-    '<path fill="#fff" d="m12.313,0H1.758C.789,0,0,.789,0,1.758v11.484c0,.969.789,1.758,1.758,1.758h11.484c.969,0,1.758-.789,1.758-1.758V2.687l-2.687-2.687Zm-7.713,1.172h3.486v2.227h1.172V1.172h1.172v2.812c0,.323-.263.586-.586.586h-4.658c-.323,0-.586-.263-.586-.586V1.172Zm7.002,12.656H3.428v-5.156c0-.323.263-.586.586-.586h7.002c.323,0,.586.263.586.586v5.156Zm2.227-.586c0,.323-.263.586-.586.586h-.469v-5.156c0-.969-.789-1.758-1.758-1.758h-7.002c-.969,0-1.758.789-1.758,1.758v5.156h-.498c-.323,0-.586-.263-.586-.586V1.758c0-.323.263-.586.586-.586h1.67v2.812c0,.969.789,1.758,1.758,1.758h4.658c.969,0,1.758-.789,1.758-1.758V1.172h.226l2.001,2.001v10.07Z"/>'+
-    '</svg>');
+  $('#save_phasetype_btn').prepend('<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 15 15" fill="#fff" style="margin-right: 8px;transform: translateY(-1px);">'+
+      '<path fill="#fff" d="m12.313,0H1.758C.789,0,0,.789,0,1.758v11.484c0,.969.789,1.758,1.758,1.758h11.484c.969,0,1.758-.789,1.758-1.758V2.687l-2.687-2.687Zm-7.713,1.172h3.486v2.227h1.172V1.172h1.172v2.812c0,.323-.263.586-.586.586h-4.658c-.323,0-.586-.263-.586-.586V1.172Zm7.002,12.656H3.428v-5.156c0-.323.263-.586.586-.586h7.002c.323,0,.586.263.586.586v5.156Zm2.227-.586c0,.323-.263.586-.586.586h-.469v-5.156c0-.969-.789-1.758-1.758-1.758h-7.002c-.969,0-1.758.789-1.758,1.758v5.156h-.498c-.323,0-.586-.263-.586-.586V1.758c0-.323.263-.586.586-.586h1.67v2.812c0,.969.789,1.758,1.758,1.758h4.658c.969,0,1.758-.789,1.758-1.758V1.172h.226l2.001,2.001v10.07Z"/>'+
+      '</svg>');
 
-</script>
-<script type="text/javascript" src="PhaseTypes/PhaseTypesFunctions.js"></script>
-<script type="text/javascript" src="PhaseTypes/PhaseTypesActions.js"></script>
+    </script>
+<script src="PhaseTypes/grapes.js"></script>
+<script src="PhaseTypes/PhaseTypesFunctions.js"></script>
+<script src="PhaseTypes/PhaseTypesActions.js"></script>
