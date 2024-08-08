@@ -147,16 +147,6 @@ function createHoT(container, data, sheet_name, tableId) {
         return false;
       }
 
-      // Function to log row 1 values
-      function logRow1Values(table1, table2) {
-        if ($(table1.container).is(":visible")) {
-          console.log("handsOnTable_Procedure row 1 values: ", table1.getDataAtRow(0));
-        }
-        if ($(table2.container).is(":visible")) {
-          console.log("handsOnTable_Stimuli row 1 values: ", table2.getDataAtRow(0));
-        }
-      }
-
       // Function to ensure shuffle columns are sequential
       function ensureSequentialShuffleColumns(instance) {
         let maxShuffleNum = 0;
@@ -186,6 +176,7 @@ function createHoT(container, data, sheet_name, tableId) {
       }
 
       // Get references to the other tables
+      var conditionsTable = tables['handsOnTable_Conditions'];
       var proceduresTable = tables['handsOnTable_Procedure'];
       var stimuliTable = tables['handsOnTable_Stimuli'];
 
@@ -205,7 +196,6 @@ function createHoT(container, data, sheet_name, tableId) {
 
         // Check for duplicates if the change is in the first row
         if (row === 0) {
-          logRow1Values(proceduresTable, stimuliTable); // Logging current state
           if (this === proceduresTable && checkForDuplicates(newValue, stimuliTable)) {
             bootbox.prompt({
               title: 'Duplicate Name',
