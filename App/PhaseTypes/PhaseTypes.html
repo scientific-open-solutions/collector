@@ -38,10 +38,79 @@
   <table>
     <tr>
       <td>
+        <div class="row">
+          <!--
+          <div class="col-md-1">
+            <button class="btn btn-primary" id="community_code_btn">Community</button>
+          </div>
+          -->
+          <div class="col-md-3">
+            <select id="phasetype_select" class="form-select" previousValue=""></select>
+          </div>
+          <div class="col-md-9">
+            <button id="new_code_button" class="btn btn-primary bi bi-file-earmark-plus">New</button>
+            <button id="save_phasetype_btn" class="btn btn-primary">Save</button>
+            <button id="rename_phasetypes_button" class="btn btn-primary bi bi-pencil-fill" style="display: none">Rename</button>
+            <button id="delete_phasetypes_button" class="btn btn-primary bi bi-trash" style="display: none">Delete</button>
+            <button id="view_code_btn" class="btn btn-outline-primary bi bi bi-toggles" style="display: none">Code</button>
+            <button id="view_graphic_btn" class="btn btn-outline-primary bi bi-toggles" style="display: none;">Graphic</button>    
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button id="assets_folder_btn" class="btn btn-outline-primary bi bi-folder">Assets</button>
+              <button id="assets_loc_btn" class="btn btn-outline-primary bi bi-files" title="Copy Asset folder location to clipboard"></button>
+            </div>
+            <button id="convert_to_code_btn" class="btn btn-outline-primary bi bi-shuffle" style="display: none">Convert to Code File</button>
+            <select id="editor_theme_select" class="form-select">
+              <option disabled selected hidden>Code Editor Themes</option>
+              <option disabled>--- Light ---</option>
+              <option>Chrome (Default)</option>
+              <option>Clouds</option>
+              <option>Crimson Editor</option>
+              <option>Dawn</option>
+              <option>Dreamweaver</option>
+              <option>Eclipse</option>
+              <option>Github</option>
+              <option>IPlastic</option>
+              <option>KatzenMilch</option>
+              <option>Kuroir</option>
+              <option>Solarized Light</option>
+              <option>SQL Server</option>
+              <option>TextMate</option>
+              <option>Tomorrow</option>
+              <option>XCode</option>
+              <option disabled>--- Dark ----</option>
+              <option>Ambiance</option>
+              <option>Chaos</option>
+              <option>Clouds Midnight</option>
+              <option>Cobalt</option>
+              <option>Dracula</option>
+              <option>Green on Black</option>
+              <option>Gruvbox</option>
+              <option>Idle Fingers</option>
+              <option>KrTheme</option>
+              <option>Merbivore</option>
+              <option>Mono Industrial</option>
+              <option>Monokai</option>
+              <option>Nord Dark</option>
+              <option>Pastel on Dark</option>
+              <option>Solarized Dark</option>
+              <option>Terminal</option>
+              <option>Tomorrow Night</option>
+              <option>Tomorrow Night Blue</option>
+              <option>Tomorrow Night Bright</option>
+              <option>Tomorrow Night 80s</option>
+              <option>Twilight</option>
+              <option>Vibrant Ink</option>
+            </select>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
         <ul class="nav nav-pills" role="tablist">
           <div class="btn-group" role="group" >
               <button disabled type="button" id="code_editor-tab" class="btn btn-outline-info bi bi-file-text" data-bs-toggle="pill" data-bs-target="#code_editor" role="tab" aria-controls="code_editor" aria-selected="false">Editor</button>
-              <button disabled type="button" id="graphic_editor-tab" class="btn btn-outline-info bi bi-file-text" data-bs-toggle="pill" data-bs-target="#graphic_editor" role="tab" aria-controls="graphic_editor" aria-selected="false">Editor</button>
+              <button disabled type="button" id="graphic_editor-tab" class="btn btn-outline-info bi bi-file-text" data-bs-toggle="pill" data-bs-target="#graphic_editor" role="tab" aria-controls="graphic_editor" aria-selected="false">GUI</button>
               <button disabled type="button" id="code-preview-tab" class="btn btn-outline-info bi bi-eye" data-bs-toggle="pill" data-bs-target="#code-preview" type="button" role="tab" aria-controls="pills-contact" aria-selected="false" >Preview</button>
           </div>
         </ul>
@@ -83,71 +152,7 @@
         <div class="tab-content" id="pills-tabContent" style="top: 100px; width: 1000px; height: 800px; position: absolute">
           <div class="tab-pane fade show active" id="code_editor" role="tabpanel" aria-labelledby="pills-spreadsheet-tab">
             <br />
-            <div class="row">
-              <!--
-              <div class="col-md-1">
-            		<button class="btn btn-primary" id="community_code_btn">Community</button>
-            	</div>
-              -->
-              <div class="col-md-3">
-                <select id="phasetype_select" class="form-select" previousValue=""></select>
-              </div>
-              <div class="col-md-9">
-                <button id="new_code_button" class="btn btn-primary bi bi-file-earmark-plus">New</button>
-                <button id="save_phasetype_btn" class="btn btn-primary">Save</button>
-                <button id="rename_phasetypes_button" class="btn btn-primary bi bi-pencil-fill" style="display: none">Rename</button>
-                <button id="delete_phasetypes_button" class="btn btn-primary bi bi-trash" style="display: none">Delete</button>
-                <button id="view_code_btn" class="btn btn-outline-primary bi bi bi-toggles" style="display: none">Code</button>
-                <button id="view_graphic_btn" class="btn btn-outline-primary bi bi-toggles" style="display: none;">Graphic</button>    
-                <div class="btn-group" role="group" aria-label="Basic example">
-                  <button id="assets_folder_btn" class="btn btn-outline-primary bi bi-folder">Assets</button>
-                  <button id="assets_loc_btn" class="btn btn-outline-primary bi bi-files" title="Copy Asset folder location to clipboard"></button>
-                </div>
-                <button id="convert_to_code_btn" class="btn btn-outline-primary bi bi-shuffle" style="display: none">Convert to Code File</button>
-                <select id="editor_theme_select" class="form-select">
-                  <option disabled selected hidden>Code Editor Themes</option>
-                  <option disabled>--- Light ---</option>
-                  <option>Chrome (Default)</option>
-                  <option>Clouds</option>
-                  <option>Crimson Editor</option>
-                  <option>Dawn</option>
-                  <option>Dreamweaver</option>
-                  <option>Eclipse</option>
-                  <option>Github</option>
-                  <option>IPlastic</option>
-                  <option>KatzenMilch</option>
-                  <option>Kuroir</option>
-                  <option>Solarized Light</option>
-                  <option>SQL Server</option>
-                  <option>TextMate</option>
-                  <option>Tomorrow</option>
-                  <option>XCode</option>
-                  <option disabled>--- Dark ----</option>
-                  <option>Ambiance</option>
-                  <option>Chaos</option>
-                  <option>Clouds Midnight</option>
-                  <option>Cobalt</option>
-                  <option>Dracula</option>
-                  <option>Green on Black</option>
-                  <option>Gruvbox</option>
-                  <option>Idle Fingers</option>
-                  <option>KrTheme</option>
-                  <option>Merbivore</option>
-                  <option>Mono Industrial</option>
-                  <option>Monokai</option>
-                  <option>Nord Dark</option>
-                  <option>Pastel on Dark</option>
-                  <option>Solarized Dark</option>
-                  <option>Terminal</option>
-                  <option>Tomorrow Night</option>
-                  <option>Tomorrow Night Blue</option>
-                  <option>Tomorrow Night Bright</option>
-                  <option>Tomorrow Night 80s</option>
-                  <option>Twilight</option>
-                  <option>Vibrant Ink</option>
-                </select>
-              </div>
-            </div>
+            
 
             <!-- <h6 id="ACE_citation" style="display: none"><em>ACE (https://ace.c9.io/)</em> is used for editing code</h6> -->
             <h6 id="ACE_citation" style="display: none; margin-top:5px;"></h6>
