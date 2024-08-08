@@ -16,7 +16,11 @@ function listSmarties() {
         }
     });
 
-    $('#ACE_citation').html('Available variables: ' + output.join(', '));
+    if (output.length === 0) {
+        $('#ACE_citation').html('<em>ACE (https://ace.c9.io/)</em> is used for editing code');
+    } else {
+        $('#ACE_citation').html('Available variables: ' + output.join(', '));
+    }
   } else {
     $('#ACE_citation').html('<em>ACE (https://ace.c9.io/)</em> is used for editing code');
   }
