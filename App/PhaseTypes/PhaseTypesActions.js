@@ -372,7 +372,9 @@ function initiate_actions() {
   // QWERTY
   $("#phasetype_select").on("change", function () {
     $('#code_editor-tab, #graphic_editor-tab, #code-preview-tab, #ACE_citation').show();
-    //$("#graphic_editor-tab").click();
+    setTimeout(function(){
+      $("#graphic_editor-tab").click();
+    },100);
     
     var code_file = master.phasetypes.file;
     
@@ -438,7 +440,7 @@ function initiate_actions() {
     $("#ACE_editor").hide();
     $("#graphic_editor").show();
     $("#code_preview").hide();
-    // editor_grape.setComponents(master.phasetypes.user[code_file])
+    editor_grape.setComponents(editor.getValue());
   });
 
   $("#code-preview-tab").on("click", function () {
