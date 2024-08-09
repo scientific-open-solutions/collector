@@ -235,7 +235,12 @@
         var starterText = help_obj.code.choose_function['choose_function'];
         starterText = starterText.replace(/(^\'+|\'+$)/mg, '')
         $("#help_text").html(starterText);
-        $('.dropdown-toggle').dropdown()
+        // Just fixing the phasetype functions helper dropdown - jquery clashes with bootstrap and grapes so going native js
+        document.querySelectorAll('.dropdown-toggle').forEach(function(dropdownToggleEl) {
+            dropdownToggleEl.addEventListener('click', function () {
+                new bootstrap.Dropdown(dropdownToggleEl).toggle();
+            });
+        });
       }
     } else {
       //do nothing

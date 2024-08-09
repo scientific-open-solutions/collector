@@ -52,6 +52,9 @@
   #code_editor-tab, #graphic_editor-tab, #code-preview-tab {
     display: none;
   }
+  .gjs-pn-commands {
+    height: 43px!important;
+  }
 </style>
 <!-- HTML BELOW -->
 <div id="PhaseType" class="hide_show_elements">
@@ -124,18 +127,18 @@
   </div>
   <!-- Citation / Variable Text -->
   <h6 id="ACE_citation" style="display: none; margin:5px 0 0 10px;">H</h6>
-  <!-- Code Editor -->
-  <div id="ace_div" style="margin:5px 0 0 10px;">
-    <div id="ACE_editor" style="display: none; width: 98%">No PhaseType selected</div>
-  </div>
   <!-- Graphics Editor -->
   <div class="tab-content" id="pills-tabContent">
     <div class="tab-pane fade" id="graphic_editor" role="tabpanel" aria-labelledby="graphic_editor-tab">
       <div id="gjs"></div>
       <div id="blocks"></div>
     </div>
-    <div class="tab-pane fade" id="code_editor" role="tabpanel" aria-labelledby="code_editor-tab">
+    <!-- Code Editor -->
+    <div id="ace_div" style="margin:5px 0 0 10px;">
+      <div id="ACE_editor" style="display: none; width: 98%">No PhaseType selected</div>
     </div>
+    <div class="tab-pane fade" id="code_editor" role="tabpanel" aria-labelledby="code_editor-tab"></div>
+    <!-- Preview Tab -->
     <div class="tab-pane fade" id="code-preview" role="tabpanel" aria-labelledby="code-preview-tab">
       <iframe id="code_preview" style="width: 78vw;height: 75vh;border: 1px solid grey; transform: translate(-18px, -20px);"></iframe>
     </div>

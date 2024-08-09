@@ -6,10 +6,136 @@ var editor_grape = grapesjs.init({
     plugins: ['gjs-blocks-basic'],
     pluginsOpts: {
         'gjs-blocks-basic': {}
-    }
+    },
+    panels: {
+        defaults: [
+          {
+            id: 'commands',
+            buttons: [
+              // Other buttons you want to include...
+            ],
+          },
+          {
+            id: 'options',
+            buttons: [
+              {
+                id: 'sw-visibility',
+                active: true, // active by default
+                className: 'fa fa-square-o',
+                command: 'sw-visibility', // Built-in command
+                context: 'sw-visibility', // For grouping context
+                attributes: { title: 'View components' },
+              },
+              {
+                id: 'fullscreen',
+                className: 'fa fa-arrows-alt',
+                command: 'fullscreen',
+                attributes: { title: 'Fullscreen' },
+                context: 'fullscreen',
+              },
+              {
+                id: 'undo',
+                className: 'fa fa-undo',
+                command: 'undo',
+                attributes: { title: 'Undo (CTRL/CMD + Z)' },
+              },
+              {
+                id: 'redo',
+                className: 'fa fa-repeat',
+                command: 'redo',
+                attributes: { title: 'Redo (CTRL/CMD + SHIFT + Z)' },
+              },
+            ],
+          },
+          {
+            id: 'views',
+            buttons: [
+              {
+                id: 'open-sm',
+                className: 'fa fa-paint-brush',
+                command: 'open-sm',
+                active: true,
+                attributes: { title: 'Open Style Manager' },
+              },
+              {
+                id: 'open-layers',
+                className: 'fa fa-bars',
+                command: 'open-layers',
+                attributes: { title: 'Open Layer Manager' },
+              },
+              {
+                id: 'open-blocks',
+                className: 'fa fa-th-large',
+                command: 'open-blocks',
+                attributes: { title: 'Open Blocks' },
+              },
+            ],
+          }
+        ]
+      },
+      styleManager: {
+        sectors: [{
+            name: 'General',
+            buildProps: ['float', 'display', 'position', 'top', 'right', 'left', 'bottom'],
+            properties: [{
+              name: 'Alignment',
+              property: 'float',
+            }]
+          },{
+            name: 'Dimension',
+            open: false,
+            buildProps: ['width', 'height', 'max-width', 'min-height', 'margin', 'padding'],
+            properties: [{
+              id: 'flex-width',
+              type: 'integer',
+              name: 'Width',
+              property: 'width',
+              units: ['px', '%'],
+              defaults: 'auto',
+              min: 0,
+            }]
+          },{
+            name: 'Typography',
+            open: false,
+            buildProps: ['font-family', 'font-size', 'font-weight', 'letter-spacing', 'color', 'line-height', 'text-shadow'],
+            properties: [
+              { name: 'Font', property: 'font-family'},
+              { name: 'Weight', property: 'font-weight'},
+              { name: 'Font color', property: 'color'},
+              { name: 'Font size', property: 'font-size'},
+              { name: 'Letter spacing', property: 'letter-spacing'},
+              { name: 'Line height', property: 'line-height'},
+              { name: 'Text shadow', property: 'text-shadow'}
+            ],
+          },{
+            name: 'Decorations',
+            open: false,
+            buildProps: ['opacity', 'border-radius', 'border', 'box-shadow', 'background'],
+            properties: [{
+              type: 'slider',
+              name: 'Opacity',
+              property: 'opacity',
+              defaults: 1,
+              step: 0.01,
+              max: 1,
+              min:0,
+            }]
+          },{
+            name: 'Extra',
+            open: false,
+            buildProps: ['transition', 'perspective', 'transform'],
+            properties: [{
+              name: 'Transition',
+              property: 'transition',
+            },{
+              name: 'Transform',
+              property: 'transform',
+            }]
+          }]
+      },
 });
 
-// Add blocks individually
+// CUSTOM BLOCKS
 var blockManager = editor_grape.BlockManager;
 
 blockManager.add('section', {
@@ -42,3 +168,5 @@ blockManager.add('image', {
     content: { type: 'image' },
     activate: true,
 });
+
+

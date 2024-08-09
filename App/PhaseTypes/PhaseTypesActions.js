@@ -75,74 +75,6 @@ function initiate_actions() {
     navigator.clipboard.writeText(text)
   });
 
-  // $("#convert_to_code_btn").on("click", function () {
-  //   if (!parent.parent.functionIsRunning) {
-  //     parent.parent.functionIsRunning = true;
-  //     var deleted_phasetype = $("#phasetype_select").val();
-  //     // master.phasetypes.file = $("#phasetype_select").val();
-  //     // var this_file = master.phasetypes.file;
-  //     bootbox.confirm({
-  //       message: "Are you sure you want to covert <b>" + deleted_phasetype + "</b> to a Code Editor file?",
-  //       buttons: {
-  //         confirm: {
-  //             label: 'Yes',
-  //             className: 'btn-success'
-  //         },
-  //         cancel: {
-  //             label: 'No',
-  //             className: 'btn-danger'
-  //         }
-  //       },
-  //       callback: function (result) {
-  //         parent.parent.functionIsRunning = false;
-  //         firstResponse = result;
-  //         if (firstResponse) {
-  //           bootbox.confirm({
-  //             message: "<b>Are you very sure?</b> This cannot be undone and means you cannot use the Graphics editor on this file again",
-  //             buttons: {
-  //               confirm: {
-  //                   label: 'Yes',
-  //                   className: 'btn-success'
-  //               },
-  //               cancel: {
-  //                   label: 'No',
-  //                   className: 'btn-danger'
-  //               }
-  //             },
-  //             callback: function (result) {  
-  //               parent.parent.functionIsRunning = false;
-  //               if (result) {
-  //                 delete master.phasetypes.graphic.files[deleted_phasetype];
-  //                 var delete_graphicObj = CElectron.fs.delete_file("Graphics/" + deleted_phasetype + ".html");
-  //                 console.log("Deleted Graphic Object:" + delete_graphicObj)
-  //               }
-  //               secondResponse = result;
-  //               if (secondResponse) {
-  //                 $("#save_btn").click();
-  //                 Collector.custom_alert("The phase type: " + deleted_phasetype + " has been converted"); 
-  //                 // $("#view_code_btn").removeClass("btn-outline-primary");
-  //                 // $("#view_code_btn").addClass("btn-primary");
-  //                 editor.setOption("readOnly", false);
-  //                 // $("#view_graphic_code_btn").hide(); // Hide the graphic editor current code button
-  //                 $("#convert_to_code_btn").hide(); // Hide the graphic editor current code button
-  //                 $("#graphic_editor").hide(); // Hide the graphic editor
-  //                 $("#view_graphic_btn").hide() // hide the graphic editor button
-  //                 $('#ACE_citation').show(); // show the code editor citation
-  //                 listSmarties();
-  //                 $("#editor_theme_select").show();
-  //                 $("#ACE_editor").show();
-  //                 editor.textInput.getElement().onkeydown = "";
-  //               } else {
-  //                 Collector.custom_alert("The file was not converted"); 
-  //               }
-  //             }
-  //           });
-  //         }
-  //       }
-  //     });
-  //   }
-  // });
-
   $("#delete_phasetypes_button").on("click", function () {
     code_obj.delete_phasetypes();
     // $('#view_code_btn').removeClass('btn-outline-primary');
@@ -201,61 +133,6 @@ function initiate_actions() {
                   $("#save_btn").click();
                   console.log("It saved the new Graphic PhaseType: " + new_name);
                 }, 100);
-              }
-            },
-          },
-          graphic: {
-            label: "Using Graphics",
-            className: "btn-primary bi bi-textarea-t",
-            callback: function () {
-              parent.parent.functionIsRunning = false;
-              var new_name = $("#new_code_name").val().toLowerCase();
-              if (protected_name_check(new_name)) {
-                if (valid_new_name(new_name)) {
-                  content = "";
-                  master.phasetypes.user[new_name] = content;
-                  master.phasetypes.file = new_name;
-                  code_obj.save(content, new_name, "new", "graphic");
-                  editor.setOption("readOnly", true);
-                  editor.textInput.getElement().onkeydown = graphic_editor_obj.graphic_warning;
-                  master.phasetypes.graphic.files[new_name] = { elements: {}, };
-                  master.phasetypes.graphic.files[new_name].width = "1920px";
-                  master.phasetypes.graphic.files[new_name].height = "1080px";
-                  master.phasetypes.graphic.files[new_name].aspect = "lg";
-                  master.phasetypes.graphic.files[new_name]["background-color"] = "#ffffff";
-                  master.phasetypes.graphic.files[new_name].mouse_visible = true;
-                  master.phasetypes.graphic.files[new_name].keyboard = { valid_keys: "", end_press: true, };
-                  master.phasetypes.file = new_name;
-                  // graphic_editor_obj.update_main_settings();
-                  // graphic_editor_obj.clean_canvas();
-                  graphic_editor_obj.load_canvas(master.phasetypes.graphic.files[new_name].elements);
-
-                  //graphic editor button should be on:
-                  // $("#view_graphic_btn").removeClass("btn-outline-primary");
-                  // $("#view_graphic_btn").addClass("btn-primary");
-                  $("#graphic_editor").show();
-                  $("#rename_phasetypes_button").show();
-                  $("#delete_phasetypes_button").show();
-                  $("#save_phasetype_btn").show();
-                  // $("#view_graphic_code_btn").show(); // Show the graphic editor current code button
-                  $("#convert_to_code_btn").show(); // Show the graphic editor current code button
-                  $("#ACE_citation").html("<br>").show(); // Hide the Code Editor Citation
-                  $("#ACE_editor").hide();
-                  $("#editor_theme_select").hide();
-                  $("#phasetype_select").addClass("form-select").addClass("user_code");
-                  //code editor should be on
-                  // $("#view_code_btn").removeClass("btn-outline-primary");
-                  // $("#view_code_btn").addClass("btn-primary");
-                  // $("#delete_phasetypes_button").show();
-
-                  //the editor button should be on
-                  $('#code_editor-tab').removeClass('btn-outline-info').addClass('btn-info')
-                  setTimeout(function() { 
-                    $("#save_phasetype_btn").click();
-                    $("#save_btn").click();
-                    console.log("It saved the new Graphic PhaseType: " + new_name);
-                  }, 100);
-                }
               }
             },
           },
@@ -354,32 +231,92 @@ function initiate_actions() {
   });
   $("#save_phasetype_btn").on("click", function () {
     if ($("#phasetype_select").val() !== null) {
-      var content = editor.getValue();
+      if ($('#code_editor-tab').hasClass('active')) {
+        var content = editor.getValue();
+      } else if ($('#graphic_editor-tab').hasClass('active')) {
+        var htmlContent = editor_grape.getHtml();
+        var cssContent = editor_grape.getCss();
+        var jsContent = editor_grape.getJs();
+
+        // Function to merge content and comments in the correct order
+        function mergeContentAndComments(content, commentRegex) {
+          let result = '';
+          let lastIndex = 0;
+          let match;
+          
+          while ((match = commentRegex.exec(content)) !== null) {
+              // Append content before the comment
+              result += content.slice(lastIndex, match.index);
+              // Append the comment itself
+              result += match[0];
+              // Update lastIndex to the end of the comment
+              lastIndex = commentRegex.lastIndex;
+          }
+          
+          // Append any remaining content after the last comment
+          result += content.slice(lastIndex);
+          
+          return result;
+        }
+
+        var mergedHtmlContent = mergeContentAndComments(htmlContent, /<!--[\s\S]*?-->/g);
+        var mergedCssContent = mergeContentAndComments(cssContent, /\/\*[\s\S]*?\*\//g);
+        var mergedJsContent = mergeContentAndComments(jsContent, /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm);
+
+        // Combine everything into a single string, structured like a standard webpage
+        var content = `
+          <style>
+            ${mergedCssContent}
+          </style>
+          </head>
+            <body>
+              ${mergedHtmlContent}
+              <script>
+                ${mergedJsContent}
+              </script>
+            </body>
+          </html>
+        `;
+        console.log(content);  // You can now use this variable as needed
+
+
+      } else {
+        //skip
+      }
       var name = $("#phasetype_select").val();
       if (typeof master.phasetypes.default[name] === "undefined") {
         code_obj.save(content, name, "old");
       } else {
-        Collector.custom_alert(
-          "You cannot overwrite default code files. Would you like to create a new code file? Copy the code from <b>" +
-            name +
-            "</b> to a new code file if you want to make changes"
-        );
+        Collector.custom_alert("You cannot overwrite default code files. Would you like to create a new code file? Copy the code from <b>" + name + "</b> to a new code file if you want to make changes");
       }
     }
-    // editor_grape.setComponents(master.phasetypes.user[code_file])
   });
 
   // QWERTY
+  var firstView = true;
   $("#phasetype_select").on("change", function () {
     $('#code_editor-tab, #graphic_editor-tab, #code-preview-tab, #ACE_citation').show();
-    setTimeout(function(){
-      $("#graphic_editor-tab").click();
-    },100);
+
+    // Loading the graphics editor on the first view, but then loading into what was open when changed
+    if (firstView) {
+      setTimeout(function(){
+        $("#graphic_editor-tab").click();
+        $('#graphic_editor-tab').removeClass("btn-outline-info").addClass("btn-info");
+      },50);
+      firstView = false;
+    } else {
+      setTimeout(function(){
+        if ($('#code_editor-tab').hasClass('active')) {
+          $("#code_editor-tab").click();
+        } else if ($('#graphic_editor-tab').hasClass('active')) {
+          $("#graphic_editor-tab").click();
+        } else {
+          $("#code-preview-tab").click();
+        }
+      },50);
+    }
     
-    var code_file = master.phasetypes.file;
-    
-    $('#graphic_editor-tab').removeClass("btn-outline-info").addClass("btn-info");
-    
+    var code_file = master.phasetypes.file;  
     var old_code = $(this).attr("previousValue");
 
     if (old_code !== "" && (Object.keys(master.phasetypes.default).indexOf(old_code) === -1)) {
@@ -391,31 +328,20 @@ function initiate_actions() {
     master.phasetypes.file = code_file;
 
     if (master.phasetypes.default[code_file] == null) {
+      // We're in a user generate file
       user_default = "user";
       $("#phasetype_select").addClass("form-select").addClass("user_code").removeClass("default_code");
       $('delete_phasetypes_button, #save_phasetype_btn, #rename_phasetypes_button').show();
-
       listSmarties();
-
     } else {
+      // We're in a default file that cannot be edited
       user_default = "default";
       $("#phasetype_select").addClass("form-select").addClass("default_code").removeClass("user_code");
       $('delete_phasetypes_button, #save_phasetype_btn, #rename_phasetypes_button').hide();
-
-      
     }
 
     // This loads in our selected file
     code_obj.load_file(user_default);
-    editor_grape.DomComponents.getWrapper().set('content', ''); // Clear existing content
-    console.log(typeof master.phasetypes.user[code_file])
-    console.log(master.phasetypes.user[code_file])
-    console.log("master.phasetypes.user["+code_file+"]")
-    
-    editor_grape.setComponents(master.phasetypes.user[code_file]);
-
-    // I'm not sure if the line below is needed??
-    // editor.textInput.getElement().onkeydown = "";
   });
 
   $("#code_editor-tab").on("click", function () {
@@ -426,6 +352,7 @@ function initiate_actions() {
     $('#code_preview_fullscreen').hide();
     $('#code_editor').addClass('show active').siblings().removeClass('show active');
     $("#ACE_editor").show();
+    $("#editor_theme_select").show();
     $("#graphic_editor").hide();
     $("#code_preview").hide();
   });
@@ -439,7 +366,41 @@ function initiate_actions() {
     $('#graphic_editor').addClass('show active').siblings().removeClass('show active');
     $("#ACE_editor").hide();
     $("#graphic_editor").show();
+    $("#editor_theme_select").hide();
     $("#code_preview").hide();
+
+    // iframe_content = editor.getValue();
+    
+    // /* * find and replace items for developmental piloting */
+    // iframe_variables = eval(iframe_content.split("---development---")[1]);
+    // if (typeof iframe_variables !== "undefined") {
+    //   iframe_variables.forEach(function (row) {
+    //     var this_key = Object.keys(row);
+    //     if (this_key.length == 0) {
+    //       bootbox.alert("Error: You don't have any keys!");
+    //     } else {
+    //       for (i = 0; i < this_key.length; i++) {
+    //         iframe_content = iframe_content.replaceAll("{{" + this_key[i] + "}}", row[this_key[i]]);
+    //       }
+    //     }
+    //   });
+    // }
+    // /* use ../User folder */
+    // home_dir = CElectron.git.locate_repo({org: $("#select_org").val(),repo: $("#select_repo").val(),});
+    // iframe_content = iframe_content.replaceAll("../User/", home_dir + "/User/");
+    // /* change set_timer so it works in the preview */
+    // iframe_content = iframe_content.replaceAll("Phase.set_timer(function(){", "setTimeout(function(){");
+    // /* delay any appropriate_message() call so it works in the preview */
+    // var regex = /appropriate_message\(([^)]*)\)/g;
+    // iframe_content = iframe_content.replace(regex, function(match) {
+    //   return `setTimeout(function() { ${match} }, 0)`;
+    // });
+    // /* change phase_submit to a popup message so it works in the preview */
+    // iframe_content = iframe_content.replaceAll("Phase.submit()", "appropriate_message('<b>End of Preview</b><br><br>You would now be moved on to the next task/trial if this was a live experiment')");
+    // var html = libraries + iframe_content;
+
+
+    // editor_grape.setComponents(html);
     editor_grape.setComponents(editor.getValue());
   });
 
