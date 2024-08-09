@@ -372,8 +372,8 @@ function initiate_actions() {
   // QWERTY
   $("#phasetype_select").on("change", function () {
     $('#code_editor-tab, #graphic_editor-tab, #code-preview-tab, #ACE_citation').show();
-    $("#graphic_editor-tab").click();
-    first_view = true; // This is just a reset flag for the graphics editor, you can ignore it
+    //$("#graphic_editor-tab").click();
+    
     var code_file = master.phasetypes.file;
     
     $('#graphic_editor-tab').removeClass("btn-outline-info").addClass("btn-info");
@@ -410,7 +410,7 @@ function initiate_actions() {
     console.log(master.phasetypes.user[code_file])
     console.log("master.phasetypes.user["+code_file+"]")
     
-    editor_grape.setComponents(master.phasetypes.user[code_file])
+    editor_grape.setComponents(master.phasetypes.user[code_file]);
 
     // I'm not sure if the line below is needed??
     // editor.textInput.getElement().onkeydown = "";
@@ -427,6 +427,7 @@ function initiate_actions() {
     $("#graphic_editor").hide();
     $("#code_preview").hide();
   });
+
 
   $("#graphic_editor-tab").on("click", function () {
     $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");

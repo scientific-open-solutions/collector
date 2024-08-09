@@ -130,11 +130,11 @@
   </div>
   <!-- Graphics Editor -->
   <div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade" id="code_editor" role="tabpanel" aria-labelledby="code_editor-tab">
-    </div>
     <div class="tab-pane fade" id="graphic_editor" role="tabpanel" aria-labelledby="graphic_editor-tab">
       <div id="gjs"></div>
       <div id="blocks"></div>
+    </div>
+    <div class="tab-pane fade" id="code_editor" role="tabpanel" aria-labelledby="code_editor-tab">
     </div>
     <div class="tab-pane fade" id="code-preview" role="tabpanel" aria-labelledby="code-preview-tab">
       <iframe id="code_preview" style="width: 78vw;height: 75vh;border: 1px solid grey; transform: translate(-18px, -20px);"></iframe>
@@ -210,75 +210,6 @@ $("#code_preview_fullscreen").on("click", function () {
         element.msRequestFullscreen();
       }
     }
-});
-
-$("#code_editor-tab").on("click", function () {
-    $("#code_preview").prop("src", "about:blank");
-    $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");
-    $('#code-preview-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
-    $('#graphic_editor-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
-    $('#code_preview_fullscreen').hide();
-    $('#code_editor').addClass('show active').siblings().removeClass('show active');
-    $("#ACE_editor").show();
-    $("#graphic_editor").hide();
-    $("#code_preview").hide();
-    $("#editor_theme_select").show();
-  });
-
-$("#graphic_editor-tab").on("click", function () {
-    $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");
-    $('#code_editor-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
-    $('#code-preview-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
-    $('#code_preview_fullscreen').hide();
-    $('#graphic_editor').addClass('show active').siblings().removeClass('show active');
-    $("#ACE_editor").hide();
-    $("#graphic_editor").show();
-    $("#code_preview").hide();
-    $("#editor_theme_select").hide();
-  });
-
-$("#code-preview-tab").on("click", function () {
-    $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");
-    $('#code_editor-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
-    $('#graphic_editor-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
-    $('#code_preview_fullscreen').show();
-    $('#code-preview').addClass('show active').siblings().removeClass('show active');
-    $("#ACE_editor").hide();
-    $("#graphic_editor").hide();
-    $("#code_preview").show();
-
-    var iframe_content;
-    iframe_content = editor.getValue();
-    /* * find and replace items for developmental piloting */
-    iframe_variables = eval(iframe_content.split("---development---")[1]);
-    if (typeof iframe_variables !== "undefined") {
-      iframe_variables.forEach(function (row) {
-        var this_key = Object.keys(row);
-        if (this_key.length == 0) {
-          bootbox.alert("Error: You don't have any keys!");
-        } else {
-          for (i = 0; i < this_key.length; i++) {
-            iframe_content = iframe_content.replaceAll("{{" + this_key[i] + "}}", row[this_key[i]]);
-          }
-        }
-      });
-    }
-    /* use ../User folder */
-    home_dir = CElectron.git.locate_repo({org: $("#select_org").val(),repo: $("#select_repo").val(),});
-    iframe_content = iframe_content.replaceAll("../User/", home_dir + "/User/");
-    /* change set_timer so it works in the preview */
-    iframe_content = iframe_content.replaceAll("Phase.set_timer(function(){", "setTimeout(function(){");
-    /* delay any appropriate_message() call so it works in the preview */
-    var regex = /appropriate_message\(([^)]*)\)/g;
-    iframe_content = iframe_content.replace(regex, function(match) {
-      return `setTimeout(function() { ${match} }, 0)`;
-    });
-    /* change set_timer so it works in the preview */
-    iframe_content = iframe_content.replaceAll("Phase.submit()", "appropriate_message('<b>End of Preview</b><br><br>You would now be moved on to the next task/trial if this was a live experiment')");
-    doc = document.getElementById("code_preview").contentWindow.document;
-    doc.open();
-      doc.write(libraries + iframe_content);    
-    doc.close();
 });
 
 var editor = ace.edit("ACE_editor");
