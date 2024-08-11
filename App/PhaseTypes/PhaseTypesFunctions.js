@@ -274,3 +274,8 @@ function list_phasetypes(to_do_after) {
   };
   */
 }
+
+// setting up appropriate_message functionality
+function appropriate_message(this_message) {
+  bootbox.alert(this_message);
+}

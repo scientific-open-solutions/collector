@@ -1556,5 +1556,5 @@ textarea#HandsontableCopyPaste {
 }
 
 .modal {
-  z-index: 2060!important;
+  z-index: 9990!important;
 }

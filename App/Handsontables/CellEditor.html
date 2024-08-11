@@ -111,6 +111,16 @@
     tabSize: 2,
     wrap: true,
   });
+  
+  cell_editor.commands.addCommand({
+    name: "insertBrOnEnter",
+    bindKey: { win: "Enter", mac: "Enter" },
+      exec: function(cell_editor) {
+        cell_editor.navigateDown();    // Move cursor to the next line
+        cell_editor.insert("<br>\n");  // Insert <br> and then move to a new line
+      }
+  });
+
   cell_editor.$blockScrolling = Infinity;
 
   cell_editor.on("focus", function () {

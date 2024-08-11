@@ -1,7 +1,11 @@
 {
   "age_check": {
     "subtitle": "Whether you want to restrict your study to participants aged 18 and above",
-    "text": "By default the experiment will tell participants to not participate if they are under 18. You can turn this off with the value “no”."
+    "text": "<b>Part of the data quality checks.</b><br><br> By default the experiment will tell participants to not participate if they are under 18. You can turn this off with the value <b>no</b>."
+  },
+  "audio_visual": {
+    "subtitle": "Checks whether participants can hear and see multimedia stimuli before starting.",
+    "text": "<b>Part of the data quality checks.</b><br><br> Can be used to check audio and video browser settings and display basic problem solving instructions where necessary. If you only require an audio check, write <b>audio</b>. If you only require a video check, write <b>video</b>. To check both audio and video, write <b>both</b> (this is the default check). If you don't wish to include this check, write <b>no</b>."
   },
   "buffer": {
     "subtitle": "Number of trials you want buffered",
@@ -14,6 +18,10 @@
   "description": {
     "subtitle": "deprecated",
     "text": "please change this column header to <b>name</b>."
+  },
+  "details_warning": {
+    "subtitle": "Warning participants about the types of information they provide during the experiment?",
+    "text": "<b>Part of the data quality checks.</b><br><br> Change this value to <b>no</b> if you do not wish to remind participants to consider any personal information they provide when completing your experiment."
   },
   "download_at_end": {
     "subtitle": "Can participant download at the end?",
@@ -71,8 +79,12 @@
     "subtitle": "Which Stimuli sheet?",
     "text": "Stimuli sheets can used as a list of words or media files (images, audio, pictures) that your experiment will use. If you want different lists of stimuli, you need to create a new stimuli sheet. <br><br> If you are developing your experiments online (e.g. on open-collector.org or ocollector.org) ignore the following. If you are developing the experiment on your computer, you should your stimuli sheet in the <b>web/User/Projects/YOUR EXPERIMENT</b> folder."
   },
+  "welcome": {
+    "subtitle": "Allows you to customise the welcome message text",
+    "text": "<b>Part of the data quality checks.</b><br><br> Entering a value in this column will alter the main body text that is displayed when a participants starts an experiment. You can parse html to format and style the welcome message to your requirements."
+  },
   "zoom_check": {
     "subtitle": "Do you want the user to adjust the zoom in their browser to make it consistent between users?",
-    "text": "By default the project will make users compare a card with one on the screen and adjust the one on screen until they are similar sizes. This can disrupt eye-tracking using webgazer though, so you might want to write 'no' in this column to stop it in this sort of situation."
+    "text": "<b>Part of the data quality checks.</b><br><br> By default the project will make users compare a card with one on the screen and adjust the one on screen until they are similar sizes. This can disrupt eye-tracking using webgazer though, so you might want to write <b>no</b> in this column to stop it in this sort of situation."
   }
 }

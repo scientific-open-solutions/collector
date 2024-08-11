@@ -1,6 +1,5 @@
 /*
- * Collector Survey 3.5.1
- * Authors: Dr. Anthony Haffey & Chris Dobson
+ * Collector Survey 3.5.2
  */
 
 /* 

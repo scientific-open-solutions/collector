@@ -184,6 +184,8 @@ function initiate_actions() {
                   $("#delete_phasetypes_button").show();
                   $("#save_phasetype_btn").show();
                   $("#editor_theme_select").show();
+                  $('#code_editor-tab').removeAttr('disabled'); // activate the editor button
+                  $('#code-preview-tab').removeAttr('disabled'); // activate the preview button
                   $('#ACE_citation').show(); // show the code editor citation
                   listSmarties();
                   // $("#view_graphic_code_btn").hide(); // Show the graphic editor current code button

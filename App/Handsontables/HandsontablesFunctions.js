@@ -181,7 +181,6 @@ function createHoT(container, data, sheet_name, tableId) {
       var stimuliTable = tables['handsOnTable_Stimuli'];
 
       changes.forEach(([row, col, oldValue, newValue]) => {
-        console.log(`Change detected at row ${row}, col ${col}: ${oldValue} -> ${newValue}`);
         const cellKey = `${row}_${col}`;
         if (nonDeletableColumns_proj.includes(oldValue) && newValue === '' && savedValues[cellKey]) {
           // Restore the saved value

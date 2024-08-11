@@ -45,34 +45,6 @@
           </div>
         </ul>
       <td>
- 
-        <!-- <select id="code_project_select" class="form-select" style="margin:2px">
-          <option disabled selected>Project (optional)</option>
-          <option>None</option>
-        </select>
-      </td> -->
-      <!-- <td>
-        <select id="code_procedure_select" class="form-select" style="margin: 2px; display: none">
-          <option disabled selected>Procedure sheet (optional)</option>
-          <option>None</option>
-        </select>
-      </td>
-      <td>
-        <input
-          class="form-control"
-          type="number"
-          placeholder="row"
-          style="margin: 2px; width: 100px; display: none"
-        />
-        <select
-          id="code_stimuli_select"
-          class="form-select"
-          style="margin: 2px; display: none"
-        >
-          <option disabled selected>Stimuli sheet (optional)</option>
-          <option>None</option>
-        </select>
-      </td> -->
       <td>
         <button id="code_preview_fullscreen" class="btn btn-primary bi bi-arrows-fullscreen">Fullscreen</button>
       </td>
@@ -254,6 +226,9 @@ $("#community_code_btn").on("click", function () {
   });
 
 $("#code-preview-tab").on("click", function () {
+  function appropriate_message(this_message) {
+    bootbox.alert(this_message);
+  }
     $(this).addClass("active").removeClass("btn-outline-info").addClass("btn-info");
     $('#code_editor-tab').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
     $('#code_preview_fullscreen').show();
@@ -288,7 +263,8 @@ $("#code-preview-tab").on("click", function () {
     iframe_content = iframe_content.replaceAll("../User/", home_dir + "/User/");
 
     /* change set_timer so it works in the preview */
-    iframe_content = iframe_content.replaceAll("Phase.set_timer(function(){", "setTimeout(function(){");
+    iframe_content = iframe_content.replaceAll(/Phase\.set_timer\s*\(\s*function\s*\(\s*\)\s*\{\s*/g, "setTimeout(function(){");
+    // .replaceAll("Phase.set_timer(function(){", "setTimeout(function(){");
 
     /* delay any appropriate_message() call so it works in the preview */
     var regex = /appropriate_message\(([^)]*)\)/g;
@@ -297,7 +273,7 @@ $("#code-preview-tab").on("click", function () {
     });
 
     /* change set_timer so it works in the preview */
-    iframe_content = iframe_content.replaceAll("Phase.submit()", "appropriate_message('<b>End of Preview</b><br><br>You would now be moved on to the next task/trial if this was a live experiment')");
+    iframe_content = iframe_content.replaceAll("Phase.submit()", "bootbox.alert('<b>End of Preview</b><br><br>You would now be moved on to the next task/trial if this was a live experiment')");
 
     doc = document.getElementById("code_preview").contentWindow.document;
     doc.open();
