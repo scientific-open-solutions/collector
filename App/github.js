@@ -518,7 +518,7 @@ $('#refresh_online_app').on('click',function() {
   };
 
   // Have a look at how it updates stuff in the 'push' to work out what needs to be done.
-  // CElectron.git.update_folder();
+  CElectron.git.update_folder();
 
   // Pop up to let the user know that the folder has updated.
   Collector.custom_alert("Repository App Folder Updated");
