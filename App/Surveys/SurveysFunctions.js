@@ -236,8 +236,12 @@ function create_survey_HoT(this_survey) {
             /*
             * replace "." with "_" to prevent errors from "."s
             */
-            if (typeof this_item === 'string' && this_item.includes('.')) {
-              this.setDataAtCell(m, k, this_item.replace(/\./g, '_'));
+            if (col_header !== "text" && col_header !== "answers") {
+              if (typeof this_item === 'string' && this_item.includes('.')) {
+                this.setDataAtCell(m, k, this_item.replace(/\./g, '_'));
+              }
+            } else {
+              // do nothing
             }
           }
         }

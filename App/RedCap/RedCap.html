@@ -356,7 +356,7 @@ $("#upload_data_csv").on("change", function () {
           }
         });
 
-        // Rebuilt the REDCap dictionary array with "main" fields first, and everything else afterwards in ascending (A-Z) order.
+        // Rebuilt the REDCap dictionary array with "main" fields first, and everything else afterwards in descending (Z-A) order.
         redcap_array = array_main.concat(array_rest)
         
         //upload_exp_contents(e.target.result, this_filename);
