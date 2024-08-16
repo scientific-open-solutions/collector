@@ -267,7 +267,9 @@
         $("#help_subtitle").html("Blank header");
         $("#help_text").html(
           "Valid <b>conditions</b> settings include: <br><em>" +
-            Object.keys(help_obj.cond).join("<br>") +
+            Object.keys(help_obj.cond)
+              .filter(key => help_obj.cond[key].subtitle !== "Deprecated")
+              .join("<br>") +
             "</em>"
         );
       } else {

@@ -9,6 +9,16 @@ $("#cond_addRow_btn").on("click", function () {
     /** *** */
 });
 
+// CSS tweak to change the cursor when hovering over options
+$("<style>")
+    .prop("type", "text/css")
+    .html(`
+        label, input[type="checkbox"], select {
+            cursor: pointer;
+        }
+    `)
+    .appendTo("head");
+
 // Functions
 
 function createInsertRowOption_cond() {
@@ -17,8 +27,8 @@ function createInsertRowOption_cond() {
             <input type="checkbox" id="specific_row_cond" onchange="toggleRowSelect_cond()">    
             <label for="specific_row_cond" id="specific_row_cond_label">Insert after specific row?</label>
         </div>
-        <div class="form-group" id="row_select_container_cond" style="display: none;">
-            <label for="row_select" id="row_select_label_cond">Select preceding row</label>
+        <div class="form-group" id="row_select_container_cond" style="display: none; margin: 0 10px 0 20px;">
+            <label for="row_select" id="row_select_label_cond">-- Select preceding row --</label>
             <select id="row_select_cond" class="form-control form-select">
                 <option value="" disabled selected id="row_placeholder_cond">Existing <em>condition</em> rows</option>
             </select>
@@ -90,21 +100,21 @@ function addNewCondOptions(callback) {
                 <div class="mb-3">
                     <label for="procedure" id="procedure_label"> Please select a procedure sheet to use <span style="color: red;">*</span></label>
                         <select id="procedure" class="form-select" required>
-                        <option value="" disabled selected id="proc_placeholder">Available procedure sheets</option>
+                        <option value="" disabled selected id="proc_placeholder">-- Available procedure sheets --</option>
                         ${procedureOptions.map(option => `<option value="${option}">${option}</option>`).join('')}
                     </select>
                 </div>
                 <div class="mb-3">
                     <label for="stimuli" id="stimuli_label"> Please select a stimuli sheet to use</label> <span style="color: red;">*</span>
                         <select id="stimuli" class="form-select" required>
-                        <option value="" disabled selected id="stim_placeholder">Available stimuli sheets</option>
+                        <option value="" disabled selected id="stim_placeholder">-- Available stimuli sheets --</option>
                         ${stimuliOptions.map(option => `<option value="${option}">${option}</option>`).join('')}
                     </select>
                 </div>
                 <div class="mb-3">
                   <label for="participantID" id="participantID_label"> Please select a participant ID style to use</label> <span style="color: red;">*</span>
                     <select name="participantID" class="form-select" id="participantID" required>
-                        <option value="" disabled selected>Available styles</option>
+                        <option value="" disabled selected>-- Available styles --</option>
                         <option value="on">Require participants enter an ID upon starting</option>
                         <option value="random">Automatically assign participants a random ID</option>
                         <option value="off">Do not use participant IDs</option>
@@ -114,7 +124,7 @@ function addNewCondOptions(callback) {
                 <div class="mb-3">
                     <label id="progressBar_label"> How do you want the progress bar to advance?</label> <span style="color: red;">*</span>
                         <select name="progressBar" class="form-select" id="progressBar" required>
-                            <option value="" disabled selected>Available progressions styles</option>
+                            <option value="" disabled selected>-- Available progressions styles --</option>
                             <option value="row">Increase upon <em>procedure</em> row completion</option>
                             <option value="trial">Increase upon every trial completion</option>
                             <option value="off">Hidden</option>
@@ -160,26 +170,34 @@ function addNewCondOptions(callback) {
                 </div>
 
                 <div class="mb-3 qualcheck">
-                <label id="ageCheck_label"><input type="checkbox" id="ageCheck"> Skip initial age check question?</label>
+                <label id="ageCheck_label"><input type="checkbox" id="ageCheck"> Include initial age check question?</label>
                 </div>                
                 
                 <div class="mb-3 qualcheck">
-                <label id="zoomCheck_label"><input type="checkbox" id="zoomCheck"> Skip initial page zoom level check?</label>
+                <label id="botCheck_label"><input type="checkbox" id="botCheck"> Include initial Bot check?</label>
                 </div>
 
                 <div class="mb-3 qualcheck">
-                <label id="detailsWarning_label"><input type="checkbox" id="detailsWarning"> Skip initial warning about providing sensitive data?</label>
+                <label id="zoomCheck_label"><input type="checkbox" id="zoomCheck"> Include initial page zoom level check?</label>
+                </div>
+
+                <div class="mb-3 qualcheck">
+                <label id="pptCommitment_label"><input type="checkbox" id="pptCommitment"> Require a commitment to provide quality data?</label>
+                </div>
+
+                <div class="mb-3 qualcheck">
+                <label id="detailsWarning_label"><input type="checkbox" id="detailsWarning"> Include initial warning about providing sensitive data?</label>
                 </div>
 
                 <div class="mb-3  qualcheck">
                     <label id="audioVisualCheck_label"><input type="checkbox" id="audioVisualCheck"> Include an audio or visual check?</label>
                 </div>
-                <div class="mb-3 audiovisual_check" id="audioVisualDropdown_container" style="display: none;">
+                <div class="mb-3 audiovisual_check" id="audioVisualDropdown_container" style="display: none; margin: 0 10px 0 20px;">
                     <select id="audioVisualDropdown" class="form-select">
-                        <option value="" disabled selected>Please select the required check</option>
-                        <option value="audio">Audio</option>
-                        <option value="video">Video</option>
-                        <option value="both">Both</option>
+                        <option value="" disabled selected>-- Please select the required check --</option>
+                        <option value="avc_audio">Audio</option>
+                        <option value="avc_video">Video</option>
+                        <option value="avc_both">Both</option>
                     </select>
                 </div>
     
@@ -228,7 +246,7 @@ function addNewCondOptions(callback) {
                 label: 'Add',
                 className: 'btn-primary',
                 callback: function () {
-                    var cond_name = $('#item_name').val();               
+                    var cond_name = $('#item_name').val().toLowerCase();               
                     var procedureSheet = $('#procedure').val();               
                     var stimuliSheet = $('#stimuli').val();
                     var participantID = $('#participantID').val();                 
@@ -239,15 +257,25 @@ function addNewCondOptions(callback) {
                     var startText = $('#start_message').is(':checked') ? $('#start_message_textarea').val() : '';
                     var endText = $('#end_message').is(':checked') ? $('#end_message_textarea').val() : '';
                     var fullscreen = $('#fullscreen').is(':checked') ? 'on' : '';
-                    var ageCheck = $('#ageCheck').is(':checked') ? 'no' : '';
-                    var skipQuality = $('#skipQuality').is(':checked') ? 'yes' : '';
-                    var detailsWarning = $('#detailsWarning').is(':checked') ? 'no' : '';
-                    var zoomCheck = $('#zoomCheck').is(':checked') ? 'no' : '';
                     var mobileCheck = $('#mobileCheck').is(':checked') ? '' : 'no';
                     var downloadData = $('#downloadData').is(':checked') ? 'off' : '';
                     var forwardAtEnd = $('#forwardAtEnd_checkbox').is(':checked') ? `https://${$('#forwardAtEnd').val()}` : '';
                     var bufferTrials = $('#bufferTrials_checkbox').is(':checked') ? $('#bufferTrials').val() : '5';
-                    var audioVisual = $('#audioVisualCheck').is(':checked') ? $('#audioVisualDropdown').val() : 'none';
+                    var skipQuality = $('#skipQuality').is(':checked') ? 'yes' : '';
+                    var checks = [];
+
+                    $('#ageCheck').is(':checked') ? checks.push('age_check') : '';
+                    $('#detailsWarning').is(':checked') ? checks.push('sensitive_data') : '';
+                    $('#zoomCheck').is(':checked') ? checks.push('zoom_level') : '';
+                    $('#botCheck').is(':checked') ? checks.push('bot_check') : '';
+                    $('#pptCommitment').is(':checked') ? checks.push('participant_commitment') : '';
+                    $('#audioVisualCheck').is(':checked') ? checks.push($('#audioVisualDropdown').val()) : '';
+
+                    // Sort the array alphabetically
+                    checks.sort();
+
+                    // Join the array into a CSV string
+                    var qualityChecks = checks.join(',');
                     
                     var REDCap_url = $('#REDCap_checkbox').is(':checked') ? `https://${$('#REDCap_url').val()}` : '';
                     
@@ -326,7 +354,7 @@ function addNewCondOptions(callback) {
                         return false;
                     }
 
-                    callback(ageCheck, audioVisual, detailsWarning, downloadData, endText, forwardAtEnd, fullscreen, mobileCheck, notes_cond, participantID, progressBar, REDCap_url, startText, welcomeText, skipQuality,zoomCheck, bufferTrials, cond_name, stimuliSheet, procedureSheet, specificRow ? parseInt(rowIndex) + 2 : null);
+                    callback(downloadData, endText, forwardAtEnd, fullscreen, mobileCheck, notes_cond, participantID, progressBar, qualityChecks, REDCap_url, startText, welcomeText, skipQuality, bufferTrials, cond_name, stimuliSheet, procedureSheet, specificRow ? parseInt(rowIndex) + 2 : null);
                     return true;
                 }
             },
@@ -360,14 +388,13 @@ function addNewCondOptions(callback) {
 }
 
 function addNewCondRow() {
-    addNewCondOptions(function (ageCheck, audioVisual, detailsWarning, downloadData, endText, forwardAtEnd, fullscreen, mobileCheck, notes_cond, participantID, progressBar, REDCap_url, startText, welcomeText, skipQuality, zoomCheck, bufferTrials, cond_name, stimuliSheet, procedureSheet, insertAfterRow) {
+    addNewCondOptions(function (downloadData, endText, forwardAtEnd, fullscreen, mobileCheck, notes_cond, participantID, progressBar, qualityChecks, REDCap_url, startText, welcomeText, skipQuality, bufferTrials, cond_name, stimuliSheet, procedureSheet, insertAfterRow) {
 
         var currentData = handsOnTable_Conditions.getData();
         var colCount = handsOnTable_Conditions.countCols();
         var firstRow = currentData[0] || []; // Ensure firstRow is an array
 
         var columnNames = ['name', 'stimuli', 'procedure', 'participant_id', 'buffer'];
-        if (ageCheck) columnNames.push('age_check');
         if (downloadData) columnNames.push('download_at_end');
         if (endText) columnNames.push('end_message');
         if (forwardAtEnd) columnNames.push('forward_at_end');
@@ -378,10 +405,8 @@ function addNewCondRow() {
         if (REDCap_url) columnNames.push('redcap_url');
         if (skipQuality) columnNames.push('skip_quality');
         if (startText) columnNames.push('start_message');
-        if (zoomCheck) columnNames.push('zoom_check');
         if (welcomeText) columnNames.push('welcome');
-        if (detailsWarning) columnNames.push('details_warning');
-        if (audioVisual) columnNames.push('audio_visual');
+        if (qualityChecks) columnNames.push('quality_checks');
 
         var columnIndices = {};
 
@@ -431,7 +456,6 @@ function addNewCondRow() {
         function addRow(insertAfterRow) {
             var newRow = Array(colCount).fill('');
 
-            if (columnIndices['age_check'] !== undefined) newRow[columnIndices['age_check']] = ageCheck;
             if (columnIndices['buffer'] !== undefined) newRow[columnIndices['buffer']] = bufferTrials;
             if (columnIndices['download_at_end'] !== undefined) newRow[columnIndices['download_at_end']] = downloadData;
             if (columnIndices['end_message'] !== undefined) newRow[columnIndices['end_message']] = endText;
@@ -447,10 +471,8 @@ function addNewCondRow() {
             if (columnIndices['skip_quality'] !== undefined) newRow[columnIndices['skip_quality']] = skipQuality;
             if (columnIndices['start_message'] !== undefined) newRow[columnIndices['start_message']] = startText;
             if (columnIndices['stimuli'] !== undefined) newRow[columnIndices['stimuli']] = stimuliSheet;
-            if (columnIndices['zoom_check'] !== undefined) newRow[columnIndices['zoom_check']] = zoomCheck;
             if (columnIndices['welcome'] !== undefined) newRow[columnIndices['welcome']] = welcomeText;
-            if (columnIndices['details_warning'] !== undefined) newRow[columnIndices['details_warning']] = detailsWarning;
-            if (columnIndices['audio_visual'] !== undefined) newRow[columnIndices['audio_visual']] = audioVisual;
+            if (columnIndices['quality_checks'] !== undefined) newRow[columnIndices['quality_checks']] = qualityChecks;
 
             if (insertAfterRow !== null) {
                 handsOnTable_Conditions.alter('insert_row', insertAfterRow);
@@ -506,30 +528,28 @@ function cond_event_listeners() {
     function handleSkipQualityChange() {
         const isSkipQualityChecked = $('#skipQuality').is(':checked');
 
-        $('#welcome').prop('disabled', isSkipQualityChecked);
-        $('#ageCheck').prop('disabled', isSkipQualityChecked);
-        $('#zoomCheck').prop('disabled', isSkipQualityChecked);
-        $('#detailsWarning').prop('disabled', isSkipQualityChecked);
-        $('#audioVisualCheck').prop('disabled', isSkipQualityChecked);
+        $('#welcome').prop('disabled', isSkipQualityChecked).prop('checked', false);
+        $('#ageCheck').prop('disabled', isSkipQualityChecked).prop('checked', false);
+        $('#botCheck').prop('disabled', isSkipQualityChecked).prop('checked', false);
+        $('#zoomCheck').prop('disabled', isSkipQualityChecked).prop('checked', false);
+        $('#pptCommitment').prop('disabled', isSkipQualityChecked).prop('checked', false);
+        $('#detailsWarning').prop('disabled', isSkipQualityChecked).prop('checked', false);
+        $('#audioVisualCheck').prop('disabled', isSkipQualityChecked).prop('checked', false);
+        $('#audioVisualDropdown_container').hide(); $('#audioVisualDropdown').val('');
+        $('#welcome_input').hide(); $('#welcome_textarea').val('');
 
         const tooltipText = "Sorry, you cannot use this if you skip quality controls";
 
         if (isSkipQualityChecked) {
-            $('#welcome_label').attr('title', tooltipText);
-            $('#ageCheck_label').attr('title', tooltipText);
-            $('#zoomCheck_label').attr('title', tooltipText);
-            $('#detailsWarning').attr('title', tooltipText);
-            $('#audioVisualCheck').attr('title', tooltipText);
-            $('#welcome_label, #ageCheck_label,#zoomCheck_label,#detailsWarning_label, #audioVisualCheck_label').css('color', 'lightgrey');
-            // $('#welcome_label, #ageCheck_label,#zoomCheck_label, #detailsWarning_label, #audioVisualCheck_label').hide(); // This would hide rather than grey out the above
+            $('#welcome_label, #ageCheck_label, #zoomCheck_label, #detailsWarning_label, #audioVisualCheck_label, #botCheck_label, #pptCommitment_label')
+                .attr('title', tooltipText)
+                .css('color', 'lightgrey')
+                .css('cursor','default');
         } else {
-            $('#welcome_label').removeAttr('title');
-            $('#ageCheck_label').removeAttr('title');
-            $('#zoomCheck_label').removeAttr('title');
-            $('#detailsWarning').removeAttr('title');
-            $('#audioVisualCheck').removeAttr('title');
-            $('#welcome_label, #ageCheck_label,#zoomCheck_label,#detailsWarning_label,#audioVisualCheck_label').css('color', 'black');
-            // $('#welcome_label, #ageCheck_label,#zoomCheck_label, #detailsWarning_label, #audioVisualCheck_label').show(); // This would show rather than reactivate the above
+            $('#welcome_label, #ageCheck_label, #zoomCheck_label, #detailsWarning_label, #audioVisualCheck_label, #botCheck_label, #pptCommitment_label')
+                .removeAttr('title', tooltipText)
+                .css('color', 'black')
+                .css('cursor','pointer');
         }
     }
 

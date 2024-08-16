@@ -1,11 +1,11 @@
 {
   "age_check": {
-    "subtitle": "Whether you want to restrict your study to participants aged 18 and above",
-    "text": "<b>Part of the data quality checks.</b><br><br> By default the experiment will tell participants to not participate if they are under 18. You can turn this off with the value <b>no</b>."
+    "subtitle": "Deprecated",
+    "text": "Please change this column header to <b>quality_checks</b>."
   },
   "audio_visual": {
-    "subtitle": "Checks whether participants can hear and see multimedia stimuli before starting.",
-    "text": "<b>Part of the data quality checks.</b><br><br> Can be used to check audio and video browser settings and display basic problem solving instructions where necessary. If you only require an audio check, write <b>audio</b>. If you only require a video check, write <b>video</b>. To check both audio and video, write <b>both</b> (this is the default check). If you don't wish to include this check, write <b>no</b>."
+    "subtitle": "Deprecated",
+    "text": "Please change this column header to <b>quality_checks</b>."
   },
   "buffer": {
     "subtitle": "Number of trials you want buffered",
@@ -16,12 +16,12 @@
     "text": "It cycles through a list of procedure sheets to select the required the procedure sheet each time the study starts (resetting when all sheets have been presented, restarting the cycle). If anything goes wrong (e.g., connection cannot be made to the required files) it loads in the sheet listed in the 'procedure' column of the Conditions sheet (with participant(s) prompted to inform you that counterbalancing failed). The system counterbalances without replacement, so cannot adjust for participants who withdraw. <br><br><b>Implementation:</b> click <em>Counterbalance</em> above the Conditions sheet (visible when there are 2+ procedure sheets). This will guide you through creating the PHP and CSV files required. Once generated and updated, upload both files to an external webhost (e.g., the <a href='https://research.reading.ac.uk/act/knowledgebase/php-web-hosting-on-cpanel/' target='_blank'>UoR cPanel hosting</a>) and add the full URL of the PHP file to this column."
   },
   "description": {
-    "subtitle": "deprecated",
-    "text": "please change this column header to <b>name</b>."
+    "subtitle": "Deprecated",
+    "text": "Please change this column header to <b>name</b>."
   },
   "details_warning": {
-    "subtitle": "Warning participants about the types of information they provide during the experiment?",
-    "text": "<b>Part of the data quality checks.</b><br><br> Change this value to <b>no</b> if you do not wish to remind participants to consider any personal information they provide when completing your experiment."
+    "subtitle": "Deprecated",
+    "text": "Please change this column header to <b>quality_checks</b>."
   },
   "download_at_end": {
     "subtitle": "Can participant download at the end?",
@@ -63,6 +63,10 @@
     "subtitle": "Would you like a progress bar at the top?",
     "text": "By default, your project will include a progress bar at the top that moves forward after each row within your procedure sheet is complete. However, you can change this setting in a few ways: <br>To make the progress bar go up after each trial or phase, you can change this column to say  <b>phase</b>, <b>trial</b>, <b>stimuli</b>, <b>item</b>. <br><br> If you would like to turn off the progress bar, just change this cell to say <b>off</b>. <br><br> If you would like the progress bar to proceed in proportion to the number of rows (which is the default), then you can write <b>row</b> in this column."
   },
+  "quality_checks": {
+    "subtitle": "Allows you to set the pre-study checks a participant must complete",
+    "text": "This will load a new window that allows you to set the pre-study checks you require when starting the study. Please be aware the order the checks are performed cannot be changed."
+  },
   "redcap_url": {
     "subtitle": "PhP file location",
     "text": "<b>redcap_url</b> is the location of the PhP file that acts as the bridge between Collector and REDCap when running a live experiment. Note: when an active link is present, data is sent to REDCap during both 'run' and 'preview' versions."
@@ -84,7 +88,7 @@
     "text": "<b>Part of the data quality checks.</b><br><br> Entering a value in this column will alter the main body text that is displayed when a participants starts an experiment. You can parse html to format and style the welcome message to your requirements."
   },
   "zoom_check": {
-    "subtitle": "Do you want the user to adjust the zoom in their browser to make it consistent between users?",
-    "text": "<b>Part of the data quality checks.</b><br><br> By default the project will make users compare a card with one on the screen and adjust the one on screen until they are similar sizes. This can disrupt eye-tracking using webgazer though, so you might want to write <b>no</b> in this column to stop it in this sort of situation."
+    "subtitle": "Deprecated",
+    "text": "Please change this column header to <b>quality_checks</b>."
   }
 }

@@ -1333,6 +1333,10 @@ http://nicolasgallagher.com/micro-clearfix-hack/
 /*!
  * Handsontable ContextMenu
  */
+ 
+ .hidden-important {
+  display: none !important;
+}
 
 .htContextMenu:not(.htGhostTable) {
   display: none;

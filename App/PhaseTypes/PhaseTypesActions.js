@@ -22,6 +22,7 @@ function initiate_actions() {
        */
       var quality_checks = [
         "quality_age_check",
+        "quality_bot_check",
         "quality_audio_visual",
         "quality_calibration_zoom",
         "quality_details_warning",
