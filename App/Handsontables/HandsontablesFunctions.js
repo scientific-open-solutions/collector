@@ -58,7 +58,6 @@ function isSurveyHeader(colHeader){
   return isSurvey;
 }
 function isQualityChecksHeader(colHeader){
-  thisCellValue = handsOnTable_Conditions.getValue();
   if (thisCellValue.toLowerCase() === "quality_checks") {
     console.log("we're in the header row")
   } else {
@@ -399,258 +398,261 @@ function createHoT(container, data, sheet_name, tableId) {
 
       // The code below handles the quality checks popup
 
-      if (isQualityChecksHeader(this.getDataAtCell(0, coords[0][1]))) {
-        let row = coords[0][0];
-        let col = coords[0][1];
-        const thisCellValue = this.getDataAtCell(row, col);
-    
-        setTimeout(() => {
-            $('.htMenu.htContextMenu.handsontable').css("visibility", "hidden");
-        }, 0);
-    
-        const modalHTML = `
-          <div class="modal fade" id="qualityChecksModal" tabindex="-1" role="dialog" aria-labelledby="qualityChecksModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="qualityChecksModalLabel">Data Quality Checks</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <p>Please select the required data quality checks:</p>
-                  <form id="qualityChecksForm">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="age_check" id="ageCheck">
-                      <label class="form-check-label" for="ageCheck">Age Check</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="avCheck">
-                      <label class="form-check-label" for="avCheck" id="avCheckLabel">Audio/Visual Check</label>
-                    </div>
-                    <div class="form-group" id="avCheckGroup" style="display: none; margin: 10px 0 10px 0;">
-                      <select id="avCheckDropdown" class="form-control form-select">
-                        <option value="" disabled selected>Please select the required check</option>
-                        <option value="avc_audio">Audio Only</option>
-                        <option value="avc_video">Video Only</option>
-                        <option value="avc_both">Both</option>
-                      </select>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="bot_check" id="botCheck">
-                      <label class="form-check-label" for="botCheck">Bot Check</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="participant_commitment" id="participantCommitment">
-                      <label class="form-check-label" for="participantCommitment">Participant Commitment</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="sensitive_data" id="sensitiveData">
-                      <label class="form-check-label" for="sensitiveData">Sensitive Data Warning</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="zoom_level" id="zoomLevel2">
-                      <label class="form-check-label" for="zoomLevel2">Browser Zoom Level</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="customWelcomeMessage">
-                      <label class="form-check-label" for="customWelcomeMessage" id="welcome_message_label">Customise Welcome Message</label>
-                    </div>
-                    <div class="form-group" id="welcomeMessageGroup" style="display: none;">
-                      <textarea id="welcomeMessage" class="form-control" required rows="10" style="width: 95%; min-height:200px; margin: 10px 20px;"></textarea>
-                      <small class="form-text text-muted" style="font-style: italic;"><b>Note:</b> You can style text via HTML</small>
-                    </div>
-                  </form>
-                </div>
-                <div class="modal-footer d-flex justify-content-between align-items-center">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="checkAll">
-                    <label class="form-check-label" for="checkAll">Check/Uncheck All</label>
+      if (typeof handsOnTable_Conditions.getValue() !== undefined) {
+
+        if (isQualityChecksHeader(this.getDataAtCell(0, coords[0][1]))) {
+          let row = coords[0][0];
+          let col = coords[0][1];
+          const thisCellValue = this.getDataAtCell(row, col);
+      
+          setTimeout(() => {
+              $('.htMenu.htContextMenu.handsontable').css("visibility", "hidden");
+          }, 0);
+      
+          const modalHTML = `
+            <div class="modal fade" id="qualityChecksModal" tabindex="-1" role="dialog" aria-labelledby="qualityChecksModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="qualityChecksModalLabel">Data Quality Checks</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
                   </div>
-                  <div>
-                    <button type="button" class="btn btn-secondary" id="cancelQualityChecks">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="submitQualityChecks">Submit</button>
+                  <div class="modal-body">
+                    <p>Please select the required data quality checks:</p>
+                    <form id="qualityChecksForm">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="age_check" id="ageCheck">
+                        <label class="form-check-label" for="ageCheck">Age Check</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="avCheck">
+                        <label class="form-check-label" for="avCheck" id="avCheckLabel">Audio/Visual Check</label>
+                      </div>
+                      <div class="form-group" id="avCheckGroup" style="display: none; margin: 10px 0 10px 0;">
+                        <select id="avCheckDropdown" class="form-control form-select">
+                          <option value="" disabled selected>Please select the required check</option>
+                          <option value="avc_audio">Audio Only</option>
+                          <option value="avc_video">Video Only</option>
+                          <option value="avc_both">Both</option>
+                        </select>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="bot_check" id="botCheck">
+                        <label class="form-check-label" for="botCheck">Bot Check</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="participant_commitment" id="participantCommitment">
+                        <label class="form-check-label" for="participantCommitment">Participant Commitment</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="sensitive_data" id="sensitiveData">
+                        <label class="form-check-label" for="sensitiveData">Sensitive Data Warning</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="zoom_level" id="zoomLevel2">
+                        <label class="form-check-label" for="zoomLevel2">Browser Zoom Level</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="customWelcomeMessage">
+                        <label class="form-check-label" for="customWelcomeMessage" id="welcome_message_label">Customise Welcome Message</label>
+                      </div>
+                      <div class="form-group" id="welcomeMessageGroup" style="display: none;">
+                        <textarea id="welcomeMessage" class="form-control" required rows="10" style="width: 95%; min-height:200px; margin: 10px 20px;"></textarea>
+                        <small class="form-text text-muted" style="font-style: italic;"><b>Note:</b> You can style text via HTML</small>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer d-flex justify-content-between align-items-center">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="checkAll">
+                      <label class="form-check-label" for="checkAll">Check/Uncheck All</label>
+                    </div>
+                    <div>
+                      <button type="button" class="btn btn-secondary" id="cancelQualityChecks">Cancel</button>
+                      <button type="button" class="btn btn-primary" id="submitQualityChecks">Submit</button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        `;
-    
-        $('body').append(modalHTML);
-    
-        $('#qualityChecksModal').modal('show');
+          `;
+      
+          $('body').append(modalHTML);
+      
+          $('#qualityChecksModal').modal('show');
 
-        if (thisCellValue) {
-            const selectedChecks = thisCellValue.split(',');
-            $.each(selectedChecks, function(index, value) {
-                if (value.startsWith('avc_')) {
-                    // Check the AV checkbox and set the correct dropdown value
-                    $('#avCheck').prop('checked', true);
-                    $('#avCheckGroup').show();
-                    $('#avCheckDropdown').val(value);
-                } else {
-                    $(`#qualityChecksForm .form-check-input[value="${value}"]`).prop('checked', true);
-                }
-            });
-        }
+          if (thisCellValue) {
+              const selectedChecks = thisCellValue.split(',');
+              $.each(selectedChecks, function(index, value) {
+                  if (value.startsWith('avc_')) {
+                      // Check the AV checkbox and set the correct dropdown value
+                      $('#avCheck').prop('checked', true);
+                      $('#avCheckGroup').show();
+                      $('#avCheckDropdown').val(value);
+                  } else {
+                      $(`#qualityChecksForm .form-check-input[value="${value}"]`).prop('checked', true);
+                  }
+              });
+          }
 
-        // Handle repopulating the custom welcome message if it exists
-        var columnIndices = {};
-        var currentData = handsOnTable_Conditions.getData();
-        var colCount = handsOnTable_Conditions.countCols();
-        var firstRow = currentData[0] || [];
+          // Handle repopulating the custom welcome message if it exists
+          var columnIndices = {};
+          var currentData = handsOnTable_Conditions.getData();
+          var colCount = handsOnTable_Conditions.countCols();
+          var firstRow = currentData[0] || [];
 
-        function getColumnPositions() {
-            for (var i = 0; i < colCount; i++) {
-                if (firstRow[i] != null) {
-                    columnIndices[firstRow[i]] = i;
-                }
+          function getColumnPositions() {
+              for (var i = 0; i < colCount; i++) {
+                  if (firstRow[i] != null) {
+                      columnIndices[firstRow[i]] = i;
+                  }
+              }
+          }
+
+          getColumnPositions();
+
+          if (columnIndices['welcome'] !== undefined) {
+              var welcomeMessageValue = table.getDataAtCell(row, columnIndices['welcome']);
+              $('#customWelcomeMessage').prop('checked', true);
+              $('#welcomeMessageGroup').show();
+              $('#welcomeMessage').val(welcomeMessageValue);
+          }
+
+          $('#customWelcomeMessage').change(function() {
+              if ($(this).is(':checked')) {
+                  $('#welcomeMessageGroup').show();
+              } else {
+                  $('#welcomeMessageGroup').hide();
+                  $('#welcome_message_label').css('color', '');
+                  $('#welcomeMessage').css('border-color', '');
+              }
+          });
+
+          $('#avCheck').change(function() {
+              if ($(this).is(':checked')) {
+                  $('#avCheckGroup').show();
+              } else {
+                  $('#avCheckGroup').hide();
+                  $('#avCheckLabel').css('color', '');
+                  $('#avCheckDropdown').val(''); // Reset the dropdown
+              }
+          });
+
+          $('#checkAll').change(function() {
+            const isChecked = $(this).is(':checked');
+            $('#qualityChecksForm .form-check-input:not(#checkAll)').prop('checked', isChecked);
+
+            // Show or hide AV Check dropdown based on the "Check All" status
+            if ($('#avCheck').is(':checked')) {
+                $('#avCheckGroup').show();
+            } else {
+                $('#avCheckGroup').hide();
+                $('#avCheckDropdown').val('');
+                $('#avCheckLabel').css('color', '');
             }
-        }
 
-        getColumnPositions();
-
-        if (columnIndices['welcome'] !== undefined) {
-            var welcomeMessageValue = table.getDataAtCell(row, columnIndices['welcome']);
-            $('#customWelcomeMessage').prop('checked', true);
-            $('#welcomeMessageGroup').show();
-            $('#welcomeMessage').val(welcomeMessageValue);
-        }
-
-        $('#customWelcomeMessage').change(function() {
-            if ($(this).is(':checked')) {
+            // Show or hide Welcome Message textarea based on the "Check All" status
+            if ($('#customWelcomeMessage').is(':checked')) {
                 $('#welcomeMessageGroup').show();
             } else {
                 $('#welcomeMessageGroup').hide();
                 $('#welcome_message_label').css('color', '');
                 $('#welcomeMessage').css('border-color', '');
             }
-        });
+          });
 
-        $('#avCheck').change(function() {
-            if ($(this).is(':checked')) {
-                $('#avCheckGroup').show();
-            } else {
-                $('#avCheckGroup').hide();
-                $('#avCheckLabel').css('color', '');
-                $('#avCheckDropdown').val(''); // Reset the dropdown
-            }
-        });
-
-        $('#checkAll').change(function() {
-          const isChecked = $(this).is(':checked');
-          $('#qualityChecksForm .form-check-input:not(#checkAll)').prop('checked', isChecked);
-
-          // Show or hide AV Check dropdown based on the "Check All" status
-          if ($('#avCheck').is(':checked')) {
-              $('#avCheckGroup').show();
-          } else {
-              $('#avCheckGroup').hide();
-              $('#avCheckDropdown').val('');
-              $('#avCheckLabel').css('color', '');
-          }
-
-          // Show or hide Welcome Message textarea based on the "Check All" status
-          if ($('#customWelcomeMessage').is(':checked')) {
-              $('#welcomeMessageGroup').show();
-          } else {
-              $('#welcomeMessageGroup').hide();
-              $('#welcome_message_label').css('color', '');
-              $('#welcomeMessage').css('border-color', '');
-          }
-        });
-
-    
-        $('#submitQualityChecks').click(function() {
-          const selectedChecks = [];
-          let errors = false;
-          let errorMessages = [];
       
-          $('#qualityChecksForm .form-check-input:not(#checkAll):checked').each(function() {
-              const checkboxId = $(this).attr('id');
-              if (checkboxId !== 'customWelcomeMessage' && checkboxId !== 'avCheck') {
-                  selectedChecks.push($(this).val());
-              }
+          $('#submitQualityChecks').click(function() {
+            const selectedChecks = [];
+            let errors = false;
+            let errorMessages = [];
+        
+            $('#qualityChecksForm .form-check-input:not(#checkAll):checked').each(function() {
+                const checkboxId = $(this).attr('id');
+                if (checkboxId !== 'customWelcomeMessage' && checkboxId !== 'avCheck') {
+                    selectedChecks.push($(this).val());
+                }
+            });
+        
+            // Validation for AV Check
+            if ($('#avCheck').is(':checked')) {
+                if (!$('#avCheckDropdown').val()) {
+                    $('#avCheckLabel').css('color', 'red');
+                    errorMessages.push("You haven't selected the required AV check.");
+                    errors = true;
+                } else {
+                    selectedChecks.push($('#avCheckDropdown').val());
+                    $('#avCheckLabel').css('color', '');
+                }
+            }
+        
+            // Validation for Custom Welcome Message
+            if ($('#customWelcomeMessage').is(':checked')) {
+                var welcomeMessage = $('#welcomeMessage').val();
+                if (!welcomeMessage.trim()) {
+                    $('#welcome_message_label').css('color', 'red');
+                    $('#welcomeMessage').css('border-color', 'red');
+                    errorMessages.push("You're missing the welcome message.");
+                    errors = true;
+                } else {
+                    $('#welcome_message_label').css('color', '');
+                    $('#welcomeMessage').css('border-color', '');
+                }
+            }
+        
+            if (errors) {
+                bootbox.alert(errorMessages.join('<br>'));
+                return;
+            }
+        
+            var columnNames = ['name', 'stimuli', 'procedure', 'participant_id', 'buffer'];
+            if (welcomeMessage) columnNames.push('welcome');
+        
+            var columnIndices = {};
+        
+            function getColumnPositions() {
+                for (var i = 0; i < colCount; i++) {
+                    if (firstRow[i] != null) { 
+                        columnIndices[firstRow[i]] = i;
+                    }
+                }
+            }
+            getColumnPositions();
+        
+            var existingColumns = new Set(firstRow.filter(Boolean));
+        
+            var columnsToAdd = columnNames.filter(name => !existingColumns.has(name));
+        
+            if (columnsToAdd.length > 0) {
+                var insertPos = colCount - 1;
+                for (var i = 0; i < columnsToAdd.length; i++) {
+                    handsOnTable_Conditions.setDataAtCell(0, insertPos + i, columnsToAdd[i]);
+                    columnIndices[columnsToAdd[i]] = insertPos + i;
+                }
+        
+                handsOnTable_Conditions.render();
+                colCount = handsOnTable_Conditions.countCols();
+                getColumnPositions();
+            }
+        
+            if (columnIndices['welcome'] !== undefined) table.setDataAtCell(row, columnIndices['welcome'], welcomeMessage);
+        
+            table.setDataAtCell(row, col, selectedChecks.join(','));
+        
+            $('#qualityChecksModal').modal('hide');
+          });
+        
+      
+          $('#cancelQualityChecks').click(function() {
+              $('#qualityChecksModal').modal('hide');
           });
       
-          // Validation for AV Check
-          if ($('#avCheck').is(':checked')) {
-              if (!$('#avCheckDropdown').val()) {
-                  $('#avCheckLabel').css('color', 'red');
-                  errorMessages.push("You haven't selected the required AV check.");
-                  errors = true;
-              } else {
-                  selectedChecks.push($('#avCheckDropdown').val());
-                  $('#avCheckLabel').css('color', '');
-              }
-          }
-      
-          // Validation for Custom Welcome Message
-          if ($('#customWelcomeMessage').is(':checked')) {
-              var welcomeMessage = $('#welcomeMessage').val();
-              if (!welcomeMessage.trim()) {
-                  $('#welcome_message_label').css('color', 'red');
-                  $('#welcomeMessage').css('border-color', 'red');
-                  errorMessages.push("You're missing the welcome message.");
-                  errors = true;
-              } else {
-                  $('#welcome_message_label').css('color', '');
-                  $('#welcomeMessage').css('border-color', '');
-              }
-          }
-      
-          if (errors) {
-              bootbox.alert(errorMessages.join('<br>'));
-              return;
-          }
-      
-          var columnNames = ['name', 'stimuli', 'procedure', 'participant_id', 'buffer'];
-          if (welcomeMessage) columnNames.push('welcome');
-      
-          var columnIndices = {};
-      
-          function getColumnPositions() {
-              for (var i = 0; i < colCount; i++) {
-                  if (firstRow[i] != null) { 
-                      columnIndices[firstRow[i]] = i;
-                  }
-              }
-          }
-          getColumnPositions();
-      
-          var existingColumns = new Set(firstRow.filter(Boolean));
-      
-          var columnsToAdd = columnNames.filter(name => !existingColumns.has(name));
-      
-          if (columnsToAdd.length > 0) {
-              var insertPos = colCount - 1;
-              for (var i = 0; i < columnsToAdd.length; i++) {
-                  handsOnTable_Conditions.setDataAtCell(0, insertPos + i, columnsToAdd[i]);
-                  columnIndices[columnsToAdd[i]] = insertPos + i;
-              }
-      
-              handsOnTable_Conditions.render();
-              colCount = handsOnTable_Conditions.countCols();
-              getColumnPositions();
-          }
-      
-          if (columnIndices['welcome'] !== undefined) table.setDataAtCell(row, columnIndices['welcome'], welcomeMessage);
-      
-          table.setDataAtCell(row, col, selectedChecks.join(','));
-      
-          $('#qualityChecksModal').modal('hide');
-      });
-      
-    
-        $('#cancelQualityChecks').click(function() {
-            $('#qualityChecksModal').modal('hide');
-        });
-    
-        $('#qualityChecksModal').on('hidden.bs.modal', function () {
-            $('#qualityChecksModal').remove();
-        });
+          $('#qualityChecksModal').on('hidden.bs.modal', function () {
+              $('#qualityChecksModal').remove();
+          });
+      }
     }
     
     // End of the code handling the quality checks popup
