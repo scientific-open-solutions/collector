@@ -479,7 +479,7 @@ $("#rename_proc_button").on("click", function () {
 
             handsOnTableInstance.render();
             var index = 0;
-            for (let i = 0; i < handsOnTableInstance.countCols(); i++) {
+            for (let i = 0; i < handsOnTableInstance.countCols()-1; i++) {
               const colHeader = handsOnTableInstance.getDataAtCell(0, index + i);
               if (colHeader.toLowerCase().indexOf("counterbalance") !== -1) {
                 bootbox.dialog({
@@ -490,11 +490,13 @@ $("#rename_proc_button").on("click", function () {
                       label: "OK",
                       className: 'btn-primary',
                       callback: function () {
-                        // This will close the modal
+                        // We don't need to do anything else except close the modal
                       }
                     }
                   }
                 });
+              } else {
+                // do nothing as we aren't using counterbalancing
               }
             }
 
