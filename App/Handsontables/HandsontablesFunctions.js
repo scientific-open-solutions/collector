@@ -58,11 +58,13 @@ function isSurveyHeader(colHeader){
   return isSurvey;
 }
 function isQualityChecksHeader(colHeader){
-  if (thisCellValue.toLowerCase() === "quality_checks") {
+  if (thisCellValue && thisCellValue.toLowerCase() === "quality_checks") {
     console.log("we're in the header row")
   } else {
     var isQualityChecks = false;
-    if (colHeader.toLowerCase() === "quality_checks") isQualityChecks = true;
+    if (colHeader && colHeader.toLowerCase() === "quality_checks") {
+      isQualityChecks = true;
+    } 
     return isQualityChecks;
   }
 }
@@ -484,17 +486,17 @@ function createHoT(container, data, sheet_name, tableId) {
           $('#qualityChecksModal').modal('show');
 
           if (thisCellValue) {
-              const selectedChecks = thisCellValue.split(',');
-              $.each(selectedChecks, function(index, value) {
-                  if (value.startsWith('avc_')) {
-                      // Check the AV checkbox and set the correct dropdown value
-                      $('#avCheck').prop('checked', true);
-                      $('#avCheckGroup').show();
-                      $('#avCheckDropdown').val(value);
-                  } else {
-                      $(`#qualityChecksForm .form-check-input[value="${value}"]`).prop('checked', true);
-                  }
-              });
+            const selectedChecks = thisCellValue.split(',');
+            $.each(selectedChecks, function(index, value) {
+                if (value.startsWith('avc_')) {
+                    // Check the AV checkbox and set the correct dropdown value
+                    $('#avCheck').prop('checked', true);
+                    $('#avCheckGroup').show();
+                    $('#avCheckDropdown').val(value);
+                } else {
+                    $(`#qualityChecksForm .form-check-input[value="${value}"]`).prop('checked', true);
+                }
+            });
           }
 
           // Handle repopulating the custom welcome message if it exists
@@ -504,40 +506,40 @@ function createHoT(container, data, sheet_name, tableId) {
           var firstRow = currentData[0] || [];
 
           function getColumnPositions() {
-              for (var i = 0; i < colCount; i++) {
-                  if (firstRow[i] != null) {
-                      columnIndices[firstRow[i]] = i;
-                  }
-              }
+            for (var i = 0; i < colCount; i++) {
+                if (firstRow[i] != null) {
+                    columnIndices[firstRow[i]] = i;
+                }
+            }
           }
 
           getColumnPositions();
 
           if (columnIndices['welcome'] !== undefined) {
-              var welcomeMessageValue = table.getDataAtCell(row, columnIndices['welcome']);
-              $('#customWelcomeMessage').prop('checked', true);
-              $('#welcomeMessageGroup').show();
-              $('#welcomeMessage').val(welcomeMessageValue);
+            var welcomeMessageValue = table.getDataAtCell(row, columnIndices['welcome']);
+            $('#customWelcomeMessage').prop('checked', true);
+            $('#welcomeMessageGroup').show();
+            $('#welcomeMessage').val(welcomeMessageValue);
           }
 
           $('#customWelcomeMessage').change(function() {
-              if ($(this).is(':checked')) {
-                  $('#welcomeMessageGroup').show();
-              } else {
-                  $('#welcomeMessageGroup').hide();
-                  $('#welcome_message_label').css('color', '');
-                  $('#welcomeMessage').css('border-color', '');
-              }
+            if ($(this).is(':checked')) {
+                $('#welcomeMessageGroup').show();
+            } else {
+                $('#welcomeMessageGroup').hide();
+                $('#welcome_message_label').css('color', '');
+                $('#welcomeMessage').css('border-color', '');
+            }
           });
 
           $('#avCheck').change(function() {
-              if ($(this).is(':checked')) {
-                  $('#avCheckGroup').show();
-              } else {
-                  $('#avCheckGroup').hide();
-                  $('#avCheckLabel').css('color', '');
-                  $('#avCheckDropdown').val(''); // Reset the dropdown
-              }
+            if ($(this).is(':checked')) {
+                $('#avCheckGroup').show();
+            } else {
+                $('#avCheckGroup').hide();
+                $('#avCheckLabel').css('color', '');
+                $('#avCheckDropdown').val(''); // Reset the dropdown
+            }
           });
 
           $('#checkAll').change(function() {
@@ -603,8 +605,8 @@ function createHoT(container, data, sheet_name, tableId) {
             }
         
             if (errors) {
-                bootbox.alert(errorMessages.join('<br>'));
-                return;
+              bootbox.alert(errorMessages.join('<br>'));
+              return;
             }
         
             var columnNames = ['name', 'stimuli', 'procedure', 'participant_id', 'buffer'];
@@ -613,11 +615,11 @@ function createHoT(container, data, sheet_name, tableId) {
             var columnIndices = {};
         
             function getColumnPositions() {
-                for (var i = 0; i < colCount; i++) {
-                    if (firstRow[i] != null) { 
-                        columnIndices[firstRow[i]] = i;
-                    }
-                }
+              for (var i = 0; i < colCount; i++) {
+                  if (firstRow[i] != null) { 
+                      columnIndices[firstRow[i]] = i;
+                  }
+              }
             }
             getColumnPositions();
         
@@ -626,15 +628,15 @@ function createHoT(container, data, sheet_name, tableId) {
             var columnsToAdd = columnNames.filter(name => !existingColumns.has(name));
         
             if (columnsToAdd.length > 0) {
-                var insertPos = colCount - 1;
-                for (var i = 0; i < columnsToAdd.length; i++) {
-                    handsOnTable_Conditions.setDataAtCell(0, insertPos + i, columnsToAdd[i]);
-                    columnIndices[columnsToAdd[i]] = insertPos + i;
-                }
-        
-                handsOnTable_Conditions.render();
-                colCount = handsOnTable_Conditions.countCols();
-                getColumnPositions();
+              var insertPos = colCount - 1;
+              for (var i = 0; i < columnsToAdd.length; i++) {
+                  handsOnTable_Conditions.setDataAtCell(0, insertPos + i, columnsToAdd[i]);
+                  columnIndices[columnsToAdd[i]] = insertPos + i;
+              }
+      
+              handsOnTable_Conditions.render();
+              colCount = handsOnTable_Conditions.countCols();
+              getColumnPositions();
             }
         
             if (columnIndices['welcome'] !== undefined) table.setDataAtCell(row, columnIndices['welcome'], welcomeMessage);
@@ -652,8 +654,8 @@ function createHoT(container, data, sheet_name, tableId) {
           $('#qualityChecksModal').on('hidden.bs.modal', function () {
               $('#qualityChecksModal').remove();
           });
+        }
       }
-    }
     
     // End of the code handling the quality checks popup
     
