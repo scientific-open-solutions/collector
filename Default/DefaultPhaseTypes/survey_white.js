@@ -1394,9 +1394,10 @@ function write(type, row) {
         var this_span = $("<span>");
         this_span
           .css("width", side_width)
-          .css("padding", "20px")
+          .css("padding", "0 20px 0 20px")
           .addClass("text-primary")
-          .html("<b>" + this_side + "</b>");
+          // .html("<b>" + this_side + "</b>");
+          .html(this_side);
         return this_span[0].outerHTML;
       });
     } else {

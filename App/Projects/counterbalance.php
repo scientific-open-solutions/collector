@@ -12,6 +12,17 @@ $csvFile = 'change_this_to_the_location_of_the_procedures_list.csv';
 /* x x x  x x x x x x DO NOT CHANGE ANYTHING BELOW x x x x x x x x x x */
 /* ******************************************************************* */ 
 
+// CORS headers (allows access from any origin)
+header('Access-Control-Allow-Origin: *'); // Replace with the actual origin you want to allow
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, X-Requested-With');
+
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
 // Function to get the contents of the CSV file as an array
 function getCsvArray($csvFile) {
     if (!file_exists($csvFile)) {

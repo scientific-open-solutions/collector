@@ -47,11 +47,11 @@ function handleButtonPress(buttonPressed) {
     Individual items that can be added 
     - - - - - - - - - - - - - - - - - - */
 
-function createInsertRowOption() {
+function createInsertRowOption_survey() {
     return `
         <div class="form-group">
-            <label for="specific_row">Insert after specific row?</label>
-            <input type="checkbox" id="specific_row" onchange="toggleRowSelect()">
+            <label for="specific_row_survey">Insert after specific row?</label>
+            <input type="checkbox" id="specific_row_survey" onchange="toggleRowSelect_survey()">
         </div>
         <div class="form-group" id="row_select_container" style="display: none;margin-left: 20px;">
             <label for="row_select">Select Row</label>
@@ -60,18 +60,18 @@ function createInsertRowOption() {
     `;
 }
 
-function toggleRowSelect() {
+function toggleRowSelect_survey() {
     var rowSelectContainer = document.getElementById('row_select_container');
-    var specificRow = document.getElementById('specific_row').checked;
+    var specificRow = document.getElementById('specific_row_survey').checked;    
     if (specificRow) {
-        populateRowSelect();
+        populateRowSelect_survey();
         rowSelectContainer.style.display = 'block';
     } else {
         rowSelectContainer.style.display = 'none';
     }
 }
 
-function populateRowSelect() {
+function populateRowSelect_survey() {
     var itemNames = survey_HoT.getDataAtCol(0).slice(1).filter(Boolean); // Get all item names from the first column except the first row
     var rowSelect = document.getElementById('row_select');
     rowSelect.innerHTML = itemNames.map((name, index) => `<option value="${index}">${name}</option>`).join('');
@@ -144,7 +144,7 @@ function addCheckboxOptions(callback) {
                     var optional = $('#optional').is(':checked') ? 'yes' : 'no';
                     var direction = $('#direction').is(':checked') ? 'checkbox' : 'checkbox_horizontal';
                     var shuffleQuestion = $('#shuffle_question').is(':checked') ? 'on' : 'off';
-                    var specificRow = $('#specific_row').is(':checked');
+                    var specificRow = $('#specific_row_survey').is(':checked');
                     var rowIndex = $('#row_select').val();
                     var provideFeedback = $('#provide_feedback').is(':checked');
 
@@ -195,7 +195,7 @@ function addCheckboxOptions(callback) {
                 label: 'Cancel',
                 className: 'btn-secondary',
                 callback: function () {
-                    $("#add_item_btn").click();
+                    $("#add_survey_item_btn").click();
                 }
             }
         }
@@ -349,7 +349,7 @@ function addDropdownOptions(callback) {
                     <input type="checkbox" id="lock_feedback">
                 </div>
             </div>
-            ${createInsertRowOption()}
+            ${createInsertRowOption_survey()}
         </form>
         `,
         buttons: {
@@ -363,7 +363,7 @@ function addDropdownOptions(callback) {
                     var values = $('#values').val().replace(/\s*\|\s*/g, '|');
                     var optional = $('#optional').is(':checked') ? 'yes' : 'no';
                     var shuffleQuestion = $('#shuffle_question').is(':checked') ? 'on' : 'off';
-                    var specificRow = $('#specific_row').is(':checked');
+                    var specificRow = $('#specific_row_survey').is(':checked');
                     var rowIndex = $('#row_select').val();
                     var provideFeedback = $('#provide_feedback').is(':checked');
 
@@ -414,7 +414,7 @@ function addDropdownOptions(callback) {
                 className: 'btn-secondary',
                 callback: function () {
                     console.log('Cancelled');
-                    $("#add_item_btn").click();
+                    $("#add_survey_item_btn").click();
                 }
             }
         }
@@ -539,7 +539,7 @@ function addInstructOptions(callback) {
                 <label for="shuffle_question">Shuffle the question?</label>
                 <input type="checkbox" id="shuffle_question">
             </div>
-            ${createInsertRowOption()}
+            ${createInsertRowOption_survey()}
         </form>
         `,
         buttons: {
@@ -550,7 +550,7 @@ function addInstructOptions(callback) {
                     var itemName = $('#item_name').val().toLowerCase().replace(/ /g, '_');
                     var text = $('#text').val();
                     var shuffleQuestion = $('#shuffle_question').is(':checked') ? 'on' : 'off';
-                    var specificRow = $('#specific_row').is(':checked');
+                    var specificRow = $('#specific_row_survey').is(':checked');
                     var rowIndex = $('#row_select').val();
 
                     var missingFields = [];
@@ -570,7 +570,7 @@ function addInstructOptions(callback) {
                 label: 'Cancel',
                 className: 'btn-secondary',
                 callback: function () {
-                    $("#add_item_btn").click();
+                    $("#add_survey_item_btn").click();
                 }
             }
         }
@@ -738,7 +738,7 @@ function addLikertOptions(callback) {
                     } 
                     var sideByside = $('#side_by_side').is(':checked') ? 'yes' : 'no';
                     var shuffleQuestion = $('#shuffle_question').is(':checked') ? 'on' : 'off';
-                    var specificRow = $('#specific_row').is(':checked');
+                    var specificRow = $('#specific_row_survey').is(':checked');
                     var rowIndex = $('#row_select').val();
                     var provideFeedback = $('#provide_feedback').is(':checked');
 
@@ -790,7 +790,7 @@ function addLikertOptions(callback) {
                 className: 'btn-secondary',
                 callback: function () {
                     console.log('Cancelled');
-                    $("#add_item_btn").click();
+                    $("#add_survey_item_btn").click();
                 }
             }
         }
@@ -933,7 +933,7 @@ function addNumberOptions(callback) {
                     var text = $('#text').val();
                     var optional = $('#optional').is(':checked') ? 'yes' : 'no';
                     var shuffleQuestion = $('#shuffle_question').is(':checked') ? 'on' : 'off';
-                    var specificRow = $('#specific_row').is(':checked');
+                    var specificRow = $('#specific_row_survey').is(':checked');
                     var rowIndex = $('#row_select').val();
 
                     var missingFields = [];
@@ -953,7 +953,7 @@ function addNumberOptions(callback) {
                 label: 'Cancel',
                 className: 'btn-secondary',
                 callback: function () {
-                    $("#add_item_btn").click();
+                    $("#add_survey_item_btn").click();
                 }
             }
         }
@@ -1061,7 +1061,7 @@ function addPageBreakOptions(callback) {
                 className: 'btn-primary',
                 callback: function () {
                     var itemName = $('#item_name').val().toLowerCase().replace(/ /g, '_');
-                    var specificRow = $('#specific_row').is(':checked');
+                    var specificRow = $('#specific_row_survey').is(':checked');
                     var rowIndex = $('#row_select').val();
 
                     var missingFields = [];
@@ -1081,7 +1081,7 @@ function addPageBreakOptions(callback) {
                 className: 'btn-secondary',
                 callback: function () {
                     console.log('Cancelled');
-                    $("#add_item_btn").click();
+                    $("#add_survey_item_btn").click();
                 }
             }
         }
@@ -1205,7 +1205,7 @@ function addTextOptions(callback) {
                     var optional = $('#optional').is(':checked') ? 'yes' : 'no';
                     var paragraph = $('#paragraph').is(':checked') ? 'para' : 'text';
                     var shuffleQuestion = $('#shuffle_question').is(':checked') ? 'on' : 'off';
-                    var specificRow = $('#specific_row').is(':checked');
+                    var specificRow = $('#specific_row_survey').is(':checked');
                     var rowIndex = $('#row_select').val();
 
                     var missingFields = [];
@@ -1225,7 +1225,7 @@ function addTextOptions(callback) {
                 label: 'Cancel',
                 className: 'btn-secondary',
                 callback: function () {
-                    $("#add_item_btn").click();
+                    $("#add_survey_item_btn").click();
                 }
             }
         }
@@ -1381,7 +1381,7 @@ function addRadioOptions(callback) {
                     var optional = $('#optional').is(':checked') ? 'yes' : 'no';
                     var direction = $('#direction').is(':checked') ? 'radio' : 'radio_horizontal';
                     var shuffleQuestion = $('#shuffle_question').is(':checked') ? 'on' : 'off';
-                    var specificRow = $('#specific_row').is(':checked');
+                    var specificRow = $('#specific_row_survey').is(':checked');
                     var rowIndex = $('#row_select').val();
                     var provideFeedback = $('#provide_feedback').is(':checked');
 
@@ -1431,7 +1431,7 @@ function addRadioOptions(callback) {
                 label: 'Cancel',
                 className: 'btn-secondary',
                 callback: function () {
-                    $("#add_item_btn").click();
+                    $("#add_survey_item_btn").click();
                 }
             }
         }
@@ -1556,7 +1556,7 @@ function addRedcapPiiOptions(callback) {
                 className: 'btn-primary',
                 callback: function () {
                     var itemName = $('#item_name').val().toLowerCase().replace(/ /g, '_');
-                    var specificRow = $('#specific_row').is(':checked');
+                    var specificRow = $('#specific_row_survey').is(':checked');
                     var rowIndex = $('#row_select').val();
 
                     var missingFields = [];
@@ -1575,7 +1575,7 @@ function addRedcapPiiOptions(callback) {
                 label: 'Cancel',
                 className: 'btn-secondary',
                 callback: function () {
-                    $("#add_item_btn").click();
+                    $("#add_survey_item_btn").click();
                 }
             }
         }

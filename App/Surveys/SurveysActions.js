@@ -3,7 +3,7 @@
  * Survey actions (i.e. element triggers)
  */
 
-$("#add_item_btn").on("click", function () {
+$("#add_survey_item_btn").on("click", function () {
   function checkBranchColumn() {
     var currentData = survey_HoT.getData();
     var firstRow = currentData[0];
@@ -232,7 +232,7 @@ $("#preview_tab_btn").on("click", function () {
   preview_survey(this_survey);
   $('#pills-spreadsheet_survey').removeClass("active show");
   $('#pills-preview_survey').addClass("active show");
-  $("#add_item_btn, #branching_btn, #scoring_btn, dm_h6_text").hide();
+  $("#add_survey_item_btn, #branching_btn, #scoring_btn, dm_h6_text").hide();
 });
 
 $("#spreadsheet_tab_btn").on("click", function () {
@@ -240,7 +240,7 @@ $("#spreadsheet_tab_btn").on("click", function () {
   $('#preview_tab_btn').removeClass("active").removeClass("btn-info").addClass("btn-outline-info");
   $('#pills-spreadsheet_survey').addClass("active show");
   $('#pills-preview_survey').removeClass("active show");
-  $("#add_item_btn, #branching_btn, #scoring_btn, dm_h6_text").show();
+  $("#add_survey_item_btn, #branching_btn, #scoring_btn, dm_h6_text").show();
 });
 
 $("#rename_survey_btn").on("click", function () {
@@ -365,8 +365,8 @@ $("#save_survey_btn").on("click", function () {
 $("#survey_select").on("change", function () {
   $('#new_survey_button_td').removeClass("cell_spacer");
   $("#survey_HoT").css("min-height","0px");
-  $("#save_survey_btn, rename_survey_btn, #delete_survey_btn").show();
-  $("#add_item_btn, #branching_btn, #scoring_btn").show();
+  $("#save_survey_btn, #rename_survey_btn, #delete_survey_btn").show();
+  $("#add_survey_item_btn, #branching_btn, #scoring_btn").show();
   $("#dm_h6_text").hide();
   $('#new_survey_button')
     .removeClass('btn-outline-primary')

@@ -1405,7 +1405,7 @@ function parse_sheets() {
   }
 
   function counterbalance(action) {
-    // NOTE: There's a copy of this as 'Phase.Counterbalance' that allows you to reset things if needed.
+    // NOTE: There's a copy of this as 'Phase.Counterbalance' that allows you to reset things if needed (i.e., if someone tries with the wrong browser is allows you to reset the coutnerbalancing system).
     phpFileURL = project_json.this_condition.counterbalance;
     $.ajax({
         type: 'POST',
@@ -1420,10 +1420,11 @@ function parse_sheets() {
                 console.log("Reset Response: " + response);
             }
         },
-        error: function() {
-            bootbox.alert("An error has occured with the counterbalancing system, please contact the researcher before continuing.")
-            proc_sheet_name = project_json.this_condition.procedure.toLowerCase().replace(".csv", "") + ".csv";
-            switch_platform();
+        error: function(response) {
+          console.log("Location Response: " + response);
+          bootbox.alert("An error has occured with the counterbalancing system, please contact the researcher before continuing.")
+           proc_sheet_name = project_json.this_condition.procedure.toLowerCase().replace(".csv", "") + ".csv";
+           switch_platform();
         }
     });
   }

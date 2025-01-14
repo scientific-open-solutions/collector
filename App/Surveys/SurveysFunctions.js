@@ -214,7 +214,7 @@ function create_survey_HoT(this_survey) {
       var current_survey = $("#survey_select").val().split("|")[1];
     
       if (typeof master.surveys.default_surveys[current_survey] !== "undefined") {
-        $('#save_survey_btn, #rename_survey_btn, #delete_survey_btn, #add_item_btn, #branching_btn, #scoring_btn').hide();
+        $('#save_survey_btn, #rename_survey_btn, #delete_survey_btn, #add_survey_item_btn, #branching_btn, #scoring_btn').hide();
         $("#dm_h6_text").show();
         Collector.custom_alert("These changes will not be saved, as you are editing a <b>default</b> survey. Please click <b>New Survey</b> to create a new survey");
       }
