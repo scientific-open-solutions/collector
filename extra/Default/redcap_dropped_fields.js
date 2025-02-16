@@ -40,9 +40,9 @@ let main_remove_fields = [
   
   let demo_remove_fields = [
     // "completion_code",
-    "condition_name",
-    "condition_procedure",
-    "condition_stimuli",
+    // "condition_name",
+    // "condition_procedure",
+    // "condition_stimuli",
     "notes",
     "participant_browser",
     "phase_number",

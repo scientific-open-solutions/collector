@@ -123,22 +123,15 @@ Project = {
     phase_end_ms = new Date().getTime();
     parent.parent.phase_start_time_ms = phase_end_ms;
     phase_inputs = {};
-
-    
     
     // $("#experiment_progress").css("width",(100 * project_json.phase_no) / (project_json.parsed_proc.length - 1) + "%");
 
     for (var i = 0; i < project_json.inputs.length; i++) {
-      if (
-        $("input[name='" + project_json.inputs[i].name + "']:checked")
-          .length === 0
-      ) {
-        phase_inputs[project_json.inputs[i].name] =
-          project_json.inputs[i].value;
+      if ( $("input[name='" + project_json.inputs[i].name + "']:checked").length === 0 ) {
+        phase_inputs[project_json.inputs[i].name] = project_json.inputs[i].value;
       } else {
         if (project_json.inputs[i].checked) {
-          phase_inputs[project_json.inputs[i].name] =
-            project_json.inputs[i].value;
+          phase_inputs[project_json.inputs[i].name] = project_json.inputs[i].value;
         }
       }
     }
@@ -586,7 +579,6 @@ Project = {
         console.log("They want to go to phase: " + go_to_info)  
       } 
       console.log("Jumping to phase: " + go_to_info)
-      parent.parent.project_json.inputs = jQuery("[name]");
       Project.finish_phase(go_to_info);
     }
   },
