@@ -503,54 +503,45 @@ $("#rename_stim_button").on("click", function () {
   };
 });
 $("#quick_prev_btn").on("click", function(){
+  function preview_condition(this_condition){
+    // load currently saved phasetypes
+    project_json.phasetypes_html = {};
+    Object.keys(project_json.phasetypes).forEach(function(this_key){
+      if(typeof(master.phasetypes.default[this_key]) !== "undefined"){
+        project_json.phasetypes_html[this_key] = master.phasetypes.default[this_key];
+      } else if(typeof(master.phasetypes.user[this_key]) !== "undefined"){
+        project_json.phasetypes_html[this_key] = master.phasetypes.user[this_key];
+      } else {
+        bootbox.alert("The phasetype " + this_key + " does not seem to exist?");
+      }   
+    });
+    //console.log(project_json);
+    $("#preview_iframe").remove();
+    $("body").append(
+      $("<iframe>")
+        .attr("src", "Run.html?name=" + this_condition + "&platform=onlinepreview")
+        .css("height", "75%")
+        .css("width", "75%")
+        .prop("id","preview_iframe")
+        .css("background-color","green")
+        .css("position","fixed")
+        .css("left","12.5%")
+        .css("top","12.5%")
+    );
+    $("#preview_iframe")[0].contentWindow.quick_preview = true;
+    //$("#preview_iframe")[0].contentWindow.Project.get_vars.platform = "preview"
+  }
   var project = $("#project_list").val();
   var project_json = master.projects.projects[project];
-  // load currently saved phasetypes
-  project_json.phasetypes_html = {};
-  Object.keys(project_json.phasetypes).forEach(function(this_key){
-    if(typeof(master.phasetypes.default[this_key]) !== "undefined"){
-      project_json.phasetypes_html[this_key] = master.phasetypes.default[this_key];
-    } else if(typeof(master.phasetypes.user[this_key]) !== "undefined"){
-      project_json.phasetypes_html[this_key] = master.phasetypes.user[this_key];
-    } else {
-      bootbox.alert("The phasetype " + this_key + " does not seem to exist?");
-    }   
-  });
-  console.log(project_json);
-  $("body").append(
-    $("<iframe>")
-      .attr("src", "Run.html")
-      .css("height", "75%")
-      .css("width", "75%")
-      .prop("id","preview_iframe")
-      .css("background-color","green")
-      .css("position","fixed")
-      .css("left","12.5%")
-      .css("top","12.5%")
-  )
-  $("#preview_iframe")[0].contentWindow.quick_preview = true;
-  /*
-  $('#myFrame').on('load', function () {
-    const iframeWindow = this.contentWindow;
- 
-    // Inject the variable
-    iframeWindow.myInjectedVariable = myVariable;
-
-  });
-  */
-
-
-  /*
-  doc = document.getElementById("preview_iframe").contentWindow.document;
-  doc.open();
-  try {
-    doc.write(phase_iframe_code);
-  } catch (error) {
-    alert("failed to write the phase_code");
-    alert(error);
+  //check if there is more than one conditions
+  project_json.conditions = Collector.PapaParsed(project_json.conditions);
+  if(project_json.conditions.length > 1){
+    bootbox.prompt("Which condition would you like", function(response){
+      preview_condition(response);
+    });
+  } else {
+    preview_condition(project_json.conditions[0].name);
   }
-  doc.close();
-  */
 
 });
 $("#run_btn").on("click", function () {

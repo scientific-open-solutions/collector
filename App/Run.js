@@ -1029,6 +1029,7 @@ function get_gets() {
 }
 
 function get_htmls() {
+  console.log("pipeline: get_htmls");
   var htmls = [
     {
       name: "Timer",
@@ -1216,19 +1217,23 @@ function load_phases() {
           var code_location = this_phase.replace("[[[LOCATION]]]..", "..");
           break;
         case "localhost":
-        case "onlinepreview":
+        // case "onlinepreview": (AH: probably should delete this line)
         case "preview":
         case "simulateonline":
           var code_location = this_phase.replace("[[[LOCATION]]]..", home_dir);
           break;
       }
-      $.get(code_location, function (phase_code) {
-        project_json.phasetypes[phasetype] = phase_code;
-        loaded_phases++;
-        if (loaded_phases === phases) {
-          Project.activate_pipe();
-        }
-      });
+      if(typeof(quick_preview) !== "undefined" && quick_preview){
+        project_json.phasetypes[phasetype] = project_json.phasetypes_html[phasetype];
+      } else {
+        $.get(code_location, function (phase_code) {
+          project_json.phasetypes[phasetype] = phase_code;
+          loaded_phases++;
+          if (loaded_phases === phases) {
+            Project.activate_pipe();
+          }
+        });
+      }
     } else {
       loaded_phases++;
       if (loaded_phases === phases) {
@@ -1277,22 +1282,32 @@ console.log(project_json);
         break;
       case "github":
       case "onlinepreview":
-        var proc_url = "../User/Projects/" + Project.get_vars.location + "/" + proc_sheet_name;
-        $.get(proc_url, function (proc_sheet_content) {
-          project_json.parsed_proc = Collector.PapaParsed(proc_sheet_content);
-          proc_stim_loaded[1] = "procedure";
-          if (proc_stim_loaded.join("-") === "stimuli-procedure") {
-            Project.activate_pipe();
-          }
-        });
-        var stim_url = "../User/Projects/" + Project.get_vars.location + "/" + stim_sheet_name;
-        $.get(stim_url, function (stim_sheet_content) {
-          project_json.parsed_stim = [null, null].concat(Collector.PapaParsed(stim_sheet_content));
-          proc_stim_loaded[0] = "stimuli";
-          if (proc_stim_loaded.join("-") === "stimuli-procedure") {
-            Project.activate_pipe();
-          }
-        });
+        if(typeof(quick_preview) !== "undefined" && quick_preview){
+          project_json.parsed_proc = Collector.PapaParsed(project_json.all_procs[proc_sheet_name]);
+          Project.activate_pipe();
+        } else {
+          var proc_url = "../User/Projects/" + Project.get_vars.location + "/" + proc_sheet_name;
+          $.get(proc_url, function (proc_sheet_content) {
+            project_json.parsed_proc = Collector.PapaParsed(proc_sheet_content);
+            proc_stim_loaded[1] = "procedure";
+            if (proc_stim_loaded.join("-") === "stimuli-procedure") {
+              Project.activate_pipe();
+            }
+          });
+        }
+        if(typeof(quick_preview) !== "undefined" && quick_preview){
+          project_json.parsed_stim = Collector.PapaParsed(project_json.all_stims[stim_sheet_name]);
+          Project.activate_pipe();
+        } else {
+          var stim_url = "../User/Projects/" + Project.get_vars.location + "/" + stim_sheet_name;
+          $.get(stim_url, function (stim_sheet_content) {
+            project_json.parsed_stim = [null, null].concat(Collector.PapaParsed(stim_sheet_content));
+            proc_stim_loaded[0] = "stimuli";
+            if (proc_stim_loaded.join("-") === "stimuli-procedure") {
+              Project.activate_pipe();
+            }
+          });
+        }
         break;
       case "server":
         proc_stim_loaded[1] = "procedure";
@@ -1654,6 +1669,8 @@ function requestFullScreen(element) {
 }
 
 function select_condition() {
+  console.log("project_json.conditions");
+  console.log(project_json.conditions);
   project_json.this_condition = project_json.conditions.filter(function (row) {
     return row.name === Project.get_vars.name;
   })[0];
@@ -1912,7 +1929,11 @@ function start_project() {
   window.resizeTo(screen.availWidth, screen.availHeight);
 
   //detect if resuming
-
+  console.log("trying to insert preview");
+  if(typeof(parent.project_json) !== "undefined"){
+    console.log("detected preview json!");
+    project_json = parent.project_json;
+  }
   if (Object.keys(project_json).length === 0) {
     switch (Project.get_vars.platform) {
       case "simulateonline":
