@@ -502,7 +502,57 @@ $("#rename_stim_button").on("click", function () {
     );
   };
 });
+$("#quick_prev_btn").on("click", function(){
+  var project = $("#project_list").val();
+  var project_json = master.projects.projects[project];
+  // load currently saved phasetypes
+  project_json.phasetypes_html = {};
+  Object.keys(project_json.phasetypes).forEach(function(this_key){
+    if(typeof(master.phasetypes.default[this_key]) !== "undefined"){
+      project_json.phasetypes_html[this_key] = master.phasetypes.default[this_key];
+    } else if(typeof(master.phasetypes.user[this_key]) !== "undefined"){
+      project_json.phasetypes_html[this_key] = master.phasetypes.user[this_key];
+    } else {
+      bootbox.alert("The phasetype " + this_key + " does not seem to exist?");
+    }   
+  });
+  console.log(project_json);
+  $("body").append(
+    $("<iframe>")
+      .attr("src", "Run.html")
+      .css("height", "75%")
+      .css("width", "75%")
+      .prop("id","preview_iframe")
+      .css("background-color","green")
+      .css("position","fixed")
+      .css("left","12.5%")
+      .css("top","12.5%")
+  )
+  $("#preview_iframe")[0].contentWindow.quick_preview = true;
+  /*
+  $('#myFrame').on('load', function () {
+    const iframeWindow = this.contentWindow;
+ 
+    // Inject the variable
+    iframeWindow.myInjectedVariable = myVariable;
 
+  });
+  */
+
+
+  /*
+  doc = document.getElementById("preview_iframe").contentWindow.document;
+  doc.open();
+  try {
+    doc.write(phase_iframe_code);
+  } catch (error) {
+    alert("failed to write the phase_code");
+    alert(error);
+  }
+  doc.close();
+  */
+
+});
 $("#run_btn").on("click", function () {
     if (!parent.parent.functionIsRunning) {
       parent.parent.functionIsRunning = true;

@@ -777,13 +777,19 @@ function create_project_json_variables() {
 }
 
 function detect_exe() {
-  $.get("../User/master.json", function (result) {
-    Project.is_exe = false;
+  if(quick_preview){
+    //skip checking for master.json
     Project.activate_pipe();
-  }).catch(function (error) {
-    Project.is_exe = true;
-    Project.activate_pipe();
-  });
+  } else {
+    $.get("../User/master.json", function (result) {
+      Project.is_exe = false;
+      Project.activate_pipe();
+    }).catch(function (error) {
+      Project.is_exe = true;
+      Project.activate_pipe();
+    });
+
+  }
 }
 function final_phase() {
   switch (Project.get_vars.platform) {
