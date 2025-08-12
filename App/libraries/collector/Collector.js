@@ -2,13 +2,22 @@ function correct_your_stuff(){
 
   // replace master.json if it exists with your_stuff.json
   if(CElectron.fs.read_file("", "master.json") !== ""){
-    your_stuff = CElectron.fs.read_file("", "your_stuff.json");
+    your_stuff = CElectron.fs.read_file("", "master.json");
     CElectron.fs.delete_file("master.json", function (response) {
       if (response !== "success") {
         console.log("Original project name files removed")
       }
     });
-    your_stuff = CElectron.fs.read_file("", "master.json");
+    console.log($("#save_btn"));
+    write_response = CElectron.fs.write_file(
+      "",
+      "your_stuff.json",
+      JSON.stringify(your_stuff, null, 2)
+    );
+    if (write_response !== "success") {
+      bootbox.alert(response);
+    }
+    //your_stuff = CElectron.fs.read_file("", "master.json");
   } else {
     your_stuff = CElectron.fs.read_file("", "your_stuff.json");
   }  
