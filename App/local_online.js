@@ -17,5 +17,6 @@ $("#local_online_switch").on("click", function(){
   $("#local_online_switch").html(window.localStorage.local_online);
 });
 function load_online(){
-  master = {};
+   
+  your_stuff = {};
 };

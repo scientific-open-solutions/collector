@@ -326,8 +326,8 @@
     if (proc_sheets.indexOf(help_type) !== -1) {
       if (help_title == "survey") {
         $("#help_subtitle").html("Currently available surveys");
-        var def_surveys = Object.keys(master.surveys.default_surveys).sort();
-        var user_surveys = Object.keys(master.surveys.user_surveys).sort();
+        var def_surveys = Object.keys(your_stuff.surveys.default_surveys).sort();
+        var user_surveys = Object.keys(your_stuff.surveys.user_surveys).sort();
 
         def_surveys = def_surveys.join("<br>");
         user_surveys = user_surveys.join("<br>");

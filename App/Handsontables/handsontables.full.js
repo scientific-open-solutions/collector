@@ -1712,7 +1712,7 @@ function pivot(arr) {
  * A specialized version of `.reduce` for arrays without support for callback
  * shorthands and `this` binding.
  *
- * {@link https://github.com/lodash/lodash/blob/master/lodash.js}
+ * {@link https://github.com/lodash/lodash/blob/your_stuff/lodash.js}
  *
  * @param {Array} array The array to iterate over.
  * @param {Function} iteratee The function invoked per iteration.
@@ -1751,7 +1751,7 @@ function arrayReduce(array, iteratee, accumulator, initFromArray) {
  * A specialized version of `.filter` for arrays without support for callback
  * shorthands and `this` binding.
  *
- * {@link https://github.com/lodash/lodash/blob/master/lodash.js}
+ * {@link https://github.com/lodash/lodash/blob/your_stuff/lodash.js}
  *
  * @param {Array} array The array to iterate over.
  * @param {Function} predicate The function invoked per iteration.
@@ -1819,7 +1819,7 @@ function arrayMap(array, iteratee) {
  * A specialized version of `.forEach` for arrays without support for callback
  * shorthands and `this` binding.
  *
- * {@link https://github.com/lodash/lodash/blob/master/lodash.js}
+ * {@link https://github.com/lodash/lodash/blob/your_stuff/lodash.js}
  *
  * @param {Array|*} array The array to iterate over or an any element with implemented iterator protocol.
  * @param {Function} iteratee The function invoked per iteration.
@@ -12614,7 +12614,7 @@ function toISOString$1() {
     months %= 12;
 
 
-    // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
+    // inspired by https://github.com/dordille/moment-isoduration/blob/your_stuff/moment.isoduration.js
     var Y = years;
     var M = months;
     var D = days;
@@ -24054,7 +24054,7 @@ function () {
     }
     /**
      * Returns the TD at coords. If topmost is set to true, returns TD from the topmost overlay layer,
-     * if not set or set to false, returns TD from the master table.
+     * if not set or set to false, returns TD from the your_stuff table.
      *
      * @param {CellCoords} coords
      * @param {Boolean} [topmost=false]
@@ -24166,7 +24166,7 @@ function () {
   }, {
     key: "getOverlayName",
     value: function getOverlayName() {
-      return this.cloneOverlay ? this.cloneOverlay.type : 'master';
+      return this.cloneOverlay ? this.cloneOverlay.type : 'your_stuff';
     }
     /**
      * Check overlay type of this Walkontable instance.
@@ -25457,7 +25457,7 @@ function () {
       height: null
     };
     this.overlayScrollPositions = {
-      master: {
+      your_stuff: {
         top: 0,
         left: 0
       },
@@ -25475,7 +25475,7 @@ function () {
       }
     };
     this.pendingScrollCallbacks = {
-      master: {
+      your_stuff: {
         top: 0,
         left: 0
       },
@@ -25720,13 +25720,13 @@ function () {
     value: function onTableScroll(event) {
       // There was if statement which controlled flow of this function. It avoided the execution of the next lines
       // on mobile devices. It was changed. Broader description of this case is included within issue #4856.
-      var masterHorizontal = this.leftOverlay.mainTableScrollableElement;
-      var masterVertical = this.topOverlay.mainTableScrollableElement;
-      var target = event.target; // For key press, sync only master -> overlay position because while pressing Walkontable.render is triggered
+      var your_stuffHorizontal = this.leftOverlay.mainTableScrollableElement;
+      var your_stuffVertical = this.topOverlay.mainTableScrollableElement;
+      var target = event.target; // For key press, sync only your_stuff -> overlay position because while pressing Walkontable.render is triggered
       // by hot.refreshBorder
 
       if (this.keyPressed) {
-        if (masterVertical !== window && target !== window && !event.target.contains(masterVertical) || masterHorizontal !== window && target !== window && !event.target.contains(masterHorizontal)) {
+        if (your_stuffVertical !== window && target !== window && !event.target.contains(your_stuffVertical) || your_stuffHorizontal !== window && target !== window && !event.target.contains(your_stuffHorizontal)) {
           return;
         }
       }
@@ -25748,13 +25748,13 @@ function () {
       // on mobile devices. It was changed. Broader description of this case is included within issue #4856.
 
 
-      var masterHorizontal = this.leftOverlay.mainTableScrollableElement;
-      var masterVertical = this.topOverlay.mainTableScrollableElement;
-      var target = event.target; // For key press, sync only master -> overlay position because while pressing Walkontable.render is triggered
+      var your_stuffHorizontal = this.leftOverlay.mainTableScrollableElement;
+      var your_stuffVertical = this.topOverlay.mainTableScrollableElement;
+      var target = event.target; // For key press, sync only your_stuff -> overlay position because while pressing Walkontable.render is triggered
       // by hot.refreshBorder
 
-      var shouldNotWheelVertically = masterVertical !== window && target !== window && !event.target.contains(masterVertical);
-      var shouldNotWheelHorizontally = masterHorizontal !== window && target !== window && !event.target.contains(masterHorizontal);
+      var shouldNotWheelVertically = your_stuffVertical !== window && target !== window && !event.target.contains(your_stuffVertical);
+      var shouldNotWheelHorizontally = your_stuffHorizontal !== window && target !== window && !event.target.contains(your_stuffHorizontal);
 
       if (this.keyPressed && (shouldNotWheelVertically || shouldNotWheelHorizontally)) {
         return;
@@ -25822,7 +25822,7 @@ function () {
       this.scrollableElement.scrollLeft += distance;
     }
     /**
-     * Synchronize scroll position between master table and overlay table.
+     * Synchronize scroll position between your_stuff table and overlay table.
      *
      * @private
      * @param {Event|Object} event
@@ -25859,15 +25859,15 @@ function () {
       this.refreshAll();
     }
     /**
-     * Synchronize overlay scrollbars with the master scrollbar
+     * Synchronize overlay scrollbars with the your_stuff scrollbar
      */
 
   }, {
-    key: "syncScrollWithMaster",
-    value: function syncScrollWithMaster() {
-      var master = this.topOverlay.mainTableScrollableElement;
-      var scrollLeft = master.scrollLeft,
-          scrollTop = master.scrollTop;
+    key: "syncScrollWithyour_stuff",
+    value: function syncScrollWithyour_stuff() {
+      var your_stuff = this.topOverlay.mainTableScrollableElement;
+      var scrollLeft = your_stuff.scrollLeft,
+          scrollTop = your_stuff.scrollTop;
 
       if (this.topOverlay.needFullRender) {
         this.topOverlay.clone.wtTable.holder.scrollLeft = scrollLeft;
@@ -25970,7 +25970,7 @@ function () {
       }
     }
     /**
-     * Adjust overlays elements size and master table size
+     * Adjust overlays elements size and your_stuff table size
      *
      * @param {Boolean} [force=false]
      */
@@ -26765,7 +26765,7 @@ function () {
         }
 
         if (!this.isWorkingOnClone()) {
-          holder.parentNode.className += 'ht_master handsontable';
+          holder.parentNode.className += 'ht_your_stuff handsontable';
         }
 
         holder.appendChild(hider);
@@ -26901,7 +26901,7 @@ function () {
       }
 
       if (syncScroll) {
-        wtOverlays.syncScrollWithMaster();
+        wtOverlays.syncScrollWithyour_stuff();
       }
 
       this.wot.drawn = true;
@@ -32923,7 +32923,7 @@ DefaultSettings.prototype = {
 
   /**
    * Setting to `true` enables the debug mode, currently used to test the correctness of the row and column
-   * header fixed positioning on a layer above the master table.
+   * header fixed positioning on a layer above the your_stuff table.
    *
    * @type {Boolean}
    * @default false
@@ -40844,7 +40844,7 @@ function (_Overlay) {
       return sum;
     }
     /**
-     * Adjust overlay root element, childs and master table element sizes (width, height).
+     * Adjust overlay root element, childs and your_stuff table element sizes (width, height).
      *
      * @param {Boolean} [force=false]
      */
@@ -40871,8 +40871,8 @@ function (_Overlay) {
   }, {
     key: "adjustRootElementSize",
     value: function adjustRootElementSize() {
-      var masterHolder = this.wot.wtTable.holder;
-      var scrollbarHeight = masterHolder.clientHeight === masterHolder.offsetHeight ? 0 : (0, _element.getScrollbarWidth)();
+      var your_stuffHolder = this.wot.wtTable.holder;
+      var scrollbarHeight = your_stuffHolder.clientHeight === your_stuffHolder.offsetHeight ? 0 : (0, _element.getScrollbarWidth)();
       var overlayRoot = this.clone.wtTable.holder.parentNode;
       var overlayRootStyle = overlayRoot.style;
       var preventOverflow = this.wot.getSetting('preventOverflow');
@@ -41014,26 +41014,26 @@ function (_Overlay) {
   }, {
     key: "adjustHeaderBordersPosition",
     value: function adjustHeaderBordersPosition(position) {
-      var masterParent = this.wot.wtTable.holder.parentNode;
+      var your_stuffParent = this.wot.wtTable.holder.parentNode;
       var rowHeaders = this.wot.getSetting('rowHeaders');
       var fixedColumnsLeft = this.wot.getSetting('fixedColumnsLeft');
       var totalRows = this.wot.getSetting('totalRows');
 
       if (totalRows) {
-        (0, _element.removeClass)(masterParent, 'emptyRows');
+        (0, _element.removeClass)(your_stuffParent, 'emptyRows');
       } else {
-        (0, _element.addClass)(masterParent, 'emptyRows');
+        (0, _element.addClass)(your_stuffParent, 'emptyRows');
       }
 
       if (fixedColumnsLeft && !rowHeaders.length) {
-        (0, _element.addClass)(masterParent, 'innerBorderLeft');
+        (0, _element.addClass)(your_stuffParent, 'innerBorderLeft');
       } else if (!fixedColumnsLeft && rowHeaders.length) {
-        var previousState = (0, _element.hasClass)(masterParent, 'innerBorderLeft');
+        var previousState = (0, _element.hasClass)(your_stuffParent, 'innerBorderLeft');
 
         if (position) {
-          (0, _element.addClass)(masterParent, 'innerBorderLeft');
+          (0, _element.addClass)(your_stuffParent, 'innerBorderLeft');
         } else {
-          (0, _element.removeClass)(masterParent, 'innerBorderLeft');
+          (0, _element.removeClass)(your_stuffParent, 'innerBorderLeft');
         }
 
         if (!previousState && position || previousState && !position) {
@@ -41216,7 +41216,7 @@ function (_Overlay) {
       return sum;
     }
     /**
-     * Adjust overlay root element, childs and master table element sizes (width, height).
+     * Adjust overlay root element, childs and your_stuff table element sizes (width, height).
      *
      * @param {Boolean} [force=false]
      */
@@ -41243,8 +41243,8 @@ function (_Overlay) {
   }, {
     key: "adjustRootElementSize",
     value: function adjustRootElementSize() {
-      var masterHolder = this.wot.wtTable.holder;
-      var scrollbarWidth = masterHolder.clientWidth === masterHolder.offsetWidth ? 0 : (0, _element.getScrollbarWidth)();
+      var your_stuffHolder = this.wot.wtTable.holder;
+      var scrollbarWidth = your_stuffHolder.clientWidth === your_stuffHolder.offsetWidth ? 0 : (0, _element.getScrollbarWidth)();
       var overlayRoot = this.clone.wtTable.holder.parentNode;
       var overlayRootStyle = overlayRoot.style;
       var preventOverflow = this.wot.getSetting('preventOverflow');
@@ -41421,22 +41421,22 @@ function (_Overlay) {
   }, {
     key: "adjustHeaderBordersPosition",
     value: function adjustHeaderBordersPosition(position) {
-      var masterParent = this.wot.wtTable.holder.parentNode;
+      var your_stuffParent = this.wot.wtTable.holder.parentNode;
       var totalColumns = this.wot.getSetting('totalColumns');
 
       if (totalColumns) {
-        (0, _element.removeClass)(masterParent, 'emptyColumns');
+        (0, _element.removeClass)(your_stuffParent, 'emptyColumns');
       } else {
-        (0, _element.addClass)(masterParent, 'emptyColumns');
+        (0, _element.addClass)(your_stuffParent, 'emptyColumns');
       }
 
       if (this.wot.getSetting('fixedRowsTop') === 0 && this.wot.getSetting('columnHeaders').length > 0) {
-        var previousState = (0, _element.hasClass)(masterParent, 'innerBorderTop');
+        var previousState = (0, _element.hasClass)(your_stuffParent, 'innerBorderTop');
 
         if (position || this.wot.getSetting('totalRows') === 0) {
-          (0, _element.addClass)(masterParent, 'innerBorderTop');
+          (0, _element.addClass)(your_stuffParent, 'innerBorderTop');
         } else {
-          (0, _element.removeClass)(masterParent, 'innerBorderTop');
+          (0, _element.removeClass)(your_stuffParent, 'innerBorderTop');
         }
 
         if (!previousState && position || previousState && !position) {
@@ -41768,7 +41768,7 @@ function (_Overlay) {
       return sum;
     }
     /**
-     * Adjust overlay root element, childs and master table element sizes (width, height).
+     * Adjust overlay root element, childs and your_stuff table element sizes (width, height).
      *
      * @param {Boolean} [force=false]
      */
@@ -41795,8 +41795,8 @@ function (_Overlay) {
   }, {
     key: "adjustRootElementSize",
     value: function adjustRootElementSize() {
-      var masterHolder = this.wot.wtTable.holder;
-      var scrollbarWidth = masterHolder.clientWidth === masterHolder.offsetWidth ? 0 : (0, _element.getScrollbarWidth)();
+      var your_stuffHolder = this.wot.wtTable.holder;
+      var scrollbarWidth = your_stuffHolder.clientWidth === your_stuffHolder.offsetWidth ? 0 : (0, _element.getScrollbarWidth)();
       var overlayRoot = this.clone.wtTable.holder.parentNode;
       var overlayRootStyle = overlayRoot.style;
 
@@ -41935,13 +41935,13 @@ function (_Overlay) {
     key: "adjustHeaderBordersPosition",
     value: function adjustHeaderBordersPosition(position) {
       if (this.wot.getSetting('fixedRowsBottom') === 0 && this.wot.getSetting('columnHeaders').length > 0) {
-        var masterParent = this.wot.wtTable.holder.parentNode;
-        var previousState = (0, _element.hasClass)(masterParent, 'innerBorderTop');
+        var your_stuffParent = this.wot.wtTable.holder.parentNode;
+        var previousState = (0, _element.hasClass)(your_stuffParent, 'innerBorderTop');
 
         if (position) {
-          (0, _element.addClass)(masterParent, 'innerBorderTop');
+          (0, _element.addClass)(your_stuffParent, 'innerBorderTop');
         } else {
-          (0, _element.removeClass)(masterParent, 'innerBorderTop');
+          (0, _element.removeClass)(your_stuffParent, 'innerBorderTop');
         }
 
         if (!previousState && position || previousState && !position) {
@@ -48654,7 +48654,7 @@ exports.default = _default;
         months %= 12;
 
 
-        // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
+        // inspired by https://github.com/dordille/moment-isoduration/blob/your_stuff/moment.isoduration.js
         var Y = years;
         var M = months;
         var D = days;
@@ -75202,7 +75202,7 @@ function (_BasePlugin) {
         scrollbar.refresh();
         scrollbar.resetFixedPosition();
       });
-      this.hot.view.wt.wtOverlays.syncScrollWithMaster();
+      this.hot.view.wt.wtOverlays.syncScrollWithyour_stuff();
     }
   }]);
 

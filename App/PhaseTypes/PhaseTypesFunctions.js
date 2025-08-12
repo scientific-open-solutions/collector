@@ -10,8 +10,8 @@ code_obj = {
       parent.parent.functionIsRunning = true;
       var deleted_phasetype = $("#phasetype_select").val();
       console.log(deleted_phasetype);
-      master.phasetypes.file = $("#phasetype_select").val();
-      var this_file = master.phasetypes.file;
+      your_stuff.phasetypes.file = $("#phasetype_select").val();
+      var this_file = your_stuff.phasetypes.file;
       bootbox.confirm({
         message: "Are you sure you want to delete the <b>" + this_file + "</b> PhaseType?",
         buttons: {
@@ -43,16 +43,16 @@ code_obj = {
               callback: function (result) {  
                 parent.parent.functionIsRunning = false;
                 if (result) {
-                  if (typeof master.phasetypes.graphic.files[this_file] !== "undefined") {
-                    delete master.phasetypes.graphic.files[this_file];
+                  if (typeof your_stuff.phasetypes.graphic.files[this_file] !== "undefined") {
+                    delete your_stuff.phasetypes.graphic.files[this_file];
                   }
-                  delete master.phasetypes.user[this_file];
+                  delete your_stuff.phasetypes.user[this_file];
                   $("#phasetype_select").attr("previousvalue", "");
                   $("#phasetype_select option:selected").remove();
                   $("#graphic_editor").hide();
                   $("#view_graphic_btn").hide();
                   $("#view_code_btn").addClass("btn-primary");
-                  master.phasetypes.file = $("#phasetype_select").val();
+                  your_stuff.phasetypes.file = $("#phasetype_select").val();
                   code_obj.load_file("default");
                   try {
                     var delete_graphicObj = CElectron.fs.delete_file("Graphics/" + deleted_phasetype + ".html");
@@ -86,7 +86,7 @@ code_obj = {
       $("#delete_phasetypes_button").show();
     }
 
-    var this_file = master.phasetypes.file;
+    var this_file = your_stuff.phasetypes.file;
 
     //python load if localhost
     switch (Collector.detect_context()) {
@@ -100,13 +100,13 @@ code_obj = {
           console.log(e + "<-------"); // error in the above string (in this case, yes)!
         }
         if (this_content === "") {
-          editor.setValue(master.phasetypes[user_default][this_file]);
+          editor.setValue(your_stuff.phasetypes[user_default][this_file]);
         } else {
           editor.setValue(this_content);
         }
         break;
       default:
-        var content = master.phasetypes[user_default][this_file];
+        var content = your_stuff.phasetypes[user_default][this_file];
         editor.setValue(content);
         break;
     }
@@ -146,9 +146,9 @@ code_obj = {
       if (write_response !== "success") {
         bootbox.alert(write_response);
       }
-      console.log(master.phasetypes.graphic.files[name])
-      if (master.phasetypes.graphic.files[name] != null) {
-        graphic_objcontent = JSON.stringify(master.phasetypes.graphic.files[name]);
+      console.log(your_stuff.phasetypes.graphic.files[name])
+      if (your_stuff.phasetypes.graphic.files[name] != null) {
+        graphic_objcontent = JSON.stringify(your_stuff.phasetypes.graphic.files[name]);
         var write_graphic = CElectron.fs.write_file("Graphics",name.toLowerCase().replace(".html", "") + ".html",graphic_objcontent);
         if (write_graphic !== "success") {
           bootbox.alert(write_graphic);
@@ -165,8 +165,8 @@ function list_phasetypes(to_do_after) {
     files = JSON.parse(files);
     files = files.map((item) => item.replaceAll(".html", ""));
     files.forEach(function (file) {
-      if (Object.keys(master.phasetypes.user).indexOf(file) === -1) {
-        master.phasetypes.user[file] = CElectron.fs.read_file(
+      if (Object.keys(your_stuff.phasetypes.user).indexOf(file) === -1) {
+        your_stuff.phasetypes.user[file] = CElectron.fs.read_file(
           "PhaseTypes",
           file + ".html"
         );
@@ -180,9 +180,9 @@ function list_phasetypes(to_do_after) {
     $("#phasetype_select").val("Select a file");
 
     var default_code = JSON.parse(returned_data);
-    var user = master.phasetypes.user;
+    var user = your_stuff.phasetypes.user;
 
-    master.phasetypes.default = default_code;
+    your_stuff.phasetypes.default = default_code;
     default_keys = Object.keys(default_code).sort((a, b) =>
       a.localeCompare(b, undefined, { sensitivity: "base" })
     );
@@ -196,7 +196,7 @@ function list_phasetypes(to_do_after) {
         "<option class='default_code'>" + element + "</option>"
       );
     });
-    master.phasetypes.user = user;
+    your_stuff.phasetypes.user = user;
 
     user_keys.forEach(function (element) {
       $("#phasetype_select").append(
@@ -222,20 +222,20 @@ function list_phasetypes(to_do_after) {
             "DefaultPhaseTypes",
             item
           );
-          master.phasetypes.default[item.toLowerCase().replace(".html", "")] =
+          your_stuff.phasetypes.default[item.toLowerCase().replace(".html", "")] =
             trial_content;
           get_default(list);
           break;
         default:
           $.get(collector_map[item], function (trial_content) {
-            master.phasetypes.default[item.toLowerCase().replace(".html", "")] =
+            your_stuff.phasetypes.default[item.toLowerCase().replace(".html", "")] =
               trial_content;
             get_default(list);
           });
           break;
       }
     } else {
-      process_returned(JSON.stringify(master.phasetypes.default));
+      process_returned(JSON.stringify(your_stuff.phasetypes.default));
     }
   }
   var default_list = Object.keys(

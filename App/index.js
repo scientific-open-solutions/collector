@@ -165,19 +165,19 @@ $("#github_logo").on("click", function () {
             })
           );
         });
-        $("#select_repo").val(master.github.repository);
+        $("#select_repo").val(your_stuff.github.repository);
       }
 
       setTimeout(function () {
         if (
-          typeof master.github.organization !== "undefined" &&
-          master.github.organization !== "" &&
-          typeof master.github.repository !== "undefined" &&
-          master.github.repository !== ""
+          typeof your_stuff.github.organization !== "undefined" &&
+          your_stuff.github.organization !== "" &&
+          typeof your_stuff.github.repository !== "undefined" &&
+          your_stuff.github.repository !== ""
         ) {
           var commits_behind = CElectron.git.status({
-            organization: master.github.organization,
-            repository: master.github.repository,
+            organization: your_stuff.github.organization,
+            repository: your_stuff.github.repository,
           });
           if (commits_behind !== 0) {
             bootbox.alert(

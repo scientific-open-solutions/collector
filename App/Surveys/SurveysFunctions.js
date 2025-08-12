@@ -12,13 +12,13 @@ function load_default_surveys() {
     if (list.length > 0) {
       var this_survey = list.pop();
       $.get(collector_map[this_survey], function (survey_content) {
-        master.surveys.default_surveys[this_survey.toLowerCase()] =
+        your_stuff.surveys.default_surveys[this_survey.toLowerCase()] =
           Papa.parse(survey_content).data;
         load_survey(list);
       });
     } else {
       //based on solution by "dule" at https://stackoverflow.com/questions/740195/adding-options-to-a-select-using-jquery
-      default_surveys_list = Object.keys(master.surveys.default_surveys).sort();
+      default_surveys_list = Object.keys(your_stuff.surveys.default_surveys).sort();
       $.each(default_surveys_list, function (i, item) {
         $("#survey_select").append(
           $("<option>", {
@@ -36,7 +36,7 @@ function load_default_surveys() {
           "DefaultSurveys",
           default_survey
         );
-        master.surveys.default_surveys[default_survey] =
+        your_stuff.surveys.default_surveys[default_survey] =
           Papa.parse(survey_content).data;
         $("#survey_select").append(
           $("<option>", {
@@ -181,7 +181,7 @@ function create_survey_HoT(this_survey) {
       var current_survey = $("#survey_select").val().split("|")[1];
 
       if (
-        typeof master.surveys.default_surveys[current_survey] !== "undefined"
+        typeof your_stuff.surveys.default_surveys[current_survey] !== "undefined"
       ) {
         $('#save_survey_btn').hide();
         $('#rename_survey_btn').hide();
@@ -277,24 +277,24 @@ function list_surveys() {
     $("#survey_select").val("Select a survey");
 
     if (
-      typeof master.surveys === "undefined" ||
-      typeof master.surveys.user_surveys === "undefined"
+      typeof your_stuff.surveys === "undefined" ||
+      typeof your_stuff.surveys.user_surveys === "undefined"
     ) {
-      master.surveys = {
+      your_stuff.surveys = {
         preview: false,
         user_surveys: {},
       };
     }
-    master.surveys =
-      typeof master.surveys === "undefined" ? {} : master.surveys;
-    master.surveys.default_surveys = {};
+    your_stuff.surveys =
+      typeof your_stuff.surveys === "undefined" ? {} : your_stuff.surveys;
+    your_stuff.surveys.default_surveys = {};
 
-    master.surveys.user_surveys =
-      typeof master.surveys.user_surveys === "undefined"
+    your_stuff.surveys.user_surveys =
+      typeof your_stuff.surveys.user_surveys === "undefined"
         ? {}
-        : master.surveys.user_surveys;
-    master.surveys.default_surveys = Collector.clean_obj_keys(
-      master.surveys.default_surveys
+        : your_stuff.surveys.user_surveys;
+    your_stuff.surveys.default_surveys = Collector.clean_obj_keys(
+      your_stuff.surveys.default_surveys
     );
 
     var survey_files = JSON.parse(CElectron.fs.list_surveys());
@@ -304,10 +304,10 @@ function list_surveys() {
         CElectron.fs.read_file("Surveys", survey_file)
       ).data;
 
-      master.surveys.user_surveys[survey_file] = survey_csv;
+      your_stuff.surveys.user_surveys[survey_file] = survey_csv;
     });
 
-    var user_survey_list = Object.keys(master.surveys.user_surveys).sort();
+    var user_survey_list = Object.keys(your_stuff.surveys.user_surveys).sort();
 
     load_default_surveys();
     user_survey_list.forEach(function (user_survey) {
@@ -335,7 +335,7 @@ function list_surveys() {
 }
 
 function preview_survey(this_survey) {
-  master.surveys.preview = true;
+  your_stuff.surveys.preview = true;
   $("#survey_preview").css("height", window.innerHeight - 100);
   if ($("#help_content").is(":visible")) {
     var helper_width = parseFloat(

@@ -2909,7 +2909,7 @@ require = (function outer(modules, cache, entry) {
               window.setTimeout(callback, 1000 / 60);
             };
           this.overlayScrollPositions = {
-            master: {
+            your_stuff: {
               top: 0,
               left: 0,
             },
@@ -3030,7 +3030,7 @@ require = (function outer(modules, cache, entry) {
             return;
           }
           var target = e.target,
-            master = this.topOverlay.mainTableScrollableElement,
+            your_stuff = this.topOverlay.mainTableScrollableElement,
             topOverlay = this.topOverlay.clone.wtTable.holder,
             leftOverlay = this.leftOverlay.clone.wtTable.holder,
             tempScrollValue = 0,
@@ -3038,42 +3038,42 @@ require = (function outer(modules, cache, entry) {
           if (target === document) {
             target = window;
           }
-          if (target === master || target === document) {
+          if (target === your_stuff || target === document) {
             tempScrollValue = dom.getScrollLeft(target);
-            if (this.overlayScrollPositions.master.left !== tempScrollValue) {
+            if (this.overlayScrollPositions.your_stuff.left !== tempScrollValue) {
               this.scrollCallbacksPending++;
               topOverlay.scrollLeft = tempScrollValue;
-              this.overlayScrollPositions.master.left = tempScrollValue;
+              this.overlayScrollPositions.your_stuff.left = tempScrollValue;
               scrollValueChanged = true;
             }
             tempScrollValue = dom.getScrollTop(target);
-            if (this.overlayScrollPositions.master.top !== tempScrollValue) {
+            if (this.overlayScrollPositions.your_stuff.top !== tempScrollValue) {
               this.scrollCallbacksPending++;
               leftOverlay.scrollTop = tempScrollValue;
-              this.overlayScrollPositions.master.top = tempScrollValue;
+              this.overlayScrollPositions.your_stuff.top = tempScrollValue;
               scrollValueChanged = true;
             }
           } else if (target === topOverlay) {
             tempScrollValue = dom.getScrollLeft(target);
             if (this.overlayScrollPositions.top.left !== tempScrollValue) {
               this.scrollCallbacksPending++;
-              master.scrollLeft = tempScrollValue;
+              your_stuff.scrollLeft = tempScrollValue;
               this.overlayScrollPositions.top.left = tempScrollValue;
               scrollValueChanged = true;
             }
             if (fakeScrollValue) {
-              master.scrollTop += fakeScrollValue;
+              your_stuff.scrollTop += fakeScrollValue;
             }
           } else if (target === leftOverlay) {
             tempScrollValue = dom.getScrollTop(target);
             if (this.overlayScrollPositions.left.top !== tempScrollValue) {
               this.scrollCallbacksPending++;
-              master.scrollTop = tempScrollValue;
+              your_stuff.scrollTop = tempScrollValue;
               this.overlayScrollPositions.left.top = tempScrollValue;
               scrollValueChanged = true;
             }
             if (fakeScrollValue) {
-              master.scrollLeft += fakeScrollValue;
+              your_stuff.scrollLeft += fakeScrollValue;
             }
           }
           if (scrollValueChanged) {
@@ -3836,7 +3836,7 @@ require = (function outer(modules, cache, entry) {
               parent.insertBefore(holder, this.hider);
             }
             if (!instance.cloneSource) {
-              holder.parentNode.className += "ht_master handsontable";
+              holder.parentNode.className += "ht_your_stuff handsontable";
             }
             holder.appendChild(this.hider);
           }
@@ -5504,11 +5504,11 @@ require = (function outer(modules, cache, entry) {
               this.instance.getSetting("fixedColumnsLeft") === 0 &&
               this.instance.getSetting("rowHeaders").length > 0
             ) {
-              var masterParent = this.instance.wtTable.holder.parentNode;
+              var your_stuffParent = this.instance.wtTable.holder.parentNode;
               if (this.getScrollPosition() === 0) {
-                dom.removeClass(masterParent, "innerBorderLeft");
+                dom.removeClass(your_stuffParent, "innerBorderLeft");
               } else {
-                dom.addClass(masterParent, "innerBorderLeft");
+                dom.addClass(your_stuffParent, "innerBorderLeft");
               }
             }
           };
@@ -5548,14 +5548,14 @@ require = (function outer(modules, cache, entry) {
             headerSize = this.instance.wtViewport.getRowHeaderWidth(),
             cloneHolder = this.clone.wtTable.holder,
             cloneHider = this.clone.wtTable.hider,
-            masterHider = this.hider,
+            your_stuffHider = this.hider,
             cloneHolderParent = cloneHolder.parentNode,
             scrollbarWidth = dom.getScrollbarWidth(true);
-          masterHider.style.width =
+          your_stuffHider.style.width =
             headerSize + this.sumCellSizes(0, total) + "px";
           cloneHolder.style.width =
             parseInt(cloneHolderParent.style.width, 10) + scrollbarWidth + "px";
-          cloneHider.style.height = masterHider.style.height;
+          cloneHider.style.height = your_stuffHider.style.height;
           cloneHolder.style.height = cloneHolderParent.style.height;
           if (
             typeof this.instance.wtViewport.columnsRenderCalculator
@@ -5699,11 +5699,11 @@ require = (function outer(modules, cache, entry) {
               this.instance.getSetting("fixedRowsTop") === 0 &&
               this.instance.getSetting("columnHeaders").length > 0
             ) {
-              var masterParent = this.instance.wtTable.holder.parentNode;
+              var your_stuffParent = this.instance.wtTable.holder.parentNode;
               if (this.getScrollPosition() === 0) {
-                dom.removeClass(masterParent, "innerBorderTop");
+                dom.removeClass(your_stuffParent, "innerBorderTop");
               } else {
-                dom.addClass(masterParent, "innerBorderTop");
+                dom.addClass(your_stuffParent, "innerBorderTop");
               }
             }
             if (this.instance.getSetting("rowHeaders").length === 0) {
@@ -27459,7 +27459,7 @@ require = (function outer(modules, cache, entry) {
           var iso_string__abs = Math.abs;
 
           function iso_string__toISOString() {
-            // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
+            // inspired by https://github.com/dordille/moment-isoduration/blob/your_stuff/moment.isoduration.js
             var Y = iso_string__abs(this.years());
             var M = iso_string__abs(this.months());
             var D = iso_string__abs(this.days());

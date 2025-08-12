@@ -443,11 +443,11 @@ function load_survey(survey, survey_outline) {
   } else if (typeof parent.collector_survey_preview !== "undefined") {
     survey_content = survey;
   } else if (
-    typeof parent.master !== "undefined" &&
-    parent.master.surveys.preview
+    typeof parent.your_stuff !== "undefined" &&
+    parent.your_stuff.surveys.preview
   ) {
     survey_content = survey;
-    survey_obj.phasetypes = parent.master.phasetypes.user;
+    survey_obj.phasetypes = parent.your_stuff.phasetypes.user;
   } else {
     survey = survey.toLowerCase().replace(".csv", "") + ".csv";
 

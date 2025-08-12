@@ -1,69 +1,81 @@
-function correct_master(){
-  master = CElectron.fs.read_file("", "master.json");
-  if(master === ""){
+function correct_your_stuff(){
+
+  // replace master.json if it exists with your_stuff.json
+  if(CElectron.fs.read_file("", "master.json") !== ""){
+    your_stuff = CElectron.fs.read_file("", "your_stuff.json");
+    CElectron.fs.delete_file("master.json", function (response) {
+      if (response !== "success") {
+        console.log("Original project name files removed")
+      }
+    });
+    your_stuff = CElectron.fs.read_file("", "master.json");
+  } else {
+    your_stuff = CElectron.fs.read_file("", "your_stuff.json");
+  }  
+  if(your_stuff === ""){
     /* load from default */
-    master = CElectron.fs.read_default("", "master.json")
+    your_stuff = CElectron.fs.read_default("", "your_stuff.json")
   }
-  master = JSON.parse(master);
+  your_stuff = JSON.parse(your_stuff);
 
   /*
   * missing objects
   */
-  master.data = Collector.missing_object(master.data);
-  master.data.servers = Collector.missing_object(master.data.servers);
+  your_stuff.data = Collector.missing_object(your_stuff.data);
+  your_stuff.data.servers = Collector.missing_object(your_stuff.data.servers);
 
-  master.surveys.user_surveys = Collector.missing_object(master.surveys.user_surveys);
+  your_stuff.surveys.user_surveys = Collector.missing_object(your_stuff.surveys.user_surveys);
 
 
   /*
-  * "trialtype" --> code --> phasetype for master
+  * "trialtype" --> code --> phasetype for your_stuff
   */
 
-  if(typeof(master.trialtypes) !== "undefined"){
-    master.phasetypes         = master.trialtypes;
-    master.phasetypes.default = master.phasetypes.default_trialtypes;
-    master.phasetypes.user    = master.phasetypes.user_codes;
-    delete(master.trialtype);
-    delete(master.trialtypes);
-    delete(master.phasetypes.default_trialtypes);
-    delete(master.phasetypes.user_codes);
+  if(typeof(your_stuff.trialtypes) !== "undefined"){
+    your_stuff.phasetypes         = your_stuff.trialtypes;
+    your_stuff.phasetypes.default = your_stuff.phasetypes.default_trialtypes;
+    your_stuff.phasetypes.user    = your_stuff.phasetypes.user_codes;
+    delete(your_stuff.trialtype);
+    delete(your_stuff.trialtypes);
+    delete(your_stuff.phasetypes.default_trialtypes);
+    delete(your_stuff.phasetypes.user_codes);
   }
 
-  master.phasetypes = Collector.missing_object(master.phasetypes);
-  master.phasetypes.default = Collector.missing_object(master.phasetypes.default);
-  master.phasetypes.user = Collector.missing_object(master.phasetypes.user);
-  master.phasetypes.graphic = Collector.missing_object(master.phasetypes.graphic);
-  master.phasetypes.graphic.files = Collector.missing_object(master.phasetypes.graphic.files);
+  your_stuff.phasetypes = Collector.missing_object(your_stuff.phasetypes);
+  your_stuff.phasetypes.default = Collector.missing_object(your_stuff.phasetypes.default);
+  your_stuff.phasetypes.user = Collector.missing_object(your_stuff.phasetypes.user);
+  your_stuff.phasetypes.graphic = Collector.missing_object(your_stuff.phasetypes.graphic);
+  your_stuff.phasetypes.graphic.files = Collector.missing_object(your_stuff.phasetypes.graphic.files);
   
   /*
   * studies --> projects
   */
 
-  if(typeof(master.projects) === "undefined"){
-    if(typeof(master.exp_mgmt) !== "undefined"){
-      master.projects = master.exp_mgmt;
+  if(typeof(your_stuff.projects) === "undefined"){
+    if(typeof(your_stuff.exp_mgmt) !== "undefined"){
+      your_stuff.projects = your_stuff.exp_mgmt;
     } else {
-      master.projects = master.project_mgmt;
+      your_stuff.projects = your_stuff.project_mgmt;
     }
 
-    master.projects = Collector.missing_object(master.projects);
+    your_stuff.projects = Collector.missing_object(your_stuff.projects);
 
-    if(typeof(master.projects.experiment) !== "undefined"){
-      master.projects.project  = master.projects.experiment;
+    if(typeof(your_stuff.projects.experiment) !== "undefined"){
+      your_stuff.projects.project  = your_stuff.projects.experiment;
     }
-    master.projects.projects = master.projects.experiments;
+    your_stuff.projects.projects = your_stuff.projects.experiments;
   }
-  delete(master.project_mgmt);
-  delete(master.projects.experiment);
-  delete(master.projects.experiments);
+  delete(your_stuff.project_mgmt);
+  delete(your_stuff.projects.experiment);
+  delete(your_stuff.projects.experiments);
 
-  master.projects.projects = Collector.missing_object(master.projects.projects);
+  your_stuff.projects.projects = Collector.missing_object(your_stuff.projects.projects);
 
-  var projects = Object.keys(master.projects.projects);
+  var projects = Object.keys(your_stuff.projects.projects);
   projects.forEach(function(project){
 
     try{
-      var this_project = master.projects.projects[project];
+      var this_project = your_stuff.projects.projects[project];
 
 
       /*
@@ -90,36 +102,36 @@ function correct_master(){
 
   });
 
-  if(typeof(master.code) !== "undefined"){
-    master.phasetypes = master.code;
-    delete(master.code);
+  if(typeof(your_stuff.code) !== "undefined"){
+    your_stuff.phasetypes = your_stuff.code;
+    delete(your_stuff.code);
   }
 
 
-  if(typeof(master.phasetypes.user_trialtypes) !== "undefined"){
-    Object.keys(master.phasetypes.user_trialtypes).forEach(function(item){
-      if(typeof(master.phasetypes.user[item]) === "undefined"){
-        master.phasetypes.user[item] = master.phasetypes.user_trialtypes[item];
+  if(typeof(your_stuff.phasetypes.user_trialtypes) !== "undefined"){
+    Object.keys(your_stuff.phasetypes.user_trialtypes).forEach(function(item){
+      if(typeof(your_stuff.phasetypes.user[item]) === "undefined"){
+        your_stuff.phasetypes.user[item] = your_stuff.phasetypes.user_trialtypes[item];
       }
     });
   }
-  master.phasetypes.graphic = Collector
-    .missing_object(master.phasetypes.graphic);
-  master.phasetypes.graphic.files = Collector
-    .missing_object(master.phasetypes.graphic.files);
+  your_stuff.phasetypes.graphic = Collector
+    .missing_object(your_stuff.phasetypes.graphic);
+  your_stuff.phasetypes.graphic.files = Collector
+    .missing_object(your_stuff.phasetypes.graphic.files);
 
-  if(typeof(master.phasetypes.graphic.files) === "undefined" &
-     typeof(master.phasetypes.graphic.trialtypes) !== "undefined"){
-    master.phasetypes.graphic.files = master.phasetypes.graphic.trialtypes;
+  if(typeof(your_stuff.phasetypes.graphic.files) === "undefined" &
+     typeof(your_stuff.phasetypes.graphic.trialtypes) !== "undefined"){
+    your_stuff.phasetypes.graphic.files = your_stuff.phasetypes.graphic.trialtypes;
   }
 
 
   /*
   * remove any duplicates of default code fiels in the user
   */
-  var default_code_files = Object.keys(master.phasetypes.default);
+  var default_code_files = Object.keys(your_stuff.phasetypes.default);
   default_code_files.forEach(function(default_file){
-    delete(master.phasetypes.user[default_file]);
+    delete(your_stuff.phasetypes.user[default_file]);
   });
 }
 
@@ -418,7 +430,7 @@ Collector.start = function(){
       }
     },1000);
   } else {
-    correct_master();
+    correct_your_stuff();
     correct_user();
     list_repos();
     list_projects();

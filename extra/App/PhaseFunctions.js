@@ -253,7 +253,7 @@ $(window).bind("keydown", function (event) {
 });
 
 // "csv to array" Function
-// - https://github.com/nsebhastian/javascript-csv-array-example/blob/master/index.html
+// - https://github.com/nsebhastian/javascript-csv-array-example/blob/your_stuff/index.html
 function csvToArray(str, delimiter = ",") {
 
   // slice from start of text to the first \n index

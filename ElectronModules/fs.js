@@ -104,7 +104,7 @@ ipc.on("fs_delete_project", (event, args) => {
       });
       event.returnValue = "success";
     } catch (error) {
-      //to trigger an attempt to load a trialtype from the master
+      //to trigger an attempt to load a trialtype from the your_stuff
       event.returnValue = "failed to delete: " + error;
     }
   }
@@ -218,7 +218,7 @@ ipc.on("fs_read_default", (event, args) => {
       content = fs.readFileSync(this_path, "utf8");
       event.returnValue = content;
     } catch (error) {
-      //to trigger an attempt to load a trialtype from the master
+      //to trigger an attempt to load a trialtype from the your_stuff
       event.returnValue = "";
     }
   }
@@ -267,7 +267,7 @@ ipc.on("fs_read_file", (event, args) => {
       );
       event.returnValue = content;
     } catch (error) {
-      //to trigger an attempt to load a code from the master
+      //to trigger an attempt to load a code from the your_stuff
       event.returnValue = "";
     }
   }
@@ -355,7 +355,7 @@ ipc.on("fs_write_data", (event, args) => {
       );
       event.returnValue = "success";
     } catch (error) {
-      //to trigger an attempt to load a trialtype from the master
+      //to trigger an attempt to load a trialtype from the your_stuff
       event.returnValue = error;
     }
   }
@@ -390,7 +390,7 @@ ipc.on("fs_write_file", (event, args) => {
       );
       event.returnValue = "success";
     } catch (error) {
-      //to trigger an attempt to load a trialtype from the master
+      //to trigger an attempt to load a trialtype from the your_stuff
       event.returnValue = "failed to save: " + error;
     }
   }
@@ -471,7 +471,7 @@ ipc.on("fs_write_project", (event, args) => {
       });
       event.returnValue = "success";
     } catch (error) {
-      //to trigger an attempt to load a trialtype from the master
+      //to trigger an attempt to load a trialtype from the your_stuff
       event.returnValue = "failed to save " + error;
     }
   }

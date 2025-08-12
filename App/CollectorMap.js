@@ -116,8 +116,8 @@ function this_map(this_item) {
 
 // Below code is to enable isolated development of surveys code
 
-if (typeof master === "undefined") {
-  master = {
+if (typeof your_stuff === "undefined") {
+  your_stuff = {
     surveys: {
       default_surveys: {},
     },

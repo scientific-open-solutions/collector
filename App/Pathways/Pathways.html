@@ -94,15 +94,15 @@
    * Functions
    */
   function list_pathways() {
-    if (typeof master.pathway_mgmt == "undefined") {
-      master.pathway_mgmt = {};
+    if (typeof your_stuff.pathway_mgmt == "undefined") {
+      your_stuff.pathway_mgmt = {};
     }
-    console.dir("typeof(master.pathway_mgmt.pathways)");
-    console.dir(typeof master.pathway_mgmt.pathways);
-    if (typeof master.pathway_mgmt.pathways == "undefined") {
-      master.pathway_mgmt.pathways = {};
+    console.dir("typeof(your_stuff.pathway_mgmt.pathways)");
+    console.dir(typeof your_stuff.pathway_mgmt.pathways);
+    if (typeof your_stuff.pathway_mgmt.pathways == "undefined") {
+      your_stuff.pathway_mgmt.pathways = {};
     }
-    var pathways = Object.keys(master.pathway_mgmt.pathways);
+    var pathways = Object.keys(your_stuff.pathway_mgmt.pathways);
     pathways = pathways.sort();
     pathways.forEach(function (pathway) {
       $("#pathway_select").append(
@@ -119,7 +119,7 @@
       "<tr>" +
       "<td colspan=3><h3 class='text-primary'>Start</h3></td>";
     var studies_list =
-      master.pathway_mgmt.pathways[master.pathway_mgmt.current].order;
+      your_stuff.pathway_mgmt.pathways[your_stuff.pathway_mgmt.current].order;
     studies_list.forEach(function (study_item) {
       pathway_div_html +=
         "<tr>" +
@@ -168,17 +168,17 @@
     $(".remove_btn").on("click", function () {
       var remove_value = this.value;
       var new_order = [];
-      master.pathway_mgmt.pathways[master.pathway_mgmt.current].order.forEach(
+      your_stuff.pathway_mgmt.pathways[your_stuff.pathway_mgmt.current].order.forEach(
         function (order_item) {
           if (order_item !== remove_value) {
             new_order.push(order_item);
           }
         }
       );
-      master.pathway_mgmt.pathways[master.pathway_mgmt.current].order =
+      your_stuff.pathway_mgmt.pathways[your_stuff.pathway_mgmt.current].order =
         new_order;
-      delete master
-        .pathway_mgmt.pathways[master.pathway_mgmt.current].items[this.value];
+      delete your_stuff
+        .pathway_mgmt.pathways[your_stuff.pathway_mgmt.current].items[this.value];
       list_pathway_studies();
     });
   }
@@ -192,12 +192,12 @@
   });
 
   $("#add_study_to_pathway_btn").on("click", function () {
-    master.pathway_mgmt.pathways[master.pathway_mgmt.current].order.push(
+    your_stuff.pathway_mgmt.pathways[your_stuff.pathway_mgmt.current].order.push(
       $("#add_project_pathway_select").val()
     );
     var conditions_array = [];
     var conditions_list = Collector.PapaParsed(
-      master.projects.projects[$("#add_project_pathway_select").val()]
+      your_stuff.projects.projects[$("#add_project_pathway_select").val()]
         .conditions
     ).map((row) => row.name);
     conditions_list.forEach(function (item) {
@@ -212,7 +212,7 @@
       inputOptions: conditions_array,
       value: conditions_array[0].value,
       callback: function (this_condition) {
-        master.pathway_mgmt.pathways[master.pathway_mgmt.current].items[
+        your_stuff.pathway_mgmt.pathways[your_stuff.pathway_mgmt.current].items[
           $("#add_project_pathway_select").val()
         ] = {
           name: this_condition,
@@ -233,20 +233,20 @@
       "What would you like to call this new pathway?",
       function (new_pathway) {
         if (new_pathway) {
-          if (typeof master.pathway_mgmt == "undefined") {
-            master.pathway_mgmt = {
+          if (typeof your_stuff.pathway_mgmt == "undefined") {
+            your_stuff.pathway_mgmt = {
               current: "",
               pathways: {},
             };
           }
-          if (typeof master.pathway_mgmt[new_pathway] !== "undefined") {
+          if (typeof your_stuff.pathway_mgmt[new_pathway] !== "undefined") {
             bootbox.alert(
               "The pathway <b>" +
                 new_pathway +
                 "</b> already exists. Please choose a different name"
             );
           } else {
-            master.pathway_mgmt.pathways[new_pathway] = {
+            your_stuff.pathway_mgmt.pathways[new_pathway] = {
               order: [],
               items: {},
             };
@@ -256,7 +256,7 @@
               })
             );
             $("#pathway_select").val(new_pathway);
-            master.pathway_mgmt.current = new_pathway;
+            your_stuff.pathway_mgmt.current = new_pathway;
           }
           $("#pathway_interface").show();
         }
@@ -274,14 +274,14 @@
 
     var pathway_url =
       "https://" +
-      master.github.organization +
+      your_stuff.github.organization +
       ".github.io/" +
-      master.github.repository +
+      your_stuff.github.repository +
       "/" +
       "App/Pathway.html" +
       "?" +
       "pathway=" +
-      master.pathway_mgmt.current +
+      your_stuff.pathway_mgmt.current +
       "&" +
       "platform=online";
 
@@ -303,7 +303,7 @@
               this_url +
                 "Pathway.html?" +
                 "pathway=" +
-                master.pathway_mgmt.current +
+                your_stuff.pathway_mgmt.current +
                 "&" +
                 "platform=localhost",
               "_blank"
@@ -324,15 +324,15 @@
             $("#pathway_select").val().toLowerCase().replace(".json", "") +
               ".json",
             JSON.stringify(
-              master.pathway_mgmt.pathways[master.pathway_mgmt.current],
+              your_stuff.pathway_mgmt.pathways[your_stuff.pathway_mgmt.current],
               null,
               2
             )
           );
           CElectron.fs.write_file(
             "",
-            "master.json",
-            JSON.stringify(master, null, 2)
+            "your_stuff.json",
+            JSON.stringify(your_stuff, null, 2)
           );
           break;
       }

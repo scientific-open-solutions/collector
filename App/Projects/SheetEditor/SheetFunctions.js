@@ -19,7 +19,7 @@
 */
 function check_trialtypes_in_proc(procedure, post_trialtype) {
   var experiment = $("#project_list").val();
-  var this_proj = master.projects.projects[project];
+  var this_proj = your_stuff.projects.projects[project];
   var this_proc = this_proj.all_procs[procedure];
   var trialtypes = [];
   var trial_type_col = this_proc[0]
@@ -38,16 +38,16 @@ function check_trialtypes_in_proc(procedure, post_trialtype) {
   }
   trialtypes = trialtypes.filter((n) => n);
   console.dir(trialtypes);
-  if (typeof master.projects.projects[project].trialtypes == "undefined") {
-    master.projects.projects[project].trialtypes = {};
+  if (typeof your_stuff.projects.projects[project].trialtypes == "undefined") {
+    your_stuff.projects.projects[project].trialtypes = {};
   }
   trialtypes.forEach(function (trialtype) {
-    if (typeof master.phasetypes.user[trialtype] !== "undefined") {
-      master.projects.projects[project].trialtypes[trialtype] =
-        master.phasetypes.user[trialtype];
-    } else if (typeof master.phasetypes.default[trialtype] !== "undefined") {
-      master.projects.projects[project].trialtypes[trialtype] =
-        master.phasetypes.default[trialtype];
+    if (typeof your_stuff.phasetypes.user[trialtype] !== "undefined") {
+      your_stuff.projects.projects[project].trialtypes[trialtype] =
+        your_stuff.phasetypes.user[trialtype];
+    } else if (typeof your_stuff.phasetypes.default[trialtype] !== "undefined") {
+      your_stuff.projects.projects[project].trialtypes[trialtype] =
+        your_stuff.phasetypes.default[trialtype];
     } else {
       Collector.custom_alert(
         "Invalid trialtype <b>" +
@@ -59,7 +59,7 @@ function check_trialtypes_in_proc(procedure, post_trialtype) {
   });
 }
 function clean_conditions() {
-  project_json = master.projects.projects[$("#project_list").val()];
+  project_json = your_stuff.projects.projects[$("#project_list").val()];
 
   var parsed_conditions = Collector.PapaParsed(project_json.conditions);
   parsed_conditions = parsed_conditions.filter((row) => row.procedure !== "");
@@ -137,7 +137,7 @@ function list_projects() {
       var project_json = JSON.parse(
         CElectron.fs.read_file("Projects", project + ".json")
       );
-      master.projects.projects[project] = project_json;
+      your_stuff.projects.projects[project] = project_json;
     } catch (error) {
       if(project !== ".DS_Store"){
         bootbox.alert("You have a problem with project:" + project);
@@ -145,7 +145,7 @@ function list_projects() {
     }
   });
 
-  name_list = Object.keys(master.projects.projects);
+  name_list = Object.keys(your_stuff.projects.projects);
 
   function update_proj_list() {
     /*
@@ -185,7 +185,7 @@ function new_project(project) {
   if ($("#project_list").text().indexOf(project) !== -1) {
     bootbox.alert("Name already exists. Please try again.");
   } else {
-    master.projects.projects[project] = JSON.parse(
+    your_stuff.projects.projects[project] = JSON.parse(
       JSON.stringify(default_project)
     );
 
@@ -213,7 +213,7 @@ function remove_from_list(project) {
 }
 
 function stim_proc_defaults(proc_values, stim_values) {
-  var this_proj = master.projects.projects[$("#project_list").val()];
+  var this_proj = your_stuff.projects.projects[$("#project_list").val()];
 
   // selecting Stimuli_1 and Procedure_1 as default
   if (proc_values.indexOf("Procedure_1") !== -1) {
@@ -230,7 +230,7 @@ function stim_proc_defaults(proc_values, stim_values) {
   }
 }
 function stim_proc_selection(stim_proc, sheet_selected) {
-  var this_proj = master.projects.projects[$("#project_list").val()];
+  var this_proj = your_stuff.projects.projects[$("#project_list").val()];
   createExpEditorHoT(
     this_proj.all_stims[sheet_selected],
     stim_proc,
@@ -239,7 +239,7 @@ function stim_proc_selection(stim_proc, sheet_selected) {
 }
 
 function update_dropdown_lists() {
-  var this_proj = master.projects.projects[$("#project_list").val()];
+  var this_proj = your_stuff.projects.projects[$("#project_list").val()];
   var stim_values = [];
   var proc_values = [];
 
@@ -270,7 +270,7 @@ function update_dropdown_lists() {
   stim_proc_defaults(proc_values, stim_values);
 }
 function update_handsontables() {
-  var this_proj = master.projects.projects[$("#project_list").val()];
+  var this_proj = your_stuff.projects.projects[$("#project_list").val()];
 
   update_dropdown_lists();
   stim_file = Object.keys(this_proj.all_stims)[0];
@@ -289,7 +289,7 @@ function update_handsontables() {
       createExpEditorHoT(sheet_content, sheet_type, sheet_name);
     } else {
       var sheet_json =
-        master.projects.projects[$("#project_list").val()][projects_location];
+        your_stuff.projects.projects[$("#project_list").val()][projects_location];
       createExpEditorHoT(sheet_json, sheet_type, sheet_name);
     }
   }
@@ -301,7 +301,7 @@ function update_handsontables() {
 
   if (conditions_sheet == "") {
     var this_cond_sheet =
-      master.projects.projects[$("#project_list").val()].conditions;
+      your_stuff.projects.projects[$("#project_list").val()].conditions;
     if (typeof this_cond_sheet == "object")
       conditions_sheet = Papa.unparse(this_cond_sheet);
   }
@@ -318,7 +318,7 @@ function update_handsontables() {
   );
   if (stim_sheet == "") {
     stim_sheet =
-      master.projects.projects[$("#project_list").val()].all_stims[stim_file];
+      your_stuff.projects.projects[$("#project_list").val()].all_stims[stim_file];
   }
   load_spreadsheet("Stimuli", stim_file, "all_stims[sheet_name]", stim_sheet);
 
@@ -328,7 +328,7 @@ function update_handsontables() {
   );
   if (proc_sheet == "") {
     proc_sheet =
-      master.projects.projects[$("#project_list").val()].all_procs[proc_file];
+      your_stuff.projects.projects[$("#project_list").val()].all_procs[proc_file];
   }
   load_spreadsheet("Procedure", proc_file, "all_procs[sheet_name]", proc_sheet);
   $("#project_inputs").show();
@@ -339,8 +339,8 @@ function upload_exp_contents(these_contents, this_filename) {
   cleaned_filename = this_filename.toLowerCase().replace(".json", "");
 
   // note that this is a local function. right?
-  function upload_to_master(proj_name, this_content) {
-    master.projects.projects[proj_name] = this_content;
+  function upload_to_your_stuff(proj_name, this_content) {
+    your_stuff.projects.projects[proj_name] = this_content;
     list_projects();
     upload_trialtypes(this_content);
     upload_surveys(this_content);
@@ -348,8 +348,8 @@ function upload_exp_contents(these_contents, this_filename) {
   }
   function upload_surveys(this_content) {
     function unique_survey(suggested_name, survey_content) {
-      all_surveys = Object.keys(master.surveys.user_surveys).concat(
-        Object.keys(master.surveys.default_surveys)
+      all_surveys = Object.keys(your_stuff.surveys.user_surveys).concat(
+        Object.keys(your_stuff.surveys.default_surveys)
       );
       if (all_surveys.indexOf(suggested_name) !== -1) {
         bootbox.prompt(
@@ -363,7 +363,7 @@ function upload_exp_contents(these_contents, this_filename) {
           }
         );
       } else {
-        master.surveys.user_surveys[suggested_name] = survey_content;
+        your_stuff.surveys.user_surveys[suggested_name] = survey_content;
       }
     }
 
@@ -375,8 +375,8 @@ function upload_exp_contents(these_contents, this_filename) {
     var trialtypes = Object.keys(this_content.trialtypes);
     trialtypes.forEach(function (trialtype) {
       function unique_trialtype(suggested_name, trialtype_content) {
-        all_trialtypes = Object.keys(master.phasetypes.user).concat(
-          Object.keys(master.phasetypes.default)
+        all_trialtypes = Object.keys(your_stuff.phasetypes.user).concat(
+          Object.keys(your_stuff.phasetypes.default)
         );
         if (all_trialtypes.indexOf(suggested_name) !== -1) {
           bootbox.prompt(
@@ -390,7 +390,7 @@ function upload_exp_contents(these_contents, this_filename) {
             }
           );
         } else {
-          master.phasetypes.user[suggested_name] = trialtype_content;
+          your_stuff.phasetypes.user[suggested_name] = trialtype_content;
           list_phasetypes();
         }
       }
@@ -409,7 +409,7 @@ function upload_exp_contents(these_contents, this_filename) {
     callback: function (proj_name) {
       if (proj_name) {
         function unique_experiment(suggested_name, content) {
-          all_experiments = Object.keys(master.projects.projects);
+          all_experiments = Object.keys(your_stuff.projects.projects);
           if (all_experiments.indexOf(suggested_name) !== -1) {
             bootbox.prompt(
               "<b>" +
@@ -419,22 +419,22 @@ function upload_exp_contents(these_contents, this_filename) {
                 if (new_name) {
                   unique_experiment(new_name, content);
                 } else {
-                  upload_to_master(proj_name, parsed_contents);
+                  upload_to_your_stuff(proj_name, parsed_contents);
                   $("#save_btn").click();
                 }
               }
             );
           } else {
-            master.projects.projects[suggested_name] = content;
+            your_stuff.projects.projects[suggested_name] = content;
             list_projects();
             $("#upload_experiment_modal").hide();
-            upload_to_master(proj_name, parsed_contents);
+            upload_to_your_stuff(proj_name, parsed_contents);
             $("#save_btn").click();
           }
         }
         unique_experiment(proj_name, parsed_contents);
       } else {
-        upload_to_master(proj_name, parsed_contents);
+        upload_to_your_stuff(proj_name, parsed_contents);
         $("#save_btn").click();
       }
     },

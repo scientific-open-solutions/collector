@@ -771,7 +771,7 @@ function create_project_json_variables() {
 
 function detect_exe() {
   console.log("hello!");
-  $.get("../User/master.json", function (result) {
+  $.get("../User/your_stuff.json", function (result) {
     Project.is_exe = false;
     Project.activate_pipe();
   }).catch(function (error) {

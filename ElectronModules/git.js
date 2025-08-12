@@ -23,7 +23,7 @@ const { Octokit } = require("@octokit/rest");
 const simpleGit = require("simple-git");
 
 /*
- * trying to help migration to "main" rather than "master" as default branch
+ * trying to help migration to "main" rather than "your_stuff" as default branch
 
  // clearly not working
 
@@ -501,28 +501,28 @@ ipc.on("git_push", (event, args) => {
   octokit.rest.repos.renameBranch({
     owner: args.org,
     repo: args.repo,
-    branch: "master",
+    branch: "your_stuff",
     new_name: "main",
   });
   */
 
   var git = simpleGit();
   /*
-   * update master to main branch here
+   * update your_stuff to main branch here
    */
-   if(fs.existsSync(user().current.path + "/.git/refs/heads/master")){
-     console.log(user().current.path + "/.git/refs/heads/master exists");
+   if(fs.existsSync(user().current.path + "/.git/refs/heads/your_stuff")){
+     console.log(user().current.path + "/.git/refs/heads/your_stuff exists");
      //
 
      fs.copySync(
-       user().current.path + "/.git/refs/heads/master",
+       user().current.path + "/.git/refs/heads/your_stuff",
        user().current.path + "/.git/refs/heads/main"
      )
      fs.unlinkSync(
-       user().current.path + "/.git/refs/heads/master"
+       user().current.path + "/.git/refs/heads/your_stuff"
      );
    } else {
-     console.log(user().current.path + "/.git/refs/heads/master does not exist");
+     console.log(user().current.path + "/.git/refs/heads/your_stuff does not exist");
    }
 
   git

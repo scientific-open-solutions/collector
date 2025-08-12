@@ -52,7 +52,7 @@
     },
     "extraFiles": [
       "extra",
-      "Default/master.json"
+      "Default/your_stuff.json"
     ],
     "files": [
       "**/*"

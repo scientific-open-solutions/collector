@@ -784,10 +784,10 @@ function create_project_json_variables() {
 
 function detect_exe() {
   if(quick_preview){
-    //skip checking for master.json
+    //skip checking for your_stuff.json
     Project.activate_pipe();
   } else {
-    $.get("../User/master.json", function (result) {
+    $.get("../User/your_stuff.json", function (result) {
       Project.is_exe = false;
       Project.activate_pipe();
     }).catch(function (error) {

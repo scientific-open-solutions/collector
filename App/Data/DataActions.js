@@ -39,7 +39,7 @@ $("#list_data_btn").on("click", function () {
     bootbox.alert("Please select a server");
   } else {
     if (
-      typeof master.data.servers[$("#select_data_server").val()].manage_url ==
+      typeof your_stuff.data.servers[$("#select_data_server").val()].manage_url ==
       "undefined"
     ) {
       //fix the lack of a manage_url now (perhaps auto click the update );

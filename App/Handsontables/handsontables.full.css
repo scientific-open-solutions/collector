@@ -229,15 +229,15 @@
   border-top: 1px solid #CCC;
 }
 
-.ht_master:not(.innerBorderLeft):not(.emptyColumns) ~ .handsontable tbody tr th,
-.ht_master:not(.innerBorderLeft):not(.emptyColumns) ~ .handsontable:not(.ht_clone_top) thead tr th:first-child {
+.ht_your_stuff:not(.innerBorderLeft):not(.emptyColumns) ~ .handsontable tbody tr th,
+.ht_your_stuff:not(.innerBorderLeft):not(.emptyColumns) ~ .handsontable:not(.ht_clone_top) thead tr th:first-child {
   border-right-width: 0;
 }
 
-.ht_master:not(.innerBorderTop) thead tr:last-child th,
-.ht_master:not(.innerBorderTop) ~ .handsontable thead tr:last-child th,
-.ht_master:not(.innerBorderTop) thead tr.lastChild th,
-.ht_master:not(.innerBorderTop) ~ .handsontable thead tr.lastChild th {
+.ht_your_stuff:not(.innerBorderTop) thead tr:last-child th,
+.ht_your_stuff:not(.innerBorderTop) ~ .handsontable thead tr:last-child th,
+.ht_your_stuff:not(.innerBorderTop) thead tr.lastChild th,
+.ht_your_stuff:not(.innerBorderTop) ~ .handsontable thead tr.lastChild th {
   border-bottom-width: 0;
 }
 
@@ -640,7 +640,7 @@ CheckboxRenderer
   margin: 0;
 }
 
-.handsontable.listbox .ht_master table {
+.handsontable.listbox .ht_your_stuff table {
   border: 1px solid #ccc;
   border-collapse: separate;
   background: #ffffff
@@ -833,19 +833,19 @@ thead .htCollapseButton:after {
   display: none;
 }
 
-.ht_master,
+.ht_your_stuff,
 .ht_clone_left,
 .ht_clone_top,
 .ht_clone_bottom {
   overflow: hidden;
 }
 
-.ht_master .wtHolder {
+.ht_your_stuff .wtHolder {
   overflow: auto;
 }
 
-.handsontable .ht_master thead,
-.handsontable .ht_master tr th,
+.handsontable .ht_your_stuff thead,
+.handsontable .ht_your_stuff tr th,
 .handsontable .ht_clone_left thead {
   visibility: hidden;
 }
@@ -888,8 +888,8 @@ thead .htCollapseButton:after {
   -webkit-text-size-adjust: none;
 }
 
-.topLeftSelectionHandle:not(.ht_master .topLeftSelectionHandle),
-.topLeftSelectionHandle-HitArea:not(.ht_master .topLeftSelectionHandle-HitArea) {
+.topLeftSelectionHandle:not(.ht_your_stuff .topLeftSelectionHandle),
+.topLeftSelectionHandle-HitArea:not(.ht_your_stuff .topLeftSelectionHandle-HitArea) {
   z-index: 9999;
 }
 
@@ -1414,7 +1414,7 @@ http://nicolasgallagher.com/micro-clearfix-hack/
   left: 4px;
 }
 
-.htContextMenu .ht_master .wtHolder {
+.htContextMenu .ht_your_stuff .wtHolder {
   overflow: hidden;
 }
 textarea#HandsontableCopyPaste {
@@ -1425,8 +1425,8 @@ textarea#HandsontableCopyPaste {
   opacity: 0;
   outline: 0 none !important;
 }
-.htRowHeaders .ht_master.innerBorderLeft ~ .ht_clone_top_left_corner th:nth-child(2),
-.htRowHeaders .ht_master.innerBorderLeft ~ .ht_clone_left td:first-of-type {
+.htRowHeaders .ht_your_stuff.innerBorderLeft ~ .ht_clone_top_left_corner th:nth-child(2),
+.htRowHeaders .ht_your_stuff.innerBorderLeft ~ .ht_clone_left td:first-of-type {
   border-left: 0 none;
 }
 .handsontable .wtHider {

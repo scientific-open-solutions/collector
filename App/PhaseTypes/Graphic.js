@@ -134,7 +134,7 @@ $("#add_mod_btn").click(function () {
                 '<div class="card-body">' + 
                   '<select class="form-control select_mod" id="mod_select_' + mod +'">' +
                     "<option>--select mod--</option>";
-                    Object.keys(master.mods).forEach(function (mod_type) {
+                    Object.keys(your_stuff.mods).forEach(function (mod_type) {
                         new_card_html += 
                       '<option title="' + mod + '">' + mod_type + "</option>";
                     });
@@ -310,7 +310,7 @@ $("#view_graphic_code_btn").click(function () {
   required_code_name = $("#phasetype_select").val();
   bootbox.alert({
     title: "Current HTML code for: <b>" + required_code_name + "</b>",
-    message: '<xmp>'+ master.phasetypes.user[required_code_name] +'</xmp>',
+    message: '<xmp>'+ your_stuff.phasetypes.user[required_code_name] +'</xmp>',
     size: 'extra-large'
     }).off("shown.bs.modal").modal("show");
 });
@@ -339,12 +339,12 @@ $gphCnvs_contents.click(function () {
       graphic_editor_obj.create_element(element_type);
       $("#canvas_click_btn").click();
     } else {
-      if (master.phasetypes.graphic.hovered_element != null && master.phasetypes.graphic.hovered_element !== "") {
-        var element_id = master.phasetypes.graphic.hovered_element;
+      if (your_stuff.phasetypes.graphic.hovered_element != null && your_stuff.phasetypes.graphic.hovered_element !== "") {
+        var element_id = your_stuff.phasetypes.graphic.hovered_element;
         $gphCnvs_contents.find(".graphic_element").removeClass("selected_element");
         $gphCnvs_contents.find("#" + element_id).addClass("selected_element").removeClass("hovered_element");
 
-        master.phasetypes.graphic.element_id = element_id;
+        your_stuff.phasetypes.graphic.element_id = element_id;
         graphic_editor_obj.update_element_settings(element_id);
 
         //click on the timeline button with the relevant value
@@ -470,7 +470,7 @@ function load_code_mods() {
         mod +
         "'>";
       current_mods_html += "  <option>--select mod--</option>";
-      Object.keys(master.mods).forEach(function (mod_type) {
+      Object.keys(your_stuff.mods).forEach(function (mod_type) {
         if (mod_type == this_trialtype.mods[mod].type) {
           var selected = "selected";
         } else {
@@ -517,14 +517,14 @@ function load_code_mods() {
   select_mod_on();
 }
 function list_graphics() {
-  if (master.phasetypes.graphic == null) {
-    master.phasetypes.graphic = {
+  if (your_stuff.phasetypes.graphic == null) {
+    your_stuff.phasetypes.graphic = {
       trialtype: "",
       trialtypes: {},
       hovered_element: "",
     };
   }
-  master.phasetypes.graphic.relevant_styles = [
+  your_stuff.phasetypes.graphic.relevant_styles = [
     "background-color",
     "border-color",
     "border-radius",
@@ -557,7 +557,7 @@ function select_mod_on() {
     );
   });
   $(".select_mod").on("change", function () {
-    var mod_html = master.mods[$(this).val()];
+    var mod_html = your_stuff.mods[$(this).val()];
     var variables = [];
 
     split_trialtype = mod_html.split("{{");
@@ -724,8 +724,8 @@ graphic_editor_obj = {
   load_canvas: function (these_elements) { // You can ignore this as everything happens afterwards
     console.log("1. Load Canvas");
     remove_trial_contents_div() // First we want to remove the trial_contents_div if necessary
-    trialtype = master.phasetypes.file;
-    this_trialtype = master.phasetypes.graphic.files[trialtype];
+    trialtype = your_stuff.phasetypes.file;
+    this_trialtype = your_stuff.phasetypes.graphic.files[trialtype];
     graphic_editor_obj.create_canvas(function () {
       Object.keys(these_elements).forEach(function (element) {
         switch (these_elements[element].type.toLowerCase()) {
@@ -749,7 +749,7 @@ graphic_editor_obj = {
       graphic_editor_obj.update_timeline();
       graphic_editor_obj.update_page_settings();
     });
-    // console.log(master.phasetypes.graphic.files)
+    // console.log(your_stuff.phasetypes.graphic.files)
   },
     create_canvas: function (new_canvas_code) { // You can ignore this as everything happens afterwards
       console.log("2. Create Canvas");
@@ -798,7 +798,7 @@ graphic_editor_obj = {
           });
           $gphCnvs_contents.find(".graphic_element").removeClass("selected_element");
           $gphCnvs_contents.find("#" + element_id).addClass("selected_element");
-          master.phasetypes.graphic.element_id = element_id;
+          your_stuff.phasetypes.graphic.element_id = element_id;
           graphic_editor_obj.update_element_settings(element_id);
         });
       },
@@ -817,7 +817,7 @@ graphic_editor_obj = {
           });
           $gphCnvs_contents.find(".graphic_element").removeClass("selected_element");
           $gphCnvs_contents.find("#" + element_id).addClass("selected_element");
-          master.phasetypes.graphic.element_id = element_id;
+          your_stuff.phasetypes.graphic.element_id = element_id;
           graphic_editor_obj.update_element_settings(element_id);
         });
       },
@@ -843,7 +843,7 @@ graphic_editor_obj = {
           });
           $gphCnvs_contents.find(".graphic_element").removeClass("selected_element");
           $gphCnvs_contents.find("#" + element_id).addClass("selected_element");
-          master.phasetypes.graphic.element_id = element_id;
+          your_stuff.phasetypes.graphic.element_id = element_id;
           graphic_editor_obj.update_element_settings(element_id);
         });
       },
@@ -868,7 +868,7 @@ graphic_editor_obj = {
           text_props.forEach(function (text_prop) {
             $gphCnvs_contents.find("#" + element_id).css(text_prop, element_props[text_prop].value);
           });
-          master.phasetypes.graphic.element_id = element_id;
+          your_stuff.phasetypes.graphic.element_id = element_id;
           $('#graphic_general_settings').hide();
           graphic_editor_obj.update_element_settings(element_id);
 
@@ -890,7 +890,7 @@ graphic_editor_obj = {
           });
           $gphCnvs_contents.find(".graphic_element").removeClass("selected_element");
           $gphCnvs_contents.find("#" + element_id).addClass("selected_element");
-          master.phasetypes.graphic.element_id = element_id;
+          your_stuff.phasetypes.graphic.element_id = element_id;
           graphic_editor_obj.update_element_settings(element_id);
         });
       },
@@ -1279,13 +1279,13 @@ graphic_editor_obj = {
       $("#graphic_settings").html(graphic_settings_html);
   
       $gphCnvs_contents.find(".graphic_element").hover(function () {
-        master.phasetypes.graphic.hovered_element = this.id;
-        if (this.id !== master.phasetypes.graphic.element_id) {
+        your_stuff.phasetypes.graphic.hovered_element = this.id;
+        if (this.id !== your_stuff.phasetypes.graphic.element_id) {
           $(this).addClass("hovered_element");
         }
       }, function () {
         $(this).removeClass("hovered_element");
-        master.phasetypes.graphic.hovered_element = "";
+        your_stuff.phasetypes.graphic.hovered_element = "";
       });
 
       this.element_content_settings();
@@ -1341,7 +1341,7 @@ graphic_editor_obj = {
       }
       this_code += "}\n";
   
-      var relevant_styles = master.phasetypes.graphic.relevant_styles;
+      var relevant_styles = your_stuff.phasetypes.graphic.relevant_styles;
       Object.keys(elements).forEach(function (element) {
         this_code += "#" + element + "{\n";
         this_code += "  position:"+position_marker+";\n";
@@ -1529,7 +1529,7 @@ graphic_editor_obj = {
       // if (this_trialtype.mods != null) {
       //   Object.keys(this_trialtype.mods).forEach(function (mod) {
       //     var this_mod = this_trialtype.mods[mod];
-      //     var mod_html = master.mods[this_mod.type];
+      //     var mod_html = your_stuff.mods[this_mod.type];
   
       //     //replace each of the variables
       //     Object.keys(this_mod.settings).forEach(function (mod_setting) {
@@ -1543,7 +1543,7 @@ graphic_editor_obj = {
       // }
   
       // Write the final code output into the html object to be saved
-      master.phasetypes.user[trialtype] = this_code;
+      your_stuff.phasetypes.user[trialtype] = this_code;
     },
 
   // Other editor object functions...
@@ -1605,24 +1605,24 @@ graphic_editor_obj = {
         graphic_editor_obj.rename_element();
       });
       $("#setting_placeholder").on("input change", function () { // Only used for input elements
-        var element_id = master.phasetypes.graphic.element_id;
+        var element_id = your_stuff.phasetypes.graphic.element_id;
         $gphCnvs_contents.find("#" + element_id).attr("placeholder", $(this).val());
       });
 
     // Styling Settings
-      var relevant_styles = master.phasetypes.graphic.relevant_styles;
+      var relevant_styles = your_stuff.phasetypes.graphic.relevant_styles;
       relevant_styles.forEach(function (relevant_style) {
         $("#setting_" + relevant_style).on("input change", function () {
           if (relevant_style == "top" || relevant_style == "left") {
             var new_value = $(this).val().replace("px", "");
             // new_value = new_value +"px";
-            var element_id = master.phasetypes.graphic.element_id;
+            var element_id = your_stuff.phasetypes.graphic.element_id;
             $gphCnvs_contents.find("#" + element_id).css(relevant_style, new_value);
             graphic_editor_obj.update_trialtype_element(element_id,relevant_style,$(this).val());
             graphic_editor_obj.compile_phasetype_file(element_id);
           } else {
             //input
-            var element_id = master.phasetypes.graphic.element_id;
+            var element_id = your_stuff.phasetypes.graphic.element_id;
             $gphCnvs_contents.find("#" + element_id).css(relevant_style, $(this).val());
             graphic_editor_obj.update_trialtype_element(element_id,relevant_style,$(this).val());
             graphic_editor_obj.compile_phasetype_file(element_id);
@@ -1636,7 +1636,7 @@ graphic_editor_obj = {
     // Interactivity Settings
 
     $("#setting_controls").change(function () {
-      var element_id = master.phasetypes.graphic.element_id;
+      var element_id = your_stuff.phasetypes.graphic.element_id;
       graphic_editor_obj.update_trialtype_element(element_id,"controls",$(this)[0].checked);
       graphic_editor_obj.compile_phasetype_file(element_id);
     });
@@ -1644,16 +1644,16 @@ graphic_editor_obj = {
       helperActivate("delay", $(this).val(), "delay");
     });
     $("#setting_end_click").click(function () {
-      var element_id = master.phasetypes.graphic.element_id;
+      var element_id = your_stuff.phasetypes.graphic.element_id;
       graphic_editor_obj.update_trialtype_element(element_id,"end_click",$(this)[0].checked);
       graphic_editor_obj.compile_phasetype_file(element_id);
     });
     $("#setting_html").on("input change", function () {
-      var element_id = master.phasetypes.graphic.element_id;
+      var element_id = your_stuff.phasetypes.graphic.element_id;
       $gphCnvs_contents.find("#" + element_id).html($(this).val());
     });
     $("#setting_value").on("input change", function () {
-      var element_id = master.phasetypes.graphic.element_id;
+      var element_id = your_stuff.phasetypes.graphic.element_id;
       $gphCnvs_contents.find("#" + element_id).val($(this).val());
     });
 
@@ -1669,7 +1669,7 @@ graphic_editor_obj = {
     ];
     setting_update_values.forEach(function (update_value) {
       $("#setting_" + update_value).on("input change", function () {
-        var element_id = master.phasetypes.graphic.element_id;
+        var element_id = your_stuff.phasetypes.graphic.element_id;
         graphic_editor_obj.update_trialtype_element(element_id,update_value,$(this).val());
         graphic_editor_obj.compile_phasetype_file(element_id);
       });
@@ -2193,10 +2193,10 @@ graphic_editor_obj = {
           var old_header_html = $("#element_header").html();
           var old_header_text = $("#element_header").text();
           if (elements[new_name] == null) {
-            var old_element_name = master.phasetypes.graphic.element_id;
+            var old_element_name = your_stuff.phasetypes.graphic.element_id;
             elements[new_name] = JSON.parse(JSON.stringify(elements[old_element_name]));
             delete elements[old_element_name];
-            master.phasetypes.graphic.element_id = new_name;
+            your_stuff.phasetypes.graphic.element_id = new_name;
             $("#element_name").val(new_name);
             $gphCnvs_contents.find("#" + old_element_name).attr("id", new_name);
             switch (elements[new_name].type) {

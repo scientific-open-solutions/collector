@@ -107,7 +107,7 @@
 
  $("#project_list").change(function () {
     $("#exp_data_table").show();
-    project_json = master.projects.projects[this.value];
+    project_json = your_stuff.projects.projects[this.value];
     clean_conditions();
     $("#project_inputs").show();
     // update_handsontables(); This isn't needed as it's called within the clean_conditions() function

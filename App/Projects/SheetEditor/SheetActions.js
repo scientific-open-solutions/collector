@@ -53,8 +53,8 @@ $("#delete_proj_btn").on("click", function () {
               callback: function (result) {
                 parent.parent.functionIsRunning = false;
                 if (result) {
-                  //delete from master
-                  delete master.projects.projects[proj_name];
+                  //delete from your_stuff
+                  delete your_stuff.projects.projects[proj_name];
 
                   $("#project_list option:contains(" + proj_name + ")")[0].remove();
                   $("#project_list").val(document.getElementById("project_list").options[1].value);
@@ -126,13 +126,13 @@ $("#delete_proc_button").on("click", function () {
                   // do nothing
                 } else {
                   /*
-                  * delete from master
+                  * delete from your_stuff
                   */
                   var project = $("#project_list").val();
                   var proc_file = $("#proc_select").val();
                   var file_path = "Projects" + "/" + project + "/" + proc_file;
                   console.log(file_path);
-                  delete master.projects.projects[project].all_procs[proc_file];
+                  delete your_stuff.projects.projects[project].all_procs[proc_file];
 
                   // update the lists
                   update_handsontables();
@@ -205,13 +205,13 @@ $("#delete_stim_button").on("click", function () {
                   // do nothing
                 } else {
                   /*
-                  * delete from master
+                  * delete from your_stuff
                   */
                   var project = $("#project_list").val();
                   var stim_file = $("#stim_select").val();
-                  delete master.projects.projects[project].all_stims[stim_file];
+                  delete your_stuff.projects.projects[project].all_stims[stim_file];
 
-                  delete master.projects.projects[project].stims_csv[stim_file];
+                  delete your_stuff.projects.projects[project].stims_csv[stim_file];
 
                   // update the lists
                   update_handsontables();
@@ -245,7 +245,7 @@ $("#download_project_button").on("click", function () {
   if (!parent.parent.functionIsRunning) {
     parent.parent.functionIsRunning = true;
     var project = $("#project_list").val();
-    var project_json = master.projects.projects[project];
+    var project_json = your_stuff.projects.projects[project];
     var default_filename = project + ".json";
     bootbox.prompt({
       title: "What do you want to save this file as?",
@@ -274,7 +274,7 @@ $("#new_proc_button").on("click", function () {
         parent.parent.functionIsRunning = false;
         if (new_proc_name) {
           var project = $("#project_list").val();
-          var this_proj = master.projects.projects[project];
+          var this_proj = your_stuff.projects.projects[project];
           var current_procs = Object.keys(this_proj.all_procs);
           if (current_procs.indexOf(new_proc_name) !== -1) {
             bootbox.alert("You already have a procedure sheet with that name");
@@ -333,7 +333,7 @@ $("#new_stim_button").on("click", function () {
         parent.parent.functionIsRunning = false;
         if (new_sheet_name) {
           var project = $("#project_list").val();
-          var this_proj = master.projects.projects[project];
+          var this_proj = your_stuff.projects.projects[project];
           var current_stims = Object.keys(this_proj.all_stims);
           if (current_stims.indexOf(new_sheet_name) !== -1) {
             bootbox.alert(
@@ -372,7 +372,7 @@ $("#open_proj_folder").on("click", function () {
 $("#project_list").on("change", function () {
   $('#hide_show_table_span button').removeClass("btn-outline-primary").addClass("btn-primary");
   $("#exp_data_table").show();
-  project_json = master.projects.projects[this.value];
+  project_json = your_stuff.projects.projects[this.value];
   clean_conditions();
   $("#project_inputs").show();
   // update_handsontables(); This isn't needed as it's called within the clean_conditions() function
@@ -382,7 +382,7 @@ $("#project_list").on("change", function () {
 
 $("#proc_select").on("change", function () {
   var project = $("#project_list").val();
-  var this_proj = master.projects.projects[project];
+  var this_proj = your_stuff.projects.projects[project];
   createExpEditorHoT(this_proj.all_procs[this.value], "procedure", this.value);
 });
 
@@ -399,8 +399,8 @@ $("#rename_proj_btn").on("click", function () {
           } else {
             //proceed
             var original_name = $("#project_list").val();
-            master.projects.projects[new_name] = master.projects.projects[original_name];
-            delete master.projects.projects[original_name];
+            your_stuff.projects.projects[new_name] = your_stuff.projects.projects[original_name];
+            delete your_stuff.projects.projects[original_name];
 
             $("#project_list").append($("<option>", {text: new_name,}));
             $("#project_list").val(new_name);
@@ -433,7 +433,7 @@ $("#rename_proc_button").on("click", function () {
         if (new_proc_name) {
           new_proc_name = new_proc_name.toLowerCase();
           var project = $("#project_list").val();
-          var this_proj = master.projects.projects[project];
+          var this_proj = your_stuff.projects.projects[project];
           var current_procs = Object.keys(this_proj.all_procs);
           var current_proc = $("#proc_select").val();
           current_procs.splice(current_procs.indexOf(current_proc), 1);
@@ -443,9 +443,9 @@ $("#rename_proc_button").on("click", function () {
             bootbox.alert("You already have a procedure sheet with that name");
           } else {
             new_proc_name = new_proc_name.replace(".csv", "") + ".csv";
-            master.projects.projects[project].all_procs[new_proc_name] = current_proc_sheet;
+            your_stuff.projects.projects[project].all_procs[new_proc_name] = current_proc_sheet;
 
-            delete master.projects.projects[project].all_procs[current_proc];
+            delete your_stuff.projects.projects[project].all_procs[current_proc];
 
             var file_path = "Projects" + "/" + project + "/" + current_proc;
             CElectron.fs.delete_file(file_path);
@@ -472,7 +472,7 @@ $("#rename_stim_button").on("click", function () {
         if (new_sheet_name) {
           new_sheet_name = new_sheet_name.toLowerCase();
           var project = $("#project_list").val();
-          var this_proj = master.projects.projects[project];
+          var this_proj = your_stuff.projects.projects[project];
 
           var current_stims = Object.keys(this_proj.all_stims);
           var current_stim = $("#stim_select").val();
@@ -484,9 +484,9 @@ $("#rename_stim_button").on("click", function () {
             bootbox.alert("You already have a <b>Stimuli</b> sheet with that name");
           } else {
             new_sheet_name = new_sheet_name.replace(".csv", "") + ".csv";
-            master.projects.projects[project].all_stims[new_sheet_name] = current_stim_sheet;
+            your_stuff.projects.projects[project].all_stims[new_sheet_name] = current_stim_sheet;
 
-            delete master.projects.projects[project].all_stims[current_stim];
+            delete your_stuff.projects.projects[project].all_stims[current_stim];
 
             var file_path = "Projects" + "/" + project + "/" + current_stim;
             CElectron.fs.delete_file(file_path);
@@ -511,12 +511,12 @@ $("#quick_prev_btn").on("click", function(){
     project_json.phasetypes_html = {};
     project_json.phase_no = 0;
     Object.keys(project_json.phasetypes).forEach(function(this_key){
-      if(typeof(master.phasetypes.default[this_key]) !== "undefined"){
-        project_json.phasetypes_html[this_key] = master.phasetypes.default[this_key];
-      } else if(typeof(master.phasetypes.user[this_key]) !== "undefined"){
+      if(typeof(your_stuff.phasetypes.default[this_key]) !== "undefined"){
+        project_json.phasetypes_html[this_key] = your_stuff.phasetypes.default[this_key];
+      } else if(typeof(your_stuff.phasetypes.user[this_key]) !== "undefined"){
         console.log("trying to find the users phasetype");
         console.log(this_key);
-        project_json.phasetypes_html[this_key] = master.phasetypes.user[this_key];
+        project_json.phasetypes_html[this_key] = your_stuff.phasetypes.user[this_key];
       } else {
         bootbox.alert("The phasetype " + this_key + " does not seem to exist?");
       }   
@@ -539,7 +539,7 @@ $("#quick_prev_btn").on("click", function(){
     //$("#preview_iframe")[0].contentWindow.Project.get_vars.platform = "preview"
   }
   var project = $("#project_list").val();
-  var project_json = master.projects.projects[project];
+  var project_json = your_stuff.projects.projects[project];
   //check if there is more than one conditions
   project_json.conditions = Collector.PapaParsed(project_json.conditions);
   if(project_json.conditions.length > 1){
@@ -555,7 +555,7 @@ $("#run_btn").on("click", function () {
     if (!parent.parent.functionIsRunning) {
       parent.parent.functionIsRunning = true;
       var project = $("#project_list").val();
-      var project_json = master.projects.projects[project];
+      var project_json = your_stuff.projects.projects[project];
       var select_html = '<select id="select_condition" class="form-select">';
       var conditions = Collector.PapaParsed(project_json.conditions);
       if (typeof conditions === "undefined") {
@@ -569,14 +569,14 @@ $("#run_btn").on("click", function () {
       select_html += "</select>";
 
       if (
-        typeof master.data.save_script === "undefined" ||
+        typeof your_stuff.data.save_script === "undefined" ||
         //test here for whether there is a github repository linked
-        master.data.save_script === ""
+        your_stuff.data.save_script === ""
       ) {
         /* might reinstate this later if it becomes helpful
         bootbox.prompt("You currently have no link that saves your data. Please follow the instructions in the tutorial (to be completed), and then copy the link to confirm where to save your data below:",function(this_url){
           if(this_url){
-            master.data.save_script = this_url;
+            your_stuff.data.save_script = this_url;
             $("#save_btn").click();
           }
         });
@@ -685,9 +685,9 @@ $("#save_btn").on("click", function () {
           if (cleaned_row.item === 0) {
             var this_code;
             if (
-              typeof master.phasetypes.user[cleaned_row.phasetype] ===
+              typeof your_stuff.phasetypes.user[cleaned_row.phasetype] ===
                 "undefined" &&
-              typeof master.phasetypes.default[cleaned_row.phasetype] ===
+              typeof your_stuff.phasetypes.default[cleaned_row.phasetype] ===
                 "undefined"
             ) {
               bootbox.alert(
@@ -697,15 +697,15 @@ $("#save_btn").on("click", function () {
               );
             } else {
               if (
-                typeof master.phasetypes.default[cleaned_row.phasetype] !==
+                typeof your_stuff.phasetypes.default[cleaned_row.phasetype] !==
                 "undefined"
               ) {
-                this_code = master.phasetypes.default[cleaned_row.phasetype];
+                this_code = your_stuff.phasetypes.default[cleaned_row.phasetype];
               } else if (
-                typeof master.phasetypes.user[cleaned_row.phasetype] !==
+                typeof your_stuff.phasetypes.user[cleaned_row.phasetype] !==
                 "undefined"
               ) {
-                this_code = master.phasetypes.user[cleaned_row.phasetype];
+                this_code = your_stuff.phasetypes.user[cleaned_row.phasetype];
               }
 
               these_variables = Collector.list_variables(this_code);
@@ -746,7 +746,7 @@ $("#save_btn").on("click", function () {
       */
       this_proj.phasetypes = {};
       phasetype_files.forEach(function (code_file) {
-        if (typeof master.phasetypes.default[code_file] !== "undefined") {
+        if (typeof your_stuff.phasetypes.default[code_file] !== "undefined") {
           this_proj.phasetypes[code_file] =
             "[[[LOCATION]]]../Default/DefaultPhaseTypes/" +
             code_file.replace(".html", "") +
@@ -790,29 +790,29 @@ $("#save_btn").on("click", function () {
           /* survey check */
           if (typeof proc_row.survey !== "undefined" && proc_row.survey !== "") {
             var this_survey = proc_row.survey.toLowerCase();
-            if (typeof master.surveys.user_surveys[this_survey] !== "undefined") {
+            if (typeof your_stuff.surveys.user_surveys[this_survey] !== "undefined") {
               if (typeof this_proj.surveys === "undefined") {
                 this_proj.surveys = {};
               }
-              this_proj.surveys[this_survey] = master.surveys.user_surveys[this_survey];
+              this_proj.surveys[this_survey] = your_stuff.surveys.user_surveys[this_survey];
               keyed_survey = Papa.parse(
-                Papa.unparse(master.surveys.user_surveys[this_survey]),
+                Papa.unparse(your_stuff.surveys.user_surveys[this_survey]),
                 {header: true,}
               ).data;
               keyed_survey.forEach(function (key_row) {
                 clean_key_row = Collector.clean_obj_keys(key_row);
                 if (typeof clean_key_row.type !== "undefined") {
                   var survey_mod_type = clean_key_row.type.toLowerCase();
-                  if (typeof master.phasetypes.user[survey_mod_type] !== "undefined") {
-                    this_proj.phasetypes[survey_mod_type] = master.phasetypes[survey_mod_type];
+                  if (typeof your_stuff.phasetypes.user[survey_mod_type] !== "undefined") {
+                    this_proj.phasetypes[survey_mod_type] = your_stuff.phasetypes[survey_mod_type];
                   }
                 }
               });
-            } else if (typeof master.surveys.default_surveys[this_survey] !== "undefined") {
+            } else if (typeof your_stuff.surveys.default_surveys[this_survey] !== "undefined") {
               if(typeof(this_proj.surveys) == "undefined"){
                 this_proj.surveys = {};
               }
-              this_proj.surveys[proc_row.survey] = master.surveys.default_surveys[this_survey];
+              this_proj.surveys[proc_row.survey] = your_stuff.surveys.default_surveys[this_survey];
             } else {
               if (!parent.parent.functionIsRunning) {
                 parent.parent.functionIsRunning = true;
@@ -835,7 +835,7 @@ $("#save_btn").on("click", function () {
   // $("#save_snip_btn").click();
   // $("#save_pathway_btn").click();
 
-  if (typeof master.keys === "undefined" || typeof master.keys.public_key === "undefined") {
+  if (typeof your_stuff.keys === "undefined" || typeof your_stuff.keys.public_key === "undefined") {
     encrypt_obj.generate_keys();
   }
 
@@ -849,7 +849,7 @@ $("#save_btn").on("click", function () {
      * add the org and repo to the project_json
      */
 
-    var this_proj = master.projects.projects[project];
+    var this_proj = your_stuff.projects.projects[project];
 
     this_proj.location =
       $("#select_org").val() + "/" + $("#select_repo").val() + "/" + project;
@@ -870,7 +870,7 @@ $("#save_btn").on("click", function () {
      */
 
     if (typeof this_proj !== "undefined") {
-      this_proj.public_key = master.keys.public_key;
+      this_proj.public_key = your_stuff.keys.public_key;
     }
     //parse procs for survey saving next
     if ($("#project_list").val() !== null) {
@@ -912,8 +912,8 @@ $("#save_btn").on("click", function () {
 
       write_response = CElectron.fs.write_file(
         "",
-        "master.json",
-        JSON.stringify(master, null, 2)
+        "your_stuff.json",
+        JSON.stringify(your_stuff, null, 2)
       );
       if (write_response !== "success") {
         bootbox.alert(response);
@@ -924,13 +924,13 @@ $("#save_btn").on("click", function () {
   } else {
     write_response = CElectron.fs.write_file(
       "",
-      "master.json",
-      JSON.stringify(master, null, 2)
+      "your_stuff.json",
+      JSON.stringify(your_stuff, null, 2)
     );
     if (write_response !== "success") {
       bootbox.alert(response);
     } else {
-      Collector.custom_alert("Succesfully saved master");
+      Collector.custom_alert("Succesfully saved your_stuff");
     }
   }
 
@@ -947,12 +947,12 @@ $("#save_btn").on("click", function () {
 
 $("#stim_select").on("change", function () {
   var project = $("#project_list").val();
-  var this_proj = master.projects.projects[project];
+  var this_proj = your_stuff.projects.projects[project];
   createExpEditorHoT(this_proj.all_stims[this.value], "stimuli", this.value);
 });
 
 $("#code_project_select").on("change", function () {
-  var this_proj = master.projects.projects[this.value];
+  var this_proj = your_stuff.projects.projects[this.value];
   var procs = Object.keys(this_proj.all_procs);
   var stims = Object.keys(this_proj.all_stims);
 
