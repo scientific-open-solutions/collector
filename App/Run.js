@@ -501,7 +501,13 @@ Project = {
       bootbox.alert("ERROR: If it's 'White Screening' it's because you've got an incorrect or empty row in the 'Item' column of your procedure sheet!<br><br><em>(ps. I spent hours trying to debug Collector when this happened to me as I hadn't realised it was just a missing 0 which is why I'm writing this long error message, so if it happens again I can fix it in seconds! CD)</em>")
     }
     if (this_proc.item.toString() !== "0") {
+      console.log(project_json);
+      console.log(project_json.parsed_stim);
+      console.log(this_proc.item);
+      //this_stim = project_json.parsed_stim[this_proc.item];
       this_stim = project_json.parsed_stim[this_proc.item];
+      console.log("this_stim");
+      console.log(this_stim);
       variable_list = Object.keys(this_proc).concat(Object.keys(this_stim));
     } else {
       variable_list = Object.keys(this_proc);
@@ -1118,6 +1124,9 @@ function insert_start() {
     (typeof project_json.this_condition.skip_quality !== "undefined" &&
       project_json.this_condition.skip_quality.toLowerCase() === "yes")
   ) {
+    Project.activate_pipe();
+    
+    /*
     this_proc = add_to_start(this_proc, "quality_preview_start");
     load_quality_checks([
       {
@@ -1125,6 +1134,7 @@ function insert_start() {
         name: "quality_preview_start",
       },
     ]);
+    */
   } else {
     /*
      * These quality checks are in reverse order
@@ -1296,7 +1306,7 @@ console.log(project_json);
           });
         }
         if(typeof(quick_preview) !== "undefined" && quick_preview){
-          project_json.parsed_stim = Collector.PapaParsed(project_json.all_stims[stim_sheet_name]);
+          project_json.parsed_stim =  [null, null].concat(Collector.PapaParsed(project_json.all_stims[stim_sheet_name]));
           Project.activate_pipe();
         } else {
           var stim_url = "../User/Projects/" + Project.get_vars.location + "/" + stim_sheet_name;

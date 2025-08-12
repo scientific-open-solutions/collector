@@ -502,14 +502,20 @@ $("#rename_stim_button").on("click", function () {
     );
   };
 });
+$("#close_prev_btn").on("click", function(){
+  $("#preview_iframe").remove();
+});
 $("#quick_prev_btn").on("click", function(){
   function preview_condition(this_condition){
     // load currently saved phasetypes
     project_json.phasetypes_html = {};
+    project_json.phase_no = 0;
     Object.keys(project_json.phasetypes).forEach(function(this_key){
       if(typeof(master.phasetypes.default[this_key]) !== "undefined"){
         project_json.phasetypes_html[this_key] = master.phasetypes.default[this_key];
       } else if(typeof(master.phasetypes.user[this_key]) !== "undefined"){
+        console.log("trying to find the users phasetype");
+        console.log(this_key);
         project_json.phasetypes_html[this_key] = master.phasetypes.user[this_key];
       } else {
         bootbox.alert("The phasetype " + this_key + " does not seem to exist?");
@@ -526,9 +532,10 @@ $("#quick_prev_btn").on("click", function(){
         .css("background-color","green")
         .css("position","fixed")
         .css("left","12.5%")
-        .css("top","12.5%")
+        .css("top","12.5%")        
     );
     $("#preview_iframe")[0].contentWindow.quick_preview = true;
+    
     //$("#preview_iframe")[0].contentWindow.Project.get_vars.platform = "preview"
   }
   var project = $("#project_list").val();

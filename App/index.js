@@ -455,7 +455,13 @@ function loading_scripts(script_url) {
     Object.keys(loaded_scripts).filter((row) => loaded_scripts[row] === false)
       .length === 0
   ) {
-    Collector.start();
+    if(window.localStorage.local_online === "local"){
+      Collector.start();
+    } else if(window.localStorage.local_online === "online"){
+      load_online();
+    } else {
+      alert("something's wrong with window.localStorage.local_online");
+    }
   }
     // script has loaded, you can now use it safely
     //alert('thank me later')
