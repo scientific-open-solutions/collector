@@ -61,8 +61,10 @@ $("#delete_proj_btn").on("click", function () {
                   Collector.custom_alert(proj_name + " succesfully deleted");
                   update_handsontables();
 
+                  
                   //delete the local file if this is
-                  if (Collector.detect_context() === "localhost") {CElectron.fs.delete_project(proj_name,
+                  if (window.localStorage.local_online === "local") {
+                    CElectron.fs.delete_project(proj_name,
                       function (response) {
                         if (response !== "success") {
                           bootbox.alert(response);
@@ -141,7 +143,7 @@ $("#delete_proc_button").on("click", function () {
                   * Delete the file locally if in electron
                   */
                   var file_path = "Projects" + "/" + project + "/" + proc_file;
-                  if (Collector.detect_context() === "localhost") {
+                  if (window.localStorage.local_online === "local") {
                     var this_response = CElectron.fs.delete_file(file_path);
                     if (this_response !== "success") {
                       bootbox.alert(this_response);
@@ -220,7 +222,7 @@ $("#delete_stim_button").on("click", function () {
                   * Delete the file locally if in electron
                   */
                   var file_path = "Projects" + "/" + project + "/" + stim_file;
-                  if (Collector.detect_context() === "localhost") {
+                  if (window.localStorage.local_online === "local") {
                     var this_response = CElectron.fs.delete_file(file_path);
                     if (this_response !== "success") {
                       bootbox.alert(this_response);
@@ -407,7 +409,7 @@ $("#rename_proj_btn").on("click", function () {
             console.log("test: " + original_name)
             $("#project_list option[value='" + original_name + "']").remove();
 
-            // if (Collector.detect_context() === "localhost") {
+            if (window.localStorage.local_online === "local") {
               CElectron.fs.delete_project(original_name, function (response) {
                 if (response !== "success") {
                   console.log("Original project name files removed")
@@ -415,6 +417,7 @@ $("#rename_proj_btn").on("click", function () {
               });
             
               $('#save_btn').click();
+            }
           }
             
         }
@@ -448,8 +451,9 @@ $("#rename_proc_button").on("click", function () {
             delete your_stuff.projects.projects[project].all_procs[current_proc];
 
             var file_path = "Projects" + "/" + project + "/" + current_proc;
-            CElectron.fs.delete_file(file_path);
-
+            if(window.localStorage.local_online === "local"){
+              CElectron.fs.delete_file(file_path);
+            }
             $("#proc_select").append($("<option>", {text: new_proc_name,}));
             $("#proc_select").val(new_proc_name);
             $('#proc_select option[value="' + current_proc + '"]').remove();
@@ -489,8 +493,10 @@ $("#rename_stim_button").on("click", function () {
             delete your_stuff.projects.projects[project].all_stims[current_stim];
 
             var file_path = "Projects" + "/" + project + "/" + current_stim;
-            CElectron.fs.delete_file(file_path);
-
+            if(window.localStorage.local_online === "local"){
+              CElectron.fs.delete_file(file_path);
+            }
+            
             $("#stim_select").append($("<option>", {text: new_sheet_name,}));
             $("#stim_select").val(new_sheet_name);
             $('#stim_select option[value="' + current_stim + '"]').remove();
@@ -900,16 +906,34 @@ $("#save_btn").on("click", function () {
 
       this_proj = JSON.stringify(this_proj, null, 2);
       // console.log(this_proj)
-      CElectron.fs.write_project(
-        project,
-        this_proj,
-        function (response) {
-          if (response !== "success") {
-            bootbox.alert(response);
+      if(window.localStorage.local_online === "local"){
+        CElectron.fs.write_project(
+          project,
+          this_proj,
+          function (response) {
+            if (response !== "success") {
+              bootbox.alert(response);
+            }
           }
-        }
-      );
-
+        );
+      }
+      if(window.localStorage.local_online === "online"){
+        window.localStorage.your_stuff = JSON.stringify(your_stuff);
+      } else if(window.localStorage.local_online === "local") {
+        write_response = CElectron.fs.write_file(
+          "",
+          "your_stuff.json",
+          JSON.stringify(your_stuff, null, 2)
+        );
+      }      
+      if (write_response !== "success") {
+        bootbox.alert(response);
+      } else {
+        Collector.custom_alert("Succesfully saved " + project);
+      }
+    }
+  } else {
+    if(window.localStorage.local_online === "local"){
       write_response = CElectron.fs.write_file(
         "",
         "your_stuff.json",
@@ -918,19 +942,8 @@ $("#save_btn").on("click", function () {
       if (write_response !== "success") {
         bootbox.alert(response);
       } else {
-        Collector.custom_alert("Succesfully saved " + project);
+        Collector.custom_alert("Succesfully saved your_stuff");
       }
-    }
-  } else {
-    write_response = CElectron.fs.write_file(
-      "",
-      "your_stuff.json",
-      JSON.stringify(your_stuff, null, 2)
-    );
-    if (write_response !== "success") {
-      bootbox.alert(response);
-    } else {
-      Collector.custom_alert("Succesfully saved your_stuff");
     }
   }
 

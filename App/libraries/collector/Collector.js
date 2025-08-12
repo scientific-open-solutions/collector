@@ -1,5 +1,5 @@
 function correct_your_stuff(){
-
+  console.log("trying to correct your stuff");
   // replace master.json if it exists with your_stuff.json
   if(CElectron.fs.read_file("", "master.json") !== ""){
     your_stuff = CElectron.fs.read_file("", "master.json");
@@ -426,10 +426,14 @@ Collector.save_data = function(filename, data) {
   }
 };
 Collector.save_user = function(){
-  CElectron.fs.write_user(JSON.stringify(user, null, 2));
+  if(window.localStorage.local_online === "local"){
+    CElectron.fs.write_user(JSON.stringify(user, null, 2));
+  } 
 };
 Collector.start = function(){
-  user = JSON.parse(CElectron.fs.load_user());
+  if(window.localStorage.local_online === "local"){
+    user = JSON.parse(CElectron.fs.load_user());
+  } 
   if(typeof(user.current) === "undefined" || typeof(user.current.path) === "undefined"){
     var github_dialog_exists = setInterval(function(){
       if($("#github_dialog").length === 1){

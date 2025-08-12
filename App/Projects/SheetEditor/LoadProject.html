@@ -104,6 +104,9 @@
 </div>
 
 <script>
+if(window.localStorage.local_online === "online"){
+  $("#open_proj_folder").css("display","none");
+}
 
  $("#project_list").change(function () {
     $("#exp_data_table").show();

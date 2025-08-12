@@ -408,6 +408,7 @@ encrypt_obj = {
 
     your_stuff.keys.public_key = receiverPublicKey;
 
+    /*
     //if(typeof(encrypt_dialog) == "undefined"){ //this seems unnecessary (and unhelpful)
     encrypt_dialog = bootbox.prompt(
       "In order to encrypt and decrypt your participants' data, we need a password. Make sure you will remember this password, if you forget it then any data that is encrypted will be lost forever.",
@@ -448,6 +449,7 @@ encrypt_obj = {
         }
       }
     );
+    */
     //}
   },
 };

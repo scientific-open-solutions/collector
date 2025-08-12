@@ -17,42 +17,42 @@
 
 		Kitten/Cat release (2019-2022) author: Dr. Anthony Haffey 
 */
-function check_trialtypes_in_proc(procedure, post_trialtype) {
+function check_phasetypes_in_proc(procedure, post_phasetype) {
   var experiment = $("#project_list").val();
   var this_proj = your_stuff.projects.projects[project];
   var this_proc = this_proj.all_procs[procedure];
-  var trialtypes = [];
+  var phasetypes = [];
   var trial_type_col = this_proc[0]
     .map(function (element) {
       if (element !== null) {
         return element.toLowerCase();
       }
     })
-    .indexOf(post_trialtype);
+    .indexOf(post_phasetype);
   for (var i in this_proc) {
     if (i > 0) {
       if (this_proc[i][trial_type_col] !== null) {
-        trialtypes.push(this_proc[i][trial_type_col].toLowerCase());
+        phasetypes.push(this_proc[i][trial_type_col].toLowerCase());
       }
     }
   }
-  trialtypes = trialtypes.filter((n) => n);
-  console.dir(trialtypes);
-  if (typeof your_stuff.projects.projects[project].trialtypes == "undefined") {
-    your_stuff.projects.projects[project].trialtypes = {};
+  phasetypes = phasetypes.filter((n) => n);
+  console.dir(phasetypes);
+  if (typeof your_stuff.projects.projects[project].phasetypes == "undefined") {
+    your_stuff.projects.projects[project].phasetypes = {};
   }
-  trialtypes.forEach(function (trialtype) {
-    if (typeof your_stuff.phasetypes.user[trialtype] !== "undefined") {
-      your_stuff.projects.projects[project].trialtypes[trialtype] =
-        your_stuff.phasetypes.user[trialtype];
-    } else if (typeof your_stuff.phasetypes.default[trialtype] !== "undefined") {
-      your_stuff.projects.projects[project].trialtypes[trialtype] =
-        your_stuff.phasetypes.default[trialtype];
+  phasetypes.forEach(function (phasetype) {
+    if (typeof your_stuff.phasetypes.user[phasetype] !== "undefined") {
+      your_stuff.projects.projects[project].phasetypes[phasetype] =
+        your_stuff.phasetypes.user[phasetype];
+    } else if (typeof your_stuff.phasetypes.default[phasetype] !== "undefined") {
+      your_stuff.projects.projects[project].phasetypes[phasetype] =
+        your_stuff.phasetypes.default[phasetype];
     } else {
       Collector.custom_alert(
-        "Invalid trialtype <b>" +
-          trialtype +
-          "</b> in at least one of your procedure sheets. The file will save, but the experiment won't run until you use a valid trialtype.",
+        "Invalid phasetype <b>" +
+          phasetype +
+          "</b> in at least one of your procedure sheets. The file will save, but the experiment won't run until you use a valid phasetype.",
         4000
       );
     }
@@ -131,19 +131,22 @@ function get_HoT_data(current_sheet) {
   return data;
 }
 function list_projects() {
-  var local_projects = CElectron.fs.list_projects();
-  local_projects.forEach(function (project) {
-    try {
-      var project_json = JSON.parse(
-        CElectron.fs.read_file("Projects", project + ".json")
-      );
-      your_stuff.projects.projects[project] = project_json;
-    } catch (error) {
-      if(project !== ".DS_Store"){
-        bootbox.alert("You have a problem with project:" + project);
+  if(window.localStorage.local_online === "local"){
+    var local_projects = CElectron.fs.list_projects();
+    local_projects.forEach(function (project) {
+      try {
+        var project_json = JSON.parse(
+          CElectron.fs.read_file("Projects", project + ".json")
+        );
+        your_stuff.projects.projects[project] = project_json;
+      } catch (error) {
+        if(project !== ".DS_Store"){
+          bootbox.alert("You have a problem with project:" + project);
+        }
       }
-    }
-  });
+    });
+  }
+  
 
   name_list = Object.keys(your_stuff.projects.projects);
 
@@ -269,6 +272,23 @@ function update_dropdown_lists() {
   });
   stim_proc_defaults(proc_values, stim_values);
 }
+function unique_phasetype(possible_name, phasetype_content){
+  var all_your_phasetypes = {...your_stuff.phasetypes.default,...your_stuff.phasetypes.user};
+  if(typeof(all_your_phasetypes[possible_name]) !== "undefined"){
+    bootbox.prompt(
+      "<b>" +
+        possible_name +
+        "</b> is taken. Please suggest another name, or press cancel if you don't want to save this phasetype?",
+      function (new_name) {
+        if (new_name) {
+          unique_phasetype(new_name, phasetype_content);
+        }
+      }
+    );
+  } else {
+    your_stuff.phasetypes.user[possible_name] = phasetype_content;
+  }
+}
 function update_handsontables() {
   var this_proj = your_stuff.projects.projects[$("#project_list").val()];
 
@@ -342,7 +362,7 @@ function upload_exp_contents(these_contents, this_filename) {
   function upload_to_your_stuff(proj_name, this_content) {
     your_stuff.projects.projects[proj_name] = this_content;
     list_projects();
-    upload_trialtypes(this_content);
+    upload_phasetypes(this_content);
     upload_surveys(this_content);
     list_surveys();
   }
@@ -371,33 +391,32 @@ function upload_exp_contents(these_contents, this_filename) {
       unique_survey(this_survey, this_content.surveys[this_survey]);
     });
   }
-  function upload_trialtypes(this_content) {
-    var trialtypes = Object.keys(this_content.trialtypes);
-    trialtypes.forEach(function (trialtype) {
-      function unique_trialtype(suggested_name, trialtype_content) {
-        all_trialtypes = Object.keys(your_stuff.phasetypes.user).concat(
-          Object.keys(your_stuff.phasetypes.default)
-        );
-        if (all_trialtypes.indexOf(suggested_name) !== -1) {
-          bootbox.prompt(
-            "<b>" +
-              suggested_name +
-              "</b> is taken. Please suggest another name, or press cancel if you don't want to save this trialtype?",
-            function (new_name) {
-              if (new_name) {
-                unique_trialtype(new_name, trialtype_content);
-              }
-            }
-          );
-        } else {
-          your_stuff.phasetypes.user[suggested_name] = trialtype_content;
-          list_phasetypes();
-        }
-      }
+  function upload_phasetypes(this_proj) {
+    console.log("this_proj");
+    console.log(this_proj);
+    var project_phasetypes = Object.keys(this_proj.phasetypes);
+    /*
+    var all_phasetypes = Object.keys(your_stuff.phasetypes.user).concat(
+      Object.keys(your_stuff.phasetypes.default)
+    );
+    */
+    all_your_phasetypes = {...your_stuff.phasetypes.default,...your_stuff.phasetypes.user};
 
-      // ask the user if they want to replace the trialtype
-      unique_trialtype(trialtype, this_content.trialtypes[trialtype]);
+    var same_phasetypes = Object.keys(all_your_phasetypes).filter(value => project_phasetypes.includes(value));
+
+    project_phasetypes.map(function(item){
+      if(Object.keys(all_your_phasetypes).indexOf(item) === -1){
+        your_stuff.phasetypes.user[item] = project_phasetypes[item];
+        $("#phasetype_select").append(
+          $("<option>").html(item)
+        );
+      }      
     });
+    // check if they are actually identical
+    same_phasetypes.forEach(function(this_phasetype){
+      unique_phasetype(this_phasetype, this_proj.phasetypes[this_phasetype]);      
+    });
+
   }
 
   bootbox.prompt({
