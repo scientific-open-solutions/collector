@@ -19,7 +19,7 @@ if (!fs.existsSync(root_dir + "/User")) {
  * Github management
  */
 const ipc = require("electron").ipcMain;
-const { Octokit } = require("@octokit/rest");
+//const { Octokit } = require("@octokit/rest");
 const simpleGit = require("simple-git");
 
 /*
