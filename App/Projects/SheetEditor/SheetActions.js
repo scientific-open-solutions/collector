@@ -918,6 +918,7 @@ $("#save_btn").on("click", function () {
         );
       }
       if(window.localStorage.local_online === "online"){
+        console.log("online - you should see this");
         window.localStorage.your_stuff = JSON.stringify(your_stuff);
       } else if(window.localStorage.local_online === "local") {
         write_response = CElectron.fs.write_file(
@@ -925,11 +926,13 @@ $("#save_btn").on("click", function () {
           "your_stuff.json",
           JSON.stringify(your_stuff, null, 2)
         );
-      }      
-      if (write_response !== "success") {
-        bootbox.alert(response);
-      } else {
-        Collector.custom_alert("Succesfully saved " + project);
+        if (write_response !== "success") {
+          console.log("write_response");
+          console.log(write_response);
+          bootbox.alert(write_response);
+        } else {
+          Collector.custom_alert("Succesfully saved " + project);
+        }
       }
     }
   } else {
@@ -940,7 +943,8 @@ $("#save_btn").on("click", function () {
         JSON.stringify(your_stuff, null, 2)
       );
       if (write_response !== "success") {
-        bootbox.alert(response);
+        console.log("line 944")
+        bootbox.alert(write_response);
       } else {
         Collector.custom_alert("Succesfully saved your_stuff");
       }
