@@ -207,6 +207,39 @@ function new_project(project) {
     update_project_list(project);
   }
 }
+function preview_condition(this_condition){
+  // load currently saved phasetypes
+  project_json.phasetypes_html = {};
+  project_json.phase_no = 0;
+  Object.keys(project_json.phasetypes).forEach(function(this_key){
+    if(typeof(your_stuff.phasetypes.default[this_key]) !== "undefined"){
+      project_json.phasetypes_html[this_key] = your_stuff.phasetypes.default[this_key];
+    } else if(typeof(your_stuff.phasetypes.user[this_key]) !== "undefined"){
+      console.log("trying to find the users phasetype");
+      console.log(this_key);
+      project_json.phasetypes_html[this_key] = your_stuff.phasetypes.user[this_key];
+    } else {
+      bootbox.alert("The phasetype " + this_key + " does not seem to exist?");
+    }   
+  });
+  project_json.conditions = Collector.PapaParsed(project_json.conditions);
+  //console.log(project_json);
+  $("#preview_iframe").remove();
+  $("body").append(
+    $("<iframe>")
+      .attr("src", "Run.html?name=" + this_condition + "&platform=onlinepreview")
+      .css("height", "75%")
+      .css("width", "75%")
+      .prop("id","preview_iframe")
+      .css("background-color","green")
+      .css("position","fixed")
+      .css("left","12.5%")
+      .css("top","12.5%")        
+  );
+  $("#preview_iframe")[0].contentWindow.quick_preview = true;
+  
+  //$("#preview_iframe")[0].contentWindow.Project.get_vars.platform = "preview"
+}
 function remove_from_list(project) {
   var x = document.getElementById("project_list");
   x.remove(project);

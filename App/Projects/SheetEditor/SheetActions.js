@@ -3,6 +3,10 @@
  * Projects page actions (i.e. element triggers)
  */
 
+$("#close_prev_btn").on("click", function(){
+  $("#preview_iframe").remove();
+});
+
 $("#default_projects_select").on("change", function () {
   if ($("#default_projects_select").val() !== "Select an experiment") {
     $("#upload_default_exp_btn").attr("disabled", false);
@@ -370,7 +374,6 @@ $("#open_proj_folder").on("click", function () {
   });
 });
 
-
 $("#project_list").on("change", function () {
   $('#hide_show_table_span button').removeClass("btn-outline-primary").addClass("btn-primary");
   $("#exp_data_table").show();
@@ -386,6 +389,24 @@ $("#proc_select").on("change", function () {
   var project = $("#project_list").val();
   var this_proj = your_stuff.projects.projects[project];
   createExpEditorHoT(this_proj.all_procs[this.value], "procedure", this.value);
+});
+
+$("#quick_prev_btn").on("click", function(){
+  
+  var project = $("#project_list").val();
+  var project_json = your_stuff.projects.projects[project];
+  //check if there is more than one conditions
+  project_json.conditions = Collector.PapaParsed(project_json.conditions);
+  if(project_json.conditions.length > 1){
+    bootbox.prompt("Which condition would you like", function(response){
+      preview_condition(response);
+    });
+  } else {
+    console.log("project_json");
+    console.log(project_json);
+    preview_condition(project_json.conditions[0].name);
+  }
+
 });
 
 $("#rename_proj_btn").on("click", function () {
@@ -508,55 +529,7 @@ $("#rename_stim_button").on("click", function () {
     );
   };
 });
-$("#close_prev_btn").on("click", function(){
-  $("#preview_iframe").remove();
-});
-$("#quick_prev_btn").on("click", function(){
-  function preview_condition(this_condition){
-    // load currently saved phasetypes
-    project_json.phasetypes_html = {};
-    project_json.phase_no = 0;
-    Object.keys(project_json.phasetypes).forEach(function(this_key){
-      if(typeof(your_stuff.phasetypes.default[this_key]) !== "undefined"){
-        project_json.phasetypes_html[this_key] = your_stuff.phasetypes.default[this_key];
-      } else if(typeof(your_stuff.phasetypes.user[this_key]) !== "undefined"){
-        console.log("trying to find the users phasetype");
-        console.log(this_key);
-        project_json.phasetypes_html[this_key] = your_stuff.phasetypes.user[this_key];
-      } else {
-        bootbox.alert("The phasetype " + this_key + " does not seem to exist?");
-      }   
-    });
-    //console.log(project_json);
-    $("#preview_iframe").remove();
-    $("body").append(
-      $("<iframe>")
-        .attr("src", "Run.html?name=" + this_condition + "&platform=onlinepreview")
-        .css("height", "75%")
-        .css("width", "75%")
-        .prop("id","preview_iframe")
-        .css("background-color","green")
-        .css("position","fixed")
-        .css("left","12.5%")
-        .css("top","12.5%")        
-    );
-    $("#preview_iframe")[0].contentWindow.quick_preview = true;
-    
-    //$("#preview_iframe")[0].contentWindow.Project.get_vars.platform = "preview"
-  }
-  var project = $("#project_list").val();
-  var project_json = your_stuff.projects.projects[project];
-  //check if there is more than one conditions
-  project_json.conditions = Collector.PapaParsed(project_json.conditions);
-  if(project_json.conditions.length > 1){
-    bootbox.prompt("Which condition would you like", function(response){
-      preview_condition(response);
-    });
-  } else {
-    preview_condition(project_json.conditions[0].name);
-  }
 
-});
 $("#run_btn").on("click", function () {
     if (!parent.parent.functionIsRunning) {
       parent.parent.functionIsRunning = true;
@@ -751,17 +724,25 @@ $("#save_btn").on("click", function () {
       * First loop is to make sure the experiment has all the phasetype_files
       */
       this_proj.phasetypes = {};
-      phasetype_files.forEach(function (code_file) {
-        if (typeof your_stuff.phasetypes.default[code_file] !== "undefined") {
-          this_proj.phasetypes[code_file] =
-            "[[[LOCATION]]]../Default/DefaultPhaseTypes/" +
-            code_file.replace(".html", "") +
-            ".html";
+      phasetype_files.forEach(function (phasetype_file) {
+        if(window.localStorage.local_online === "local"){
+          if (typeof your_stuff.phasetypes.default[phasetype_file] !== "undefined") {
+            this_proj.phasetypes[phasetype_file] =
+              "[[[LOCATION]]]../Default/DefaultPhaseTypes/" +
+              phasetype_file.replace(".html", "") +
+              ".html";
+          } else {
+            this_proj.phasetypes[phasetype_file] =
+              "[[[LOCATION]]]../User/PhaseTypes/" +
+              phasetype_file.replace(".html", "") +
+              ".html";
+          }
         } else {
-          this_proj.phasetypes[code_file] =
-            "[[[LOCATION]]]../User/PhaseTypes/" +
-            code_file.replace(".html", "") +
-            ".html";
+          if (typeof your_stuff.phasetypes.default[phasetype_file] !== "undefined") {
+            this_proj.phasetypes[phasetype_file] = your_stuff.phasetypes.default[phasetype_file];
+          } else {
+            this_proj.phasetypes[phasetype_file] = your_stuff.phasetypes.user[phasetype_file];
+          }
         }
       });
       return this_proj;
@@ -952,14 +933,6 @@ $("#save_btn").on("click", function () {
   }
 
   Collector.tests.pass("projects", "save_at_start");
-
-  /*
-  }  catch (error){
-    Collector.tests.fail("projects",
-                         "save_at_start",
-                         error);
-  }
-  */
 });
 
 $("#stim_select").on("change", function () {

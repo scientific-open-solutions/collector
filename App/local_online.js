@@ -15,6 +15,8 @@ $("#local_online_switch").on("click", function(){
   $("#local_online_switch").html(window.localStorage.local_online);
 });
 function load_online(){
+  $("#github_logo").hide();
+  $("#top_tab_Data").hide();
   if(typeof(window.localStorage.your_stuff) === "undefined"){
     your_stuff = {
       "phasetypes": {
@@ -51,7 +53,6 @@ function load_online(){
     } 
     window.localStorage.your_stuff = JSON.stringify(your_stuff);
   } else {
-    alert("hi");
     your_stuff = JSON.parse(window.localStorage.your_stuff);
   } 
   //correct_your_stuff();
