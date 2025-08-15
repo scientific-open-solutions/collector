@@ -3,7 +3,6 @@ if(typeof(window.localStorage.local_online) === "undefined"){
 }
 if(window.localStorage.local_online == "online"){
   $("#local_online_switch").html("online");
-  load_online();
 }
 $("#local_online_switch").on("click", function(){
   if(window.localStorage.local_online === "local"){
@@ -58,11 +57,11 @@ function load_online(){
   //correct_your_stuff();
   //correct_user();
   //list_repos();
-  //list_projects();
-  //list_graphics();
-  //list_phasetypes();
-  //initiate_actions();
+  list_projects();
+  list_graphics();
+  list_phasetypes();
+  initiate_actions();
   //list_keys();
   //list_data_servers();
-  //list_surveys();
+  list_surveys();
 };
