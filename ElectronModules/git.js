@@ -43,12 +43,6 @@ function user() {
         user.repos[user.current.org][user.current.repo].path + "/";
     }
   }
-
-  /*
-   * Create required folders if they don't exist yet
-   */
-  //if(!fs.existsSync)
-
   return user;
 }
 

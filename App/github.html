@@ -12,10 +12,14 @@
 </style>
 
 <div class="modal" tabindex="-1" role="dialog" id="github_dialog">
+
+  
+
+
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Synch with github repository</h5>
+        <h5 class="modal-title">Choose repository</h5>
         <div
           type="button"
           class="close"
@@ -27,174 +31,30 @@
         </div>
       </div>
       <div class="modal-body">
-        <div class="input-group mb-3">
-          <div class="input-group-prepend" style="width: 130px">
-            <span class="input-group-text bg-primary text-white"
-              >Organization</span
-            >
-          </div>
-          <select class="form-select" id="select_org"></select>
-          <button
-            class="btn btn-primary"
-            id="add_organization_btn"
-            style="margin-left: 2px; margin-right: 2px"
-          >
-            Add
-          </button>
-          <button class="btn btn-danger" id="delete_organization_btn">X</button>
+        <div class="form-group">
+          <label for="current_repo">Your repository is at:</label>
+          <input type="text" class="form-control" id="current_repo" placeholder="Your repository" disabled>
+          <button class="btn btn-primary bi-search" id="find_repo_btn">Choose repo</button>
         </div>
-        <div class="input-group">
-          <div class="input-group-prepend" style="width: 130px">
-            <span class="input-group-text bg-primary text-white"
-              >Repository</span
-            >
-          </div>
-          <select class="form-select" id="select_repo"></select>
-          <button
-            class="btn btn-primary"
-            id="add_repository_btn"
-            style="margin-left: 2px; margin-right: 2px"
-          >
-            Add
-          </button>
-          <button class="btn btn-danger" id="delete_repo_btn">X</button>
-        </div>
-
-        <h5 class="text-primary">
-          Software like Github desktop can help manage repositories. Here's a
-          basic summary:
-        </h5>
-
-        <div class="input-group mb-3">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="behind"
-            id="git_behind"
-            readonly
-          />
-          <span class="input-group-text bg-primary text-white"
-            >Commits behind</span
-          >
-          <span class="input-group-text bg-primary text-white"
-            >Commits ahead</span
-          >
-          <input
-            type="text"
-            class="form-control"
-            placeholder="ahead"
-            id="git_ahead"
-            readonly
-          />
-        </div>
-
-        <p>
-          <button
-            id="git_conflicted_btn"
-            class="btn btn-primary git_btn"
-            value="git_conflicted_card"
-          >
-            Conflicts
-          </button>
-          <button
-            id="git_deleted_btn"
-            class="btn btn-primary git_btn"
-            value="git_deleted_card"
-          >
-            Deleted
-          </button>
-          <button
-            id="git_modified_btn"
-            class="btn btn-primary git_btn"
-            value="git_modified_card"
-          >
-            Modified
-          </button>
-          <button
-            id="git_not_added_btn"
-            class="btn btn-primary git_btn"
-            value="git_not_added_card"
-          >
-            New
-          </button>
-          <button
-            id="git_renamed_btn"
-            class="btn btn-primary git_btn"
-            value="git_renamed_card"
-          >
-            Renamed
-          </button>
-          <button
-            id="git_staged_btn"
-            class="btn btn-primary git_btn"
-            value="git_staged_card"
-          >
-            Staged
-          </button>
-        </p>
-        <div class="row">
-          <div
-            class="collapse multi-collapse"
-            id="git_conflicted_card"
-            aria-labelledby="headingOne"
-            data-parent="#accordion"
-          >
-            <div class="card-header">Conflicts</div>
-            <div class="card card-body"></div>
-          </div>
-          <div class="collapse multi-collapse" id="git_deleted_card">
-            <div class="card-header">Deleted</div>
-            <div class="card card-body"></div>
-          </div>
-          <div class="collapse multi-collapse" id="git_modified_card">
-            <div class="card-header">Modified</div>
-            <div class="card card-body"></div>
-          </div>
-          <div class="collapse multi-collapse" id="git_not_added_card">
-            <div class="card-header">New</div>
-            <div class="card card-body"></div>
-          </div>
-          <div class="collapse multi-collapse" id="git_renamed_card">
-            <div class="card-header">Renamed</div>
-            <div class="card card-body"></div>
-          </div>
-          <div class="collapse multi-collapse" id="git_staged_card">
-            <div class="card-header">Staged</div>
-            <div class="card card-body"></div>
-          </div>
-        </div>
-        <!--
-        advice for how to resolve the conflicts
-          -pull and then over-write button?
-        -->
-      </div>
-      <div class="modal-footer"></div>
-      <div class="text-center">
-        <p>
-          <button class="btn btn-primary bi-search" id="find_repo_btn"></button>
-          <button type="button" class="btn btn-primary" id="add_token_btn">
-            Add token
-          </button>
-          <button type="button" class="btn btn-primary" id="local_repo_btn">
-            Add Local
-          </button>
-          <!-- hiding these to prepare for possible permanently deleting them
-          <button type="button" class="btn btn-primary" id="pull_repo_btn">
-            Pull
-          </button>
-          <button type="button" class="btn btn-success" id="push_repo_btn">
-            Push
-          </button>
-          -->
-          <!--
-          <button type="button" class="btn btn-primary" id="view_repo_btn">
-            View
-          </button>
-          -->
-        </p>
-      </div>
     </div>
   </div>
 </div>
+<script>
+
+$("#find_repo_btn").on("click", function(){
+  bootbox.confirm("Are you sure you want to change repositories? If so, you may want to press CTRL-S to save any changes to this repository before you switch", function(result){
+    if(result){
+      var path = CElectron.find_path()[0];
+      console.log(path)
+      if(typeof(path) !== "undefined"){
+        user.current.path = path;
+      }
+      Collector.save_user();
+      location.reload();
+    }
+  });
+
+});
+</script>
 
 <script src="github.js"></script>

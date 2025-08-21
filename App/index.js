@@ -126,178 +126,6 @@ $(".top_icon").hover(
 );
 
 $("#github_logo").on("click", function () {
-  if (typeof user.repos === "undefined") {
-    var git_exists = CElectron.git.exists();
-    if (git_exists !== "true-true") {
-      git_exists = git_exists.split("-");
-      if (git_exists[0] !== "true") {
-        bootbox.prompt(
-          "What github email do you want to use?",
-          function (email) {
-            var email_response = CElectron.git.set_email(email);
-            if (email_response !== "success") {
-              bootbox.alert("error: " + email_response);
-            }
-          }
-        );
-      }
-      if (git_exists[1] !== "true") {
-        bootbox.prompt(
-          "What github username do you want to use?",
-          function (name) {
-            var name_response = CElectron.git.set_name(name);
-            if (name_response !== "success") {
-              bootbox.alert("error: " + name_response);
-            }
-          }
-        );
-      }
-    } else {
-      list_repos();
-
-      if (typeof org !== "undefined" && org !== "") {
-        var repos = Object.keys(user.repos[org]);
-        repos.forEach(function (repository) {
-          $("#select_repo").append(
-            $("<option>", {
-              value: repository,
-              text: repository,
-            })
-          );
-        });
-        $("#select_repo").val(your_stuff.github.repository);
-      }
-
-      setTimeout(function () {
-        if (
-          typeof your_stuff.github.organization !== "undefined" &&
-          your_stuff.github.organization !== "" &&
-          typeof your_stuff.github.repository !== "undefined" &&
-          your_stuff.github.repository !== ""
-        ) {
-          var commits_behind = CElectron.git.status({
-            organization: your_stuff.github.organization,
-            repository: your_stuff.github.repository,
-          });
-          if (commits_behind !== 0) {
-            bootbox.alert(
-              "You are behind by " +
-                commits_behind +
-                " commits (or you'll have just seen an error message). Be careful about pushing or pulling changes until your local repository is synched up with the online repository"
-            );
-          }
-        }
-      }, 1000);
-    }
-  }
-
-  /*
-   * check repository information
-   */
-
-  var git_status = CElectron.git.status({
-    org: $("#select_org").val(),
-    repo: $("#select_repo").val(),
-  });
-
-  try {
-    git_status = JSON.parse(git_status);
-
-    if (git_status.ahead > 0) {
-      $("#git_ahead").addClass("bg-danger");
-      $("#git_ahead").addClass("text-white");
-    } else {
-      $("#git_ahead").removeClass("bg-danger");
-      $("#git_ahead").removeClass("text-white");
-    }
-
-    if (git_status.behind > 0) {
-      $("#git_behind").addClass("bg-danger");
-      $("#git_behind").addClass("text-white");
-    } else {
-      $("#git_behind").removeClass("bg-danger");
-      $("#git_behind").removeClass("text-white");
-    }
-
-    $("#git_ahead").val(git_status.ahead);
-    $("#git_behind").val(git_status.behind);
-
-    /*
-     * clear and update each of the cards for each change
-     */
-
-    var git_updates = [
-      "conflicted",
-      "created",
-      "deleted",
-      "modified",
-      "not_added",
-      "renamed",
-      "staged",
-    ];
-
-    git_updates.forEach(function (git_update) {
-      if (git_status[git_update].length > 0) {
-        $("#git_" + git_update + "_btn").show();
-        $("#git_" + git_update + "_card")
-          .find($(".card-body"))
-          .html(
-            "<table>" +
-              git_status[git_update]
-                .map(function (row) {
-                  if (row !== "") {
-                    return (
-                      "<tr>" +
-                      "<td>" +
-                      row +
-                      "</td>" +
-                      "<td><button class='btn btn-primary update_btn " +
-                      git_update +
-                      "' value='" +
-                      row +
-                      "'>Undo " +
-                      git_update +
-                      "</button></td>" +
-                      "</tr>"
-                    );
-                  }
-                })
-                .join("") +
-              "</table>"
-          );
-      } else {
-        $("#git_" + git_update + "_btn").hide();
-        $("#git_" + git_update + "_card").hide();
-      }
-    });
-
-    $(".update_btn").on("click", function () {
-      var git_type;
-      var this_element = $(this);
-      git_updates.forEach(function (git_update) {
-        if (this_element.hasClass(git_update)) {
-          git_type = git_update;
-        }
-      });
-      var response = CElectron.git.undo({
-        org: $("#select_org").val(),
-        repo: $("#select_repo").val(),
-        path: $(this).val(),
-        type: git_type,
-      });
-      Collector.custom_alert(response);
-      $("#github_logo").click();
-    });
-  } catch (error) {
-    //bootbox.alert(git_status);
-  }
-  /*
-  if(git_status == "Incomplete org or repo information"){
-    //bootbox.alert(git_status);
-  } else {
-
-  }
-  */
   $("#github_dialog").fadeIn();
 });
 
@@ -442,14 +270,6 @@ $("#show_security_info").on("click", function () {
  * when you've loaded all the relevant js files
  */
 function loading_scripts(script_url) {
-  /*
-  let script = document.createElement("script");
-  script.setAttribute("src", "github.js");
-  document.body.appendChild(script);
-
-  // now wait for it to load...
-  script.onload = () => {
-  */
   loaded_scripts[script_url] = true;
   if (
     Object.keys(loaded_scripts).filter((row) => loaded_scripts[row] === false)
@@ -470,7 +290,6 @@ function loading_scripts(script_url) {
 }
 
 var loaded_scripts = {
-  "github.js": false,
   "SheetFunctions.js": false, //for projects
   "Graphic.js": false,        //for phasetypes
 };

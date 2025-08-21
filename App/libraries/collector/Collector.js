@@ -27,6 +27,8 @@ function correct_your_stuff(){
   }
   your_stuff = JSON.parse(your_stuff);
 
+  $("#current_repo").val(user.current.path);
+
   /*
   * missing objects
   */
@@ -445,7 +447,6 @@ Collector.start = function(){
   } else {
     correct_your_stuff();
     correct_user();
-    list_repos();
     list_projects();
     list_graphics();
     list_phasetypes();
@@ -453,7 +454,6 @@ Collector.start = function(){
     list_keys();
     list_data_servers();
     list_surveys();
-    //list_pathways();
   }
 };
 //https://stackoverflow.com/a/20745721/4490801
