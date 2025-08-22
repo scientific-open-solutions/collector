@@ -838,8 +838,11 @@ $("#save_btn").on("click", function () {
 
     var this_proj = your_stuff.projects.projects[project];
 
-    this_proj.location =
-      $("#select_org").val() + "/" + $("#select_repo").val() + "/" + project;
+    this_proj.location = user.current.path + "/" + project;
+    var repo_location = this_proj.location.split("/");
+        repo_location.pop();
+    this_proj.repo_loc = repo_location.join("/");
+          
 
     /*
      * Cleaning the project_json of deprecated properties

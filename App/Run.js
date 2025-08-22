@@ -372,36 +372,6 @@ Project = {
         clean_phase_responses,
         0
       );
-      /*
-      Object.keys(phase_responses).forEach(function(old_key){
-
-        Object.defineProperty(
-          phase_responses,
-          this_location + "_" + old_key,
-          Object.getOwnPropertyDescriptor(
-            phase_responses,
-            old_key
-          )
-        );
-        delete phase_responses[old_key];
-      });
-      */
-
-
-      /*
-      console.log("just before the ajax");
-      $.ajax({
-        type: "POST",
-        url: project_json.this_condition.redcap_url,
-        crossDomain: true,
-        data: clean_phase_responses,
-        success: function(result){
-          console.log("result");
-          // console.log(result);
-          //Phase.submit();
-        }
-      });
-      */
 
       // Finally, let's just update the repeat instance number
       parent.parent.project_json.repeat_no++;
@@ -501,13 +471,13 @@ Project = {
       bootbox.alert("ERROR: If it's 'White Screening' it's because you've got an incorrect or empty row in the 'Item' column of your procedure sheet!<br><br><em>(ps. I spent hours trying to debug Collector when this happened to me as I hadn't realised it was just a missing 0 which is why I'm writing this long error message, so if it happens again I can fix it in seconds! CD)</em>")
     }
     if (this_proc.item.toString() !== "0") {
-      console.log(project_json);
-      console.log(project_json.parsed_stim);
-      console.log(this_proc.item);
+      //console.log(project_json);
+      //console.log(project_json.parsed_stim);
+      //console.log(this_proc.item);
       //this_stim = project_json.parsed_stim[this_proc.item];
       this_stim = project_json.parsed_stim[this_proc.item];
-      console.log("this_stim");
-      console.log(this_stim);
+      //console.log("this_stim");
+      //console.log(this_stim);
       variable_list = Object.keys(this_proc).concat(Object.keys(this_stim));
     } else {
       variable_list = Object.keys(this_proc);
@@ -548,15 +518,16 @@ Project = {
     /*
      * Need to detect whether localhost and on mac
      */
-
     if (
       typeof CElectron !== "undefined" &&
       window.navigator.platform.toLowerCase().indexOf("mac") !== -1
     ) {
-      this_phase = this_phase.replaceAll("../User/", home_dir + "/User/");
+      this_phase = this_phase.replaceAll("../User/", project_json.repo_loc + "/User/");
     } else if (Project.is_exe) {
-      this_phase = this_phase.replaceAll("../User/", home_dir + "/User/");
+      this_phase = this_phase.replaceAll("../User/", project_json.repo_loc + "/User/");
     }
+    //console.log("this_phase");
+    //console.log(this_phase);
     return this_phase;
   },
 
@@ -783,7 +754,7 @@ function create_project_json_variables() {
 }
 
 function detect_exe() {
-  if(quick_preview){
+  if(typeof(quick_preview) !== "undefined" && quick_preview){
     //skip checking for your_stuff.json
     Project.activate_pipe();
   } else {
@@ -802,80 +773,6 @@ function final_phase() {
     case "github":
     case "simulateonline":
     case "server":
-      /*
-      online_data_obj.save_queue_add(function () {
-        online_save(
-          Project.get_vars.location,
-          $("#participant_code").val(),
-          $("#completion_code").val(),
-          $("#prehashed_code").val(),
-          JSON.stringify(
-            encrypt(
-              //the public key
-              project_json.public_key,
-              //the data
-              JSON.stringify(project_json.responses)
-            )
-          ),
-          project_json.storage_scripts,
-          function (returned_data) {
-            message_data = returned_data.split(" encrypted data = ");
-            if (message_data.indexOf("error") !== -1) {
-              //retrieve researcher e-mail address
-              precrypted_data(
-                project_json,
-                "Problem encrypting: <b>" +
-                  message_data +
-                  "</b>, we'll try again every 10 seconds, but in case it fails, please download and e-mail this file. What do you want to save this file as? (you will get this message each time we fail to e-mail your data to the researcher)"
-              );
-              setTimeout(function () {
-                final_phase();
-              }, 10000);
-            } else {
-              $("#participant_country").show();
-              $("#participant_country").load("ParticipantCountry.html");
-
-              encrypted_data = message_data[1];
-
-              $("#project_div").html(
-                "<h1 class='text-primary'>" +
-                  message_data[0] +
-                  " <br><br> You can download the encrypted version of your data <span id='encrypt_click' class='text-success'>here</span> <br><br>or an unencrypted version <span id='raw_click' class='text-success'>here</span></h1>"
-              );
-
-              $("#encrypt_click").on("click", function () {
-                bootbox.prompt({
-                  title: "What do you want to save this file as?",
-                  value: $("#participant_code").val() + "_encrypted.txt",
-                  callback: function (result) {
-                    var blob = new Blob([encrypted_data], { type: "text/csv" });
-                    if (window.navigator.msSaveOrOpenBlob) {
-                      window.navigator.msSaveBlob(blob, result);
-                    } else {
-                      var elem = window.document.createElement("a");
-                      elem.href = window.URL.createObjectURL(blob);
-                      elem.download = result;
-                      document.body.appendChild(elem);
-                      elem.click();
-                      document.body.removeChild(elem);
-                    }
-                  },
-                });
-              });
-              $("#raw_click").on("click", function () {
-                precrypted_data(
-                  project_json,
-                  "What do you want to save this file as?"
-                );
-              });
-              online_data_obj.finished_and_stored = true;
-            }
-          },
-          "all",
-          project_json.responses.length
-        );
-      });
-      */
       download_at_end = project_json.this_condition.download_at_end;
       if (download_at_end === undefined) {
         download_at_end = "on";
@@ -1195,6 +1092,8 @@ function insert_start() {
 }
 
 function load_phases() {
+  //home_dir = project_json.repo_loc + '/';
+  /*
   var org_repo = project_json.location.split("/");
   switch (Project.get_vars.platform) {
     case "simulateonline":
@@ -1206,6 +1105,8 @@ function load_phases() {
       });
       break;
   }
+      */
+  
 
   var loaded_phases = 0;
   var phases = Object.keys(project_json.phasetypes).length;
@@ -1230,7 +1131,7 @@ function load_phases() {
         // case "onlinepreview": (AH: probably should delete this line)
         case "preview":
         case "simulateonline":
-          var code_location = this_phase.replace("[[[LOCATION]]]..", home_dir);
+          var code_location = this_phase.replace("[[[LOCATION]]]..", project_json.repo_loc); 
           break;
       }
       if(typeof(quick_preview) !== "undefined" && quick_preview){
@@ -2148,8 +2049,9 @@ function write_phase_iframe(index) {
 
     //autoscroll to top of iframe (in case the phase runs over)
     doc.scrollTo(0, 0);
-
+    console.log("hi");
     var no_images = (phase_content.match(/<img/g) || []).length;
+    console.log("ho");
     project_json.uninitiated_stims.push(no_images);
     project_json.uninitiated_stims_sum = project_json.uninitiated_stims.reduce(
       function (acc, val) {

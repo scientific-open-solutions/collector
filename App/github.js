@@ -21,9 +21,3 @@ $("#fadeout_github").on("click", function () {
   }
   $("#github_dialog").fadeOut();
 });
-
-$("#find_repo_btn").on("click", function () {
-  //resume here
-  var response = CElectron.open_folder("repo", "");
-  console.dir(response);
-});

@@ -106,61 +106,6 @@ contextBridge.exposeInMainWorld(
         return write_response;
       },
     },
-    git: {
-      add_repo: function (repo_info) {
-        return ipc.sendSync("git_add_repo", repo_info);
-      },
-      add_token: function (auth_token) {
-        return ipc.sendSync("git_add_token", {
-          auth_token: auth_token,
-        });
-      },
-      exists: function () {
-        return ipc.sendSync("git_exists");
-      },
-      locate_repo: function (repo_info) {
-        return ipc.sendSync("git_locate_repo", repo_info);
-      },
-      pages: function (repo_info) {
-        return ipc.sendSync("git_pages", repo_info);
-      },
-      pull: function (repo_info) {
-        return ipc.sendSync("git_pull", repo_info);
-      },
-      push: function (repo_info) {
-        return ipc.sendSync("git_push", repo_info);
-      },
-      repo_info: function (path) {
-        return ipc.sendSync("git_repo_info", {
-          path: path,
-        });
-      },
-      set_email: function (email) {
-        return ipc.sendSync("git_set_email", {
-          email: email,
-        });
-      },
-      set_name: function (name) {
-        return ipc.sendSync("git_set_name", {
-          name: name,
-        });
-      },
-      status: function (repo_info) {
-        return ipc.sendSync("git_status", {
-          org: repo_info.org,
-          repo: repo_info.repo,
-        });
-      },
-      token_exists: function () {
-        return ipc.sendSync("git_token_exists", {});
-      },
-      undo: function (undo_info) {
-        return ipc.sendSync("git_undo", undo_info);
-      },
-      valid_org: function (repo_info) {
-        return ipc.sendSync("git_valid_org", repo_info);
-      },
-    },
     find_path: function () {
       return ipc.sendSync("find_path", {});
     },
