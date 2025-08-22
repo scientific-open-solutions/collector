@@ -2051,7 +2051,8 @@ function write_phase_iframe(index) {
     doc.scrollTo(0, 0);
     console.log("hi");
     var no_images = (phase_content.match(/<img/g) || []).length;
-    console.log("ho");
+    console.log("no_images");
+    console.log(no_images);
     project_json.uninitiated_stims.push(no_images);
     project_json.uninitiated_stims_sum = project_json.uninitiated_stims.reduce(
       function (acc, val) {
@@ -2063,11 +2064,7 @@ function write_phase_iframe(index) {
       //need code here to deal with "buffering" when there are no images.
       stim_interval = setInterval(function () {
         project_json.initiated_stims = 0;
-        for (
-          var j = project_json.phase_no;
-          j < project_json.phase_no + project_json.this_condition.buffer;
-          j++
-        ) {
+        for (var j = project_json.phase_no; j < project_json.phase_no + project_json.this_condition.buffer; j++) {
           if (
             $("#phase" + j)
               .contents()
