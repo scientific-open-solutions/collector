@@ -2109,6 +2109,9 @@ function write_phase_iframe(index) {
             Project.start_post();
           }
         }
+        console.log("project_json.uninitiated_stims_sum");
+        console.log(project_json.uninitiated_stims_sum);
+        //console.log("looking for images, maybe forever?");
       }, 10);
     }
   }
