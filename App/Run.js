@@ -439,7 +439,7 @@ Project = {
 
     post_no = post_no === 0 ? "" : "post " + post_no + " ";
     this_proc = project_json.parsed_proc[phase_no];
-    var code_location =
+    var phase_location =
       project_json.phasetypes[this_proc[post_no + "phasetype"]];
     this_phase = project_json.phasetypes[this_proc[post_no + "phasetype"]];
 
@@ -1113,8 +1113,8 @@ function load_phases() {
   Object.keys(project_json.phasetypes).forEach(function (phasetype) {
     var this_phase = project_json.phasetypes[phasetype];
     if (this_phase.indexOf("[[[LOCATION]]]../Default") === 0) {
-      var code_location = this_phase.replace("[[[LOCATION]]]", "");
-      $.get(code_location, function (phase_code) {
+      var phase_location = this_phase.replace("[[[LOCATION]]]", "");
+      $.get(phase_location, function (phase_code) {
         project_json.phasetypes[phasetype] = phase_code;
         loaded_phases++;
         if (loaded_phases === phases) {
@@ -1125,19 +1125,19 @@ function load_phases() {
       switch (Project.get_vars.platform) {
         case "onlinepreview":
         case "github":
-          var code_location = this_phase.replace("[[[LOCATION]]]..", "..");
+          var phase_location = this_phase.replace("[[[LOCATION]]]..", "..");
           break;
         case "localhost":
         // case "onlinepreview": (AH: probably should delete this line)
         case "preview":
         case "simulateonline":
-          var code_location = this_phase.replace("[[[LOCATION]]]..", project_json.repo_loc); 
+          var phase_location = this_phase.replace("[[[LOCATION]]]..", project_json.repo_loc); 
           break;
       }
       if(typeof(quick_preview) !== "undefined" && quick_preview){
         project_json.phasetypes[phasetype] = project_json.phasetypes_html[phasetype];
       } else {
-        $.get(code_location, function (phase_code) {
+        $.get(phase_location, function (phase_code) {
           project_json.phasetypes[phasetype] = phase_code;
           loaded_phases++;
           if (loaded_phases === phases) {
@@ -1157,7 +1157,7 @@ function load_phases() {
 function parse_sheets() {
   // Counterbalancing
   
-console.log(project_json);
+// console.log(project_json);
 // console.log("--------");
 // console.log(Object.keys(project_json.all_procs).length);
 // console.log("--------");
@@ -1580,12 +1580,12 @@ function requestFullScreen(element) {
 }
 
 function select_condition() {
-  console.log("project_json.conditions");
-  console.log(project_json.conditions);
+  //console.log("project_json.conditions");
+  //console.log(project_json.conditions);
   project_json.this_condition = project_json.conditions.filter(function (row) {
     return row.name === Project.get_vars.name;
   })[0];
-  console.log(project_json.this_condition)
+  //console.log(project_json.this_condition)
   /*
    * Check if use of mobile devices is off
    */
@@ -2049,46 +2049,51 @@ function write_phase_iframe(index) {
 
     //autoscroll to top of iframe (in case the phase runs over)
     doc.scrollTo(0, 0);
-    console.log("hi");
-    var no_images = (phase_content.match(/<img/g) || []).length;
-    console.log("no_images");
-    console.log(no_images);
-    project_json.uninitiated_stims.push(no_images);
-    project_json.uninitiated_stims_sum = project_json.uninitiated_stims.reduce(
-      function (acc, val) {
-        return acc + val;
-      }
-    );
 
     if (typeof stim_interval === "undefined") {
       //need code here to deal with "buffering" when there are no images.
       stim_interval = setInterval(function () {
+        project_json.uninitiated_stims = 0;
         project_json.initiated_stims = 0;
         for (var j = project_json.phase_no; j < project_json.phase_no + project_json.this_condition.buffer; j++) {
-          if (
-            $("#phase" + j)
-              .contents()
-              .children()
-              .find("iframe")
-              .contents()
-              .children()
-              .find("img")
-              .prop("complete")
-          ) {
-            //if($("#phase"+j).contents().find('img').prop('complete') == true){
-            project_json.initiated_stims += $("#phase" + j)
-              .contents()
-              .children()
-              .find("iframe")
-              .contents()
-              .children()
-              .find("img").length;
+          
+          var this_images = $("#phase" + j)
+            .contents()
+            .children()
+            .find("iframe")
+            .contents()
+            .children()
+            .find("img").length;
+          project_json.uninitiated_stims += this_images;
+
+          for(var k = 0; k++; k < this_images){
+            if (
+              $("#phase" + j)
+                .contents()
+                .children()
+                .find("iframe")
+                .contents()
+                .children()
+                .find("img")
+                .prop("complete")
+            ) {
+              project_json.initiated_stims++;
+            }
           }
         }
+        //console.log("project_json.initiated_stims");
+        //console.log(project_json.initiated_stims);
+        //console.log("project_json.uninitiated_stims");
+        //console.log(project_json.uninitiated_stims);
         var completion =
-          100 -
+          100 *
           project_json.initiated_stims / project_json.uninitiated_stims_sum;
         $("#stim_listing").css("width", completion + "%");
+        
+        //console.log(project_json.uninitiated_stims_sum);
+        //console.log("completion");
+        //console.log(completion);
+        //clearInterval(stim_interval);
         if ((completion === 100) | (project_json.uninitiated_stims_sum === 0)) {
           clearInterval(stim_interval);
           $("#stim_progress").fadeOut(1000);
@@ -2106,8 +2111,11 @@ function write_phase_iframe(index) {
             Project.start_post();
           }
         }
-        console.log("project_json.uninitiated_stims_sum");
-        console.log(project_json.uninitiated_stims_sum);
+        //console.log("project_json.uninitiated_stims_sum");
+        //console.log(project_json.uninitiated_stims_sum);
+        //console.log("project_json.initiated_stims");
+        //console.log(project_json.initiated_stims);
+        clearInterval(stim_interval);
         //console.log("looking for images, maybe forever?");
       }, 10);
     }

@@ -186,6 +186,31 @@ if (typeof Phase !== "undefined") {
       });
     }
   };
+
+  Phase.trialdeck = function(results){
+    //e.preventDefault(); - is this necessary?
+    //e.stopPropagation(); - is this necessary?
+    // adding 2 levels due to Collector
+    if (parent.parent.window.self !== window.top) {
+        const payload = {
+        type: "custom-assessment:complete",
+        results
+        /*
+        value: {
+          date: dateValue,
+          place: placeValue
+        }
+        */
+      };
+      // two parent levels addd 
+      window.parent.parent.parent.postMessage(payload, "*");
+    } else {
+      alert("Unable to send the data to trial-deck");
+    }
+    return false;
+  
+  }
+
   Phase.set = function (this_name, this_content) {
     if (typeof parent.parent.project_json.study_vars == "undefined") {
       parent.parent.project_json.study_vars = {};
