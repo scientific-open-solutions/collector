@@ -14,4 +14,5 @@ ipc.on("python_test", (event, args) => {
   scriptExecution.stdout.on('data', (data) => {
       console.log(uint8arrayToString(data));
   }); 
+  event.returnValue = "success";
 });
