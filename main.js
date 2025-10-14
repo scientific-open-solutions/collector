@@ -96,6 +96,7 @@ app.on("activate", function () {
 require("./ElectronModules/fs.js");
 require("./ElectronModules/git.js");
 require("./ElectronModules/openFolders.js");
+require("./ElectronModules/python.js");
 
 /*
  * To allow right click to inspect element:

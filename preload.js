@@ -115,6 +115,11 @@ contextBridge.exposeInMainWorld(
         folder: folder,
       });
     },
+    python: {
+      test: function(){
+        return ipc.sendSync("python_test", {})
+      }
+    },
   }
 );
 
