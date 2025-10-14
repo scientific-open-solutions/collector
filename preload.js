@@ -118,6 +118,12 @@ contextBridge.exposeInMainWorld(
     python: {
       test: function(){
         return ipc.sendSync("python_test", {})
+      },
+      trial_start: function(){
+        return ipc.sendSync("python_trial_start", {})
+      },
+      image_start: function(){
+        return ipc.sendSync("python_image_start", {})
       }
     },
   }
