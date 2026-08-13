@@ -30,7 +30,7 @@
   "devDependencies": {
     "coffee-script": "~1.6.3",
     "electron": "^39.8.10",
-    "jest": "^27.5.1",
+    "jest": "^30.4.2",
     "png-to-ico": "^2.0.0",
     "prettier": "2.3.2"
   },
